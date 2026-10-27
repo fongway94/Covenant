@@ -1,0 +1,15 @@
+node_modules/
+android/
+ios/
+.idea/
+.vscode/
+.DS_Store
+*.log
+dist/
+www/
+.svelte-kit/
+.next/
+coverage/
+
+# Session-specific preview QR (regenerate per session)
+Covenant-phone-link.png
