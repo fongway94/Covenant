@@ -1,0 +1,36 @@
+{
+  "name": "covenant",
+  "version": "0.4.1",
+  "private": true,
+  "description": "Covenant \u2014 an interactive Bible story RPG for iOS, Android and the web.",
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/serve.js",
+    "start": "node tools/serve.js",
+    "check": "node tools/validate.js",
+    "smoke": "node tools/smoke.js",
+    "icons": "python3 tools/make_icons.py",
+    "build:www": "node tools/build-www.js",
+    "cap:sync": "npm run build:www && cap sync",
+    "cap:add:ios": "npm run build:www && cap add ios",
+    "cap:add:android": "npm run build:www && cap add android",
+    "cap:open:ios": "cap open ios",
+    "cap:open:android": "cap open android",
+    "build:single": "node tools/build-single.js",
+    "smoke:single": "node tools/smoke-single.js",
+    "build": "npm run build:www && npm run build:single",
+    "check:i18n": "node tools/check-i18n.js",
+    "check:games": "node tools/check-games.js",
+    "check:acts": "node tools/check-acts.js"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0",
+    "esbuild": "^0.28.2",
+    "jsdom": "^30.1.3"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "^6.2.0"
+  }
+}
