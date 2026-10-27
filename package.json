@@ -15,15 +15,19 @@
     "cap:add:ios": "npm run build:www && cap add ios",
     "cap:add:android": "npm run build:www && cap add android",
     "cap:open:ios": "cap open ios",
-    "cap:open:android": "cap open android"
+    "cap:open:android": "cap open android",
+    "build:single": "node tools/build-single.js",
+    "smoke:single": "node tools/smoke-single.js",
+    "build": "npm run build:www && npm run build:single"
   },
   "devDependencies": {
     "@capacitor/cli": "^6.2.0",
+    "esbuild": "^0.28.2",
     "jsdom": "^30.1.3"
   },
   "dependencies": {
+    "@capacitor/android": "^6.2.0",
     "@capacitor/core": "^6.2.0",
-    "@capacitor/ios": "^6.2.0",
-    "@capacitor/android": "^6.2.0"
+    "@capacitor/ios": "^6.2.0"
   }
 }

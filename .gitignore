@@ -11,5 +11,3 @@ www/
 .next/
 coverage/
 
-# Session-specific preview QR (regenerate per session)
-Covenant-phone-link.png
