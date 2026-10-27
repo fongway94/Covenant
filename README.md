@@ -22,6 +22,21 @@ The whole thing is plain HTML/CSS/JavaScript — **no build step, no framework, 
 
 ---
 
+## Try it on your phone — three ways
+
+| | Works now? | Setup |
+|---|---|---|
+| **Arena Live Preview panel** (in the Arena UI) | ✅ | None. Open this conversation in a mobile browser and tap the preview. Arena injects the sandbox's private token, so it works there. |
+| **`Covenant-offline.html`** — one self-contained 2.5 MB file | ✅ | Download it, AirDrop/WhatsApp it to your phone, open in Chrome or Safari. No server, no internet, all artwork/fonts inlined. |
+| **GitHub Pages** — `https://fongway94.github.io/Covenant/` | After one setup step | In your repo: **Settings → Pages → Build and deployment → Source: Deploy from a branch → Branch: `arena/c138bec0-covenant`, folder `/ (root)` → Save.** Wait ~1 minute. Permanent HTTPS link, installable as a PWA. |
+
+> **Why the `…e2b.app` preview link failed:** Arena's sandbox is protected by a private
+> `e2b-traffic-access-token` header. The platform injects it inside its own preview panel,
+> but a plain URL opened on another device has no way to send that header — hence the
+> "sandbox not found" / 403. This is a hosting limitation, not a bug in the game.
+
+Regenerate the offline file after any change with `npm run build:single` (needs `npm install`).
+
 ## Run it
 
 ```bash
@@ -29,6 +44,8 @@ npm run dev            # http://localhost:4173 — open on your phone via the pr
 npm run check          # validates all 6 stories, links, rewards and state transitions
 npm run smoke          # headless playthrough of every chapter (needs npm install)
 npm run build:www      # produces www/ for native packaging
+npm run build:single   # produces Covenant-offline.html (one file, no server)
+npm run smoke:single   # verifies the offline file boots and plays
 ```
 
 No install is required to *play*: any static web server works (`python3 -m http.server 4173` is fine). `npm install` is only needed for the tests and the native tooling.

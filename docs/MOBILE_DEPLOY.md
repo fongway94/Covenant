@@ -15,6 +15,30 @@ You do **not** need two apps. This project uses one web codebase and **Capacitor
 
 ---
 
+## Fastest public demo link (2 minutes, no Xcode)
+
+If you just want a shareable link for people to try on their phones, skip native builds:
+
+1. Push this branch (already done).
+2. In your repo open **Settings → Pages** (`https://github.com/fongway94/Covenant/settings/pages`).
+3. Under **Build and deployment**, set Source to **Deploy from a branch**, pick branch
+   `arena/c138bec0-covenant` and folder `/ (root)`, then Save.
+4. After ~1 minute the game is live at **`https://fongway94.github.io/Covenant/`** — HTTPS,
+   PWA-installable, offline-capable, and shareable with anyone.
+
+A GitHub Actions workflow tried to enable Pages automatically but the Arena GitHub
+integration token lacks the `pages:write` permission, so this one-time click has to be
+done by you in the browser. Everything else is already in place (the branch contains
+`index.html` at its root plus `.nojekyll`).
+
+For a completely server-free demo, `npm run build:single` produces
+`Covenant-offline.html` — one 2.5 MB file with all art, fonts and code inlined. Send it
+by WhatsApp/AirDrop and open it in a mobile browser; it needs no internet at all.
+
+> Note: the `…e2b.app` sandbox preview URL is protected by a private
+> `e2b-traffic-access-token` header, so it only works inside Arena's own preview panel —
+> it cannot be shared as a plain link.
+
 ## Stage 0 — PWA (already done, zero cost)
 
 `index.html` + `manifest.webmanifest` + `sw.js` make the game installable and fully offline.
