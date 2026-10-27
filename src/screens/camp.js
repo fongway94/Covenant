@@ -1,0 +1,250 @@
+/* The travellers' camp — a real overworld hub between chapters.
+   Day cycle, three NPCs, a quest board, a satchel, and a breathing prayer. */
+
+import { esc, icon } from "../core/util.js";
+import { CHAPTERS } from "../data/chapters.js";
+import { QUESTS, CAMP_NPCS } from "../data/quests.js";
+import { RELICS, FRUITS, SEALS, STATS, STAT_KEYS, STAT_MAX, countDone } from "../data/compendium.js";
+import { questState, campDay, dayPhase, adventure, breatheAtCamp } from "../core/state.js";
+import { tx, isZh } from "../core/i18n.js";
+import { hudHtml, tabsHtml } from "./world.js";
+
+const BREATH_STEPS = 3;      // inhale · hold · exhale
+const BREATH_CYCLES = 3;     // nine taps for a full prayer
+
+export function breathPhase(ui) {
+  const b = ui.breathe || { step: 0, cycle: 0 };
+  return b;
+}
+
+export function startBreath(ui) {
+  ui.breathe = { step: 0, cycle: 0, done: false };
+  ui.modal = { type: "breathe" };
+}
+
+export function tapBreath(ui) {
+  const b = ui.breathe;
+  if (!b || b.done) return null;
+  b.step++;
+  if (b.step >= BREATH_STEPS) { b.step = 0; b.cycle++; }
+  if (b.cycle >= BREATH_CYCLES) {
+    b.done = true;
+    const reward = breatheAtCamp(ui.state);
+    ui.modal = null;
+    if (!reward) return { already: true };
+    return { ...reward, done: true };
+  }
+  return { ...b };
+}
+
+export function breathLabel(step) {
+  return [tx("Breathe in", "吸气"), tx("Hold", "停住"), tx("Breathe out", "呼气")][step % 3];
+}
+
+/* ------------------------------------------------------------------- camp */
+
+function npcButtons(ui) {
+  const a = adventure(ui.state);
+  return CAMP_NPCS.map((n, i) => {
+    const met = a.npcMet.includes(n.id);
+    return `<button class="camp-npc ${met ? "met" : ""}" style="left:${[17, 50, 82][i]}%" data-action="camp-npc" data-id="${n.id}" aria-label="${tx(`Talk to ${n.nameEn}`, `与${n.nameZh}交谈`)}">
+      <span class="npc-aura"></span><span class="npc-glyph">${n.glyph}</span>
+      <span class="npc-name">${esc(isZh() ? n.nameZh : n.nameEn)}</span>
+      ${met ? "" : '<span class="npc-dot">✧</span>'}
+    </button>`;
+  }).join("");
+}
+
+function questBoard(ui) {
+  const s = ui.state;
+  const claimed = adventure(s).quests || {};
+  const allDone = QUESTS.every((q) => claimed[q.id]);
+  return `<section class="camp-section">
+    <div class="camp-section-head">
+      <div><div class="eyebrow">${tx("Miriam's board", "米利暗的木板")}</div>
+        <h3>${tx("Three small tasks", "三件小事")}</h3></div>
+      <span class="pill ${allDone ? "gold" : ""}">${QUESTS.filter((q) => claimed[q.id]).length}/${QUESTS.length}</span>
+    </div>
+    <p class="tiny muted" style="margin:0 0 10px">${tx("These are not tests. They simply notice what you have already done.", "这些不是考试。它们只是让你留意自己已经做过的事。")}</p>
+    <div class="quest-list">${QUESTS.map((q) => {
+      const st = questState(s, q);
+      const pct = Math.round((st.value / st.goal) * 100);
+      return `<div class="quest ${st.claimed ? "claimed" : st.ready ? "ready" : ""}">
+        <div class="quest-glyph">${st.claimed ? icon("check", 18) : q.glyph}</div>
+        <div class="quest-main">
+          <div class="quest-top"><strong>${esc(isZh() ? q.titleZh : q.titleEn)}</strong>
+            <span class="tiny gold">+${q.reward.guidance} ${tx("Guidance", "引导")}</span></div>
+          <p class="tiny muted" style="margin:3px 0 6px">${esc(isZh() ? q.descZh : q.descEn)}</p>
+          <div class="quest-track"><i style="width:${pct}%"></i></div>
+          <div class="quest-foot"><span class="tiny muted">${st.value} / ${st.goal}</span>
+            ${st.claimed
+              ? `<span class="pill">${tx("Received", "已领取")}</span>`
+              : st.ready
+                ? `<button class="btn btn-primary btn-xs" data-action="claim-quest" data-id="${q.id}">${tx("Receive", "领取")}</button>`
+                : `<span class="tiny muted">${tx("In progress", "进行中")}</span>`}
+          </div>
+        </div>
+      </div>`;
+    }).join("")}</div>
+    ${allDone ? `<p class="small serif gold center" style="margin:12px 0 0">${tx("Miriam has carved your name into the camp post.", "米利暗已把你的名字刻在营地木桩上。")}</p>` : ""}
+  </section>`;
+}
+
+function satchel(ui) {
+  const s = ui.state;
+  const relics = Object.entries(RELICS);
+  return `<section class="camp-section">
+    <div class="camp-section-head"><div><div class="eyebrow">${tx("Your satchel", "你的行囊")}</div>
+      <h3>${tx("What you carry", "你所携带的")}</h3></div></div>
+    <div class="satchel-row">
+      <div class="satchel-item"><span class="ico">✧</span><strong>${s.relics.length}/${relics.length}</strong><small>${tx("Relics", "圣物")}</small></div>
+      <div class="satchel-item"><span class="ico">❀</span><strong>${s.fruits.length}/${FRUITS.length}</strong><small>${tx("Fruits", "果子")}</small></div>
+      <div class="satchel-item"><span class="ico">✦</span><strong>${s.seals.length}/${SEALS.length}</strong><small>${tx("Seals", "印记")}</small></div>
+      <div class="satchel-item guidance"><span class="ico">✟</span><strong>${adventure(s).guidance || 0}</strong><small>${tx("Guidance", "引导")}</small></div>
+    </div>
+    <div class="relic-strip">${relics.map(([id, r]) => `<span class="relic-chip ${s.relics.includes(id) ? "got" : ""}" title="${esc(r.name)}">${r.glyph}</span>`).join("")}</div>
+    <div class="card-quiet" style="margin-top:12px">
+      <div class="eyebrow" style="margin-bottom:5px">${tx("What is Guidance?", "什么是「引导」？")}</div>
+      <p class="tiny muted" style="margin:0">${tx("Guidance is stored by praying and by breathing at the campfire. In Clean Mode you can spend 1 Guidance to reveal the hidden hints around a choice, or 2 Guidance to open a golden choice your virtues have not yet reached. The story's outcome never changes — only how clearly you see the door.", "「引导」来自祷告和营火旁的呼吸祷告。在沉浸模式中，你可以花费 1 点引导来显明某个选项周围被隐藏的提示；或花费 2 点来开启一个品格尚未达到的金色选项。故事的结局永不改变——改变的只是你看那扇门的清晰程度。")}</p>
+    </div>
+  </section>`;
+}
+
+export function campHtml(ui) {
+  const s = ui.state;
+  const day = campDay(s);
+  const phase = dayPhase(s);
+  const a = adventure(s);
+  const breathed = a.lastBreathDay === day;
+  const done = countDone(s);
+  const next = CHAPTERS.find((c) => !s.chapters[c.id]?.completed);
+
+  return `<div class="screen camp-screen">
+    ${hudHtml(ui)}
+    <div class="scroll camp-scroll safe-bottom">
+      <div class="camp-hero" style="background-image:url('assets/art/camp.jpg')">
+        <div class="camp-tint" style="background:${phase.tint}"></div>
+        <div class="camp-orb" style="background:${phase.orb}"></div>
+        <div class="camp-stars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="camp-hero-top">
+          <div class="camp-day"><div class="eyebrow">${tx(`Day ${day} of ${CHAPTERS.length}`, `第 ${day} / ${CHAPTERS.length} 天`)} · ${esc(isZh() ? phase.zh : phase.en)}</div>
+            <h2>${esc(s.name)}</h2>
+            <p class="tiny">${done}/${CHAPTERS.length} ${tx("chapters walked", "章已走过")}</p></div>
+          <button class="guidance-chip" data-action="camp-guidance-info" aria-label="${tx("About Guidance", "关于引导")}"><span>✟</span><b>${a.guidance || 0}</b><small>${tx("Guidance", "引导")}</small></button>
+        </div>
+        <div class="camp-npcs">${npcButtons(ui)}</div>
+        <button class="camp-fire ${breathed ? "spent" : ""}" data-action="breathe-open" aria-label="${tx("Breathe at the campfire", "在营火旁呼吸祷告")}">
+          <span class="fire-flame">✦</span>
+          <span class="camp-fire-label">${breathed ? tx("You have breathed today", "今天已呼吸祷告") : tx("Breathe & pray", "呼吸与祷告")}</span>
+        </button>
+      </div>
+
+      <div class="camp-body">
+        <div class="camp-cta card">
+          <div><div class="eyebrow">${tx("The road ahead", "前方的路")}</div>
+            <h3 style="margin:4px 0">${next ? esc(next.title) : tx("All roads walked", "所有的路都已走过")}</h3>
+            <p class="tiny muted" style="margin:0">${next
+              ? tx("Step back into the story. Your choices shape you, never the Scripture.", "重新走进故事。你的选择塑造你自己，绝不改写经文。")
+              : tx("Visit the finale to see the person you became.", "前往终章，看看你成为了怎样的人。")}</p></div>
+          <button class="btn btn-primary btn-sm" data-action="go" data-view="map">${icon("map", 16)} ${tx("Open the map", "打开地图")}</button>
+        </div>
+        ${done >= CHAPTERS.length ? `<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px" data-action="go" data-view="finale">${icon("compass", 16)} ${tx("See your finale", "查看终章")}</button>` : ""}
+        ${questBoard(ui)}
+        ${satchel(ui)}
+        <div class="camp-section">
+          <div class="card-quiet">
+            <div class="eyebrow" style="margin-bottom:6px">${tx("A note from the road", "路上的一段笔记")}</div>
+            <p class="small serif" style="margin:0;color:var(--gold-light)">${isZh()
+              ? "「你要专心仰赖耶和华，不可倚靠自己的聪明。在你一切所行的事上，都要认定他，他必指引你的路。」"
+              : "“Trust in the LORD with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths.”"}</p>
+            <p class="tiny gold" style="margin:8px 0 0">— ${tx("Proverbs 3:5–6 (KJV)", "箴言 3:5–6（和合本）")}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    ${tabsHtml(ui, "camp")}
+  </div>`;
+}
+
+/* ---------------------------------------------------------------- finale */
+
+function dominantVirtue(s) {
+  let best = STAT_KEYS[0];
+  for (const k of STAT_KEYS) if (s.stats[k] > s.stats[best]) best = k;
+  return best;
+}
+
+const MIRROR_EN = {
+  courage: "You met fear more often than you expected — and kept walking. Courage was not loud in you; it was simply the next step, taken anyway.",
+  wisdom: "You kept stopping to look closer. While others rushed, you read the moment, and the road opened a little at a time.",
+  compassion: "You kept noticing the person at the edge of the story. Mercy was your habit before it was your decision.",
+  faith: "You paused more than most. In the stopping, you learned that God is present before He is understood."
+};
+const MIRROR_ZH = {
+  courage: "你比自己预想的更常遇见恐惧——却仍然继续走。勇气在你身上并不喧哗，它只是「下一步，还是走」。",
+  wisdom: "你总是停下来仔细看。别人赶路时，你在读这个时刻；路就一点一点向你打开。",
+  compassion: "你不断留意故事边缘的那个人。怜悯在成为你的决定之前，就已经是你的习惯。",
+  faith: "你比多数人更常停下来。在停歇里，你学会：神在被理解之前，就已经在场。"
+};
+
+export function finaleHtml(ui) {
+  const s = ui.state;
+  const done = countDone(s);
+  const key = dominantVirtue(s);
+  const stat = STATS[key];
+  const call = { shepherd: tx("Shepherd", "牧人"), scribe: tx("Scribe", "文士"), guardian: tx("Guardian", "守护者"), intercessor: tx("Intercessor", "代祷者") }[s.calling] || tx("Pilgrim", "朝圣者");
+  const clean = s.settings.cleanMode;
+
+  return `<div class="screen finale-screen">
+    <div class="finale-art" style="background-image:url('assets/art/camp.jpg')">
+      <div class="finale-glow"></div>
+      <div class="finale-art-text"><div class="eyebrow">${tx("The end of the road", "路的尽头")}</div>
+        <h1>${tx("Well walked", "你走过了")}</h1></div>
+    </div>
+    <div class="scroll pad safe-bottom finale-body">
+      <p class="verse center" style="margin-top:4px">${isZh()
+        ? "「耶和华说：我知道我向你们所怀的意念，是赐平安的意念，不是降灾祸的意念，要叫你们末后有指望。」"
+        : "“For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end.”"}</p>
+      <p class="tiny gold center" style="margin:0 0 16px">— ${tx("Jeremiah 29:11 (KJV)", "耶利米书 29:11（和合本）")}</p>
+
+      <div class="finale-card">
+        <div class="finale-avatar">${esc(s.name.slice(0, 1).toUpperCase())}</div>
+        <div><div class="eyebrow">${tx("The pilgrim", "这位朝圣者")}</div>
+          <h2 style="margin:2px 0">${esc(s.name)}</h2>
+          <p class="tiny muted" style="margin:0">${esc(call)} · ${tx(`Level ${s.level}`, `等级 ${s.level}`)} · ${done}/${CHAPTERS.length} ${tx("chapters", "章")}</p></div>
+      </div>
+
+      <div class="finale-stats">${STAT_KEYS.map((k) => `<div class="finale-stat">
+        <span>${STATS[k].glyph} ${esc(STATS[k].name)}</span>
+        <div class="bar"><i style="width:${Math.round((s.stats[k] / STAT_MAX) * 100)}%;background:${STATS[k].color}"></i></div>
+        <b>${s.stats[k]}</b></div>`).join("")}</div>
+
+      <div class="finale-grid">
+        <div><span class="ico">✧</span><strong>${s.relics.length}</strong><small>${tx("Relics carried", "携带的圣物")}</small></div>
+        <div><span class="ico">❀</span><strong>${s.fruits.length}</strong><small>${tx("Fruits gathered", "收集的果子")}</small></div>
+        <div><span class="ico">✦</span><strong>${s.seals.length}</strong><small>${tx("Seals earned", "获得的印记")}</small></div>
+        <div><span class="ico">✟</span><strong>${s.prayedIn.length}</strong><small>${tx("Times you prayed", "祷告的次数")}</small></div>
+      </div>
+
+      <div class="card-quiet" style="margin-top:14px">
+        <div class="eyebrow" style="margin-bottom:6px">${tx("A mirror, not a scoreboard", "一面镜子，不是计分板")}</div>
+        <p class="small serif" style="margin:0;color:var(--gold-light)">${esc(isZh() ? MIRROR_ZH[key] : MIRROR_EN[key])}</p>
+        <p class="tiny muted" style="margin:10px 0 0">${tx("Your dominant virtue:", "你最显著的品格：")} <span style="color:${stat.color}">${esc(stat.name)}</span></p>
+      </div>
+
+      <div class="card-quiet" style="margin-top:12px">
+        <div class="eyebrow" style="margin-bottom:6px">${tx("No tips here", "这里没有提示")}</div>
+        <p class="tiny muted" style="margin:0">${clean
+          ? tx("You walked with the hints hidden. There is no checklist at the end and no circle telling you what to feel. Ten stories happened exactly as Scripture records them — and you were there. What you carry out is yours to decide.", "你是在隐藏提示的情况下走完的。终点没有清单，也没有圆圈告诉你该有什么感受。十个故事完全按圣经记载发生——而你在场。你要带走什么，由你自己决定。")
+          : tx("Turn on Clean Mode in Settings and replay a chapter: the hint circles disappear, but the ending does not change. The finale is a mirror, not a checklist — it shows what your choices formed, and then it stops talking.", "在设置中开启「沉浸模式」并重玩一章：提示圆圈会消失，但结局不会改变。终章是一面镜子，不是清单——它显明你的选择塑造了什么，然后就安静下来。")}</p>
+      </div>
+
+      <div class="stack" style="margin-top:16px">
+        <button class="btn btn-primary" data-action="go" data-view="camp">${icon("heart", 16)} ${tx("Return to the camp", "回到营地")}</button>
+        <button class="btn btn-ghost btn-sm" data-action="go" data-view="journal">${icon("book", 16)} ${tx("Read your journal", "翻看你的日志")}</button>
+      </div>
+      <p class="tiny muted center" style="margin-top:20px">${tx("The road continues outside the game.", "这条路，在游戏之外继续。")}</p>
+    </div>
+    ${tabsHtml(ui, "finale")}
+  </div>`;
+}

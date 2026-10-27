@@ -1,0 +1,22 @@
+{
+  "appId": "com.covenant.journeys",
+  "appName": "Covenant",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#0b141c"
+  },
+  "android": {
+    "backgroundColor": "#0b141c",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "backgroundColor": "#0b141c",
+      "showSpinner": false
+    },
+    "Keyboard": {
+      "resize": "body"
+    }
+  }
+}
