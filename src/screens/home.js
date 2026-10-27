@@ -32,7 +32,7 @@ export function titleHtml(ui) {
           <button class="btn btn-ghost" data-action="go" data-view="about">${icon("scroll", 16)} ${tx("About", "关于")}</button>
         </div>
       </div>
-      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.1", "互动圣经故事角色扮演游戏 · v0.1 原型")}</div>
+      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.2", "互动圣经故事角色扮演游戏 · v0.2 原型")}</div>
     </div>
   </div>`;
 }
