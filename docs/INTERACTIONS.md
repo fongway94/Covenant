@@ -177,16 +177,19 @@ npm run build && npm run smoke:single
 
 | kind | 操作 | 用在 |
 |---|---|---|
-| `sift` | 拖动提灯拂开沙土格，从隐藏物中挑出真品；假物扣时间 | 大卫（5 石子）、摩西（3 只羊）、路得之前的麦田等 |
+| `sift` | 拖动提灯拂开沙土格，从隐藏物中挑出真品；假物扣时间 | 摩西（3 只羊）、路得（麦穗）等 |
 | `rhythm` | 光点穿过金色标记时点击，逐轮加速、目标变窄 | 但以理守夜、路得跟上收割节奏 |
 | `trace` | 手指沿弯曲道路拖到顶端，离开路会掉时间 | 耶利哥山路、浪子回家路 |
 | `charge` | 按住蓄力，在移动的金色区间里松手 | 风浪拉缆绳、约拿屏息下潜 |
 | `order` | 看亮起的印记顺序再点回来，两轮递增 | 以斯帖谕旨、撒该看树枝 |
 | `dodge` | 点击跳过不断飞来的长枪，跑向阵前 | 大卫第二幕（专属） |
 
-**大卫三幕**：`sift`（溪边找 5 块光滑石子，`carry: "stones"`）→ `dodge`（穿过长枪）
-→ `sling`（甩石）。`sling.init` 现在读取 `c.shared.stones`，用 `clamp(…, 2, 5)`
-决定弹药数——**搜寻的结果真的会带进战斗**。
+**大卫三幕**：`charge`（练习甩石）→ `dodge`（穿过长枪）→ `sling`（甩石）。
+
+溪边故事节点的**提灯搜寻**决定弹药：`hotspotTap / hotspotSkip` 把找到的数量记在
+`ui.story.hotspotFound[nodeId]`，`mountActionScene` 通过 `startScene(..., seed)` 传入，
+`withStages.init` 保留 `c.shared`，最后 `sling.init` 用 `clamp(c.shared.stones, 2, 5)`
+决定石子数——**搜寻的结果真的会带进战斗**。跳过或灯火燃尽就只能用 2–4 发面对歌利亚。
 
 ## 提灯搜寻（隐藏物品重做）
 

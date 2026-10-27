@@ -939,13 +939,12 @@ const PRELUDES = {
   /* ---------------------------------------------------- 1. David (3 acts) */
   sling: [
     {
-      kind: "sift", ...P("elah", "leaves"),
-      title: ["Search the brook", "在溪边寻找"],
-      prompt: ["Sweep the water aside and pick out FIVE smooth stones. Jagged rocks will crack a sling. What you find is what you carry into the fight.",
-        "拂开溪水，挑出五块「光滑」的石子。棱角锋利的石头会让机弦断裂。你找到多少，就带多少上阵。"],
-      hint: ["Drag to sweep · tap a smooth stone", "拖动拂开水面 · 点击光滑的石子"],
-      goal: 5, decoys: 8, seconds: 30, reward: 40, carry: "stones",
-      good: "#c9b48e", siltRgb: "72,62,46"
+      kind: "charge", ...P("elah", "leaves"),
+      title: ["Practise the sling", "练习甩石"],
+      prompt: ["The stones from the brook sit in your bag. Hold to wind the sling, then release inside the moving gold band — three clean swings before you step onto the field.",
+        "从溪边捡来的石子就在袋里。按住转动机弦，在移动的金色区间里松手——上阵前先练成三次干净的挥甩。"],
+      hint: ["Hold to wind · release in the band", "按住蓄力 · 在金带内松手"],
+      rounds: 3, seconds: 24, reward: 40
     },
     {
       kind: "dodge", ...P("elah", "leaves"),

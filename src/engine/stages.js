@@ -586,7 +586,7 @@ export function withStages(game, preludes) {
     actCount: acts.length,
     hint(c) { return tx(this.hintEn, this.hintZh); },
     init(c) {
-      c.shared = {};
+      c.shared = { ...(c.shared || {}) };
       c.actIndex = 0; c.actCount = acts.length;
       c.actBanner = 1.8; c.actFlash = 0.55;
       let finished = false;

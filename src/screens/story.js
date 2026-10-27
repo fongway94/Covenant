@@ -291,7 +291,14 @@ function mountActionScene(ui) {
   if (!s?.game || s.game.controller) return;
   const canvas = document.getElementById("action-canvas");
   if (!canvas) return;
-  s.game.controller = startScene(canvas, s.game.key, (res) => finishAction(ui, res));
+  // The lantern search at the brook decides how many stones David actually
+  // carries into the Goliath fight.
+  const seed = {};
+  if (s.game.key === "sling") {
+    const found = Object.values(s.hotspotFound || {});
+    if (found.length) seed.stones = found[found.length - 1];
+  }
+  s.game.controller = startScene(canvas, s.game.key, (res) => finishAction(ui, res), seed);
 }
 
 function finishAction(ui, result) {
@@ -420,6 +427,8 @@ export function hotspotTap(ui, index) {
 
   h.found.push(index);
   sfx("good");
+  s.hotspotFound = s.hotspotFound || {};
+  s.hotspotFound[s.nodeId] = h.found.length;
   el.classList.add("found"); el.classList.remove("lit");
   el.textContent = "✓";
   const counter = document.getElementById("hotspot-count");
@@ -445,6 +454,8 @@ export function hotspotDone(ui) {
 export function hotspotSkip(ui) {
   const s = st(ui);
   if (!s.hotspots) return;
+  s.hotspotFound = s.hotspotFound || {};
+  s.hotspotFound[s.nodeId] = s.hotspots.found.length;
   s.doneNodes[s.nodeId + ":hot"] = true;
   s.phase = "lines";
   afterLines(ui);

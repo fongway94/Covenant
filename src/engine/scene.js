@@ -290,7 +290,7 @@ export function scepter(ctx, x, y, up, t) {
 
 /* ------------------------------------------------------------- scene loop */
 
-export function startScene(canvas, key, onResult) {
+export function startScene(canvas, key, onResult, seed = {}) {
   const game = GAMES[key] || GAMES.sling;
   let ctx = null;
   try { ctx = canvas.getContext && canvas.getContext("2d"); } catch { /* jsdom */ }
@@ -309,7 +309,7 @@ export function startScene(canvas, key, onResult) {
   const c = {
     w: 0, h: 0, t: 0, dt: 0.016, game, pointer, keys, particles, floats, font, hudTop: 112,
     hearts: 3, maxHearts: 3, score: 0, progress: 0, shake: 0, flash: 0,
-    hint: "", label: "", state: {},
+    hint: "", label: "", state: {}, shared: { ...seed },
     rnd, clamp, dist,
     spark(x, y, color = "#f4d79b", n = 12, speed = 130) {
       for (let i = 0; i < n; i++) {
