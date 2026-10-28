@@ -1,6 +1,13 @@
-/* Procedural audio for Covenant — sound effects + adaptive ambient music.
+/* Procedural audio for Covenant — sound effects + adaptive ambient score.
    No audio files: everything is synthesised with Web Audio, so the whole
-   soundtrack works offline and inside the single-file build. */
+   soundtrack works offline and inside the single-file build.
+
+   The score is built from four layers per chapter mood:
+     1. a moving chord progression (gliding pad + bass),
+     2. a plucked harp/oud arpeggio with phrase contour and humanised timing,
+     3. a soft frame-drum / low pulse on the strong beats,
+     4. filtered brown-noise ambience (wind, water, crowd),
+   all fed through a generated convolution reverb for space. */
 
 let ctx = null;
 let enabled = true;          // sound effects
@@ -56,12 +63,7 @@ export function sfx(name) {
 }
 
 /* =================================================================
-   Ambient music
-   Three layers crossfade together:
-     1. a low drone (root / fifth / octave, slowly breathing),
-     2. filtered brown noise (wind, water, rain, crowd),
-     3. a gentle pentatonic melody scheduled with a look-ahead clock.
-   Each chapter selects a preset; changing chapter crossfades in ~1s.
+   Ambient score
    ================================================================= */
 
 const MUSIC_KEY = "covenant.music.v1";
@@ -69,28 +71,39 @@ let musicOn = true;
 try { musicOn = localStorage.getItem(MUSIC_KEY) !== "0"; } catch { /* private mode */ }
 
 let currentKind = null;
+let currentIntensity = 0;
 let layers = null;
 let scheduler = null;
-let nextNoteAt = 0;
-let melodyStep = 0;
 let ducked = false;
 let noiseBuffer = null;
+let impulseBuffer = null;
 
-/** root = base Hz, scale = pentatonic semitone offsets, beat = seconds/note. */
-const PRESETS = {
-  title:   { root: 146.83, scale: [0, 3, 5, 7, 10, 12], beat: 1.05, drone: 0.055, noise: 0.020, cutoff: 480,  wave: "sine",     mel: 0.030 },
-  camp:    { root: 164.81, scale: [0, 2, 5, 7, 9, 12],  beat: 0.92, drone: 0.050, noise: 0.028, cutoff: 620,  wave: "triangle", mel: 0.028 },
-  valley:  { root: 130.81, scale: [0, 3, 5, 7, 10, 12], beat: 1.00, drone: 0.058, noise: 0.038, cutoff: 760,  wave: "sine",     mel: 0.026 },
-  night:   { root: 110.00, scale: [0, 3, 5, 7, 10, 12], beat: 1.25, drone: 0.065, noise: 0.014, cutoff: 300,  wave: "sine",     mel: 0.024 },
-  desert:  { root: 146.83, scale: [0, 2, 5, 7, 10, 12], beat: 1.10, drone: 0.052, noise: 0.052, cutoff: 1050, wave: "triangle", mel: 0.026 },
-  sea:     { root: 123.47, scale: [0, 3, 5, 7, 10, 12], beat: 1.15, drone: 0.060, noise: 0.060, cutoff: 380,  wave: "sine",     mel: 0.025 },
-  field:   { root: 174.61, scale: [0, 2, 4, 7, 9, 12],  beat: 0.88, drone: 0.048, noise: 0.030, cutoff: 900,  wave: "triangle", mel: 0.030 },
-  temple:  { root: 155.56, scale: [0, 2, 5, 7, 9, 12],  beat: 1.20, drone: 0.062, noise: 0.016, cutoff: 420,  wave: "sine",     mel: 0.027 },
-  city:    { root: 164.81, scale: [0, 2, 4, 7, 9, 12],  beat: 0.80, drone: 0.046, noise: 0.040, cutoff: 1150, wave: "triangle", mel: 0.029 },
-  finale:  { root: 196.00, scale: [0, 2, 4, 7, 9, 12],  beat: 1.10, drone: 0.058, noise: 0.018, cutoff: 700,  wave: "sine",     mel: 0.032 }
+/* Chord progressions as semitone offsets from the preset root. Four bars,
+   each a 4-note chord. Movement is what stops a drone sounding "dull". */
+const PROG = {
+  warm:    [[0, 4, 7, 11], [5, 9, 12, 16], [-3, 2, 7, 11], [2, 7, 11, 14]],
+  solemn:  [[0, 3, 7, 10], [-4, 0, 3, 7], [5, 9, 12, 15], [3, 7, 10, 14]],
+  hope:    [[0, 4, 7, 11], [-5, -1, 2, 7], [3, 7, 10, 14], [5, 9, 12, 16]],
+  desert:  [[0, 2, 7, 10], [0, 3, 7, 10], [5, 7, 12, 15], [3, 5, 10, 14]],
+  ocean:   [[0, 3, 7, 10], [-2, 2, 5, 9], [3, 7, 10, 14], [-4, 0, 3, 7]],
+  triumph: [[0, 4, 7, 11], [5, 9, 12, 16], [7, 11, 14, 19], [2, 7, 11, 14]]
 };
 
-/** Which ambience each chapter uses. */
+/** root = Hz, beat = seconds per arpeggio step, prog = chord set. */
+const PRESETS = {
+  title:   { root: 146.83, prog: PROG.hope,    beat: 0.46, pad: 0.030, pluck: 0.052, bright: 3400, reverb: 0.34, noise: 0.012, cutoff: 520,  drum: 0.55, wave: "triangle", intensityGain: 0.9 },
+  camp:    { root: 164.81, prog: PROG.warm,    beat: 0.42, pad: 0.028, pluck: 0.050, bright: 3000, reverb: 0.30, noise: 0.020, cutoff: 700,  drum: 0.60, wave: "triangle", intensityGain: 0.9 },
+  valley:  { root: 130.81, prog: PROG.solemn,  beat: 0.44, pad: 0.034, pluck: 0.046, bright: 2500, reverb: 0.42, noise: 0.030, cutoff: 880,  drum: 0.85, wave: "sawtooth", intensityGain: 1.15 },
+  night:   { root: 110.00, prog: PROG.solemn,  beat: 0.56, pad: 0.038, pluck: 0.038, bright: 1900, reverb: 0.52, noise: 0.010, cutoff: 330,  drum: 0.15, wave: "sine",     intensityGain: 0.7 },
+  desert:  { root: 146.83, prog: PROG.desert,  beat: 0.40, pad: 0.030, pluck: 0.052, bright: 3800, reverb: 0.28, noise: 0.046, cutoff: 1250, drum: 0.95, wave: "sawtooth", intensityGain: 1.2 },
+  sea:     { root: 123.47, prog: PROG.ocean,   beat: 0.52, pad: 0.040, pluck: 0.040, bright: 2100, reverb: 0.56, noise: 0.056, cutoff: 420,  drum: 0.35, wave: "sine",     intensityGain: 1.0 },
+  field:   { root: 174.61, prog: PROG.warm,    beat: 0.40, pad: 0.026, pluck: 0.054, bright: 3600, reverb: 0.32, noise: 0.022, cutoff: 980,  drum: 0.55, wave: "triangle", intensityGain: 0.9 },
+  temple:  { root: 155.56, prog: PROG.solemn,  beat: 0.54, pad: 0.042, pluck: 0.040, bright: 2300, reverb: 0.62, noise: 0.012, cutoff: 460,  drum: 0.20, wave: "sine",     intensityGain: 0.75 },
+  city:    { root: 164.81, prog: PROG.warm,    beat: 0.36, pad: 0.026, pluck: 0.055, bright: 4000, reverb: 0.30, noise: 0.036, cutoff: 1400, drum: 0.90, wave: "triangle", intensityGain: 1.1 },
+  finale:  { root: 196.00, prog: PROG.triumph, beat: 0.44, pad: 0.036, pluck: 0.058, bright: 4200, reverb: 0.48, noise: 0.014, cutoff: 820,  drum: 0.70, wave: "triangle", intensityGain: 0.8 }
+};
+
+/** Which score each chapter uses. */
 export const CHAPTER_AMBIENCE = {
   elah: "valley", lions: "night", jericho: "desert", storm: "sea",
   prodigal: "field", esther: "temple", bush: "desert", ruth: "field",
@@ -108,11 +121,11 @@ export function setMusicEnabled(v) {
     if (changed) { fadeOutLayers(layers); layers = null; stopScheduler(); }
     return;
   }
-  if (!ctx) return;                          // wait for the first user gesture
-  if (!changed && layers && !layers.stopped) return;   // already playing
+  if (!ctx) return;                                     // wait for first gesture
+  if (!changed && layers && !layers.stopped) return;    // already playing
   const kind = currentKind || "title";
   currentKind = null;
-  setAmbience(kind);
+  setAmbience(kind, currentIntensity);
 }
 
 function brownNoise(c) {
@@ -130,52 +143,286 @@ function brownNoise(c) {
   return buf;
 }
 
+/** A short exponential-decay stereo impulse — cheap, warm hall reverb. */
+function impulse(c) {
+  if (impulseBuffer && impulseBuffer.sampleRate === c.sampleRate) return impulseBuffer;
+  const len = Math.floor(c.sampleRate * 1.9);
+  const buf = c.createBuffer(2, len, c.sampleRate);
+  const pre = Math.floor(c.sampleRate * 0.018);
+  for (let ch = 0; ch < 2; ch++) {
+    const d = buf.getChannelData(ch);
+    for (let i = 0; i < len; i++) {
+      if (i < pre) { d[i] = 0; continue; }
+      const k = (i - pre) / (len - pre);
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - k, 2.7) * (1 - k * 0.35);
+    }
+  }
+  impulseBuffer = buf;
+  return buf;
+}
+
 function makeLayers(c, preset) {
   const out = c.createGain();
   out.gain.setValueAtTime(0.0001, c.currentTime);
   out.connect(c.destination);
 
-  // 1 — breathing drone
-  const droneBus = c.createGain();
-  droneBus.gain.value = preset.drone;
-  droneBus.connect(out);
-  const lfo = c.createOscillator();
-  const lfoGain = c.createGain();
-  lfo.frequency.value = 0.07;
-  lfoGain.gain.value = preset.drone * 0.45;
-  lfo.connect(lfoGain).connect(droneBus.gain);
-  lfo.start();
-  const oscs = [];
-  for (const [mult, type, vol] of [[0.5, "sine", 0.55], [1, "sine", 0.4], [1.5, "triangle", 0.18], [2, "sine", 0.1]]) {
+  // Reverb send: everything goes to `bus`, which splits dry + wet.
+  const bus = c.createGain();
+  bus.gain.value = 1;
+  bus.connect(out);
+  const conv = c.createConvolver();
+  conv.buffer = impulse(c);
+  const wet = c.createGain();
+  wet.gain.value = preset.reverb;
+  bus.connect(conv); conv.connect(wet); wet.connect(out);
+
+  // 1 — gliding pad (3 voices) + bass (2 voices)
+  const padGain = c.createGain();
+  padGain.gain.value = preset.pad;
+  padGain.connect(bus);
+  const padLfo = c.createOscillator();
+  const padLfoAmt = c.createGain();
+  padLfo.frequency.value = 0.09;
+  padLfoAmt.gain.value = preset.pad * 0.38;
+  padLfo.connect(padLfoAmt).connect(padGain.gain);
+  padLfo.start();
+
+  const padOscs = [];
+  for (let i = 0; i < 3; i++) {
     const o = c.createOscillator();
     const g = c.createGain();
-    o.type = type;
-    o.frequency.value = preset.root * mult * (mult === 1.5 ? 1.001 : 1);
-    g.gain.value = vol;
-    o.connect(g).connect(droneBus);
+    o.type = i === 1 ? "triangle" : "sine";
+    o.frequency.value = preset.root * (i === 0 ? 1 : i === 1 ? 1.5 : 2);
+    o.detune.value = (i - 1) * 5;
+    g.gain.value = i === 0 ? 0.5 : i === 1 ? 0.32 : 0.22;
+    o.connect(g).connect(padGain);
     o.start();
-    oscs.push(o);
+    padOscs.push(o);
   }
 
-  // 2 — filtered noise bed (wind / water / crowd)
-  const src = c.createBufferSource();
-  src.buffer = brownNoise(c);
-  src.loop = true;
+  const bassGain = c.createGain();
+  bassGain.gain.value = 0.052;
+  bassGain.connect(bus);
+  const bassOscs = [];
+  for (const [mult, vol] of [[0.5, 0.72], [0.75, 0.22]]) {
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.type = "sine"; o.frequency.value = preset.root * mult; g.gain.value = vol;
+    o.connect(g).connect(bassGain);
+    o.start(); bassOscs.push(o);
+  }
+
+  // 2 — noise bed (wind / water / crowd)
+  const noiseSrc = c.createBufferSource();
+  noiseSrc.buffer = brownNoise(c);
+  noiseSrc.loop = true;
   const filter = c.createBiquadFilter();
-  filter.type = "lowpass";
-  filter.frequency.value = preset.cutoff;
-  filter.Q.value = 0.6;
+  filter.type = "lowpass"; filter.frequency.value = preset.cutoff; filter.Q.value = 0.7;
   const noiseGain = c.createGain();
   noiseGain.gain.value = preset.noise;
   const sweep = c.createOscillator();
   const sweepAmt = c.createGain();
-  sweep.frequency.value = 0.05;
-  sweepAmt.gain.value = preset.cutoff * 0.35;
+  sweep.frequency.value = 0.055;
+  sweepAmt.gain.value = preset.cutoff * 0.42;
   sweep.connect(sweepAmt).connect(filter.frequency);
-  src.connect(filter).connect(noiseGain).connect(out);
-  src.start(); sweep.start();
+  noiseSrc.connect(filter).connect(noiseGain).connect(bus);
+  noiseSrc.start(); sweep.start();
 
-  return { out, oscs, lfo, sweep, src, preset, stopped: false };
+  const sources = [...padOscs, ...bassOscs, padLfo, sweep, noiseSrc];
+  return {
+    out, bus, conv, wet, padGain, bassGain, padOscs, bassOscs,
+    noiseSrc, filter, sweep, sources, preset,
+    chord: [], beatCount: 0, nextAt: 0, intensity: 0, stopped: false
+  };
+}
+
+function chordFreqs(preset, bar) {
+  const chord = preset.prog[((bar % preset.prog.length) + preset.prog.length) % preset.prog.length];
+  return chord.map((semi) => preset.root * Math.pow(2, semi / 12));
+}
+
+function applyChord(c, L, bar, at) {
+  const f = chordFreqs(L.preset, bar);
+  L.chord = f;
+  try {
+    // A gentle portamento settles inside the first beat — the pad stays in
+    // tune with the plucked notes instead of smearing between two chords.
+    L.padOscs[0].frequency.setTargetAtTime(f[0], at, 0.22);
+    L.padOscs[1].frequency.setTargetAtTime(f[2], at, 0.28);
+    L.padOscs[2].frequency.setTargetAtTime(f[1] * 2, at, 0.34);
+    L.bassOscs[0].frequency.setTargetAtTime(f[0] / 2, at, 0.18);
+    L.bassOscs[1].frequency.setTargetAtTime(f[2] / 2, at, 0.24);
+  } catch { /* noop */ }
+}
+
+/** Plucked string: two slightly detuned oscillators through a sweeping LP. */
+function pluck(c, L, at, freq, vel, pan) {
+  const p = L.preset;
+  const o1 = c.createOscillator();
+  const o2 = c.createOscillator();
+  o1.type = p.wave; o2.type = "sine";
+  o1.frequency.setValueAtTime(freq, at);
+  o2.frequency.setValueAtTime(freq * 2.004, at);
+  o1.detune.setValueAtTime(-4, at); o2.detune.setValueAtTime(6, at);
+
+  const lp = c.createBiquadFilter();
+  lp.type = "lowpass";
+  lp.frequency.setValueAtTime(p.bright, at);
+  lp.frequency.exponentialRampToValueAtTime(Math.max(420, p.bright * 0.2), at + 1.0);
+  lp.Q.value = 0.5;
+
+  const g = c.createGain();
+  const peak = p.pluck * vel;
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.exponentialRampToValueAtTime(peak, at + 0.010);
+  g.gain.exponentialRampToValueAtTime(peak * 0.28, at + 0.22);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + 1.35);
+
+  const shimmer = c.createGain();
+  shimmer.gain.value = 0.16;
+  o1.connect(lp); o2.connect(shimmer).connect(lp);
+  lp.connect(g);
+  if (c.createStereoPanner) {
+    const pn = c.createStereoPanner();
+    pn.pan.value = pan;
+    g.connect(pn).connect(L.bus);
+  } else g.connect(L.bus);
+  o1.start(at); o2.start(at);
+  o1.stop(at + 1.4); o2.stop(at + 1.4);
+}
+
+/** A slow, flute-like answering phrase — the counter-melody above the harp. */
+function melodicNote(c, L, at, freq, dur, vel) {
+  const o1 = c.createOscillator();
+  const o2 = c.createOscillator();
+  o1.type = "sine"; o2.type = "triangle";
+  o1.frequency.setValueAtTime(freq, at);
+  o2.frequency.setValueAtTime(freq, at);
+  o2.detune.setValueAtTime(7, at);
+
+  const vib = c.createOscillator();
+  const vibAmt = c.createGain();
+  vib.frequency.value = 5.1;
+  vibAmt.gain.value = 4;
+  vib.connect(vibAmt);
+  vibAmt.connect(o1.detune); vibAmt.connect(o2.detune);
+  vib.start(at); vib.stop(at + dur + 0.5);
+
+  const lp = c.createBiquadFilter();
+  lp.type = "lowpass"; lp.frequency.value = 1900; lp.Q.value = 0.6;
+  const body = c.createGain();
+  body.gain.value = 0.78;
+  const soft = c.createGain();
+  soft.gain.value = 0.22;
+
+  const g = c.createGain();
+  const peak = 0.036 * vel;
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.linearRampToValueAtTime(peak, at + 0.12);
+  g.gain.setValueAtTime(peak, at + dur * 0.62);
+  g.gain.linearRampToValueAtTime(0.0001, at + dur + 0.45);
+
+  o1.connect(body).connect(lp);
+  o2.connect(soft).connect(lp);
+  lp.connect(g).connect(L.bus);
+  o1.start(at); o2.start(at);
+  o1.stop(at + dur + 0.5); o2.stop(at + dur + 0.5);
+}
+
+/** Soft low frame-drum pulse + a short airy tick. */
+function drum(c, L, at, strength) {
+  const o = c.createOscillator();
+  o.type = "sine";
+  o.frequency.setValueAtTime(118, at);
+  o.frequency.exponentialRampToValueAtTime(46, at + 0.17);
+  const g = c.createGain();
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.exponentialRampToValueAtTime(0.075 * strength, at + 0.008);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + 0.34);
+  o.connect(g).connect(L.bus);
+  o.start(at); o.stop(at + 0.36);
+
+  const src = c.createBufferSource();
+  src.buffer = brownNoise(c);
+  const bp = c.createBiquadFilter();
+  bp.type = "bandpass"; bp.frequency.value = 1500; bp.Q.value = 0.8;
+  const ng = c.createGain();
+  ng.gain.setValueAtTime(0.026 * strength, at);
+  ng.gain.exponentialRampToValueAtTime(0.0001, at + 0.09);
+  src.connect(bp).connect(ng).connect(L.bus);
+  try { src.start(at, Math.random() * 2); } catch { src.start(at); }
+  src.stop(at + 0.1);
+}
+
+/* An 8-step phrase contour; rotated each bar so it never loops verbatim. */
+const PHRASES = [
+  [0, 2, 1, 3, 2, 1, 3, 2],
+  [0, 1, 2, 3, 1, 2, 0, 2],
+  [2, 3, 1, 2, 0, 1, 3, 1],
+  [0, 2, 3, 1, 2, 3, 1, 0]
+];
+
+function schedule() {
+  const c = ctx;
+  if (!c || !musicOn || !layers || ducked || c.state !== "running") return;
+  const L = layers, p = L.preset, now = c.currentTime;
+  if (L.nextAt < now) L.nextAt = now + 0.05;
+  const speed = L.intensity > 0 ? 0.9 : 1;
+
+  while (L.nextAt < now + 0.6) {
+    const at = L.nextAt;
+    const bar = Math.floor(L.beatCount / 8);
+    const step = L.beatCount % 8;
+    if (step === 0) applyChord(c, L, bar, at);
+    const f = L.chord.length ? L.chord : chordFreqs(p, bar);
+
+    // Drum on the strong beats; a little more present during action scenes.
+    const drumOn = p.drum > 0 && (step === 0 || step === 4 || (L.intensity > 0 && step === 6));
+    if (drumOn) {
+      try { drum(c, L, at, p.drum * (step === 0 ? 1 : 0.6) * (1 + L.intensity * 0.25)); } catch { /* noop */ }
+    }
+
+    // Every other bar a slow flute-like line answers the harp. Four notes,
+    // each held across two steps: this is the part you can hum afterwards.
+    const answerBar = bar % 2 === 0;
+    const melodyStep = step % 2 === 1;
+    if (answerBar && melodyStep && f[3] !== undefined) {
+      const contour = [2, 3, 2, 1][(step - 1) / 2];
+      try {
+        melodicNote(c, L, at, f[contour] * 2, p.beat * 1.65, 0.9 + L.intensity * 0.12);
+      } catch { /* noop */ }
+    }
+
+    // Arpeggio with rests, octave answers and a rotated phrase.
+    const phrase = PHRASES[bar % PHRASES.length];
+    const idx = phrase[step];
+    const rest = (step === 3 || step === 7) && Math.random() < 0.42;
+    if (!rest && f[idx] !== undefined) {
+      const answer = step === 6 && Math.random() < 0.38;
+      const freq = f[idx] * (answer ? 4 : 2);
+      const vel = (step === 0 ? 1.05 : 0.72 + Math.random() * 0.35)
+        * (answer ? 0.7 : 1) * (answerBar && melodyStep ? 0.68 : 1);
+      const pan = Math.sin((L.beatCount + bar) * 0.7) * 0.42;
+      try { pluck(c, L, at + (Math.random() - 0.5) * 0.018, freq, vel, pan); } catch { /* noop */ }
+      // Occasional soft fifth underneath for body.
+      if (step === 0 && Math.random() < 0.6) {
+        try { pluck(c, L, at + 0.012, f[0], 0.5, -pan); } catch { /* noop */ }
+      }
+    }
+
+    L.beatCount++;
+    L.nextAt += p.beat * speed * (0.96 + Math.random() * 0.08);
+  }
+}
+
+function startScheduler() {
+  if (scheduler) return;
+  if (layers) layers.nextAt = 0;
+  scheduler = setInterval(schedule, 150);
+}
+
+function stopScheduler() {
+  if (scheduler) { clearInterval(scheduler); scheduler = null; }
 }
 
 function fadeOutLayers(l) {
@@ -192,74 +439,38 @@ function fadeOutLayers(l) {
 
 function disposeLayers(l) {
   if (!l) return;
-  for (const o of [...l.oscs, l.lfo, l.sweep, l.src]) { try { o.stop(); } catch { /* already stopped */ } }
-  try { l.out.disconnect(); } catch { /* noop */ }
-}
-
-function playNote(c, l, at) {
-  const p = l.preset;
-  // A slow random walk through the pentatonic scale keeps it calm, not busy.
-  melodyStep += Math.random() < 0.5 ? 1 : -1;
-  const idx = Math.abs(melodyStep) % p.scale.length;
-  const octave = Math.random() < 0.22 ? 2 : 1;
-  const f = p.root * octave * Math.pow(2, p.scale[idx] / 12);
-  const o = c.createOscillator();
-  const g = c.createGain();
-  const lp = c.createBiquadFilter();
-  lp.type = "lowpass"; lp.frequency.value = 1800;
-  o.type = p.wave; o.frequency.setValueAtTime(f, at);
-  g.gain.setValueAtTime(0.0001, at);
-  g.gain.exponentialRampToValueAtTime(p.mel, at + 0.09);
-  g.gain.exponentialRampToValueAtTime(0.0001, at + 1.25);
-  o.connect(lp).connect(g).connect(l.out);
-  o.start(at); o.stop(at + 1.35);
-}
-
-function schedule() {
-  const c = ctx;
-  if (!c || !musicOn || !layers || ducked || c.state !== "running") return;
-  const p = layers.preset;
-  const now = c.currentTime;
-  if (nextNoteAt < now) nextNoteAt = now + 0.06;
-  while (nextNoteAt < now + 0.6) {
-    try { playNote(c, layers, nextNoteAt); } catch { /* noop */ }
-    // occasional rest so the melody breathes
-    nextNoteAt += p.beat * (Math.random() < 0.18 ? 2 : 1);
+  for (const o of l.sources) { try { o.stop(); } catch { /* already stopped */ } }
+  for (const n of [l.out, l.bus, l.conv, l.wet, l.padGain, l.bassGain]) {
+    try { n.disconnect(); } catch { /* noop */ }
   }
 }
 
-function startScheduler() {
-  if (scheduler) return;
-  scheduler = setInterval(schedule, 180);
-  nextNoteAt = 0;
-}
-
-function stopScheduler() {
-  if (scheduler) { clearInterval(scheduler); scheduler = null; }
-}
-
-/** Switch the ambient bed. Safe to call on every render — it is idempotent. */
-export function setAmbience(kind) {
+/** Switch the score. Safe to call on every render — idempotent by kind. */
+export function setAmbience(kind, intensity = 0) {
   const c = getCtx();
   if (!c) return;
   if (c.state === "suspended") c.resume().catch(() => {});
+  currentIntensity = intensity;
   if (!musicOn) { currentKind = kind; return; }
-  if (kind === currentKind && layers && !layers.stopped) return;
+  if (kind === currentKind && layers && !layers.stopped) {
+    layers.intensity = intensity;
+    return;
+  }
   currentKind = kind;
   const preset = PRESETS[kind] || PRESETS.camp;
   if (layers) fadeOutLayers(layers);
   layers = makeLayers(c, preset);
+  layers.intensity = intensity;
+  applyChord(c, layers, 0, c.currentTime);
   try {
     const now = c.currentTime;
     layers.out.gain.setValueAtTime(0.0001, now);
-    layers.out.gain.linearRampToValueAtTime(ducked ? 0.0001 : 0.9, now + 1.4);
+    layers.out.gain.linearRampToValueAtTime(ducked ? 0.0001 : 0.9, now + 1.3);
   } catch { /* noop */ }
-  melodyStep = Math.floor(Math.random() * 6);
-  nextNoteAt = 0;
   startScheduler();
 }
 
-/** Duck the music when the tab is hidden (saves battery, avoids surprise). */
+/** Duck the score when the tab is hidden (saves battery, avoids surprise). */
 export function duckAmbience(hidden) {
   ducked = !!hidden;
   if (!ctx || !layers || layers.stopped) return;

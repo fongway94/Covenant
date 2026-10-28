@@ -84,12 +84,14 @@ function howtoInner() {
         <li><strong>Hold the prayer button</strong> once per chapter for +1 Faith, +1 Guidance and a promise from the Psalms.</li>
         <li><strong>Drag your pilgrim</strong> along the map to visit a chapter.</li>
         <li><strong>Rest at the camp</strong> between chapters: talk to three travellers, claim three quests, and breathe at the fire for Guidance.</li>
-        <li><strong>Clean Mode</strong> (Settings) hides every hint circle, virtue gate and reward preview. Spend Guidance to reveal one when you need it.</li>
+        <li><strong>Immersive / no-tips mode is ON by default.</strong> Every hint circle, virtue gate and reward preview is hidden so the story feels like a story. Turn it off in Settings if you want the tips back; spend Guidance to reveal one at a time.</li>
         <li><strong>Open the scroll</strong> (top right) any time to read the real passage, the historical note and the reference.</li>
-        <li><strong>Ambient music</strong> plays a quiet procedural soundtrack with wind, water or crowd sounds that change per chapter. Toggle it with the ♪ button or in Settings.</li>
+        <li><strong>Ambient music</strong> plays a living procedural score — moving chords, harp phrases and soft drums — with wind, water or crowd sounds that change per chapter. Toggle it with the ♪ button or in Settings.</li>
       </ul>
       <h3>At the end of each chapter</h3>
       <p>You will receive a relic, a fruit of the Spirit, and one honest reflection question. There are no wrong answers — only different ones.</p>
+      <h3>What you achieve by finishing</h3>
+      <p>You will have witnessed all ten biblical stories without changing their outcome, grown Courage, Wisdom, Compassion and Faith, gathered up to 9 fruits, 10 relics and 9 seals, and practised pausing to pray before choosing. The finale gives you a completion seal and a mirror — a portrait of the person your choices formed — not a score of your worth. What you do with it happens outside the game.</p>
       <p class="tiny muted">Progress saves automatically on your device. No account, no ads, no tracking.</p>
       ` : `
       <p>你是一位<strong>手执书卷的朝圣者</strong>。书卷会带你进入圣经中十个真实的故事——你站在山谷里，坐在船上，在狮子坑外等候。</p>
@@ -103,12 +105,14 @@ function howtoInner() {
         <li><strong>按住祷告按钮</strong>，每章一次，获得 +1 信心、+1 引导和一句诗篇的应许。</li>
         <li><strong>拖动地图上的朝圣者</strong>走到某个章节。</li>
         <li><strong>在营地歇脚</strong>：与三位旅人交谈、领取三项任务、在营火旁呼吸祷告，获得「引导」。</li>
-        <li><strong>沉浸模式</strong>（设置）会隐藏所有提示圆圈、品格门槛与奖励预览。需要时可花费「引导」显明一处。</li>
+        <li><strong>沉浸／无提示模式默认开启。</strong>所有提示圆圈、品格门槛与奖励预览都被隐藏，让故事像故事。想重新看到提示，可在设置里关闭；也可花「引导」一次显明一处。</li>
         <li><strong>打开书卷</strong>（右上角）随时查看真正的经文、历史注解与出处。</li>
-        <li><strong>环境音乐</strong>会播放轻柔的程序生成配乐，并随章节切换风声、水声或人群声。可用 ♪ 按钮或在设置中开关。</li>
+        <li><strong>环境音乐</strong>是一套活的程序配乐——流动的和弦、竖琴乐句与轻柔鼓点——并随章节切换风声、水声或人群声。可用 ♪ 按钮或在设置中开关。</li>
       </ul>
       <h3>每章结束的时候</h3>
       <p>你会得到一件圣物、一个圣灵的果子，以及一道诚实的反思题。那道题没有错答案——只有不同的答案。</p>
+      <h3>玩完全程，你会得到什么</h3>
+      <p>你会在不改变经文结局的前提下，见证十段圣经故事；培养勇气、智慧、怜悯与信心；最多收集 9 个果子、10 件圣物、9 枚印记；并练习「先祷告，再选择」。终章会给你一枚完成印记和一面镜子——一幅「你的选择塑造了怎样的人」的画像，而不是衡量你价值的分数。真正的后续，发生在游戏之外。</p>
       <p class="tiny muted">进度自动保存在你的设备上。没有账号、没有广告、没有追踪。</p>
       `}
     </div>
@@ -201,9 +205,9 @@ function guidanceInner(ui) {
       <h3>${tx("2 · What are the circling tips around options?", "2 · 选项周围环绕的圆圈是什么？")}</h3>
       <p>${tx("They are hints: a numbered circle is simply the option order; a gold circle marks a faith-shaped choice; a teal tag previews the virtue or reward; a dashed circle with a lock shows a virtue gate you have not met yet. The animation on the prayer button is a hold-to-fill ring — it tells you to press and hold, not tap.", "它们是提示：数字圆圈只是选项序号；金色圆圈标示「信心」相关的选项；青色标签预览品格或奖励；带锁的虚线圆圈表示你尚未达到的品格门槛。祷告按钮上的动画是「按住填充」环——它在告诉你：请按住，而不是轻点。")}</p>
       <h3>${tx("3 · What happens if the tips are removed?", "3 · 如果去掉提示，会发生什么？")}</h3>
-      <p>${tx("Nothing breaks. Turn on Immersive / clean mode in Settings: hints, tags, gates and the little advice card all disappear. Locked choices still exist but say only “Some doors open later”. You can spend 1 Guidance to reveal one page of hints, or 2 to open a locked choice. Scripture's outcome is identical either way — David still faces Goliath, the storm still stops.", "什么都不会坏。在设置中开启「沉浸／纯净模式」：提示、标签、门槛和那张小建议卡都会消失。被锁的选项依然存在，但只写着「有些门要到后来才开」。你可以花 1 点引导显明一页提示，或花 2 点开启一个被锁的选项。两种模式下，经文的结局完全一样——大卫仍然迎战歌利亚，风浪仍然止息。")}</p>
+      <p>${tx("Nothing breaks — and that is now the default. Immersive / no-tips mode is ON from the start: hints, tags, gates and the little advice card are all hidden. Locked choices still exist but say only “Some doors open later”. You can spend 1 Guidance to reveal one page of hints, or 2 to open a locked choice, and you can switch tips back on in Settings. Scripture's outcome is identical either way — David still faces Goliath, the storm still stops.", "什么都不会坏——而且这已经是默认设置。「沉浸／无提示模式」从一开始就开启：提示、标签、门槛和那张小建议卡都被隐藏。被锁的选项依然存在，但只写着「有些门要到后来才开」。你可以花 1 点引导显明一页提示，或花 2 点开启一个被锁的选项；也可以在设置里重新打开提示。两种模式下，经文的结局完全一样——大卫仍然迎战歌利亚，风浪仍然止息。")}</p>
       <h3>${tx("And at the very end?", "那到了最后呢？")}</h3>
-      <p>${tx("After ten chapters you reach a finale. It gives no hints and no score: just your virtues, what you gathered, one honest paragraph about the person your choices formed, and a verse. No circle tells you what to feel. The road continues outside the game.", "走完十章后，你会来到终章。它不给提示，也不给分数：只有你的品格、你收集的东西、一段关于「你的选择塑造了怎样的人」的诚实文字，以及一节经文。没有圆圈告诉你该有什么感受。这条路，在游戏之外继续。")}</p>
+      <p>${tx("After ten chapters you reach a finale with a completion seal. It gives no hints and no score: it lists what you completed — ten stories witnessed, four virtues grown, up to 9 fruits, 10 relics and 9 seals gathered, prayers and reflections — then gives one honest paragraph about the person your choices formed, and a verse. You finish as a witness, not a winner: the achievement is the character you carry out, and the road continues outside the game.", "走完十章后，你会带着一枚完成印记来到终章。它不给提示，也不给分数：它列出你完成的事——在场见证十段故事、培养四种品格、最多收集 9 个果子、10 件圣物、9 枚印记、以及你的祷告与反思——然后给出一段关于「你的选择塑造了怎样的人」的诚实文字，和一节经文。你是以见证者的身份完成，而不是以赢家的身份通关；成就就是你带走的品格，而这条路在游戏之外继续。")}</p>
     </div>
     <p class="tiny muted center" style="margin:12px 0 0">${tx("You currently hold", "你目前拥有")} <strong class="gold">${a.guidance || 0}</strong> ${tx("Guidance.", "点引导。")}</p>
     <button class="btn btn-primary" style="margin-top:10px" data-action="close-modal">${tx("I understand", "我明白了")}</button>`;

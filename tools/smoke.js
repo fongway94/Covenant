@@ -110,6 +110,21 @@ try {
   click('[data-action="start-game"]');
   assert(bus.ui.view === "camp", "did not reach the travellers' camp");
   assert(bus.ui.state.name === "Smoke Tester", "name not saved");
+  assert(bus.ui.state.settings.cleanMode === true, "immersive / no-tips must be the default for new saves");
+
+  // Old saves with explicit cleanMode:false migrate once, then respect user choice.
+  const { loadGame, saveGame } = await import("../src/core/state.js");
+  const living = JSON.stringify(bus.ui.state);
+  const legacy = JSON.parse(living);
+  legacy.settings.cleanMode = false;
+  delete legacy.settings.settingsVersion;
+  localStorage.setItem("covenant.save.v1", JSON.stringify(legacy));
+  const migrated = loadGame();
+  assert(migrated.settings.cleanMode === true, "legacy save did not migrate to immersive mode");
+  assert(migrated.settings.settingsVersion === 2, "settings version not stamped");
+  migrated.settings.cleanMode = false; saveGame(migrated);
+  assert(loadGame().settings.cleanMode === false, "opting back into tips must persist");
+  saveGame(bus.ui.state);
 
   // Camp hub: NPC dialogue, guidance explainer and breathing prayer.
   click('[data-action="camp-npc"][data-id="elias"]');

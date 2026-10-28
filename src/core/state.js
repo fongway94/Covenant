@@ -7,9 +7,18 @@ import { QUESTS, DAY_PHASES } from "../data/quests.js";
 const KEY = "covenant.save.v1";
 let memory = null;
 
-export const DEFAULT_SETTINGS = { sound: true, music: true, textSize: "normal", showAll: false, cleanMode: false };
+/* v2: immersive mode ("no tips") became the default. Saves from v1 may have
+   explicitly stored cleanMode:false; migrate them once, then always respect
+   whatever the player chooses afterwards. */
+const SETTINGS_VERSION = 2;
 
-const DEFAULT_ADVENTURE = { cycles: 0, guidance: 1, quests: {}, day: 1, npcMet: [], breaths: 0, lastBreathDay: 0 };
+export const DEFAULT_SETTINGS = {
+  sound: true, music: true, textSize: "normal", showAll: false,
+  cleanMode: true,          // immersive / no-tips is the normal experience
+  settingsVersion: SETTINGS_VERSION
+};
+
+const DEFAULT_ADVENTURE = { cycles: 0, guidance: 2, quests: {}, day: 1, npcMet: [], breaths: 0, lastBreathDay: 0 };
 
 export function newGame(name, callingId) {
   const calling = CALLINGS.find((c) => c.id === callingId) || CALLINGS[0];
@@ -40,7 +49,17 @@ export function loadGame() {
     if (!raw) return null;
     const s = JSON.parse(raw);
     if (!s || s.version !== 1 || !s.stats) return null;
-    s.settings = { ...DEFAULT_SETTINGS, ...(s.settings || {}) };
+    const old = s.settings || {};
+    const needsImmersiveMigration = !old.settingsVersion || old.settingsVersion < SETTINGS_VERSION;
+    s.settings = { ...DEFAULT_SETTINGS, ...old };
+    if (needsImmersiveMigration) {
+      s.settings.cleanMode = true;      // one-time switch for older saves
+      s.settings.settingsVersion = SETTINGS_VERSION;
+      s.flags = s.flags || {};
+      s.flags.immersiveMigration = true;
+      saveGame(s);                     // persist so the choice is only forced once
+    }
+    s.settings.settingsVersion = Math.max(SETTINGS_VERSION, Number(s.settings.settingsVersion) || SETTINGS_VERSION);
     for (const k of STAT_KEYS) s.stats[k] = s.stats[k] ?? 1;
     for (const arr of ["fruits", "relics", "seals", "prayedIn", "reflections"]) if (!Array.isArray(s[arr])) s[arr] = [];
     if (!s.chapters) s.chapters = {};

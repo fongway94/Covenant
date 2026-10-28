@@ -105,7 +105,7 @@ function satchel(ui) {
     <div class="relic-strip">${relics.map(([id, r]) => `<span class="relic-chip ${s.relics.includes(id) ? "got" : ""}" title="${esc(r.name)}">${r.glyph}</span>`).join("")}</div>
     <div class="card-quiet" style="margin-top:12px">
       <div class="eyebrow" style="margin-bottom:5px">${tx("What is Guidance?", "什么是「引导」？")}</div>
-      <p class="tiny muted" style="margin:0">${tx("Guidance is stored by praying and by breathing at the campfire. In Clean Mode you can spend 1 Guidance to reveal the hidden hints around a choice, or 2 Guidance to open a golden choice your virtues have not yet reached. The story's outcome never changes — only how clearly you see the door.", "「引导」来自祷告和营火旁的呼吸祷告。在沉浸模式中，你可以花费 1 点引导来显明某个选项周围被隐藏的提示；或花费 2 点来开启一个品格尚未达到的金色选项。故事的结局永不改变——改变的只是你看那扇门的清晰程度。")}</p>
+      <p class="tiny muted" style="margin:0">${tx("Guidance is stored by praying and by breathing at the campfire. Immersive / no-tips mode is on by default, so you can spend 1 Guidance to reveal the hidden hints around a choice, or 2 Guidance to open a golden choice your virtues have not yet reached. The story's outcome never changes — only how clearly you see the door.", "「引导」来自祷告和营火旁的呼吸祷告。沉浸／无提示模式默认开启，所以你可以花费 1 点引导来显明某个选项周围被隐藏的提示；或花费 2 点来开启一个品格尚未达到的金色选项。故事的结局永不改变——改变的只是你看那扇门的清晰程度。")}</p>
     </div>
   </section>`;
 }
@@ -194,6 +194,17 @@ export function finaleHtml(ui) {
   const stat = STATS[key];
   const call = { shepherd: tx("Shepherd", "牧人"), scribe: tx("Scribe", "文士"), guardian: tx("Guardian", "守护者"), intercessor: tx("Intercessor", "代祷者") }[s.calling] || tx("Pilgrim", "朝圣者");
   const clean = s.settings.cleanMode;
+  const questsDone = QUESTS.filter((q) => s.adventure?.quests?.[q.id]).length;
+  const reflections = (s.reflections || []).length;
+  const finishedDates = Object.values(s.chapters || {}).map((c) => c.finishedAt).filter(Boolean);
+  const sealedOn = finishedDates.length ? new Date(Math.max(...finishedDates)) : new Date();
+  const dateText = sealedOn.getFullYear() + "." + String(sealedOn.getMonth() + 1).padStart(2, "0") + "." + String(sealedOn.getDate()).padStart(2, "0");
+  const virtueTitle = {
+    courage: tx("the Courageous", "勇敢的人"),
+    wisdom: tx("the Wise", "有智慧的人"),
+    compassion: tx("the Compassionate", "有怜悯的人"),
+    faith: tx("the Faithful", "有信心的人")
+  }[key];
 
   return `<div class="screen finale-screen">
     <div class="finale-art" style="background-image:url('assets/art/camp.jpg')">
@@ -206,6 +217,23 @@ export function finaleHtml(ui) {
         ? "「耶和华说：我知道我向你们所怀的意念，是赐平安的意念，不是降灾祸的意念，要叫你们末后有指望。」"
         : "“For I know the thoughts that I think toward you, saith the LORD, thoughts of peace, and not of evil, to give you an expected end.”"}</p>
       <p class="tiny gold center" style="margin:0 0 16px">— ${tx("Jeremiah 29:11 (KJV)", "耶利米书 29:11（和合本）")}</p>
+
+      <div class="completion-seal">
+        <div class="completion-seal-mark">✦</div>
+        <div class="eyebrow">${tx("Covenant · the ten journeys", "Covenant · 十段旅程")}</div>
+        <h2>${tx("Journey complete", "朝圣完成")}</h2>
+        <p class="small serif">${esc(s.name)} · ${esc(virtueTitle)}</p>
+        <div class="completion-seal-foot"><span>${done} / ${CHAPTERS.length} ${tx("stories witnessed", "段故事，你在场")}</span><span>${dateText}</span></div>
+      </div>
+
+      <div class="card-quiet" style="margin-top:14px">
+        <div class="eyebrow" style="margin-bottom:6px">${tx("What you achieved", "你完成了什么")}</div>
+        <p class="small serif" style="margin:0;color:var(--gold-light)">${tx(
+          "You did not beat the Bible and you did not rewrite it. You walked into ten true stories as a witness — and let them shape a person. You leave with four grown virtues, ten stories you can now tell, and a habit of stopping to pray before you choose. Nothing here is a score of your worth. It is a portrait of who you practised being.",
+          "你没有「通关」圣经，也没有改写它。你以见证者的身份走进十个真实的故事——并让它们塑造了一个人。你带走四种成长的品格、十段你能讲述的故事，以及「先停下祷告，再做选择」的习惯。这里没有衡量你价值的分数；只有一幅「你练习成为怎样的人」的画像。"
+        )}</p>
+        <p class="tiny muted" style="margin:10px 0 0">${tx("The achievement is not on this screen. It is the courage, wisdom, compassion and faith you carry into tomorrow.", "真正的成就不在这个画面上，而在你带进明天的勇气、智慧、怜悯与信心里。")}</p>
+      </div>
 
       <div class="finale-card">
         <div class="finale-avatar">${esc(s.name.slice(0, 1).toUpperCase())}</div>
@@ -227,16 +255,36 @@ export function finaleHtml(ui) {
       </div>
 
       <div class="card-quiet" style="margin-top:14px">
+        <div class="eyebrow" style="margin-bottom:8px">${tx("Your completed journey", "你走完的旅程")}</div>
+        <div class="completion-list">
+          <div><span>✓</span><p>${tx(`Witnessed ${done} of ${CHAPTERS.length} biblical stories — without changing their outcome`, `在 ${CHAPTERS.length} 段圣经故事中在场 ${done} 段——没有改变它们的结局`)}</p></div>
+          <div><span>✓</span><p>${tx(`Grew Courage, Wisdom, Compassion and Faith to level ${s.level}`, `把勇气、智慧、怜悯、信心培养到等级 ${s.level}`)}</p></div>
+          <div><span>✓</span><p>${tx(`Gathered ${s.relics.length} relics, ${s.fruits.length} fruits and ${s.seals.length} seals`, `收集了 ${s.relics.length} 件圣物、${s.fruits.length} 个果子、${s.seals.length} 枚印记`)}</p></div>
+          <div><span>✓</span><p>${tx(`Prayed ${s.prayedIn.length} times and answered ${reflections} honest reflections`, `祷告 ${s.prayedIn.length} 次，回答了 ${reflections} 道诚实的反思题`)}</p></div>
+          <div><span>✓</span><p>${tx(`Completed ${questsDone} of ${QUESTS.length} camp quests; ${s.adventure?.guidance || 0} Guidance still in hand`, `完成 ${QUESTS.length} 项营地任务中的 ${questsDone} 项；手中还存有 ${s.adventure?.guidance || 0} 点「引导」`)}</p></div>
+          <div><span>✓</span><p>${tx("Reached a hint-free ending — a mirror, not a scoreboard", `抵达一个没有提示的结局——一面镜子，不是计分板`)}</p></div>
+        </div>
+      </div>
+
+      <div class="card-quiet" style="margin-top:14px">
         <div class="eyebrow" style="margin-bottom:6px">${tx("A mirror, not a scoreboard", "一面镜子，不是计分板")}</div>
         <p class="small serif" style="margin:0;color:var(--gold-light)">${esc(isZh() ? MIRROR_ZH[key] : MIRROR_EN[key])}</p>
         <p class="tiny muted" style="margin:10px 0 0">${tx("Your dominant virtue:", "你最显著的品格：")} <span style="color:${stat.color}">${esc(stat.name)}</span></p>
       </div>
 
       <div class="card-quiet" style="margin-top:12px">
-        <div class="eyebrow" style="margin-bottom:6px">${tx("No tips here", "这里没有提示")}</div>
+        <div class="eyebrow" style="margin-bottom:6px">${tx("Immersive mode · no tips", "沉浸模式 · 没有提示")}</div>
         <p class="tiny muted" style="margin:0">${clean
-          ? tx("You walked with the hints hidden. There is no checklist at the end and no circle telling you what to feel. Ten stories happened exactly as Scripture records them — and you were there. What you carry out is yours to decide.", "你是在隐藏提示的情况下走完的。终点没有清单，也没有圆圈告诉你该有什么感受。十个故事完全按圣经记载发生——而你在场。你要带走什么，由你自己决定。")
-          : tx("Turn on Clean Mode in Settings and replay a chapter: the hint circles disappear, but the ending does not change. The finale is a mirror, not a checklist — it shows what your choices formed, and then it stops talking.", "在设置中开启「沉浸模式」并重玩一章：提示圆圈会消失，但结局不会改变。终章是一面镜子，不是清单——它显明你的选择塑造了什么，然后就安静下来。")}</p>
+          ? tx("You walked with the hints hidden — that is the default way to play. No checklist at the end, no circle telling you what to feel. Ten stories happened exactly as Scripture records them, and you were there. What you carry out is yours to decide.", "你是在隐藏提示的情况下走完的——这本来就是游戏的默认方式。终点没有清单，也没有圆圈告诉你该有什么感受。十个故事完全按圣经记载发生，而你在场。你要带走什么，由你自己决定。")
+          : tx("You chose to see the hint circles. You can turn Immersive mode back on in Settings at any time: the hints disappear, but the ending does not change. The finale is a mirror, not a checklist — it shows what your choices formed, and then it stops talking.", "你选择了看见提示圆圈。你随时可以在设置里重新开启沉浸模式：提示会消失，但结局不会改变。终章是一面镜子，不是清单——它显明你的选择塑造了什么，然后就安静下来。")}</p>
+      </div>
+
+      <div class="card-quiet" style="margin-top:12px">
+        <div class="eyebrow" style="margin-bottom:6px">${tx("Carry it outside", "把它带到游戏之外")}</div>
+        <p class="tiny muted" style="margin:0">${tx(
+          "This is where the game stops and your life begins. Retell one of the ten stories to somebody this week. When you face a decision, pause and breathe before you choose — the same way you did at the campfire. Open the book of Jeremiah and read chapter 29 in full. And notice which of the four virtues is hardest for you: that is the road still ahead.",
+          "游戏在这里停下，你的生活从这里开始。这一周，把十段故事中的一段讲给一个人听；面对选择时，先停下来呼吸，再决定——就像你在营火旁做的那样；翻开耶利米书，把第 29 章完整读一遍；然后留意四种品格里哪一种对你最难——那就是你前面还有的路。"
+        )}</p>
       </div>
 
       <div class="stack" style="margin-top:16px">

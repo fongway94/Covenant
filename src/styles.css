@@ -1047,6 +1047,42 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 .finale-grid strong { font-family: var(--serif); font-size: 1.12rem; }
 .finale-grid small { font-size: .53rem; letter-spacing: .03em; color: var(--muted); text-align: center; }
 
+/* v0.5 — completion seal + what-you-achieved certificate */
+.completion-seal {
+  position: relative; overflow: hidden; text-align: center;
+  padding: 20px 18px 14px; border-radius: 18px;
+  border: 1px solid rgba(231,183,91,.55);
+  background: radial-gradient(120% 90% at 50% 0%, rgba(231,183,91,.16), rgba(231,183,91,.03) 65%), #0d1a22;
+  box-shadow: inset 0 0 0 5px rgba(231,183,91,.07), 0 10px 30px rgba(0,0,0,.35);
+}
+.completion-seal::before, .completion-seal::after {
+  content: ""; position: absolute; left: 12px; right: 12px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(231,183,91,.6), transparent);
+}
+.completion-seal::before { top: 8px; }
+.completion-seal::after { bottom: 8px; }
+.completion-seal-mark {
+  width: 46px; height: 46px; margin: 0 auto 8px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 1.4rem; color: #2b1d08;
+  background: radial-gradient(circle at 34% 28%, #f7dda5, #b1832f 78%);
+  box-shadow: 0 0 0 4px rgba(231,183,91,.14), 0 0 22px rgba(231,183,91,.3);
+}
+.completion-seal h2 { margin: 3px 0 4px; font-family: var(--serif); font-size: 1.65rem; color: var(--gold-light); }
+.completion-seal .small { margin: 0 0 12px; color: var(--paper); }
+.completion-seal-foot {
+  display: flex; justify-content: space-between; gap: 8px; padding-top: 9px;
+  border-top: 1px dashed rgba(231,183,91,.3);
+  font-size: .62rem; letter-spacing: .06em; color: var(--muted);
+}
+.completion-list { display: grid; gap: 8px; }
+.completion-list > div { display: flex; gap: 9px; align-items: flex-start; }
+.completion-list span {
+  flex: 0 0 auto; width: 18px; height: 18px; margin-top: 1px; border-radius: 50%;
+  display: grid; place-items: center; font-size: .68rem; color: #0b141c;
+  background: var(--teal); font-weight: 700;
+}
+.completion-list p { margin: 0; font-size: .74rem; line-height: 1.55; color: var(--paper); }
+
 @media (max-width: 360px) {
   .camp-hero { height: 300px; }
   .camp-npc { width: 68px; }

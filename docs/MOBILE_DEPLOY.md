@@ -1,3 +1,5 @@
+> **v0.5 更新**：离线缓存升级为 `covenant-v7`。`src/core/audio.js` 重写为多声部自适应配乐（和弦进行、拨弦、对抗旋律、框鼓、卷积混响）——仍然**没有外部音频文件**，因此缓存清单无需新增资源。新增 `tools/check-audio.js`（`npm run check:audio`）。
+>
 > **v0.4.1 更新**：离线缓存升级为 `covenant-v6`；`src/core/audio.js` 新增程序化环境音乐（无外部音频文件，无需加入缓存清单）。
 >
 > **v0.4 更新**：离线缓存升级为 `covenant-v5`，新增 `src/engine/visual.js`、`src/engine/stages.js`、`src/data/portraits.js` 以及 6 张人物立绘——它们已全部加入缓存清单与 `www/` 构建。

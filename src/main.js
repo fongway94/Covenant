@@ -51,13 +51,18 @@ let audioUnlocked = false;
 function syncAmbience() {
   if (!audioUnlocked) return;   // never create an AudioContext before a gesture
   let kind = "title";
+  let intensity = 0;
   if (ui.state) {
-    if (ui.view === "story" && ui.story) kind = CHAPTER_AMBIENCE[ui.story.chapterId] || "camp";
+    if (ui.view === "story" && ui.story) {
+      kind = CHAPTER_AMBIENCE[ui.story.chapterId] || "camp";
+      // Action scenes add a stronger drum pulse and a faster, brighter harp.
+      intensity = ["mini", "action", "hotspots", "hotspots-done"].includes(ui.story.phase) ? 1 : 0;
+    }
     else if (ui.view === "finale") kind = "finale";
     else if (["camp", "map", "journal", "character", "create"].includes(ui.view)) kind = "camp";
     else kind = "title";
   }
-  setAmbience(kind);
+  setAmbience(kind, intensity);
 }
 
 function toast(msg, ico = "✧") {
@@ -242,8 +247,8 @@ root.addEventListener("click", (e) => {
       ui.state.settings.cleanMode = !ui.state.settings.cleanMode;
       saveGame(ui.state); sfx("tap"); render();
       toast(ui.state.settings.cleanMode
-        ? tx("Clean mode on — hints hidden. Spend Guidance to reveal one page.", "沉浸模式已开启——提示已隐藏。可花费引导显明一页。")
-        : tx("Clean mode off — hints are visible again.", "沉浸模式已关闭——提示重新显示。"), "✧");
+        ? tx("Immersive mode on (default) — hints hidden. Spend Guidance to reveal one page.", "沉浸模式已开启（默认）——提示已隐藏。可花费引导显明一页。")
+        : tx("Immersive mode off — tips are visible again.", "沉浸模式已关闭——提示重新显示。"), "✧");
       break;
     case "seek-guidance": revealHints(ui); break;
     case "guided-choice": guidedChoose(ui, Number(el.dataset.index)); break;

@@ -192,7 +192,7 @@ export function characterHtml(ui) {
           <button class="toggle ${s.settings.sound ? "on" : ""}" data-action="toggle-sound" aria-label="${tx("Toggle sound", "切换音效")}"><i></i></button>
         </div>
         <div class="setting-row">
-          <div class="lbl">${tx("Ambient music", "环境音乐")}<small>${tx("A quiet procedural soundtrack and wind, water or crowd ambience for each chapter", "每一章都有程序生成的轻柔配乐，以及风声、水声或人群的环境音")}</small></div>
+          <div class="lbl">${tx("Ambient music", "环境音乐")}<small>${tx("A living procedural score — moving chords, harp phrases and soft drums — with wind, water or crowd ambience for each chapter", "活的程序配乐——流动的和弦、竖琴乐句与轻柔鼓点——每一章还有风声、水声或人群环境音")}</small></div>
           <button class="toggle ${isMusicEnabled() ? "on" : ""}" data-action="toggle-music" aria-label="${tx("Toggle ambient music", "切换环境音乐")}"><i></i></button>
         </div>
         <div class="setting-row">
@@ -212,10 +212,10 @@ export function characterHtml(ui) {
           <button class="toggle ${s.settings.showAll ? "on" : ""}" data-action="toggle-demo" aria-label="${tx("Toggle all chapters", "切换全部章节")}"><i></i></button>
         </div>
         <div class="setting-row">
-          <div class="lbl">${tx("Immersive / clean mode", "沉浸／纯净模式")}<small>${tx("Hides the circling hints, virtue gates and reward previews around choices", "隐藏选项周围环绕的提示、品格门槛与奖励预览")}</small></div>
+          <div class="lbl">${tx("Immersive / no tips (default)", "沉浸／无提示（默认）")}<small>${tx("On by default: hides the circling hints, virtue gates and reward previews. Switch off to see tips again.", "默认开启：隐藏选项周围环绕的提示、品格门槛与奖励预览。关闭即可重新显示提示。")}</small></div>
           <button class="toggle ${s.settings.cleanMode ? "on" : ""}" data-action="toggle-clean" aria-label="${tx("Toggle clean mode", "切换沉浸模式")}"><i></i></button>
         </div>
-        <div class="card-quiet" style="margin-top:10px"><p class="tiny muted" style="margin:0">${tx("What prayer is for: pausing grows Faith and stores Guidance. What the circles mean: hints, virtue gates and reward previews. In clean mode they vanish — the ending still comes, but it is a mirror rather than a checklist.", "祷告的用途：停下来会增长信心并储存「引导」。圆圈的含义：提示、品格门槛与奖励预览。沉浸模式下它们会消失——结局依然会来，但更像一面镜子，而不是一张清单。")}</p></div>
+        <div class="card-quiet" style="margin-top:10px"><p class="tiny muted" style="margin:0">${tx("What prayer is for: pausing grows Faith and stores Guidance. What the circles mean: hints, virtue gates and reward previews. Immersive mode is ON by default, so those circles are hidden — the ending still comes, but it is a mirror rather than a checklist. Turn the toggle off if you want the tips back.", "祷告的用途：停下来会增长信心并储存「引导」。圆圈的含义：提示、品格门槛与奖励预览。沉浸模式默认开启，所以这些圆圈是隐藏的——结局依然会来，但更像一面镜子，而不是一张清单。如果你想重新看到提示，把这个开关关掉即可。")}</p></div>
         <div class="setting-row">
           <div class="lbl">${tx("How to play", "玩法说明")}<small>${tx("A two-minute guide", "两分钟看懂玩法")}</small></div>
           <button class="btn btn-ghost btn-sm" data-action="howto">${tx("Read", "阅读")}</button>
@@ -223,7 +223,7 @@ export function characterHtml(ui) {
       </div>
 
       <button class="btn btn-danger btn-sm" style="margin-top:14px" data-action="ask-reset">${icon("refresh", 15)} ${tx("Erase this journey", "清除这段旅程")}</button>
-      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.4.1 · Everything is saved only on this device.", "Covenant v0.4.1 · 所有进度仅保存在本机。")}</p>
+      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.5 · Everything is saved only on this device.", "Covenant v0.5 · 所有进度仅保存在本机。")}</p>
     </div>
     ${tabsHtml(ui, "character")}
   </div>`;
