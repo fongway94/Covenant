@@ -40,17 +40,26 @@ function fit(cv) {
 function finger(ctx, x, y, r, a = 1, press = 0) {
   ctx.save();
   ctx.globalAlpha = a;
-  ctx.fillStyle = "rgba(0,0,0,.35)";
-  ctx.beginPath(); ctx.ellipse(x, y + r * 0.55, r * 0.95, r * 0.5, 0, 0, TAU); ctx.fill();
+  /* a warm glow first, so the fingertip is visible on any painting */
+  const halo = ctx.createRadialGradient(x, y, 1, x, y, r * 2.6);
+  halo.addColorStop(0, "rgba(255,236,190,.45)");
+  halo.addColorStop(1, "rgba(255,200,110,0)");
+  ctx.fillStyle = halo;
+  ctx.beginPath(); ctx.arc(x, y, r * 2.6, 0, TAU); ctx.fill();
+  ctx.fillStyle = "rgba(0,0,0,.38)";
+  ctx.beginPath(); ctx.ellipse(x, y + r * 0.6, r * 0.95, r * 0.5, 0, 0, TAU); ctx.fill();
   const g = ctx.createRadialGradient(x - r * 0.3, y - r * 0.35, r * 0.15, x, y, r);
-  g.addColorStop(0, "#fff6de");
-  g.addColorStop(0.55, "#f2d59b");
-  g.addColorStop(1, "rgba(231,183,91,.55)");
+  g.addColorStop(0, "#fffaf0");
+  g.addColorStop(0.5, "#f6dfae");
+  g.addColorStop(1, "#c9962f");
   ctx.fillStyle = g;
   ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
-  ctx.strokeStyle = `rgba(255,246,222,${0.55 + press * 0.4})`;
-  ctx.lineWidth = 1.2;
-  ctx.beginPath(); ctx.arc(x, y, r + 2 + press * 9, 0, TAU); ctx.stroke();
+  ctx.strokeStyle = `rgba(90,64,24,.55)`;
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.stroke();
+  ctx.strokeStyle = `rgba(255,246,222,${0.45 + press * 0.5})`;
+  ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.arc(x, y, r + 3 + press * 11, 0, TAU); ctx.stroke();
   ctx.restore();
 }
 
@@ -86,7 +95,7 @@ function ripple(ctx, x, y, p, color = "255,240,205") {
 function paint(ctx, kind, w, h, p, t) {
   const cx = w / 2, cy = h / 2;
   const u = Math.min(w, h * 1.7);
-  const r = Math.max(4.5, u * 0.075);
+  const r = Math.max(6.5, u * 0.1);
 
   if (kind === "circle") {
     const R = Math.min(w * 0.3, h * 0.32);
@@ -130,44 +139,57 @@ function paint(ctx, kind, w, h, p, t) {
     const press = local < 0.35 ? 1 : 0.2;
     finger(ctx, sx, sy - (local < 0.35 ? 1 : 0) * 2, r, 1, press);
   } else if (kind === "jump" || kind === "duck" || kind === "jumpduck") {
-    /* `jumpduck` teaches both halves of the same fight: leap over the low one,
-       then drop under the high one. One loop per throw. */
+    /* `jumpduck` teaches both halves of the same fight: leap the ground throw,
+       then drop under the one aimed at the chest. One throw per half cycle. */
     const up = kind === "jump" || (kind === "jumpduck" && p < 0.5);
     const pp = kind === "jumpduck" ? (p % 0.5) * 2 : p;
-    /* a spear crossing at ankle height (jump over) or head height (duck under) */
-    const sx = w * (0.06 + pp * 0.88);
-    const spearY = up ? h * 0.74 : h * 0.40;
+    const ground = h * 0.86;
+    const spearY = up ? ground - 10 : ground - h * 0.52;
+    const sx = -14 + pp * (w + 28);
+
+    /* the spear on its way across, with a soft trail */
     ctx.save();
-    ctx.strokeStyle = "rgba(214,196,160,.75)"; ctx.lineWidth = 3; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(sx - 12, spearY); ctx.lineTo(sx + 12, spearY); ctx.stroke();
-    ctx.fillStyle = "rgba(228,232,232,.9)";
-    ctx.beginPath(); ctx.moveTo(sx - 12, spearY - 3); ctx.lineTo(sx - 18, spearY); ctx.lineTo(sx - 12, spearY + 3); ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = 0.35;
+    ctx.strokeStyle = "rgba(226,232,232,.9)"; ctx.lineWidth = 2; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(sx - 40, spearY); ctx.lineTo(sx - 14, spearY); ctx.stroke();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = "#cfd6d5"; ctx.lineWidth = 3.4;
+    ctx.beginPath(); ctx.moveTo(sx - 16, spearY); ctx.lineTo(sx + 14, spearY); ctx.stroke();
+    ctx.fillStyle = "#eef2f2";
+    ctx.beginPath(); ctx.moveTo(sx - 16, spearY - 4); ctx.lineTo(sx - 25, spearY); ctx.lineTo(sx - 16, spearY + 4); ctx.closePath(); ctx.fill();
     ctx.restore();
-    const mid = pp > 0.2 && pp < 0.75;
-    const k = mid ? Math.sin(((pp - 0.2) / 0.55) * Math.PI) : 0;
-    const fy = up ? h * 0.62 - k * h * 0.3 : h * 0.56 + k * h * 0.16;
-    const headY = up ? h * 0.74 : h * 0.40;
-    /* the body that ducks or leaps, drawn as a simple lit figure */
+
+    /* the body: standing, leaping over, or crouched under */
+    const mid = pp > 0.18 && pp < 0.78;
+    const k = mid ? Math.sin(((pp - 0.18) / 0.6) * Math.PI) : 0;
+    const fy = up ? ground - k * h * 0.42 : ground;
+    const crouch = up ? 0 : k;
+    const body = 13 * (1 - crouch * 0.45);
+    const headR = 4.6;
     ctx.save();
-    ctx.globalAlpha = 0.9;
-    ctx.strokeStyle = "rgba(244,231,203,.85)"; ctx.lineWidth = 3; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(cx, fy - 1); ctx.lineTo(cx, fy + 12); ctx.stroke();
-    ctx.fillStyle = "rgba(244,231,203,.95)";
-    ctx.beginPath(); ctx.arc(cx, fy - 7, 4.4, 0, TAU); ctx.fill();
-    ctx.restore();
+    ctx.strokeStyle = "rgba(248,238,214,.95)"; ctx.lineWidth = 3.6; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(cx, fy - body); ctx.lineTo(cx, fy); ctx.stroke();
+    /* arms: up when leaping, tucked in when ducking */
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
     if (up) {
-      if (pp < 0.22) finger(ctx, cx, h * 0.78, r, 1, 0.9);
-      if (pp < 0.3) ripple(ctx, cx, h * 0.78, pp / 0.3);
-      arrow(ctx, cx + 6, h * 0.78, cx + 6, h * 0.62, 0.6);
+      ctx.moveTo(cx - 1, fy - body * 0.75); ctx.lineTo(cx - 9, fy - body * 0.75 - 7 - k * 4);
+      ctx.moveTo(cx + 1, fy - body * 0.75); ctx.lineTo(cx + 9, fy - body * 0.75 - 7 - k * 4);
     } else {
-      const dx = cx + 16;
-      if (pp < 0.3) {
-        finger(ctx, dx, h * 0.5 - k * h * 0.16, r, 1, 0.6);
-      } else finger(ctx, dx, h * 0.62, r, 1, 0.4);
-      arrow(ctx, dx, h * 0.52, dx, h * 0.68, 0.55);
+      ctx.moveTo(cx - 1, fy - body * 0.7); ctx.lineTo(cx - 7, fy - body * 0.35);
+      ctx.moveTo(cx + 1, fy - body * 0.7); ctx.lineTo(cx + 7, fy - body * 0.35);
     }
-    void headY;
-  } else if (kind === "drag") {
+    ctx.stroke();
+    ctx.fillStyle = "rgba(248,238,214,.98)";
+    ctx.beginPath(); ctx.arc(cx, fy - body - headR + (up ? 0 : 2), headR, 0, TAU); ctx.fill();
+    ctx.restore();
+
+    /* the hand that makes it happen */
+    const hx = cx + 22, hy = up ? ground - 2 : ground - h * 0.5;
+    if (pp < 0.34) ripple(ctx, hx, hy, pp / 0.34);
+    finger(ctx, hx, hy, r * 0.92, 0.95, pp < 0.34 ? 0.9 : 0.25);
+    arrow(ctx, hx + 13, hy, hx + 13, hy + (up ? -16 : 12), 0.7);
+    } else if (kind === "drag") {
     const x = w * (0.12 + Math.min(1, p / 0.8) * 0.76);
     arrow(ctx, w * 0.14, cy + 12, w * 0.86, cy + 12, 0.5);
     finger(ctx, x, cy, r, 1, p < 0.85 ? 0.5 : 0);

@@ -1,5 +1,5 @@
 /* Covenant offline cache. Bump CACHE on every content release. */
-const CACHE = 'covenant-v31';
+const CACHE = 'covenant-v32';
 const ASSETS = [
   './',
   './index.html',
@@ -100,19 +100,45 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+/* Two strategies, because the two kinds of file fail differently.
+
+   Code (HTML, JS, CSS, the manifest) is fetched network-first: the whole point
+   of a release is that the player gets it on the next reload, and a cache-first
+   worker quietly serves the previous build — that is how a fix ships and
+   nobody sees it. If the network is slow or absent, the cached copy answers
+   after a short wait, so offline play still works.
+
+   Pictures and fonts rarely change and are the bulk of the download, so they
+   stay cache-first. */
+const CODE = /\.(?:html|js|css|json|webmanifest)$/i;
+
+function putFresh(req, res) {
+  if (!res || !res.ok) return res;
+  const copy = res.clone();
+  caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+  return res;
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+
+  if (url.pathname.endsWith('/') || CODE.test(url.pathname)) {
+    event.respondWith((async () => {
+      const hit = await caches.match(req);
+      const net = fetch(req).then((res) => putFresh(req, res)).catch(() => null);
+      if (!hit) return (await net) || Response.error();
+      /* cached copy answers if the network stalls, so a lift or a tunnel does
+         not leave the app hanging */
+      const slow = new Promise((r) => setTimeout(() => r(hit), 2500));
+      return (await Promise.race([net, slow])) || hit;
+    })());
+    return;
+  }
+
   event.respondWith(
-    caches.match(req).then((hit) => {
-      const fresh = fetch(req).then((res) => {
-        if (res && res.ok) {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, copy));
-        }
-        return res;
-      }).catch(() => hit);
-      return hit || fresh;
-    })
+    caches.match(req).then((hit) => hit || fetch(req).then((res) => putFresh(req, res)).catch(() => hit))
   );
 });

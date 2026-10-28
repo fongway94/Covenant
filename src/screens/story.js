@@ -873,7 +873,7 @@ function miniHtml(ui) {
         eyebrow: tx("A moment to focus", "凝神一刻"),
         title: cfg.title,
         prompt: cfg.prompt,
-        demo: momentDemo(st(ui).moment?.kind || st(ui).moment?.spec?.kind || "tap"),
+        demo: "taprow",
         demoLabel: tx("Watch the hand, then try it", "看着这只手，再自己来"),
         how: [tx("Your hand: a light runs back and forth along the track.", "手怎么动：光点会沿着轨道来回走。"),
               tx("Tap once, when it is inside the gold mark.", "光点走进金色那一段时，点一下。")],
@@ -912,7 +912,7 @@ function briefHtml(ui, o) {
       <div class="eyebrow">${esc(o.eyebrow)}</div>
       <h2>${esc(o.title)}</h2>
       ${o.prompt ? `<p class="brief-prompt">${esc(o.prompt)}</p>` : ""}
-      ${o.demo ? `<div class="brief-demo" aria-hidden="true"><canvas data-demo="${esc(o.demo)}"></canvas><span>${esc(o.demoLabel || tx("Watch the hand", "照着这只手做"))}</span></div>` : ""}
+      ${o.demo ? `<div class="brief-demo"><canvas data-demo="${esc(o.demo)}" aria-hidden="true"></canvas><span><b>${esc(o.demoLabel || tx("Watch the hand", "照着这只手做"))}</b>${esc(o.demoNote || "")}</span></div>` : ""}
       ${rows ? `<ol class="brief-how">${rows}</ol>` : ""}
       ${o.note ? `<p class="brief-note">${esc(o.note)}</p>` : ""}
       <button class="btn btn-primary brief-start" data-action="${o.start}">${icon("play", 16)} ${esc(o.startLabel || tx("Start", "开始"))}</button>
@@ -1197,6 +1197,7 @@ function momentHtml(ui) {
         <div class="moment-meter-track"><i id="moment-meter"></i></div>
         <div class="moment-feedback" id="moment-feedback"></div>`
           : `<div class="brief-inline">
+              <div class="brief-demo" aria-hidden="true"><canvas data-demo="${esc(momentDemo(m.kind))}" aria-hidden="true"></canvas><span><b>${tx("Watch the hand, then try it", "看着这只手，再自己来")}</b></span></div>
               <ol class="brief-how">
                 <li><span class="n">1</span><span>${tx("Your hand: ", "手怎么动：")}${esc(momentHow(m.kind))}</span></li>
                 <li><span class="n">2</span><span>${tx("No clock is running. Taking your time only lowers the score.", "没有倒计时。慢一点，只是得分少一点，不会输。")}</span></li></ol>
