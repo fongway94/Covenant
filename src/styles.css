@@ -1864,3 +1864,27 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
 /* ---------- per-act briefing inside a running action scene ---------- */
 .act-gate { position: absolute; inset: 0; z-index: 7; }
 .act-gate .brief-full { padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom)); }
+
+/* ---------- the hand that shows the gesture (briefing + pause) ---------- */
+.brief-demo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 10px; border-radius: 14px;
+  background: linear-gradient(180deg, rgba(231,183,91,.11), rgba(231,183,91,.04));
+  border: 1px solid rgba(231,183,91,.22);
+}
+.brief-demo canvas { width: 96px; height: 52px; flex: 0 0 auto; display: block; }
+.brief-demo span {
+  font-size: .78rem; line-height: 1.4; color: #f0dcb4; letter-spacing: .02em;
+}
+.paused-how {
+  display: flex; align-items: center; gap: 10px; text-align: left;
+  padding: 8px 10px; border-radius: 14px; margin: 2px 0;
+  background: rgba(231,183,91,.08); border: 1px solid rgba(231,183,91,.2);
+}
+.paused-how canvas { width: 76px; height: 42px; flex: 0 0 auto; display: block; }
+.paused-how b { display: block; font-size: .72rem; letter-spacing: .1em; color: var(--gold); }
+.paused-how p { margin: 1px 0 0; }
+@media (max-height: 700px) {
+  .brief-demo canvas { width: 78px; height: 44px; }
+  .brief-demo span { font-size: .72rem; }
+}

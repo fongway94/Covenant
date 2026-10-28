@@ -108,9 +108,18 @@ function preludeInput(c, frame, seen) {
     }
     return;
   }
-  // dodge: tap to jump
+  // dodge: leap the low throw, crouch under the high one
   if (s.hazards && typeof s.x === "number") {
-    if (!s.jump && frame % 6 === 0) tap(s.x, s.y);
+    const near = s.hazards.find((hz) => !hz.done && hz.x - s.x > 30 && hz.x - s.x < 80);
+    if (near?.kind === "high") {
+      p.down = true; p.dy = 40; p.x = s.x; p.y = s.y;
+      g.onDown?.(c, p); g.onMove?.(c, p);
+    } else if (near?.kind === "low") {
+      if (p.down) { p.down = false; p.dy = 0; g.onUp?.(c, p); }
+      if (!s.jump && frame % 4 === 0) {
+        tap(s.x, s.y); p.down = false; g.onUp?.(c, p);
+      }
+    } else if (p.down) { p.down = false; p.dy = 0; g.onUp?.(c, p); }
     return;
   }
   // trace: drag up the middle of the winding ribbon

@@ -104,7 +104,7 @@ export const EXTRA_CHAPTERS = [
         choices: [
           C(["Take off your sandals", "把鞋脱下来"], "bush", { stat: { faith: 2 }, xp: 9, faith: true, tag: ["Faith", "信心"], reply: ["Your bare feet feel the hot stone. It is the most honest thing you have done all day.", "赤脚踩在滚烫的石头上。这是你今天做过最诚实的一件事。"], replyBy: "" }),
           C(["Ask Moses to cover his face", "叫摩西蒙住脸"], "bush", { stat: { wisdom: 2 }, xp: 8, reply: ["He does — and then he looks anyway, because he cannot help it. Awe and curiosity are not enemies.", "他蒙住脸——又忍不住从指缝里看。敬畏和好奇，本来就不打架。"], replyBy: "" }),
-          C(["Stand back and watch the flame", "退后，静静看着那团火焰"], "bush", { stat: { courage: 1, compassion: 1 }, xp: 8, reply: ["You count your breaths. The fire does not flicker. It has all the time in the world.", "你数着自己的呼吸。火焰一动不动，像是有着用不完的时间。"], replyBy: "" })
+          C(["Stand back and watch the flame", "退后，静静看着那团火焰"], "bush", { stat: { courage: 1, compassion: 1 }, xp: 8, reply: ["You count your breaths. The fire does not flicker. It has all the time in the world.", "你数着自己的呼吸。火焰一动不动，好像有的是时间。"], replyBy: "" })
         ]
       },
       bush: {
@@ -119,7 +119,7 @@ export const EXTRA_CHAPTERS = [
         ),
         choices: [
           C(["Whisper: “Here am I”", "轻声说：「我在这里」"], "call", { stat: { faith: 2 }, xp: 9, reply: ["It is the same answer Abraham gave. Some sentences are handed down like a family trade.", "这也是亚伯拉罕当年的回答。有些话，就这么一代一代传下来了。"], replyBy: "elias" }),
-          C(["Ask what His name is", "问祂的名字是什么"], "call", { stat: { wisdom: 2 }, xp: 9, reply: ["The answer comes slowly: “I AM THAT I AM” (Exodus 3:14). Not a label to hold — a presence that simply is.", "答案慢慢来：「我是我所是」（出埃及记 3:14）。这不是一个能握在手里的标签，而是一位一直都在的神。"], replyBy: "" }),
+          C(["Ask what His name is", "问祂的名字是什么"], "call", { stat: { wisdom: 2 }, xp: 9, reply: ["The answer comes slowly: “I AM THAT I AM” (Exodus 3:14). Not a label to hold — a presence that simply is.", "答案慢慢来：「我是我所是」（出埃及记 3:14）。这不是一个能攥在手里的名号，而是一位一直都在的神。"], replyBy: "" }),
           C(["Say nothing, and stay on your knees", "什么也不说，只是跪着"], "call", { stat: { compassion: 2, faith: 1 }, xp: 9, reply: ["Silence is also an answer. The flame waits for you.", "沉默也是一种回答。火焰等着你。"], replyBy: "" })
         ]
       },
@@ -132,7 +132,7 @@ export const EXTRA_CHAPTERS = [
         ),
         choices: [
           C(["Go with him toward Egypt", "陪他往埃及去"], "end", { stat: { courage: 2 }, xp: 12, require: { courage: 5 }, tag: ["Courage 5", "勇气 5"], reply: ["You do not feel brave. You go anyway. That is usually what brave looks like from the inside.", "你并不觉得勇敢。但你还是去了。从里面看，勇敢通常就是这个样子。"], replyBy: "" }),
-          C(["Give him your staff for the road", "把你的手杖送给他上路"], "end", { stat: { compassion: 2 }, xp: 10, reply: ["He takes it, testing its weight. A stick is not much — but it is something to hold.", "他接过去，掂了掂重量。一根杖算不了什么——但至少手里有个东西。"], replyBy: "" }),
+          C(["Give him your staff for the road", "把你的手杖送给他上路"], "end", { stat: { compassion: 2 }, xp: 10, reply: ["He takes it, testing its weight. A stick is not much — but it is something to hold.", "他接过去，掂了掂分量。一根杖算不了什么——可上路的人手里总得有点什么。"], replyBy: "" }),
           C(["Ask him to remember this mountain", "请他记住这座山"], "end", { stat: { wisdom: 2, faith: 1 }, xp: 10, reply: ["“I will,” he says. “Especially on the days I would rather forget.”", "「我会的，」他说，「特别是在那些我宁愿忘掉的日子里。」"], replyBy: "moses" })
         ]
       },
@@ -191,7 +191,7 @@ export const EXTRA_CHAPTERS = [
         lines: L(
           ["", "The road from Moab is long and dusty. Two women walk it with empty hands and one shared water skin.", "从摩押回来的路又长又灰。两个女人空着手，共用一个水袋，一步一步往回走。"],
           ["naomi", "Go back, my daughters. I have nothing left to give you.", "我的女儿们，回去吧。我已经没有什么可以给你们了。"],
-          ["elias", "Orpah turns back. That is not the cruel choice — it is the reasonable one. Watch Ruth.", "俄珥巴回去了。这不算狠心，是人之常情。留意路得。"],
+          ["elias", "Orpah turns back. That is not the cruel choice — it is the reasonable one. Watch Ruth.", "另一个媳妇俄珥巴哭着回去了。这不算狠心，是人之常情。留意路得。"],
           ["ruth", "Whither thou goest, I will go. Thy people shall be my people, and my God my God.", "你往哪里去，我也往那里去。你的国就是我的国，你的神就是我的神。"]
         ),
         choices: [
@@ -220,7 +220,7 @@ export const EXTRA_CHAPTERS = [
           ["elias", "Notice the pattern: a foreign widow, a field owner, a handful of dropped grain. Nobody calls it a miracle. It is the family line of David — and later, of Jesus.", "留意这条线：一个外邦寡妇，一块田，几把故意落下的麦穗。没有人称它为神迹，可这就是大卫的家谱——后来也是耶稣的家谱。"]
         ),
         choices: [
-          C(["Thank Boaz on Ruth’s behalf", "替路得向波阿斯道谢"], "end", { stat: { compassion: 2 }, xp: 10, reply: ["He waves it away. “She did the hard part,” he says. “I only told my men to look the other way.”", "他摆摆手：「难的那部分是她做的。我只是叫工人别看得那么紧。」"], replyBy: "boaz" }),
+          C(["Thank Boaz on Ruth’s behalf", "替路得向波阿斯道谢"], "end", { stat: { compassion: 2 }, xp: 10, reply: ["He waves it away. “She did the hard part,” he says. “I only told my men to look the other way.”", "他摆摆手：「难的那部分是她自己做的。我只是叫工人别看得那么紧。」"], replyBy: "boaz" }),
           C(["Tell Naomi what happened in the field", "把田里发生的事告诉拿俄米"], "end", { stat: { wisdom: 2, faith: 1 }, xp: 10, reply: ["Her face changes. For the first time since Moab, she says the word “hope” out loud.", "她的脸色变了。从摩押回来以后，她第一次把「盼望」这两个字说出了口。"], replyBy: "" }),
           C(["Stay silent. Some kindness is shy.", "什么也不说。有些善意不必说出口。"], "end", { stat: { faith: 2 }, xp: 10, reply: ["You say nothing. Ruth never learns your name. That is also a kind of love.", "你什么也没说。路得始终不知道你的名字。那也是一种爱。"], replyBy: "" })
         ]
@@ -244,7 +244,7 @@ export const EXTRA_CHAPTERS = [
       options: [
         { t: ["An ageing parent or grandparent", "年迈的父母或祖父母"], stat: { compassion: 2 }, insight: ["Ruth's choice was towards the person with the least to offer her. Ruth 1:16–17", "路得选择的，是那个最无法回报她的人。路得记 1:16–17"] },
         { t: ["A friend who is struggling", "一位正在挣扎的朋友"], stat: { faith: 2 }, insight: ["Presence is the rarest gift because it cannot be sent from a distance. Ruth 1:16", "陪伴是最难得的礼物，因为它没法隔空送过去。路得记 1:16"] },
-        { t: ["I am not sure I have anyone yet", "我还不确定有没有这样的人"], stat: { wisdom: 2 }, insight: ["Then start small: show up once, and then again. Loyalty is built one Tuesday at a time. Ruth 1:16", "那就从小事开始：出现一次，再出现一次。忠诚是一个星期二堆一个星期二堆出来的。路得记 1:16"] }
+        { t: ["I am not sure I have anyone yet", "我还不确定有没有这样的人"], stat: { wisdom: 2 }, insight: ["Then start small: show up once, and then again. Loyalty is built one Tuesday at a time. Ruth 1:16", "那就从小事开始：这一次在场，下一次也在场。忠诚就是这么一天一天攒出来的。路得记 1:16"] }
       ]
     }
   },
@@ -299,7 +299,7 @@ export const EXTRA_CHAPTERS = [
         choices: [
           C(["Pray with him in the dark", "在黑暗中和他一同祷告"], "nineveh", { stat: { faith: 2 }, xp: 9, reply: ["The prayer is mostly silence. That is enough. The fish keeps swimming.", "祷告大半是沉默。那也够了。大鱼继续往前游。"], replyBy: "" }),
           C(["Ask him what he is most afraid of", "问他最害怕的是什么"], "nineveh", { stat: { wisdom: 2 }, xp: 9, reply: ["“That they will change,” he says at last. “And that God will be glad.”", "「怕他们真的会改，」他终于开口，「也怕神会为这个高兴。」"], replyBy: "jonah" }),
-          C(["Count the days and wait", "数着日子等候"], "nineveh", { stat: { compassion: 1, faith: 1 }, xp: 9, reply: ["On the third day, the fish is sick of him. Mercy sometimes arrives as being spat out.", "第三天，大鱼把他吐了出来。怜悯有时候，就是从被吐出来开始的。"], replyBy: "" })
+          C(["Count the days and wait", "数着日子等候"], "nineveh", { stat: { compassion: 1, faith: 1 }, xp: 9, reply: ["On the third day, the fish is sick of him. Mercy sometimes arrives as being spat out.", "第三天，大鱼把他吐出来，他摔在沙滩上。有些路，得先被吐出来，才走得回去。"], replyBy: "" })
         ]
       },
       nineveh: {
@@ -314,9 +314,9 @@ export const EXTRA_CHAPTERS = [
           ["elias", "The whole city stops. Even the animals, says the king. And God does turn. Jonah is furious.", "全城都停了下来，连牲畜也披上麻布——这是王的命令。神果然回心转意。约拿气得不行。"]
         ),
         choices: [
-          C(["Sit with Jonah outside the city", "陪约拿坐在城外"], "end", { stat: { compassion: 2 }, xp: 11, reply: ["He is sitting in the dust, furious that mercy won. You sit down too. It is an honest place to sit.", "他坐在尘土里，为怜悯得胜而生气。你也在旁边坐下。这个位置不体面，但诚实。"], replyBy: "" }),
-          C(["Remind him of the fish", "提醒他关于那条大鱼的事"], "end", { stat: { wisdom: 2 }, xp: 10, reply: ["“You were given mercy when you deserved none,” you say. He has no answer for that.", "「你当初得怜悯的时候，也不配，」你说。他没有话可答。"], replyBy: "" }),
-          C(["Ask God why He cares about Nineveh", "问神为何在乎尼尼微"], "end", { stat: { faith: 2 }, xp: 11, faith: true, tag: ["Faith", "信心"], reply: ["The answer is a question about a plant, a worm, and a hundred and twenty thousand people who do not know their right hand from their left.", "答案是一个问题——关于一棵植物、一条虫，和十二万个分不清左右手的人。"], replyBy: "elias" })
+          C(["Sit with Jonah outside the city", "陪约拿坐在城外"], "end", { stat: { compassion: 2 }, xp: 11, reply: ["He is sitting in the dust, furious that mercy won. You sit down too. It is an honest place to sit.", "他坐在尘土里生闷气——气的是神居然饶了他们。你也在旁边坐下。这个位置不体面，但诚实。"], replyBy: "" }),
+          C(["Remind him of the fish", "提醒他关于那条大鱼的事"], "end", { stat: { wisdom: 2 }, xp: 10, reply: ["“You were given mercy when you deserved none,” you say. He has no answer for that.", "「你自己得怜悯的时候，也不比他们配。」你说。他没有话可答。"], replyBy: "" }),
+          C(["Ask God why He cares about Nineveh", "问神为何在乎尼尼微"], "end", { stat: { faith: 2 }, xp: 11, faith: true, tag: ["Faith", "信心"], reply: ["The answer is a question about a plant, a worm, and a hundred and twenty thousand people who do not know their right hand from their left.", "答案不是一个说法，是一个问题——关于一棵一夜长起来的植物、一条虫，和十二万个连左右手都分不清的人。"], replyBy: "elias" })
         ]
       },
       end: {

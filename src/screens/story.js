@@ -9,6 +9,7 @@ import { sfx } from "../core/audio.js";
 import { bus } from "../core/bus.js";
 import { tx, isZh } from "../core/i18n.js";
 import { startScene, gameInfo } from "../engine/scene.js";
+import { mountDemos, stopDemos } from "../engine/demo.js";
 import { portraitFor, chapterPortrait } from "../data/portraits.js";
 import { musicButton } from "./home.js";
 
@@ -67,6 +68,7 @@ function stopScene(ui) {
 
 export function cleanupStory(ui) {
   const s = ui.story;
+  stopDemos();          // every render re-mounts the hand animations it finds
   if (!s) return;
   if (s.momentController) { try { s.momentController.stop(); } catch { /* noop */ } s.momentController = null; }
   if (s.timer) { clearInterval(s.timer); s.timer = null; }
@@ -128,11 +130,14 @@ export function mountStory(ui) {
   if (!ui.story) return;
   const p = ui.story.phase;
   if (p === "lines" || p === "reply") renderLineDOM(ui);
-  else if (p === "mini") startMiniLoop(ui);
-  else if (p === "action") { if (ui.story.game?.ready) mountActionScene(ui); }
-  else if (p === "hotspots") mountHotspots(ui);
+  else if (p === "mini") { startMiniLoop(ui); mountDemos(document); }
+  else if (p === "action") {
+    if (ui.story.game?.ready) mountActionScene(ui);
+    mountDemos(document);          // the act card or the pause card may be up
+  }
+  else if (p === "hotspots") { mountHotspots(ui); mountDemos(document); }
+  else if (p === "moment") { mountMoment(ui); mountDemos(document); }
   else if (p === "reward") burstReward(ui);
-  else if (p === "moment") mountMoment(ui);
   else if (p === "prelude") mountPrelude();
 }
 
@@ -612,6 +617,7 @@ function hotspotsBrief(ui, cfg) {
         eyebrow: tx("LANTERN SEARCH", "提灯搜寻"),
         title: tx(cfg.title, cfg.titleZh),
         prompt: tx(cfg.prompt, cfg.promptZh),
+        demo: "drag", demoLabel: tx("Watch the hand, then try it", "看着这只手，再自己来"),
         how: [tx("Your hand: drag across the picture and the lantern follows your finger.", "手怎么动：手指在画面上拖动，提灯跟着手指走。"),
               tx("Only what the lantern touches can be seen. Pale shapes are decoys — three wrong ones end the search.", "只有被提灯照到的地方才看得见。浅色的影子是假的，点错三次就结束。")],
         note: tx("Nothing has started yet — the dark stays dark until you light the lantern.", "现在还没有开始，点亮提灯才开始。"),
@@ -867,6 +873,8 @@ function miniHtml(ui) {
         eyebrow: tx("A moment to focus", "凝神一刻"),
         title: cfg.title,
         prompt: cfg.prompt,
+        demo: momentDemo(st(ui).moment?.kind || st(ui).moment?.spec?.kind || "tap"),
+        demoLabel: tx("Watch the hand, then try it", "看着这只手，再自己来"),
         how: [tx("Your hand: a light runs back and forth along the track.", "手怎么动：光点会沿着轨道来回走。"),
               tx("Tap once, when it is inside the gold mark.", "光点走进金色那一段时，点一下。")],
         note: tx("Nothing moves until you press the button.", "现在还没有开始，按了按钮光点才动。"),
@@ -904,12 +912,24 @@ function briefHtml(ui, o) {
       <div class="eyebrow">${esc(o.eyebrow)}</div>
       <h2>${esc(o.title)}</h2>
       ${o.prompt ? `<p class="brief-prompt">${esc(o.prompt)}</p>` : ""}
+      ${o.demo ? `<div class="brief-demo" aria-hidden="true"><canvas data-demo="${esc(o.demo)}"></canvas><span>${esc(o.demoLabel || tx("Watch the hand", "照着这只手做"))}</span></div>` : ""}
       ${rows ? `<ol class="brief-how">${rows}</ol>` : ""}
       ${o.note ? `<p class="brief-note">${esc(o.note)}</p>` : ""}
       <button class="btn btn-primary brief-start" data-action="${o.start}">${icon("play", 16)} ${esc(o.startLabel || tx("Start", "开始"))}</button>
       <button class="btn btn-ghost btn-sm brief-leave" data-action="${o.skip}">${esc(o.skipLabel)}</button>
     </div>
   </div>`;
+}
+
+/** Which animation teaches each kind of story moment. */
+function momentDemo(kind) {
+  switch (kind) {
+    case "hold": return "hold";
+    case "trace": return "path";
+    case "balance": return "drag";
+    case "rhythm": return "taprow";
+    default: return "tap";
+  }
 }
 
 /** The one line that says what the hand does, for each kind of story moment. */
@@ -936,6 +956,8 @@ function actBriefHtml(ui, info, { first }) {
         eyebrow: [tx("ACTION SCENE", "互动关卡"), of].filter(Boolean).join(" · ") + ` · ${ch.title}`,
         title: info.title,
         prompt: info.prompt,
+        demo: info.demo,
+        demoLabel: tx("Watch the hand, then try it", "看着这只手，再自己来"),
         how: [
           info.hint ? tx(`Your hand: ${info.hint}`, `手怎么动：${info.hint}`) : "",
           tx("No clock is running. Taking your time only lowers the score.", "没有倒计时。慢一点，只是得分少一点，不会输。")
@@ -976,6 +998,14 @@ function actionHtml(ui) {
         <div class="action-paused-glyph">❚❚</div>
         <div class="eyebrow">${tx("Paused", "暂停中")}</div>
         <h3>${tx("The story waits for you", "先歇一会儿")}</h3>
+        <div class="paused-how">
+          <canvas data-demo="${esc(info.demo)}" aria-hidden="true"></canvas>
+          <div>
+            <b>${tx("Your hand", "手怎么动")}</b>
+            <p class="small">${esc(info.hint)}</p>
+            <p class="tiny muted">${tx("No clock. Take as long as you like.", "没有倒计时，慢慢来。")}</p>
+          </div>
+        </div>
         <p class="small muted">${tx("Nothing moves while you are away — no timers, no lost stones.", "这里不会自己往下走。没有倒计时，你回来时画面还停在原处。")}</p>
         <button class="btn btn-primary btn-sm" data-action="game-resume">${icon("play", 15)} ${tx("Resume", "接着玩")}</button>
         <button class="btn btn-ghost btn-sm" data-action="game-skip">${tx("Leave this scene", "不玩了，离开")}</button>

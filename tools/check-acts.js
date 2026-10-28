@@ -119,11 +119,27 @@ function feed(kind, c, act, frames, ex) {
         const y = bottom - Math.min(0.99, s.progress + 0.05) * (bottom - top);
         p.x = centre(c, y); p.y = y; p.down = true;
       } else if (kind === "dodge") {
-        // Jump once early, then verify gravity brings the pilgrim back down.
+        /* Both answers are exercised: leap the low throw, crouch under the high
+           one, and verify gravity brings the leap back down to the ground. */
         if (frames > 20) ex.maxUp = Math.min(ex.maxUp, s.y);
         if (frames > 20 && !s.jump && Math.abs(s.y - ex.groundY) < 0.01) ex.landed = true;
-        const incoming = s.hazards?.some((hz) => !hz.hit && hz.x - s.x > 34 && hz.x - s.x < 74);
-        if (incoming && !s.jump) tap(c, act, s.x, s.y);
+        const near = s.hazards?.find((hz) => !hz.done && hz.x - s.x > 30 && hz.x - s.x < 80);
+        if (near?.kind === "high") {
+          p.down = true; p.dy = 40; p.x = s.x; p.y = s.y;
+          act.onDown?.(c, p);
+          act.onMove?.(c, p);
+          ex.ducked = true;
+        } else if (near?.kind === "low") {
+          if (p.down) { p.down = false; p.dy = 0; act.onUp?.(c, p); }
+          if (!s.jump) {
+            /* a tap is press AND release: the leap is launched on release */
+            p.x = s.x; p.y = s.y; p.startX = s.x; p.startY = s.y; p.dy = 0;
+            p.down = true; act.onDown?.(c, p);
+            p.down = false; act.onUp?.(c, p);
+          }
+        } else if (p.down) {
+          p.down = false; p.dy = 0; act.onUp?.(c, p);
+        }
       }
 }
 
@@ -157,6 +173,7 @@ function driveAct(kind, cfg) {
 
   if (kind === "dodge") {
     if (frames < 40) errors.push("dodge ended before the jump test could run");
+    if (!ex.ducked) errors.push("the crouch answer was never needed — every throw was low");
     if (!ex.landed) errors.push(`jump never landed (minY=${ex.maxUp.toFixed(1)}, groundY=${ex.groundY.toFixed(1)})`);
     if (ex.maxUp < c.h * 0.05) errors.push(`pilgrim flew off the top of the screen (minY=${ex.maxUp.toFixed(1)})`);
     jumpChecked = true;

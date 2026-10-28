@@ -87,6 +87,7 @@ function slingHand(c) {
 }
 
 const sling = {
+  demo: "aim",
   titleEn: "The Sling", titleZh: "甩石迎敌",
   promptEn: "Drag away from David to wind the sling, release to fire. Strike Goliath's forehead twice — mind the wind and his raised shield.",
   promptZh: "从大卫身后往外拖，蓄住力再松手投石。要打中歌利亚的额头两次。小心风，也小心他抬起来的盾牌。",
@@ -328,6 +329,7 @@ const sling = {
 /* ---------------------------------------------------------------- 2. LIONS */
 
 const lions = {
+  demo: "drag",
   titleEn: "Through the Den", titleZh: "潜行狮子坑",
   promptEn: "Drag to move your pilgrim. Release to stand still and hide. Stay out of the lions' gaze and reach the light.",
   promptZh: "拖动让朝圣者往前走，松手就站住、藏住身影。避开狮子的目光，走进右边那道亮光里。",
@@ -488,6 +490,7 @@ function paintBundled(ctx, x, y, ang, sc, strip = 1) {
    skip button. Nothing here may end a scene on the player's behalf. */
 
 const jericho = {
+  demo: "lift",
   titleEn: "Carry him to the inn", titleZh: "把他抬到客店",
   promptEn: "Lift him onto the donkey — he cannot help you, so use your whole hand — then keep your palm on him while the animal walks. Let go and he slides.",
   promptZh: "把他抬上驴背。他一点力气都使不上，得用整只手托住。上路以后手也别松，一松他就会滑下去。",
@@ -921,6 +924,7 @@ function paintWrap(ctx, pts, u, opacity = 1, seed = 0) {
 }
 
 const tend = {
+  demo: "drag",
   titleEn: "Tend the wound", titleZh: "为他包扎伤口",
   promptEn: "Pour oil and wine over the wound, then wind the linen round it. Drag slowly — a wound is not a thing to be hurried.",
   promptZh: "把油和酒倒在伤口上，再用麻布一圈圈缠好。慢慢拖——伤口不是赶时间的事。",
@@ -1204,6 +1208,7 @@ function plateVignette(c, ctx, strength = 0.7) {
 
 /* ─────────────────── 1. THE BROOK — five smooth stones ─────────────────── */
 const stones = {
+  demo: "drag",
   titleEn: "Five smooth stones", titleZh: "五块光滑的石子",
   promptEn: "Wade in and drag your hand slowly through the water. A hurried hand clouds the brook; only a still one can feel the difference between a smooth stone and a jagged one.",
   promptZh: "走进溪水，让手在水里慢慢移动。手一急，水就浑了；只有手静下来，才分得出光滑的石子和带棱角的石子。",
@@ -1357,6 +1362,7 @@ const WINDOW_IMG = "assets/art/window.jpg";
 const WIN_LATCH = { fx: 0.532, fy: 0.455 };
 const WIN_SPLIT = 0.494;                 // the seam between the two shutters
 const windowScene = {
+  demo: "lift",
   titleEn: "A window toward heaven", titleZh: "朝向天堂的窗",
   promptEn: "His windows were open toward Jerusalem. Lift the iron latch, then push each shutter wide — three times a day he did this, and a decree will not change it.",
   promptZh: "他的窗朝着耶路撒冷开着。先抬起铁闩，再把两扇窗推开。他一天三次这样做，一道禁令改变不了这件事。",
@@ -1506,6 +1512,7 @@ const windowScene = {
 
 /* ─────────────── 3. THE BUSH — do not come too close ─────────────── */
 const flame = {
+  demo: "lift",
   titleEn: "Do not come too close", titleZh: "不要近前",
   promptEn: "The flame does not consume the branches. Draw near to it slowly — a hurried approach makes it flare, and you will have to begin again. Three times it steadies before it speaks.",
   promptZh: "火烧着枝子却不烧掉。慢慢靠近——一急，火就窜起来，你得从头再来。它稳下来三次，才会开口。",
@@ -1627,6 +1634,7 @@ const flame = {
 
 /* ─────────────── 4. NINEVEH — carry the cry through the city ─────────────── */
 const cry = {
+  demo: "tap",
   titleEn: "Yet forty days", titleZh: "再等四十日",
   promptEn: "Nineveh is three days wide and the message is one sentence. Walk the street — drag to move — and stop where people are listening long enough to cry it out.",
   promptZh: "尼尼微大得三天也走不完，可要说的话只有一句。顺着街往前走，在有人肯听的地方停下，把话喊出去。",
@@ -1777,6 +1785,7 @@ const cry = {
 /* ---------------------------------------------------------------- 4. STORM */
 
 const storm = {
+  demo: "drag",
   titleEn: "Hold the Tiller", titleZh: "掌舵迎浪",
   promptEn: "Drag to counter-steer the boat against the waves. Tap BAIL to throw water out. Survive until the storm breaks.",
   promptZh: "拖动船舵顶住风浪，点击「舀水」把舱里的水泼出去。撑到风浪过去。",
@@ -1945,6 +1954,7 @@ function paintRobeCloth(ctx, x, y, s, lift) {
 }
 
 const prodigal = {
+  demo: "drag",
   titleEn: "Bring forth the best robe", titleZh: "把上好的袍子拿来",
   promptEn: "He is on his knees and has nothing left to put on himself. Drag the robe to his shoulders, the ring to his hand, the shoes to his feet.",
   promptZh: "他跪在地上，身上什么都没有了。把袍子披到他肩上，把戒指套到他手上，把鞋穿到他脚上。",
@@ -2057,6 +2067,7 @@ const STEPS = 3;
 /* --------------------------------------------------------------- 6. ESTHER */
 
 const esther = {
+  demo: "lift",
   titleEn: "If I perish, I perish", titleZh: "我若死就死吧",
   promptEn: "Cross the hall a step at a time, and let each step finish before you take the next. Then kneel at the edge of the carpet and wait: the sceptre is his to extend, not yours to take.",
   promptZh: "一步一步穿过大厅，一步走稳了再走下一步。走到毯边跪下，然后等——金杖是他伸出来的，不能你自己去拿。",
@@ -2201,6 +2212,7 @@ export const GAMES = {
 
 /* ══════════════════════ 7a. BURNING BUSH — follow the flock ══════════════════════ */
 const desert = {
+  demo: "drag",
   art: "assets/art/bush.jpg", weather: "sand",
   titleEn: "Follow the flock", titleZh: "跟随羊群",
   promptEn: "Three sheep have wandered into the wadi. Gather them, then lead the flock to the burning bush before the sandstorm closes in.",
@@ -2328,6 +2340,7 @@ const desert = {
 
 /* ══════════════════════ 7b. RUTH — glean before sunset ══════════════════════ */
 const glean = {
+  demo: "hold",
   art: "assets/art/ruth.jpg", weather: "petals",
   titleEn: "Glean the field", titleZh: "拾取麦穗",
   promptEn: "Gather 12 sheaves of barley before the sun sets. Keep clear of the swinging sickles — Boaz has told his men to leave extra for you.",
@@ -2461,6 +2474,7 @@ const glean = {
 
 /* ══════════════════════ 7c. JONAH — cast the prayer into the deep ══════════════════════ */
 const deep = {
+  demo: "drag",
   titleEn: "Three days in the deep", titleZh: "在深处三日",
   promptEn: "The belly breathes, and when it presses in you must be perfectly still. Between the swells, pull the kelp off your arms before it wraps you.",
   promptZh: "鱼腹在呼吸。它一收紧，你就得完全不动；松开的空档里，把缠在手臂上的海草扯下来。",
@@ -2648,6 +2662,7 @@ function roundPrayer(n) {
 
 /* ══════════════════════ 7d. ZACCHAEUS — climb the sycamore ══════════════════════ */
 const climb = {
+  demo: "lift",
   titleEn: "Climb the sycamore", titleZh: "爬上桑树",
   promptEn: "Hand over hand: pull up on the side the light is on, then the other. Eight holds and you are above the crowd — pull on the wrong branch and you lose your grip.",
   promptZh: "两只手换着来：哪一侧有光，就从哪一侧往上拉。拉够八次，你就高过人群；拉错了枝子会脱手。",
@@ -2787,9 +2802,9 @@ export const PRELUDES = {
     {
       kind: "dodge", hero: "david", villain: "goliath", ...P("elah-field", "leaves"),
       title: ["Cross the valley", "穿过山谷"],
-      prompt: ["Goliath hurls spears as David walks toward the line. Tap to leap over them. Four hits and you are knocked back — but the story goes on.",
-        "大卫走向阵前时，歌利亚一枝接一枝投出长枪。看见枪飞过来就点一下，跳过去。被击中四次会被逼退——故事还是继续。"],
-      hint: ["Tap to leap · reach the battle line", "点一下跳起来 · 走到阵前"],
+      prompt: ["Goliath throws two kinds of spear at David as he walks to the line. One skims the dust — tap to leap over it. One comes at his chest — press and drag down to drop under it. Four hits and he is driven back; the story goes on either way.",
+        "大卫往阵前走的时候，歌利亚一边投枪。枪贴着地飞来，点一下跳过去；枪朝他胸口飞来，按住往下拖，蹲下来让它从头顶过。被击中四次他会退回原地——故事照样往下走。"],
+      hint: ["Ground spear: tap to leap · chest spear: drag down", "贴地来的点一下 · 冲胸来的往下拖"],
       seconds: 17, reward: 30
     }
   ],

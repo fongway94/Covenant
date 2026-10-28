@@ -36,56 +36,62 @@ function uiScale() {
   } catch { return 1; }
 }
 
-/** Parchment-style briefing card + timer bar + goal pips shared by all acts. */
+/** The preparation card shared by every act kind: what this act is asking for,
+    and how far along it is. The act's own title is already on the screen above
+    it, so the card does not repeat it — that repetition was what pushed the
+    prompt text off the bottom of the card on a phone. */
 function stageChrome(c, ctx, cfg, s) {
-  const { w, h } = c;
+  const { w } = c;
   const U = uiScale();
-  const hh = Math.round(102 * (0.82 + U * 0.18));
-  /* Under the scene's own HUD, wherever the (scalable) header has put it. */
+  const lh = Math.round(13 * U);
+  const lines = wrapLines(ctx, cfg, T(cfg.prompt), w - 52, `${Math.round(11.5 * U)}px ${c.font}`);
+  const shown = lines.slice(0, 4);
+  const hh = Math.round((38 + 9 * U) + shown.length * lh + 12);
   const y = Math.max(150, Math.round((c.hudTop || 112) + 46));
   ctx.save();
   ctx.fillStyle = "rgba(7,15,21,.78)";
   roundRect(ctx, 14, y, w - 28, hh, 12); ctx.fill();
   ctx.strokeStyle = "rgba(231,183,91,.2)"; ctx.lineWidth = 1; ctx.stroke();
 
-  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-  ctx.fillStyle = "#e7b75b"; ctx.font = `700 ${Math.round(9 * U)}px ${c.font}`;
-  ctx.fillText(tx("PREPARE", "准备"), 26, y + 18);
-  ctx.fillStyle = "#f4e7cb"; ctx.font = `600 ${Math.round(15 * U)}px ${c.font}`;
-  ctx.fillText(T(cfg.title), 26, y + Math.round(28 + 9 * U));
-  ctx.fillStyle = "rgba(244,231,203,.78)"; ctx.font = `${Math.round(11 * U)}px ${c.font}`;
-  wrapText(ctx, T(cfg.prompt), 26, y + Math.round(44 + 9 * U), w - 52, Math.round(12 * U), 3);
-
-  // goal pips on the right of the title
+  /* The head row: the label on the left and the tally on the right, so the
+     goal can never sit on top of the sentence the player is reading. */
+  ctx.textBaseline = "alphabetic";
+  ctx.textAlign = "left"; ctx.fillStyle = "#e7b75b"; ctx.font = `700 ${Math.round(9 * U)}px ${c.font}`;
+  ctx.fillText(tx("PREPARE", "准备"), 26, y + 17);
   if (s.goalText) {
-    ctx.textAlign = "right"; ctx.fillStyle = "#f2dba6"; ctx.font = `700 ${Math.round(13 * U)}px ${c.font}`;
-    ctx.fillText(s.goalText, w - 26, y + Math.round(28 + 9 * U));
+    ctx.textAlign = "right"; ctx.fillStyle = "#f2dba6"; ctx.font = `700 ${Math.round(12 * U)}px ${c.font}`;
+    ctx.fillText(s.goalText, w - 26, y + 17);
   }
-  // hint line below the card
-  ctx.textAlign = "center"; ctx.fillStyle = "rgba(244,231,203,.72)"; ctx.font = `600 ${Math.round(11 * U)}px ${c.font}`;
-  ctx.fillText(T(cfg.hint), w / 2, y + hh + 18);
+  ctx.textAlign = "left"; ctx.fillStyle = "rgba(244,231,203,.86)"; ctx.font = `${Math.round(11.5 * U)}px ${c.font}`;
+  shown.forEach((line, i) => ctx.fillText(line, 26, y + Math.round(32 + 4 * U) + i * lh));
 
   if (s.flash > 0) {
     ctx.fillStyle = `rgba(214,92,66,${s.flash * 0.18})`;
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillRect(0, 0, w, c.h);
   }
   ctx.restore();
 }
 
-function wrapText(ctx, text, x, y, maxW, lh, maxLines) {
-  const words = String(text).split(/(\s+)/);
-  let line = "", lines = [];
-  for (const wd of words) {
-    if (ctx.measureText(line + wd).width > maxW && line) { lines.push(line.trim()); line = ""; }
-    line += wd;
+/** Split a line into as many pieces as the width needs. Chinese has no spaces,
+    so it also has to break between characters. */
+function wrapLines(ctx, cfg, text, maxW, font) {
+  ctx.font = font;
+  const out = [];
+  let line = "";
+  const push = () => { if (line.trim()) out.push(line.trim()); line = ""; };
+  for (const unit of String(text).split(/(\s+)/)) {
+    if (!unit) continue;
+    if (ctx.measureText(line + unit).width <= maxW) { line += unit; continue; }
+    if (line) push();
+    if (ctx.measureText(unit).width <= maxW) { line = unit; continue; }
+    for (const ch of unit) {          // one character at a time
+      if (ctx.measureText(line + ch).width > maxW && line) push();
+      line += ch;
+    }
+    push();
   }
-  if (line.trim()) lines.push(line.trim());
-  // Chinese has no spaces — hard-wrap when needed.
-  if (lines.length === 1 && lines[0].length > 34) {
-    const all = lines[0]; lines = [];
-    for (let i = 0; i < all.length; i += 24) lines.push(all.slice(i, i + 24));
-  }
-  for (let i = 0; i < Math.min(maxLines, lines.length); i++) ctx.fillText(lines[i], x, y + i * lh);
+  push();
+  return out.length ? out : [""];
 }
 
 /* Time is scored, never enforced. There is no clock on screen and no countdown:
@@ -1584,85 +1590,139 @@ function spearArt(ctx, x, y, rot, len, alpha, sc) {
 }
 
 function dodgeStage(cfg) {
+  /* Goliath throws two kinds of spear, and the hand has two answers.
+     A spear that skims the ground is jumped (a tap); one thrown at the chest is
+     ducked (press and drag down, or simply hold) — so the fight is a rhythm of
+     two gestures instead of one button pressed fourteen times. Every throw is
+     telegraphed from the giant's own hand, and a missed spear flies past the
+     camera instead of growing out of the dust behind you. */
   return {
     label: () => T(cfg.title),
     init(c) {
       preloadSprites();
-      c.state = { t: 0, left: cfg.seconds, x: c.w * 0.12, y: c.h * 0.78,
-        vy: 0, jump: false, hazards: [], spawn: 0, hits: 0, flash: 0, finished: false,
-        stuck: [], puffs: [] };
+      c.state = {
+        t: 0, left: cfg.seconds, x: c.w * 0.1, y: c.h * 0.78,
+        vy: 0, jump: false, duck: 0, duckWant: false, pressT: -1,
+        hazards: [], spawn: 0, hits: 0, dodges: 0, streak: 0, flash: 0, finished: false,
+        puffs: [], cue: "", cueT: 0, throwT: 0, landed: true, nextAt: 1.0
+      };
       c.setHint(T(cfg.hint));
     },
     step(c, dt) {
       const s = c.state; if (s.finished) return;
       tick(c, s, cfg, dt); if (s.finished) return;
-      s.x = Math.min(c.w * 0.86, s.x + dt * (c.w * 0.052));
+      const ground = c.h * 0.78;
+      s.x = Math.min(c.w * 0.86, s.x + dt * (c.w * 0.05));
+
+      /* jump: canvas Y grows downward, so gravity ADDS to vy */
       if (s.jump) {
-        // Canvas Y grows downward: gravity must ADD to vy, not subtract.
         s.vy += 570 * dt;
-        s.y = Math.min(c.h * 0.78, Math.max(c.h * 0.16, s.y + s.vy * dt));
-        if (s.y >= c.h * 0.78 && s.vy >= 0) { s.y = c.h * 0.78; s.vy = 0; s.jump = false; }
-      }
-      // Spears must be spaced further apart than one full jump cycle, or the
-      // player is still airborne when the next one arrives and cannot dodge.
-      if (s.spawn < 14 && s.t > s.spawn * 1.45) {
+        s.y = Math.min(ground, Math.max(c.h * 0.2, s.y + s.vy * dt));
+        if (s.y >= ground && s.vy >= 0) { s.y = ground; s.vy = 0; s.jump = false; }
+      } else s.y = ground;
+
+      /* duck: a crouch that deepens while the hand is held down, and lifts
+         again the moment it lets go */
+      /* a press held for a beat — without dragging — settles into a crouch */
+      if (s.pressT >= 0 && !s.duckWant && s.t - s.pressT > 0.2) s.duckWant = true;
+      const wantDuck = s.duckWant && !s.jump;
+      s.duck = clamp(s.duck + (wantDuck ? dt * 7 : -dt * 6.5), 0, 1);
+
+      /* One throw at a time, always. A low one and a high one in the air
+         together would ask for a leap and a crouch at the same moment, and no
+         hand can do both — so the next spear leaves the giant's hand only after
+         the last one has been answered. The order is fixed, not random, so the
+         rhythm can be learned: leap, duck, duck, leap, leap, duck… */
+      const THROWS = "LHHLLHLHHLLH";
+      const busy = s.hazards.some((h) => !h.done);
+      if (!busy && s.spawn < THROWS.length && s.t >= s.nextAt) {
+        const kind = THROWS[s.spawn] === "H" ? "high" : "low";
         s.spawn++;
-        s.hazards.push({ x: c.w + 20, y: c.h * 0.78 - rnd(0, 6), r: rnd(8, 11),
-          rot: rnd(0, TAU), hit: false, land: rnd(0.2, 0.8) });
+        s.throwT = 0.34;
+        s.hazards.push({ x: c.w * 0.78, kind, y: 0, r: kind === "low" ? 9 : 10.5,
+          done: false, spin: rnd(-0.04, 0.04) });
+        c.hit("tap");
       }
-      for (const hz of s.hazards) { hz.x -= dt * (c.w * 0.34); hz.rot += dt * 3; }
-      // a spear that gets past you sticks in the ground behind and throws dust
+      s.throwT = Math.max(0, s.throwT - dt);
+      for (const hz of s.hazards) hz.x -= dt * (c.w * 0.42);
+
+      /* the nearest spear decides the cue shown beside David */
+      let near = null;
       for (const hz of s.hazards) {
-        if (hz.stuck || hz.x > s.x - 10) continue;
-        hz.stuck = true;
-        s.stuck.push({ x: hz.x, y: c.h * 0.79, rot: -0.7 + rnd(-0.1, 0.1), life: 2.4 });
-        for (let i = 0; i < 5; i++) {
-          s.puffs.push({ x: hz.x, y: c.h * 0.79, r: rnd(3, 9), life: 0.7, vx: rnd(-30, 30), vy: rnd(-34, -6) });
+        if (hz.done) continue;
+        const d = hz.x - s.x;
+        if (d > 0 && d < c.w * 0.42 && (!near || d < near.x - s.x)) near = hz;
+      }
+      s.cue = near ? near.kind : "";
+      s.cueT = Math.max(0, s.cueT - dt);
+
+      for (const hz of s.hazards) {
+        if (hz.done || Math.abs(hz.x - s.x) > 17) continue;
+        hz.done = true;
+        const cleared = hz.kind === "low"
+          ? (s.jump && s.y < ground - c.h * 0.05)
+          : s.duck > 0.55;
+        s.nextAt = s.t + 0.5;
+        if (cleared) {
+          s.dodges++; s.streak++;
+          c.addScore(8); c.hit("good");
+          c.float(s.x, s.y - c.h * 0.16,
+            hz.kind === "low" ? tx("Over it", "跳过去了") : tx("Under it", "低头过去了"), "#f4d79b");
+          if (s.streak === 3 || s.streak === 5) {
+            c.spark(s.x, s.y - c.h * 0.2, "#ffe6ac", 14, 120);
+            c.float(s.x, s.y - c.h * 0.26, tx(`${s.streak} clean`, `连着 ${s.streak} 次`), "#ffe6ac");
+          }
+        } else {
+          s.streak = 0;
+          s.hits++; s.flash = 1; c.bump(9); c.hit("miss");
+          s.left -= 2;
+          c.float(s.x, s.y - c.h * 0.14, tx("HIT!", "被击中！"), "#e08b78");
+          for (let i = 0; i < 8; i++) {
+            s.puffs.push({ x: s.x, y: s.y - 18, r: rnd(3, 10), life: 0.6, vx: rnd(-52, 52), vy: rnd(-46, -8) });
+          }
+          if (s.hits >= 4) { s.finished = true; c.end(true, c.score); return; }
         }
       }
-      s.hazards = s.hazards.filter((h) => h.x > -30);
-      for (const hz of s.hazards) {
-        if (hz.hit || dist(s.x, s.y - 18, hz.x, hz.y - 8) > hz.r + 12) continue;
-        hz.hit = true; s.hits++; s.flash = 1; c.bump(8); c.hit("miss");
-        s.left -= 2; c.float(s.x, s.y - 50, tx("HIT!", "被击中！"), "#e08b78");
-        for (let i = 0; i < 8; i++) {
-          s.puffs.push({ x: s.x, y: s.y - 20, r: rnd(3, 10), life: 0.6, vx: rnd(-52, 52), vy: rnd(-46, -8) });
-        }
-        if (s.hits >= 4) { s.finished = true; c.end(true, c.score); return; }
+      s.hazards = s.hazards.filter((h) => h.x > -60);
+
+      /* a footfall of dust behind the running boy */
+      if (!s.jump && Math.random() < dt * 6) {
+        s.puffs.push({ x: s.x - 4, y: s.y - 2, r: rnd(2, 5), life: 0.5, vx: rnd(-26, -6), vy: rnd(-16, -3) });
       }
-      for (const st of s.stuck) st.life -= dt;
-      s.stuck = s.stuck.filter((st) => st.life > 0);
       for (const pf of s.puffs) { pf.x += pf.vx * dt; pf.y += pf.vy * dt; pf.vy += 90 * dt; pf.r += dt * 9; pf.life -= dt; }
       s.puffs = s.puffs.filter((pf) => pf.life > 0);
-      c.progress = (s.x - c.w * 0.12) / (c.w * 0.74);
-      c.setHint(`${T(cfg.hint)}   ${tx("HITS", "被击中")} ${s.hits}/4`);
+
+      c.progress = (s.x - c.w * 0.1) / (c.w * 0.76);
+      c.setHint(`${tx("HITS", "被击中")} ${s.hits}/4   ·   ${tx("CLEAN", "躲过")} ${s.dodges}`);
       if (s.x >= c.w * 0.86) win(c, s, cfg, cfg.reward || 30);
     },
     draw(c, ctx) {
       const s = c.state; stageBg(c, ctx, cfg);
       const horizon = c.h * 0.8;
+      const dH = clamp(c.h * 0.245, 104, 168);     // David, sized to the valley
 
       /* Goliath at the far end of the valley, dimmed by the dust between you
          and him rather than standing on a drawn floor line. */
-      const gH = clamp(c.h * 0.44, 160, 300);
-      const gx = c.w * 0.94;
+      const gH = clamp(c.h * 0.335, 132, 228);
+      const gx = c.w * 0.95;
       ctx.save();
-      const haze = ctx.createRadialGradient(gx, c.h * 0.62, 10, gx, c.h * 0.62, gH * 1.15);
-      haze.addColorStop(0, "rgba(212,186,150,.2)");
+      const haze = ctx.createRadialGradient(gx, c.h * 0.64, 10, gx, c.h * 0.64, gH * 1.15);
+      haze.addColorStop(0, "rgba(212,186,150,.18)");
       haze.addColorStop(1, "rgba(212,186,150,0)");
       ctx.fillStyle = haze;
-      ctx.beginPath(); ctx.arc(gx, c.h * 0.62, gH * 1.15, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(gx, c.h * 0.64, gH * 1.15, 0, TAU); ctx.fill();
       ctx.restore();
-      actorShadow(ctx, gx, horizon + 1, gH * 0.24, 0.28);
+      actorShadow(ctx, gx, horizon + 1, gH * 0.24, 0.26);
+      const swing = s.throwT > 0 ? (1 - s.throwT / 0.34) : 0;
       const giantDrawn = actor(ctx, "goliath", gx, horizon, gH,
-        { rot: Math.sin(c.t * 0.6) * 0.01, squash: 1 + Math.sin(c.t * 1.5) * 0.006, alpha: 0.9 });
-      if (!giantDrawn) giant(ctx, c.w * 0.88, c.h * 0.68, 1.45, c.t);
+        { rot: -0.05 - Math.sin(swing * Math.PI) * 0.1, squash: 1 + Math.sin(c.t * 1.5) * 0.006, alpha: 0.9 });
+      if (!giantDrawn) giant(ctx, c.w * 0.9, c.h * 0.7, 1.2, c.t);
+      /* Between throws his arm is cocked: the swing above is the whole tell,
+         because the painting already has a spear in his fist. */
 
-      /* The floor is the plate's own dust; the only thing painted on it is
-         what the fight has kicked up. An earlier version laid a grey band
-         across the bottom third of the painting, which hid exactly the ground
-         the player is watching their feet on. */
-      for (let i = 0; i < 26; i++) {
+      /* the floor is the plate's own dust; the only thing painted on it is what
+         the fight has kicked up */
+      for (let i = 0; i < 24; i++) {
         const px = hash(i * 2.3) * c.w;
         const pz = hash(i * 7.1);
         const py = horizon + pz * (c.h - horizon);
@@ -1670,51 +1730,95 @@ function dodgeStage(cfg) {
         ctx.fillStyle = `rgba(${206 + hash(i) * 30},${188 + hash(i * 3) * 26},${152 + hash(i * 5) * 22},${0.05 + pz * 0.1})`;
         ctx.beginPath(); ctx.ellipse(px, py, rr, rr * 0.62, 0, 0, TAU); ctx.fill();
       }
-
-      // spears already in the ground, still quivering
-      for (const st of s.stuck) {
-        const q = Math.sin(c.t * 22 + st.x) * 0.03 * Math.min(1, st.life);
-        spearArt(ctx, st.x, st.y - 40, st.rot + q, 46, Math.min(1, st.life), 1.35);
-      }
       for (const pf of s.puffs) {
         ctx.fillStyle = `rgba(196,178,144,${pf.life * 0.3})`;
         ctx.beginPath(); ctx.arc(pf.x, pf.y, pf.r, 0, TAU); ctx.fill();
       }
 
-      /* The spears in the air. They are coming at you, so they are drawn
-         foreshortened — a short iron head and a hand's width of shaft, not a
-         five-foot pole lying across the road. A full-length spear was wider
-         than David was tall and read as a fence you had to jump over rather
-         than something arriving. */
+      /* The spears in the air, both heights drawn at their real heights so the
+         answer is readable from the picture: a shaft skimming the dust is
+         jumped, a shaft at chest height is ducked. */
       for (const hz of s.hazards) {
-        const sp = hz.r > 9.2 ? 1.2 : 1.05;
-        /* the point leads: it is thrown at you, not away from you */
-        const rot = Math.PI - 0.1 + Math.sin(c.t * 5 + hz.land * 9) * 0.05;
-        /* one soft smear behind the head, because it is travelling fast */
-        spearArt(ctx, hz.x + 12, hz.y + 1.5, rot, 56, 0.16, sp * 0.93);
-        actorShadow(ctx, hz.x, horizon + 4, 20, 0.18);
-        /* the dust it drags along the ground, so it reads against the giant's
-           own greaves while it is still on his side of the valley */
-        for (let i = 1; i <= 3; i++) {
-          ctx.fillStyle = `rgba(208,188,152,${0.16 / i})`;
+        const y = hz.kind === "low" ? horizon - 16 : horizon - dH * 0.62;
+        const sp = hz.kind === "low" ? 0.92 : 1.0;
+        const rot = Math.PI - 0.06 + hz.spin;
+        ctx.save();
+        ctx.globalAlpha = 0.18;
+        /* speed smear behind the head */
+        spearArt(ctx, hz.x + 16, y + 1, rot, 62, 0.2, sp);
+        ctx.restore();
+        spearArt(ctx, hz.x, y, rot, 62, 1, sp);
+        if (hz.kind === "low") {
+          /* a shadow racing along the dust beneath it: the spear is above the
+             ground, so it must not look planted in it */
+          ctx.fillStyle = "rgba(20,16,10,.18)";
           ctx.beginPath();
-          ctx.arc(hz.x + i * 13, horizon - 2 - Math.sin(c.t * 6 + i) * 3, 5 + i * 3, 0, TAU);
-          ctx.fill();
+          ctx.ellipse(hz.x - 6, horizon + 3, 26, 4, 0, 0, TAU); ctx.fill();
+          for (let i = 1; i <= 3; i++) {
+            ctx.fillStyle = `rgba(208,188,152,${0.15 / i})`;
+            ctx.beginPath();
+            ctx.arc(hz.x + i * 14, horizon - 3 - Math.sin(c.t * 6 + i) * 3, 4 + i * 3, 0, TAU);
+            ctx.fill();
+          }
+        } else {
+          ctx.strokeStyle = "rgba(240,220,180,.14)"; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(hz.x + 18, y); ctx.lineTo(hz.x + 66, y); ctx.stroke();
         }
-        spearArt(ctx, hz.x, hz.y - 6, rot, 56, 1, sp);
       }
 
-      const dH = clamp(c.h * 0.30, 110, 200);
-      actorShadow(ctx, s.x, horizon + 2, dH * 0.2, 0.42);
+      /* David's answer, shown beside him the moment a spear is within reach:
+         an up chevron for a low throw, a down chevron for a high one. */
+      const crouch = 1 - 0.42 * s.duck;
+      actorShadow(ctx, s.x, horizon + 2, dH * (0.2 + s.duck * 0.04), s.jump ? 0.24 : 0.42);
       const runDrawn = actor(ctx, "david", s.x, s.y, dH, {
-        rot: s.jump ? -0.05 : 0.05 + Math.sin(c.t * 9) * 0.012,
-        squash: s.jump ? 1.02 : 1 + Math.sin(c.t * 9) * 0.015
+        rot: s.jump ? -0.06 : 0.04 * s.duck + Math.sin(c.t * 9) * 0.012,
+        squash: s.jump ? 1.03 : crouch + Math.sin(c.t * 9) * 0.012
       });
-      if (!runDrawn) pilgrim(ctx, s.x, s.y, 1.15, c.t * 3, 1, 1, true);
+      if (!runDrawn) pilgrim(ctx, s.x, s.y, 0.9, c.t * 3, 1, 1, true);
+
+      if (s.cue) {
+        const up = s.cue === "low";
+        const cy = s.y - dH * 0.5;
+        ctx.save();
+        ctx.globalAlpha = 0.5 + Math.sin(c.t * 9) * 0.2;
+        ctx.strokeStyle = up ? "#ffe6ac" : "#a8d8f0";
+        ctx.lineWidth = 2.2; ctx.lineCap = "round"; ctx.lineJoin = "round";
+        const d = up ? -6 : 6;
+        ctx.beginPath();
+        ctx.moveTo(s.x - 8, cy - d);
+        ctx.lineTo(s.x, cy + d);
+        ctx.lineTo(s.x + 8, cy - d);
+        ctx.stroke();
+        ctx.restore();
+      }
+
       stageChrome(c, ctx, cfg, { ...s, goalText: `${s.hits}/4` });
     },
-    onDown(c) { const s = c.state; if (!s.finished && !s.jump) { s.jump = true; s.vy = -245; c.hit("tap"); } },
-    onKey(c, k, down) { if (down && (k === " " || k === "arrowup")) this.onDown(c); }
+    /* A short press is a jump; holding, or pulling down, is a crouch. Both are
+       what a hand does naturally in front of a screen. */
+    onDown(c, p) {
+      const s = c.state; if (s.finished) return;
+      s.pressT = s.t;
+      if (p && p.dy > 18) s.duckWant = true;
+    },
+    onMove(c, p) {
+      const s = c.state; if (s.finished) return;
+      if (p && p.down && p.dy > 22) { s.duckWant = true; s.jump = false; s.y = c.h * 0.78; s.vy = 0; }
+    },
+    onUp(c, p) {
+      const s = c.state; if (s.finished) return;
+      const drag = p ? Math.abs(p.dy || 0) : 0;
+      const wasDucking = s.duck > 0.35;
+      s.pressT = -1;
+      s.duckWant = false;
+      /* A tap launches the jump. A press that became a crouch simply stands up. */
+      if (drag < 22 && !s.jump && !wasDucking) { s.jump = true; s.vy = -250; c.hit("tap"); }
+    },
+    onKey(c, k, down) {
+      if (!down) { c.state.duckWant = false; return; }
+      if (k === " " || k === "arrowup") this.onUp(c, null);
+      if (k === "arrowdown") c.state.duckWant = true;
+    }
   };
 }
 
@@ -1739,6 +1843,18 @@ function builderFor(kind) {
 export const ACT_BUILDERS = { sift: siftStage, rhythm: rhythmStage, trace: traceStage,
   charge: chargeStage, order: orderStage, dodge: dodgeStage };
 
+/** Which looping hand animation teaches this act. The briefing card plays it, so
+    the player is shown the movement instead of only being told about it. */
+export function demoForAct(kind, cfg = {}) {
+  if (cfg.demo) return cfg.demo;
+  if (kind === "charge") return cfg.mode === "sling" ? "circle" : cfg.mode === "rope" ? "pull" : "hold";
+  if (kind === "dodge") return "jumpduck";
+  if (kind === "rhythm") return cfg.mode === "shade" ? "hold" : "hold";
+  if (kind === "trace") return "path";
+  if (kind === "order") return "taprow";
+  return "drag";
+}
+
 /* --------------------------------------------------------------- composition */
 
 /**
@@ -1755,9 +1871,10 @@ export function withStages(game, preludes) {
      a surprise that starts while the player is still reading act one. */
   const meta = [
     ...list.map((cfg) => ({
-      title: cfg.title, prompt: cfg.prompt, hint: cfg.hint
+      title: cfg.title, prompt: cfg.prompt, hint: cfg.hint, demo: demoForAct(cfg.kind, cfg)
     })),
-    { title: [game.titleEn, game.titleZh], prompt: [game.promptEn, game.promptZh], hint: [game.hintEn, game.hintZh] }
+    { title: [game.titleEn, game.titleZh], prompt: [game.promptEn, game.promptZh],
+      hint: [game.hintEn, game.hintZh], demo: game.demo || "tap" }
   ];
   const applyHint = (c, i) => {
     const m = meta[i];

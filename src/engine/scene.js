@@ -875,6 +875,7 @@ export function gameInfo(key, act = 0) {
     title: tx(title[0], title[1]),
     prompt: tx(prompt[0], prompt[1]),
     hint: tx(hint[0], hint[1]),
+    demo: m?.demo || g.demo || "tap",
     titlePair: title, promptPair: prompt, hintPair: hint,
     act: act + 1,
     acts: g.actCount || 1
