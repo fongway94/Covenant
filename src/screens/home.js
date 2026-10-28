@@ -39,7 +39,7 @@ export function titleHtml(ui) {
           <button class="btn btn-ghost" data-action="go" data-view="about">${icon("scroll", 16)} ${tx("About", "关于")}</button>
         </div>
       </div>
-      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.8.5", "互动圣经故事角色扮演游戏 · v0.8.5 原型")}</div>
+      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.8.6", "互动圣经故事角色扮演游戏 · v0.8.6 原型")}</div>
     </div>
   </div>`;
 }
@@ -104,7 +104,7 @@ export function aboutHtml(ui) {
         <li>The ending is <strong>not a personality test</strong>. It is a mirror of what you actually did, held up beside a biblical person — with their real failure included — and then it sends you to the passage. Only the LORD looks on the heart (1 Samuel 16:7).</li>
       </ul>
       <h3>What is in this prototype</h3>
-      <p>Ten playable chapters, ten controllable action scenes, a travellers’ camp hub with quests and NPCs, a breathing prayer, immersive no-tips mode (on by default), a living procedural soundtrack, a finale, four virtues, nine fruits of the Spirit, ten relics, nine seals, offline play and automatic save to your device.</p>
+      <p>Ten playable chapters, fourteen controllable scenes — a hand in a brook, a lantern-lift onto a donkey, a latch, a fire that must not be rushed, a cry through Nineveh — a travellers’ camp hub with quests and NPCs, a breathing prayer, immersive no-tips mode (on by default), a living procedural soundtrack, a finale, four virtues, nine fruits of the Spirit, ten relics, nine seals, offline play and automatic save to your device.</p>
       <h3>What you achieve by finishing</h3>
       <p>You do not beat the Bible — you witness all ten stories without changing their outcome. Your choices grow Courage, Wisdom, Compassion and Faith; you gather up to 9 fruits, 10 relics and 9 seals, pray, reflect and complete camp quests. The finale gives you a completion seal and a <strong>Journey Mirror</strong>: four virtues, four ways of walking, and one biblical person whose story rhymes with yours — including their real failure and a passage to go and read. It is a portrait of who you practised being, not a score of your worth. What you do with that character happens outside the game.</p>
       <h3>Under the hood</h3>
@@ -112,7 +112,7 @@ export function aboutHtml(ui) {
       <h3>For churches &amp; ministries</h3>
       <p>Before publishing, have your content reviewed by your own pastors or theological advisors. Translation choice, denominational distinctives and age-appropriateness are decisions best made by your community. See <code>docs/GAME_DESIGN.md</code> for the content guidelines and a chapter template.</p>
       <div class="divider"></div>
-      <p class="tiny muted center">Artwork generated for this project · interface and story text written for Covenant · v0.8.5 prototype</p>
+      <p class="tiny muted center">Artwork generated for this project · interface and story text written for Covenant · v0.8.6 prototype</p>
       ` : `
       <p class="verse">「你的话是我脚前的灯，是我路上的光。」 <span style="font-style:normal;font-size:.8em;color:var(--muted)">— 诗篇 119:105</span></p>
       <p>《Covenant／圣约》是一款以圣经真实故事为核心的互动角色扮演游戏。你不是去阅读<em>关于</em>大卫、但以理或以斯帖的故事，而是站在他们身旁——你的选择会塑造你自己的品格：勇气、智慧、怜悯与信心。</p>
@@ -128,7 +128,7 @@ export function aboutHtml(ui) {
         <li>结局<strong>不是人格测验</strong>。它是一面镜子，照出你实际做过的事，摆在一位圣经人物旁边——包括那人真实的失败——然后送你去读那段经文。唯有耶和华看内心（撒母耳记上 16:7）。</li>
       </ul>
       <h3>这个原型里有什么</h3>
-      <p>十个可玩章节、十个可操控的互动关卡、带任务与旅人的营地、呼吸祷告、默认开启的沉浸／无提示模式、会呼吸的程序配乐、终章、四种品格、圣灵九果、十件圣物、九枚印记、离线游玩，以及自动保存在本机。</p>
+      <p>十个可玩章节、十四个可操控的场景——溪水里的一只手、抬上驴背的重量、抬起的铁闩、不可催促的火、穿过尼尼微的一声呼喊——带任务与旅人的营地、呼吸祷告、默认开启的沉浸／无提示模式、会呼吸的程序配乐、终章、四种品格、圣灵九果、十件圣物、九枚印记、离线游玩，以及自动保存在本机。</p>
       <h3>玩完全程，你会得到什么</h3>
       <p>你不是「通关」圣经——你是在不改变经文结局的前提下，见证十段故事。你的选择会培养勇气、智慧、怜悯与信心；你可以收集最多 9 个果子、10 件圣物、9 枚印记，祷告、反思、完成营地任务。终章会给你一枚完成印记和一面<strong>「旅程之镜」</strong>：四种品格、四种走路方式，以及一位与你相似的圣经人物——包括他真实的失败，和一段你可以去读的经文。这是「你练习成为怎样的人」的画像，不是衡量你价值的分数。真正的成就，是你在游戏之外怎样活出这些品格。</p>
       <h3>技术实现</h3>
@@ -136,7 +136,7 @@ export function aboutHtml(ui) {
       <h3>给教会与事工团队</h3>
       <p>正式发布前，请让你们的牧者或神学顾问审阅内容。译本选择、宗派特色与适龄程度，最好由你们的群体决定。参见 <code>docs/GAME_DESIGN.md</code> 中的内容规范与章节模板。</p>
       <div class="divider"></div>
-      <p class="tiny muted center">插画为本项目生成 · 界面与故事文本为 Covenant 创作 · v0.8.5 原型</p>
+      <p class="tiny muted center">插画为本项目生成 · 界面与故事文本为 Covenant 创作 · v0.8.6 原型</p>
       `}
       <button class="btn btn-ghost btn-sm" style="margin-top:14px" data-action="go" data-view="title">${tx("Back to the title", "返回首页")}</button>
     </div>

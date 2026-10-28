@@ -3,7 +3,7 @@
    Catches runtime errors in step()/draw() that jsdom's null canvas cannot see.
    Run: npm run check:games */
 
-import { GAMES } from "../src/engine/games.js";
+import { GAMES, SCENES } from "../src/engine/games.js";
 import { clamp, rnd, dist } from "../src/engine/scene.js";
 
 const gradient = { addColorStop() {} };
@@ -98,7 +98,7 @@ function climaxInput(key, c, frame) {
       if (frame % 60 === 1) { p.startX = 60; p.startY = 500; g.onDown?.(c, p); }
       if (frame % 60 === 2) { p.x = 300; p.y = 250; g.onMove?.(c, p); g.onUp?.(c, p); }
       break;
-    case "lions": case "jericho": case "prodigal": case "esther":
+    case "lions": case "prodigal": case "esther":
       p.down = frame % 8 !== 0; p.x = 40 + ((frame * 17) % 310); p.y = 300 + Math.sin(frame / 6) * 120;
       break;
     case "storm":
@@ -119,6 +119,64 @@ function climaxInput(key, c, frame) {
     case "deep": {
       const orb = s.orbs?.[0];
       p.down = true; p.x = c.w * 0.26; p.y = orb?.y ?? c.h * 0.5;
+      break;
+    }
+    case "jericho": {
+      // lift him: hand on the bundle, always moving up; then hold him on
+      const spot = s.spot || { x: c.w * 0.3, y: c.h * 0.8 };
+      p.down = true;
+      p.x = spot.x;
+      if (s.phase === "lift") { if (p.y < 10) p.y = spot.y; p.y -= 10; } else p.y = spot.y;
+      break;
+    }
+    case "stones": {
+      // creep toward the next stone so the water stays calm
+      p.down = true;
+      const st = s.spots?.find((x) => !x.got);
+      if (st && st.px !== undefined) {
+        const dx = st.px - p.x, dy = st.py - p.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const step = Math.min(d, 2.4);
+        p.x += (dx / d) * step; p.y += (dy / d) * step;
+      }
+      break;
+    }
+    case "window": {
+      p.down = true;
+      if (s.phase === "latch") {
+        const l = s.latchPt || { x: c.w * 0.54, y: c.h * 0.48 };
+        p.x = l.x;
+        if (s.latch === 0 || p.y < 10) p.y = l.y;
+        p.y -= 7;
+      } else if (s.l < 1) {
+        if (p.x > (s.seamX ?? c.w * 0.5) - 40) p.x = (s.seamX ?? c.w * 0.5) - 45;
+        p.x = Math.max(8, p.x - 11); p.y = c.h * 0.4;
+      } else {
+        if (p.x < (s.seamX ?? c.w * 0.5) + 40) p.x = (s.seamX ?? c.w * 0.5) + 45;
+        p.x = Math.min(c.w - 8, p.x + 11); p.y = c.h * 0.4;
+      }
+      break;
+    }
+    case "flame": {
+      p.down = true;
+      // creep up, then rest: the fire only steadies for a still hand
+      if (p.y < 10) p.y = c.h * 0.9;
+      const mark = [0.42, 0.66, 0.88].find((m, i) => !s.steady?.[i]) ?? 0.88;
+      p.down = (s.approach ?? 0) < mark + 0.01;
+      if (p.down) p.y -= 1.6;
+      break;
+    }
+    case "cry": {
+      p.down = true;
+      const door = s.doors?.find((x) => !x.done);
+      if (door) {
+        if (Math.abs(door.u - s.p) < 0.05) {
+          g.onDown?.(c, p);
+        } else if (p.x > c.w - 46) {
+          p.down = false; g.onUp?.(c, p);
+          p.x = 36; p.down = true; s.last = null; g.onDown?.(c, p);
+        } else p.x += 11;
+      }
       break;
     }
     case "tend": {
@@ -143,8 +201,9 @@ function climaxInput(key, c, frame) {
 
 const errors = [];
 const results = [];
-for (const [key, game] of Object.entries(GAMES)) {
+for (const [key, game] of [...Object.entries(GAMES), ...Object.entries(SCENES).map(([k, v]) => [`${k}/raw`, v])]) {
   const c = makeC(key);
+  c.game = game;
   const ctx = mockCtx();
   const seen = {};
   const actsVisited = new Set();
@@ -155,7 +214,7 @@ for (const [key, game] of Object.entries(GAMES)) {
     actsVisited.add(c.actIndex);
     try {
       if (c.actIndex < c.actCount - 1) preludeInput(c, frame, seen);
-      else climaxInput(key, c, frame);
+      else climaxInput(key.replace("/raw", ""), c, frame);
     } catch (e) { errors.push(`${key} input f${frame} act${c.actIndex}: ${e.stack}`); break; }
     try { game.step(c, 0.05); } catch (e) { errors.push(`${key} step f${frame} act${c.actIndex}: ${e.stack}`); break; }
     if (frame % 3 === 0) {

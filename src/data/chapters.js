@@ -89,7 +89,11 @@ export const CHAPTERS = [
         ]
       },
       brook: {
-        hotspots: { count: 5, glyph: "◍", title: "Gather five smooth stones", titleZh: "拾起五块光滑的石子", prompt: "Sweep the lantern over the brook. Take only the SMOOTH stones — jagged decoys waste your focus. Every stone you find here is one you will carry into the fight.", promptZh: "用提灯扫过溪床。只捡「光滑」的石子——棱角锋利的假石会消耗你的专注。你在这里找到的每一块石头，都会成为上阵时的弹药。", xp: 8, stat: { faith: 1 }, decoyGlyph: "◆", seconds: 30 },
+        /* Sweeping a lantern over a painting was the same dull gesture in four
+           chapters. The brook is now felt rather than searched: a hand in cold
+           water, moving slowly enough to tell a smooth stone from a jagged one.
+           See GAMES.stones. */
+        game: "stones",
         lines: [
           ["", "The brook runs shallow and cold through the valley floor. David kneels and turns over stones until he finds five that sit perfectly in his palm."],
           ["elias", "Five smooth stones. People love to guess what the five mean — the five books of the Law, five wounds, five something. The text simply says five smooth stones. Sometimes the honest reading is the better one."],
@@ -202,7 +206,11 @@ export const CHAPTERS = [
         ]
       },
       upstairs: {
-        hotspots: { count: 3, glyph: "✧", title: "A window toward heaven", titleZh: "朝向天堂的窗", prompt: "Drag the lantern through the dark den and find the three places Daniel prays. Beware the pale shadows.", promptZh: "拖动提灯照亮黑暗的狮子坑，找出但以理每日三次祷告的地方。小心那些浅色的影子。", xp: 8, stat: { faith: 1 }, decoyGlyph: "◇" },
+        /* The upper room is not a place to search — it is a place where one
+           man does one thing three times a day. The interaction is the thing
+           itself: lift the latch, push the shutters toward Jerusalem. See
+           GAMES.window. */
+        game: "window",
         lines: [
           ["", "The upper room is plain. A mat, a scroll, a window open toward Jerusalem — hundreds of miles away, and yet the direction matters."],
           ["", "Daniel kneels. His knees are not what they were. He gives thanks, exactly as he had done before."],

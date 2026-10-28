@@ -102,12 +102,10 @@ export const EXTRA_CHAPTERS = [
         ]
       },
       bush: {
-        hotspots: {
-          count: 3, glyph: "✦", xp: 8, stat: { wisdom: 1 },
-          title: ["Three flames that do not consume", "三簇烧不尽的火焰"],
-          prompt: ["Sweep the lantern over the bush. Three flames burn without consuming — the pale glints are only reflections.", "用提灯扫过荆棘。三簇火焰烧不尽——浅色的闪光只是倒影。"],
-          titleZh: "三簇烧不尽的火焰", promptZh: "点击荆棘上每一簇发光的火焰。"
-        },
+        /* The old version asked the player to hunt three glowing marks on the
+           painting. The scene is now the command itself: do not come too close,
+           and do not hurry. See GAMES.flame. */
+        game: "flame",
         lines: L(
           ["voice", "I am the God of thy father, the God of Abraham, the God of Isaac, and the God of Jacob.", "我是你父亲的神，是亚伯拉罕的神、以撒的神、雅各的神。"],
           ["", "Moses hides his face. The bush keeps burning. No smoke, no ash, no hurry.", "摩西蒙住脸。荆棘继续燃烧。没有烟，没有灰，也没有丝毫匆忙。"],
@@ -289,12 +287,10 @@ export const EXTRA_CHAPTERS = [
         ]
       },
       nineveh: {
-        hotspots: {
-          count: 3, glyph: "✟", xp: 8, stat: { compassion: 1 },
-          title: ["Three cries in the city", "城中的三声呼喊"],
-          prompt: ["Carry the lantern through Nineveh. Only three places truly heard the message — the rest are empty echoes.", "提着灯穿过尼尼微。只有三处真正听见了信息——其余只是空洞的回声。"],
-          titleZh: "城中的三声呼喊", promptZh: "点击三处听见约拿信息的地方。"
-        },
+        /* A lantern walk through Nineveh becomes what Jonah actually did:
+           carry one sentence through a city three days wide, and stop where
+           people are listening. See GAMES.cry. */
+        game: "cry",
         lines: L(
           ["", "Nineveh is enormous — three days’ walk across. Jonah walks one day into it and shouts a single sentence.", "尼尼微极大——要走三天才走得完。约拿只走了一天，就喊出一句话。"],
           ["jonah", "Yet forty days, and Nineveh shall be overthrown!", "再等四十日，尼尼微必倾覆了！"],

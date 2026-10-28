@@ -437,88 +437,173 @@ const lions = {
 
 /* -------------------------------------------------------------- 3. JERICHO */
 
+/* ══════════════════ 3. THE ROAD — carry him to the inn ══════════════════
+   This used to be a lane-dodger with coins falling from the sky: fine for ten
+   seconds, and about as connected to the parable as a racing stripe. What the
+   text says the Samaritan actually did is go to him, bind his wounds, set him
+   on his own beast and bring him to an inn. Two of those are physical acts, so
+   the road is now played at arm's length on the painted night road: lift a
+   dead weight onto a donkey, then keep your hand on him while the animal
+   walks, because a man who cannot hold on will slide off. */
+
+const CARRY_IMG = "assets/art/carry.jpg";
+const CARRY_BODY = { fx: 0.295, fy: 0.845 };   // where he lies, in plate fractions
+const CARRY_BACK = { fx: 0.745, fy: 0.428 };   // across the donkey's back, behind the neck
+
+/* Dead weight, wrapped in a cloak: no limbs doing any work, so the silhouette
+   is a bundle with a head and a fold or two, not a person standing up. */
+function paintBundled(ctx, x, y, ang, sc, strip = 1) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.scale(sc, sc);
+  ctx.fillStyle = "rgba(8,6,4,.45)";
+  ctx.beginPath(); ctx.ellipse(2, 12, 52, 20, 0, 0, TAU); ctx.fill();
+  const g = ctx.createLinearGradient(0, -22, 0, 24);
+  g.addColorStop(0, "#efe3c6"); g.addColorStop(0.38, "#d3c4a3");
+  g.addColorStop(0.74, "#a1906f"); g.addColorStop(1, "#5b5040");
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.ellipse(0, 0, 54, 21, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = "rgba(92,74,50,.42)"; ctx.lineWidth = 1.4;
+  for (let i = -2; i <= 2; i++) {
+    ctx.beginPath();
+    ctx.moveTo(i * 15 - 6, -18 + Math.abs(i) * 1.5);
+    ctx.quadraticCurveTo(i * 15, 2, i * 15 + 9, 18 - Math.abs(i) * 1.5);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(255,248,226,.4)"; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.ellipse(0, -12, 44, 7, 0, Math.PI, TAU); ctx.stroke();
+  ctx.fillStyle = "#5f4835";
+  ctx.beginPath(); ctx.ellipse(-50, -5, 15, 13, -0.2, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#8a6b4e";
+  ctx.beginPath(); ctx.ellipse(-52, -9, 11, 8, -0.3, 0, TAU); ctx.fill();
+  if (strip > 0.4) {
+    ctx.strokeStyle = "rgba(247,238,216,.85)"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(-40, -15); ctx.lineTo(-26, 13); ctx.stroke();
+  }
+  ctx.restore();
+}
+
 const jericho = {
-  titleEn: "The Road to Jericho", titleZh: "耶利哥路上",
-  promptEn: "Drag left and right to dodge rocks and robbers. Collect six coins for the innkeeper before the road ends.",
-  promptZh: "左右拖动避开石头和强盗。在路走完之前，收集六枚银币交给店主。",
-  hintEn: "Drag to dodge · Collect 6 coins", hintZh: "拖动闪避 · 收集 6 枚银币",
-  hint(c) { return tx(this.hintEn, this.hintZh); },
+  titleEn: "Carry him to the inn", titleZh: "把他抬到客店",
+  promptEn: "Lift him onto the donkey — he cannot help you, so use your whole hand — then keep your palm on him while the animal walks. Let go and he slides.",
+  promptZh: "把他抬上驴背——他一点力气都出不上，得用整只手。然后一路把手按在他身上，驴走的时候别松手，一松他就会滑下来。",
+  hintEn: "Lift him onto the donkey", hintZh: "把他抬上驴背",
+  hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
-    c.state = { p: { x: c.w / 2, y: c.h * 0.8 }, coins: 0, objs: [], spawn: 0, dist: 0, inv: 0 };
+    c.state = {
+      t: 0, left: 58, phase: "lift", lift: 0, steady: 0, tilt: 0, bob: 0,
+      last: null, spot: pp(c, CARRY_BODY.fx, CARRY_BODY.fy), dust: [], flashRing: 0
+    };
     c.setHint(this.hint());
   },
   step(c, dt) {
-    const s = c.state;
-    s.dist += dt * 4.4; s.inv = Math.max(0, s.inv - dt);
-    c.progress = clamp(s.dist / 100, 0, 1);
-    const target = c.pointer.down ? c.pointer.x : null;
-    if (target !== null) s.p.x += clamp(target - s.p.x, -320 * dt, 320 * dt);
-    if (c.keys.has("arrowleft") || c.keys.has("a")) s.p.x -= 220 * dt;
-    if (c.keys.has("arrowright") || c.keys.has("d")) s.p.x += 220 * dt;
-    s.p.x = clamp(s.p.x, 24, c.w - 24);
-    s.spawn -= dt;
-    if (s.spawn <= 0) {
-      s.spawn = rnd(0.5, 0.85);
-      const isCoin = Math.random() < 0.48;
-      s.objs.push({ x: rnd(30, c.w - 30), y: -20, v: rnd(120, 175), r: isCoin ? 11 : 17, coin: isCoin, rock: !isCoin, spin: rnd(0, 6) });
-    }
-    for (let i = s.objs.length - 1; i >= 0; i--) {
-      const o = s.objs[i]; o.y += o.v * dt; o.spin += dt * 3;
-      if (dist(s.p.x, s.p.y, o.x, o.y) < o.r + 14) {
-        s.objs.splice(i, 1);
-        if (o.coin) {
-          s.coins++; c.addScore(20); c.hit("good"); c.spark(o.x, o.y, "#f0c46a", 12, 110);
-          c.float(o.x, o.y - 14, "+20", "#f0c46a");
-        } else if (s.inv <= 0) {
-          s.inv = 1.1; c.hurt(1);
-          if (c.hearts <= 0) return;
+    const s = c.state, q = c.pointer;
+    s.t += dt; s.left -= dt;
+    const body = pp(c, CARRY_BODY.fx, CARRY_BODY.fy);
+    const back = pp(c, CARRY_BACK.fx, CARRY_BACK.fy);
+    const dy = s.last ? q.y - s.last.y : 0;
+
+    if (s.phase === "lift") {
+      /* Heavy: only upward travel of the finger counts, and only while the
+         hand is actually on him. Nothing happens if you swipe the air. */
+      const grip = dist(q.x, q.y, s.spot.x, s.spot.y) < 92;
+      if (q.down && grip && dy < 0) {
+        s.lift = clamp(s.lift + (-dy) / (c.h * 0.40), 0, 1);
+        if (Math.random() < dt * 14) {
+          s.dust.push({ x: s.spot.x + rnd(-26, 26), y: s.spot.y + rnd(-8, 12), v: rnd(10, 30), life: 0.7, r: rnd(3, 8) });
         }
-      } else if (o.y > c.h + 30) s.objs.splice(i, 1);
-    }
-    c.setHint(`${tx("Drag to dodge · Collect 6 coins", "拖动闪避 · 收集 6 枚银币")}   ${s.coins}/6`);
-    if (c.progress >= 1) c.end(s.coins >= 6, c.score + (s.coins >= 6 ? 60 : 0));
-  },
-  draw(c, ctx) {
-    const s = c.state;
-    bg(c, ctx, "#2b3138", "#5c5341", 20);
-    hills(ctx, c, c.h * 0.4, "#4a4c42", 30);
-    // perspective road
-    ctx.fillStyle = "#8b7654";
-    ctx.beginPath(); ctx.moveTo(c.w * 0.44, c.h * 0.45); ctx.lineTo(c.w * 0.56, c.h * 0.45);
-    ctx.lineTo(c.w + 20, c.h); ctx.lineTo(-20, c.h); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = "rgba(255,240,200,.16)"; ctx.lineWidth = 2;
-    for (let i = 0; i < 8; i++) {
-      const y = c.h * 0.45 + ((i * 0.075 + (c.t * 0.35) % 0.075) * c.h);
-      if (y > c.h) continue;
-      ctx.beginPath(); ctx.moveTo(c.w * 0.5 - (y - c.h * 0.45) * 0.5, y); ctx.lineTo(c.w * 0.5 + (y - c.h * 0.45) * 0.5, y); ctx.stroke();
-    }
-    for (const o of s.objs) {
-      if (o.coin) coin(ctx, o.x, o.y, o.r, c.t);
-      else {
-        ctx.save(); ctx.translate(o.x, o.y); ctx.rotate(o.spin * 0.4);
-        ctx.fillStyle = "#5b574c"; ctx.beginPath();
-        for (let i = 0; i < 7; i++) { const a = (i / 7) * TAU; ctx.lineTo(Math.cos(a) * o.r * (0.8 + (i % 2) * 0.2), Math.sin(a) * o.r * 0.85); }
-        ctx.closePath(); ctx.fill(); ctx.strokeStyle = "#3d3a31"; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+      }
+      s.spot = {
+        x: body.x + (back.x - body.x) * s.lift,
+        y: body.y + (back.y - body.y) * s.lift - Math.sin(s.lift * Math.PI) * c.h * 0.05
+      };
+      c.progress = s.lift * 0.5;
+      c.setHint(`${tx("Lift him onto the donkey", "把他抬上驴背")}   ${Math.round(s.lift * 100)}%`);
+      if (s.lift >= 1) {
+        s.phase = "steady"; s.bob = 0; s.tilt = 0;
+        c.hit("unlock"); c.addScore(20);
+        c.spark(back.x, back.y, "#f4d79b", 20, 140);
+        c.float(back.x, back.y - 40, tx("On the beast", "上了驴背"), "#f4d79b");
+        c.setHint(tx("Keep your hand on him — the road is rough", "把手按在他身上——路很颠"));
+      }
+    } else {
+      s.bob += dt;
+      const step = Math.sin(s.bob * 2.3);
+      s.steady = clamp(s.steady + dt * 0.2, 0, 1);
+      /* Every step of the animal throws him a little; the only thing keeping
+         him on is your hand. */
+      const drift = step * 0.6 + Math.sin(s.bob * 0.83 + 1.7) * 0.4;
+      const bundle = { x: back.x + step * 5, y: back.y - Math.abs(step) * 7 };
+      const holding = q.down && dist(q.x, q.y, bundle.x, bundle.y) < 118;
+      s.tilt += (holding ? -s.tilt * 2.4 + drift * 0.35 : drift * 1.15 - s.tilt * 0.4) * dt;
+      if (holding && Math.abs(dy) > 3) s.tilt -= dy * 0.004;
+      if (Math.abs(s.tilt) > 1.05) {
+        s.tilt = 0; c.hurt(1);
+        c.float(bundle.x, bundle.y - 30, tx("He slips", "他滑了一下"), "#e08b78");
+        if (c.hearts <= 0) return;
+      }
+      s.spot = { x: bundle.x, y: bundle.y };
+      s.holding = holding;
+      c.progress = 0.5 + s.steady * 0.5;
+      c.setHint(`${tx("Keep your hand on him — the road is rough", "把手按在他身上——路很颠")}   ${Math.round(s.steady * 100)}%`);
+      if (s.steady >= 1) {
+        c.hit("complete"); c.spark(bundle.x, bundle.y, "#fff0c8", 30, 170);
+        c.end(true, c.score + 80); return;
       }
     }
-    if (c.progress > 0.8) {
-      const y = c.h * 0.45 + (c.progress - 0.8) * 260;
-      glow(ctx, c.w * 0.5, y, 40, "rgba(244,215,155,ALPHA)", 0.45);
-      ctx.fillStyle = "#f4d79b"; ctx.font = "20px serif"; ctx.textAlign = "center"; ctx.fillText("⌂", c.w * 0.5, y + 7);
+    s.last = { x: q.x, y: q.y };
+    for (const d of s.dust) { d.life -= dt; d.y -= d.v * dt; d.r += dt * 6; }
+    s.dust = s.dust.filter((d) => d.life > 0);
+    if (s.left <= 0) c.end(s.steady > 0.55, c.score);
+  },
+  onDown() {},
+  onUp() {},
+  draw(c, ctx) {
+    const s = c.state;
+    plateArt(c, ctx, CARRY_IMG, 0.12);
+    const body = pp(c, CARRY_BODY.fx, CARRY_BODY.fy);
+    const back = pp(c, CARRY_BACK.fx, CARRY_BACK.fy);
+
+    /* As he comes up, the painted man on the ground is shaded out, so the eye
+       follows the weight instead of seeing two of him. */
+    if (s.lift > 0.02) {
+      // the ground he leaves goes dark as the lantern goes with him
+      const sh = ctx.createRadialGradient(body.x + 4, body.y - 10, 8, body.x + 4, body.y - 10, 92);
+      sh.addColorStop(0, `rgba(8,10,12,${clamp(s.lift * 0.9, 0, 0.86)})`);
+      sh.addColorStop(0.62, `rgba(8,10,12,${clamp(s.lift * 0.7, 0, 0.66)})`);
+      sh.addColorStop(1, "rgba(8,10,12,0)");
+      ctx.fillStyle = sh;
+      ctx.beginPath();
+      ctx.ellipse(body.x + 4, body.y - 10, 108, 48, -0.14, 0, TAU);
+      ctx.fill();
+      // the lantern pool widens with the work
+      const g = ctx.createRadialGradient(s.spot.x, s.spot.y - 30, 10, s.spot.x, s.spot.y - 30, c.w * 0.55);
+      g.addColorStop(0, "rgba(255,206,132,.16)");
+      g.addColorStop(1, "rgba(30,24,18,0)");
+      ctx.fillStyle = g; ctx.fillRect(0, 0, c.w, c.h);
     }
-    ctx.globalAlpha = s.inv > 0 ? 0.5 + Math.sin(c.t * 30) * 0.3 : 1;
-    /* The road widens with perspective, so the traveller grows as he comes
-       down the hill. Height follows the road, not the screen. */
-    const near = clamp((s.p.y - c.h * 0.45) / (c.h * 0.55), 0, 1);
-    const th = clamp(c.h * (0.10 + near * 0.14), 62, 210);
-    actorShadow(ctx, s.p.x, s.p.y + 2, th * 0.2, 0.3);
-    const drewTrav = actor(ctx, "traveller", s.p.x, s.p.y, th, {
-      flip: -1,
-      rot: 0.05 + Math.sin(c.t * 9) * 0.015, squash: 1 + Math.sin(c.t * 9) * 0.012
-    });
-    if (!drewTrav) pilgrim(ctx, s.p.x, s.p.y, 1.05, c.t * 2.2, 1, 1, false);
-    ctx.globalAlpha = 1;
+
+    const ang = (s.phase === "lift" ? s.lift * 0.2 : 0.13 + s.tilt * 0.2) - 0.16;
+    paintBundled(ctx, s.spot.x, s.spot.y, ang, 0.7, 1);
+
+    // the grip: a soft ring where the hand belongs, so the scene is touchable
+    if (s.phase === "lift" || s.holding) {
+      ctx.strokeStyle = `rgba(247,221,165,${0.22 + Math.sin(c.t * 3) * 0.1})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(s.spot.x, s.spot.y, s.phase === "lift" ? 74 : 92, 0, TAU); ctx.stroke();
+    }
+    for (const d of s.dust) {
+      ctx.fillStyle = `rgba(198,174,138,${d.life * 0.35})`;
+      ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, TAU); ctx.fill();
+    }
+    if (s.phase === "steady" && Math.abs(s.tilt) > 0.55) {
+      ctx.fillStyle = `rgba(224,139,120,${Math.min(0.28, (Math.abs(s.tilt) - 0.55) * 0.5)})`;
+      ctx.fillRect(0, 0, c.w, c.h);
+    }
+    const vig = ctx.createRadialGradient(c.w * 0.5, c.h * 0.55, c.h * 0.22, c.w * 0.5, c.h * 0.6, c.h * 0.8);
+    vig.addColorStop(0, "rgba(0,0,0,0)");
+    vig.addColorStop(1, "rgba(4,7,10,.72)");
+    ctx.fillStyle = vig; ctx.fillRect(0, 0, c.w, c.h);
+    void body; void back;
   }
 };
 
@@ -1067,6 +1152,625 @@ const tend = {
   }
 };
 
+/* ══════════════════ 3c. PAINTED PLATES ══════════════════
+   Four interaction beats that used to be the same shared mechanic — a lantern
+   you swept over a still painting, tapping glyphs that lit up, with decoys to
+   make it feel like a game. They were the dullest moments in each chapter, and
+   they were identical in all four. Each one is now a physical act on its own
+   painted plate: feel for stones in a cold brook, unbolt and open a window
+   toward Jerusalem, walk toward a fire that must not be rushed, and carry a
+   cry through the streets of Nineveh.
+
+   All four share one plate transform, so the paint and the hit areas can never
+   drift apart. */
+
+const PLATE = { w: 760, h: 1017 };
+function plateT(c) {
+  const s = Math.max(c.w / PLATE.w, c.h / PLATE.h);
+  return { s, dx: (c.w - PLATE.w * s) / 2, dy: (c.h - PLATE.h * s) / 2 };
+}
+/* plate fraction → canvas pixels (and the scale, for sizing drawn detail) */
+function pp(c, fx, fy) {
+  const t = plateT(c);
+  return { x: t.dx + fx * PLATE.w * t.s, y: t.dy + fy * PLATE.h * t.s, s: t.s };
+}
+function plateArt(c, ctx, src, dim = 0) {
+  const t = plateT(c);
+  const img = loadArt(src);
+  let ok = false;
+  if (img && img.complete && img.naturalWidth > 0) {
+    try { ctx.drawImage(img, t.dx, t.dy, PLATE.w * t.s, PLATE.h * t.s); ok = true; } catch { ok = false; }
+  }
+  if (!ok) {
+    const g = ctx.createLinearGradient(0, 0, 0, c.h);
+    g.addColorStop(0, "#0b141b"); g.addColorStop(0.55, "#1b2422"); g.addColorStop(1, "#231c14");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, c.w, c.h);
+  }
+  if (dim > 0) { ctx.fillStyle = `rgba(6,9,12,${dim})`; ctx.fillRect(0, 0, c.w, c.h); }
+  return ok;
+}
+function plateVignette(c, ctx, strength = 0.7) {
+  const v = ctx.createRadialGradient(c.w * 0.5, c.h * 0.52, c.h * 0.2, c.w * 0.5, c.h * 0.58, c.h * 0.8);
+  v.addColorStop(0, "rgba(0,0,0,0)");
+  v.addColorStop(1, `rgba(4,6,9,${strength})`);
+  ctx.fillStyle = v; ctx.fillRect(0, 0, c.w, c.h);
+}
+
+/* ─────────────────── 1. THE BROOK — five smooth stones ─────────────────── */
+const stones = {
+  titleEn: "Five smooth stones", titleZh: "五块光滑的石子",
+  promptEn: "Wade in and drag your hand slowly through the water. A hurried hand clouds the brook; only a still one can feel the difference between a smooth stone and a jagged one.",
+  promptZh: "走进溪水，把手慢慢在水中拖动。手一急，水就浑了；只有静下来的手，才摸得出光滑的石子和有棱角的石子。",
+  hintEn: "Drag slowly through the water", hintZh: "在水中慢慢拖动",
+  hint() { return tx(this.hintEn, this.hintZh); },
+  init(c) {
+    c.maxHearts = 0; c.hearts = 0;
+    /* positions are plate fractions; the scattered ones near the bank are
+       decoys, and they are the jagged ones */
+    const spots = [
+      [0.34, 0.52, 1], [0.60, 0.46, 0], [0.47, 0.62, 1], [0.68, 0.66, 1],
+      [0.29, 0.70, 1], [0.55, 0.78, 0], [0.72, 0.38, 0], [0.40, 0.82, 1]
+    ];
+    c.state = {
+      t: 0, left: 48, got: 0, grip: 0, gripI: -1, murk: 0, speed: 0,
+      spots: spots.map(([fx, fy, smooth], i) => ({ fx, fy, smooth: !!smooth, got: false, i, pop: 0 })),
+      rings: [], last: null
+    };
+    c.setHint(this.hint());
+  },
+  step(c, dt) {
+    const s = c.state, q = c.pointer;
+    s.t += dt; s.left -= dt;
+    if (s.last) {
+      const d = dist(q.x, q.y, s.last.x, s.last.y);
+      s.speed = s.speed * 0.72 + (d / Math.max(0.001, dt)) * 0.28;
+    }
+    s.last = { x: q.x, y: q.y };
+    s.murk = clamp(s.murk - dt * 0.5, 0, 1);
+
+    let near = -1, nd = 1e9;
+    for (const st of s.spots) {
+      if (st.got) continue;
+      const p = pp(c, st.fx, st.fy);
+      st.px = p.x; st.py = p.y;              // canvas position, also used by the oracles
+      const d = dist(q.x, q.y, p.x, p.y);
+      if (d < 42 && d < nd) { nd = d; near = st.i; }
+    }
+    const calm = s.speed < 210 && s.murk < 0.72;
+    if (q.down && near >= 0 && calm) {
+      if (s.gripI !== near) { s.gripI = near; s.grip = 0; }
+      s.grip += dt;
+      if (s.grip >= 0.5) {
+        const st = s.spots[near];
+        st.got = true; st.pop = 1; s.grip = 0; s.gripI = -1;
+        const p = pp(c, st.fx, st.fy);
+        c.ring(p.x, p.y, "rgba(198,232,242,.55)", 36);
+        if (st.smooth) {
+          s.got++; c.addScore(18); c.hit("good");
+          c.spark(p.x, p.y, "#d8eef6", 14, 120);
+          c.float(p.x, p.y - 24, tx("smooth", "光滑"), "#e6f4fa");
+        } else {
+          s.murk = clamp(s.murk + 0.3, 0, 1); c.hit("miss");
+          c.float(p.x, p.y - 24, tx("jagged — it slips", "有棱角——滑走了"), "#cda887");
+        }
+      }
+    } else {
+      s.grip = Math.max(0, s.grip - dt * 1.8);
+      if (q.down && s.speed >= 210) s.murk = clamp(s.murk + dt * 0.85, 0, 1);
+    }
+    for (const r of s.rings) { r.life -= dt; r.r += dt * 90; }
+    s.rings = s.rings.filter((r) => r.life > 0);
+    for (const st of s.spots) st.pop = Math.max(0, st.pop - dt * 1.6);
+
+    c.progress = s.got / 5;
+    c.setHint(`${tx("Drag slowly through the water", "在水中慢慢拖动")}   ${s.got}/5${s.murk > 0.55 ? "   " + tx("the water is clouding", "水浑了") : ""}`);
+    if (s.got >= 5 && !s.ended) {
+      s.ended = true; c.hit("unlock"); c.end(true, c.score + 60); return;
+    }
+    if (s.left <= 0) c.end(s.got >= 5, c.score);
+  },
+  draw(c, ctx) {
+    const s = c.state;
+    plateArt(c, ctx, "assets/art/stones.jpg", 0.18);
+    // the brook's own light: caustics sliding over the bed
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    for (let i = 0; i < 7; i++) {
+      const y = c.h * (0.42 + i * 0.07);
+      ctx.strokeStyle = `rgba(196,232,236,${0.05 + 0.03 * Math.sin(s.t * 1.4 + i)})`;
+      ctx.lineWidth = 2 + Math.sin(s.t + i) * 1.5;
+      ctx.beginPath();
+      for (let x = -10; x <= c.w + 10; x += 12) ctx.lineTo(x, y + Math.sin(x * 0.04 + s.t * 1.6 + i) * 5);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    /* Nothing is drawn until a hand comes near it. The brook is painted, so the
+       stones have to be felt through the water rather than printed on top of it:
+       the one under the finger surfaces, the rest stay part of the bed. */
+    for (const st of s.spots) {
+      if (st.got) continue;
+      const p = pp(c, st.fx, st.fy);
+      const d = dist(c.pointer.x, c.pointer.y, p.x, p.y);
+      const seen = clamp(1 - (d - 26) / 46, 0, 1) * (1 - s.murk * 0.75);
+      if (seen <= 0.02) continue;
+      const r = 13 * p.s;
+      ctx.save();
+      ctx.globalAlpha = seen * 0.85;
+      const g = ctx.createLinearGradient(p.x, p.y - r, p.x, p.y + r);
+      g.addColorStop(0, st.smooth ? "#9aa5a2" : "#8e7f6b");
+      g.addColorStop(1, st.smooth ? "#3f4a48" : "#3a3227");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.ellipse(p.x, p.y + 2, r, r * 0.72, 0.18, 0, TAU); ctx.fill();
+      ctx.fillStyle = "rgba(236,248,250,.3)";
+      ctx.beginPath(); ctx.ellipse(p.x - r * 0.3, p.y - r * 0.3, r * 0.38, r * 0.2, 0.2, 0, TAU); ctx.fill();
+      ctx.strokeStyle = `rgba(214,238,242,${0.22 * seen})`;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(p.x, p.y, r + 8, 0, TAU); ctx.stroke();
+      ctx.restore();
+    }
+
+    // the murk a hurried hand stirs up
+    if (s.murk > 0.02) {
+      ctx.fillStyle = `rgba(150,146,120,${s.murk * 0.4})`;
+      ctx.fillRect(0, 0, c.w, c.h);
+    }
+    // rings from the water, and the grip holding
+    ctx.strokeStyle = "rgba(226,246,250,.34)"; ctx.lineWidth = 1.4;
+    for (const r of s.rings) { ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, TAU); ctx.stroke(); }
+    if (s.grip > 0.02) {
+      ctx.strokeStyle = "rgba(247,221,165,.22)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(c.pointer.x, c.pointer.y, 20, 0, TAU); ctx.stroke();
+      ctx.strokeStyle = "rgba(247,221,165,.9)"; ctx.lineWidth = 2.6;
+      ctx.beginPath(); ctx.arc(c.pointer.x, c.pointer.y, 20, -Math.PI / 2, -Math.PI / 2 + Math.min(1, s.grip / 0.5) * TAU); ctx.stroke();
+    }
+    if (c.pointer.down) {
+      ctx.fillStyle = "rgba(226,246,250,.1)";
+      ctx.beginPath(); ctx.arc(c.pointer.x, c.pointer.y, 15, 0, TAU); ctx.fill();
+    }
+
+    /* Stones already taken, laid out on the bank at the bottom of the frame:
+       small, wet, and countable — no floating hand. */
+    for (let i = 0; i < 5; i++) {
+      const x = c.w * 0.5 + (i - 2) * 28, y = c.h - 56;
+      ctx.save();
+      ctx.globalAlpha = i < s.got ? 0.92 : 0.16;
+      const g = ctx.createLinearGradient(x, y - 7, x, y + 7);
+      g.addColorStop(0, i < s.got ? "#8f9c98" : "#4d5a57");
+      g.addColorStop(1, i < s.got ? "#4b5754" : "#333d3b");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.ellipse(x, y, 8.5, 6, 0.1, 0, TAU); ctx.fill();
+      if (i < s.got) {
+        ctx.fillStyle = "rgba(245,252,252,.4)";
+        ctx.beginPath(); ctx.ellipse(x - 2.4, y - 2, 3, 1.6, 0.2, 0, TAU); ctx.fill();
+      }
+      ctx.restore();
+    }
+    plateVignette(c, ctx, 0.66);
+  }
+};
+
+/* ─────────────── 2. THE UPPER ROOM — a window toward heaven ─────────────── */
+const WINDOW_IMG = "assets/art/window.jpg";
+const WIN_LATCH = { fx: 0.532, fy: 0.455 };
+const WIN_SPLIT = 0.494;                 // the seam between the two shutters
+const windowScene = {
+  titleEn: "A window toward heaven", titleZh: "朝向天堂的窗",
+  promptEn: "His windows were open toward Jerusalem. Lift the iron latch, then push each shutter wide — three times a day he did this, and a decree will not change it.",
+  promptZh: "他的窗户朝着耶路撒冷开着。抬起铁闩，再把两扇窗推开——他每日三次这样做，一道禁令改变不了这件事。",
+  hintEn: "Lift the latch", hintZh: "抬起铁闩",
+  hint() { return tx(this.hintEn, this.hintZh); },
+  init(c) {
+    c.maxHearts = 0; c.hearts = 0;
+    c.state = { t: 0, phase: "latch", latch: 0, l: 0, r: 0, last: null, motes: [] };
+    c.setHint(this.hint());
+  },
+  step(c, dt) {
+    const s = c.state, q = c.pointer;
+    s.t += dt;
+    const latch = pp(c, WIN_LATCH.fx, WIN_LATCH.fy);
+    s.latchPt = { x: latch.x, y: latch.y };
+    s.seamX = pp(c, WIN_SPLIT, 0.45).x;
+    if (s.phase === "latch") {
+      if (q.down && dist(q.x, q.y, latch.x, latch.y) < 78 && s.last) {
+        s.latch = clamp(s.latch + Math.max(0, s.last.y - q.y) / (c.h * 0.05), 0, 1);
+      }
+      c.progress = s.latch * 0.22;
+      c.setHint(`${tx("Lift the latch", "抬起铁闩")}   ${Math.round(s.latch * 100)}%`);
+      if (s.latch >= 1) {
+        s.phase = "open"; c.hit("unlock"); c.addScore(10);
+        c.spark(latch.x, latch.y, "#f0c46a", 16, 110);
+        c.float(latch.x, latch.y - 26, tx("Unlatched", "闩开了"), "#f0c46a");
+        c.setHint(tx("Push the shutters open", "把两扇窗推开"));
+      }
+    } else {
+      const cxs = pp(c, WIN_SPLIT, 0.4);
+      const dxf = s.last ? q.x - s.last.x : 0;
+      if (q.down && q.x < cxs.x) s.l = clamp(s.l + Math.max(0, -dxf) / (c.w * 0.3), 0, 1);
+      if (q.down && q.x > cxs.x) s.r = clamp(s.r + Math.max(0, dxf) / (c.w * 0.3), 0, 1);
+      c.progress = 0.22 + (s.l + s.r) * 0.39;
+      c.setHint(`${tx("Push the shutters open", "把两扇窗推开")}   ${Math.round((s.l + s.r) / 2 * 100)}%`);
+      if (s.l >= 1 && s.r >= 1) {
+        c.hit("complete"); c.addScore(30);
+        const beam = pp(c, WIN_SPLIT, 0.5);
+        c.spark(beam.x, beam.y, "#fff4d6", 30, 150);
+        c.end(true, c.score + 60); return;
+      }
+    }
+    s.last = { x: q.x, y: q.y };
+    // dust turning in the light
+    if (s.l + s.r > 0.1 && Math.random() < dt * 14) {
+      const beam = pp(c, WIN_SPLIT, 0.5);
+      s.motes.push({ x: beam.x + rnd(-30, 30), y: beam.y + rnd(-20, 120), v: rnd(4, 14), life: rnd(1.6, 3.2) });
+    }
+    for (const m of s.motes) { m.life -= dt; m.y -= m.v * dt; }
+    s.motes = s.motes.filter((m) => m.life > 0);
+  },
+  draw(c, ctx) {
+    const s = c.state;
+    plateArt(c, ctx, WINDOW_IMG, 0.3);
+    const openAvg = clamp((s.l + s.r) / 2, 0, 1);
+    const seam = pp(c, WIN_SPLIT, 0.4);
+    const frameTop = pp(c, WIN_SPLIT, 0.2);
+    const frameBot = pp(c, WIN_SPLIT, 0.62);
+
+    /* The painted shutters cannot swing, so each one is shaded out as it opens
+       and the dawn is drawn into the gap it leaves — which is what the eye
+       actually reads. */
+    /* A shutter that swings away leaves the room darker, not a black rectangle:
+       the shadow is feathered so its edges dissolve into the plaster. */
+    for (const [side, amt] of [[0, s.l], [1, s.r]]) {
+      if (amt <= 0.01) continue;
+      const a = pp(c, side ? WIN_SPLIT : 0.255, 0.19), b = pp(c, side ? 0.735 : WIN_SPLIT, 0.625);
+      const gx = side ? b.x : a.x, gw = b.x - a.x;
+      const sh = ctx.createLinearGradient(side ? gx : gx + gw, 0, side ? gx + gw : gx, 0);
+      sh.addColorStop(0, `rgba(10,12,14,${clamp(amt * 0.9, 0, 0.9)})`);
+      sh.addColorStop(1, "rgba(10,12,14,0)");
+      ctx.fillStyle = sh;
+      ctx.fillRect(a.x, a.y, gw, b.y - a.y);
+    }
+    if (openAvg > 0.01) {
+      const gap = 6 + openAvg * 46;
+      const g = ctx.createLinearGradient(seam.x - gap, 0, seam.x + gap, 0);
+      g.addColorStop(0, "rgba(255,226,170,0)");
+      g.addColorStop(0.5, `rgba(255,238,198,${0.42 + openAvg * 0.36})`);
+      g.addColorStop(1, "rgba(255,226,170,0)");
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(seam.x - gap, frameTop.y, gap * 2, frameBot.y - frameTop.y);
+      ctx.clip();
+      ctx.fillStyle = g;
+      ctx.fillRect(seam.x - gap, frameTop.y, gap * 2, frameBot.y - frameTop.y);
+      // let the beam die away at the lintel and the sill instead of ending flat
+      const fade = ctx.createLinearGradient(0, frameTop.y, 0, frameBot.y);
+      fade.addColorStop(0, "rgba(0,0,0,.55)");
+      fade.addColorStop(0.18, "rgba(0,0,0,0)");
+      fade.addColorStop(0.78, "rgba(0,0,0,0)");
+      fade.addColorStop(1, "rgba(0,0,0,.45)");
+      ctx.fillStyle = fade;
+      ctx.fillRect(seam.x - gap, frameTop.y, gap * 2, frameBot.y - frameTop.y);
+      ctx.restore();
+      // the shaft of light it throws across the floor
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      const shaft = ctx.createLinearGradient(0, frameBot.y, 0, c.h);
+      shaft.addColorStop(0, `rgba(255,232,182,${0.1 + openAvg * 0.22})`);
+      shaft.addColorStop(1, "rgba(255,226,170,0)");
+      ctx.fillStyle = shaft;
+      ctx.beginPath();
+      ctx.moveTo(seam.x - gap, frameBot.y);
+      ctx.lineTo(seam.x + gap, frameBot.y);
+      ctx.lineTo(seam.x + gap + c.w * 0.34 * openAvg, c.h);
+      ctx.lineTo(seam.x - gap - c.w * 0.34 * openAvg, c.h);
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+
+    // the latch and its slot
+    const latch = pp(c, WIN_LATCH.fx, WIN_LATCH.fy);
+    const lift = s.latch * pp(c, 0, 0).s * 14;
+    ctx.save();
+    ctx.strokeStyle = "rgba(24,20,16,.55)"; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(latch.x - 26, latch.y + 12); ctx.lineTo(latch.x + 4, latch.y + 12); ctx.stroke();
+    /* The latch is already painted, so it is lit rather than redrawn: a warm
+       glint that travels up the bar as the player lifts it. */
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    const glint = ctx.createRadialGradient(latch.x - 6, latch.y - lift + 4, 1, latch.x - 6, latch.y - lift + 4, 26);
+    glint.addColorStop(0, `rgba(255,226,168,${0.22 + s.latch * 0.4})`);
+    glint.addColorStop(1, "rgba(255,200,120,0)");
+    ctx.fillStyle = glint;
+    ctx.beginPath(); ctx.arc(latch.x - 6, latch.y - lift + 4, 26, 0, TAU); ctx.fill();
+    ctx.restore();
+    if (s.phase === "latch") {
+      ctx.strokeStyle = `rgba(247,221,165,${0.3 + Math.sin(s.t * 3) * 0.14})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(latch.x - 10, latch.y + 2, 40, 0, TAU); ctx.stroke();
+      ctx.fillStyle = "rgba(255,244,214,.75)";
+      ctx.beginPath();
+      const ay = latch.y - 46 - Math.sin(s.t * 2.4) * 4;
+      ctx.moveTo(latch.x - 10, ay); ctx.lineTo(latch.x - 16, ay + 11); ctx.lineTo(latch.x - 4, ay + 11);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+
+    for (const m of s.motes) {
+      ctx.fillStyle = `rgba(255,240,208,${Math.min(0.5, m.life * 0.3)})`;
+      ctx.beginPath(); ctx.arc(m.x, m.y, 1.4, 0, TAU); ctx.fill();
+    }
+    plateVignette(c, ctx, 0.72);
+  }
+};
+
+/* ─────────────── 3. THE BUSH — do not come too close ─────────────── */
+const flame = {
+  titleEn: "Do not come too close", titleZh: "不要近前",
+  promptEn: "The flame does not consume the branches. Draw near to it slowly — a hurried approach makes it flare, and you will have to begin again. Three times it steadies before it speaks.",
+  promptZh: "火焰烧不着枝子。慢慢靠近——走得急，火就窜起来，你得从头再来。它安定三次之后，才开口说话。",
+  hintEn: "Drag upward, slowly", hintZh: "慢慢往上拖",
+  hint() { return tx(this.hintEn, this.hintZh); },
+  init(c) {
+    c.maxHearts = 0; c.hearts = 0;
+    c.state = { t: 0, left: 62, approach: 0, hold: 0, steady: [0, 0, 0], steadyT: [0, 0, 0], flare: 0, embers: [] };
+    c.setHint(this.hint());
+  },
+  step(c, dt) {
+    const s = c.state, q = c.pointer;
+    s.t += dt; s.left -= dt;
+    s.flare = Math.max(0, s.flare - dt * 1.6);
+    /* The distance closed is accumulated from the hand's own upward travel,
+       not read off where the finger happens to land — so a touch high on the
+       screen cannot skip the approach, and a jumpy drag is what flares. */
+    let rate = 0;      // a lifted hand is not a rush
+    if (q.down) {
+      const up = Math.max(0, (s.lastY ?? q.y) - q.y);
+      const dApproach = up / (c.h * 0.55);
+      rate = dApproach / Math.max(0.001, dt);
+      if (rate > 0.62) {
+        s.approach = clamp(s.approach - 0.16, 0, 1);
+        s.flare = 1; c.hit("miss"); c.bump(6);
+        c.float(q.x, q.y - 20, tx("Too fast", "太急了"), "#e8a06f");
+      } else {
+        s.approach = clamp(s.approach + dApproach, 0, 1);
+      }
+    }
+    s.lastY = q.y;
+    const marks = [0.42, 0.66, 0.88];
+    let done = 0;
+    for (let i = 0; i < 3; i++) {
+      if (s.steady[i]) { done++; continue; }
+      if (s.approach >= marks[i] - 0.012) {
+        if (Math.abs(rate) < 0.05) {
+          s.steadyT[i] += dt;
+          if (s.steadyT[i] > 0.85) {
+            s.steady[i] = 1; done++;
+            c.hit("good"); c.addScore(20);
+            const f = pp(c, 0.505, 0.42);
+            c.spark(f.x, f.y, "#ffd58a", 20, 130);
+            c.float(f.x, f.y - 50, tx("Steady", "安定了"), "#ffd58a");
+            c.ring(f.x, f.y, "rgba(255,200,120,.5)", 70);
+          }
+        } else s.steadyT[i] = Math.max(0, s.steadyT[i] - dt * 2);
+      } else s.steadyT[i] = Math.max(0, s.steadyT[i] - dt);
+    }
+    if (Math.random() < dt * (4 + s.approach * 10)) {
+      const f = pp(c, 0.505, 0.42);
+      s.embers.push({ x: f.x + rnd(-24, 24), y: f.y + rnd(-10, 20), v: rnd(18, 46), life: rnd(0.8, 1.8) });
+    }
+    for (const e of s.embers) { e.life -= dt; e.y -= e.v * dt; e.x += Math.sin(e.y * 0.03) * 8 * dt; }
+    s.embers = s.embers.filter((e) => e.life > 0);
+
+    c.progress = done / 3;
+    c.setHint(`${tx("Drag upward, slowly", "慢慢往上拖")}   ${done}/3`);
+    if (done >= 3) { c.hit("unlock"); c.end(true, c.score + 60); return; }
+    if (s.left <= 0) c.end(done > 0, c.score);
+  },
+  draw(c, ctx) {
+    const s = c.state;
+    plateArt(c, ctx, "assets/art/flame.jpg", 0.12);
+    const f = pp(c, 0.505, 0.42);
+
+    // the fire answers how near you are
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    const glow = ctx.createRadialGradient(f.x, f.y, 6, f.x, f.y, c.w * (0.34 + s.approach * 0.22 + s.flare * 0.3));
+    glow.addColorStop(0, `rgba(255,196,110,${0.24 + s.approach * 0.3 + s.flare * 0.4})`);
+    glow.addColorStop(1, "rgba(255,150,60,0)");
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, c.w, c.h);
+    ctx.restore();
+
+    /* No invented flames: the painting's fire is the fire. What the player
+       needs instead is a way to read how far they have dared to come, so the
+       approach is drawn as a depth rail on the edge of the frame with the three
+       places the fire steadies marked on it. */
+    const railX = c.w - 22, railTop = c.h * 0.3, railBot = c.h * 0.64;
+    const railY = (v) => railBot - v * (railBot - railTop);
+    ctx.strokeStyle = "rgba(226,196,150,.18)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(railX, railTop); ctx.lineTo(railX, railBot); ctx.stroke();
+    for (const m of [0.42, 0.66, 0.88]) {
+      const i = m === 0.42 ? 0 : m === 0.66 ? 1 : 2;
+      const lit = s.steady[i];
+      ctx.strokeStyle = lit ? "rgba(255,228,170,.9)" : "rgba(226,196,150,.35)";
+      ctx.lineWidth = lit ? 3 : 1.6;
+      ctx.beginPath(); ctx.moveTo(railX - 7, railY(m)); ctx.lineTo(railX + 7, railY(m)); ctx.stroke();
+    }
+    ctx.fillStyle = "rgba(255,226,170,.85)";
+    ctx.beginPath(); ctx.arc(railX, railY(s.approach), 4.5, 0, TAU); ctx.fill();
+    ctx.fillStyle = "rgba(255,226,170,.18)";
+    ctx.beginPath(); ctx.arc(railX, railY(s.approach), 9, 0, TAU); ctx.fill();
+
+    for (const e of s.embers) {
+      ctx.fillStyle = `rgba(255,196,120,${Math.min(0.8, e.life)})`;
+      ctx.beginPath(); ctx.arc(e.x, e.y, 1.6, 0, TAU); ctx.fill();
+    }
+
+    // how far you have dared to come, and how still you are being about it
+    if (c.pointer.down) {
+      ctx.strokeStyle = "rgba(247,221,165,.75)"; ctx.lineWidth = 3;
+      const next = s.steady[0] ? (s.steady[1] ? 2 : 1) : 0;
+      const t = s.steadyT[next] / 0.85;
+      ctx.beginPath(); ctx.arc(c.pointer.x, c.pointer.y, 30, -Math.PI / 2, -Math.PI / 2 + clamp(t, 0, 1) * TAU); ctx.stroke();
+    }
+    // the sandals left on the rock, warming
+    const sd = pp(c, 0.36, 0.78);
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    ctx.fillStyle = `rgba(255,190,120,${0.06 + s.approach * 0.12})`;
+    ctx.beginPath(); ctx.ellipse(sd.x, sd.y, 60, 24, -0.2, 0, TAU); ctx.fill();
+    ctx.restore();
+    if (s.flare > 0.02) {
+      ctx.fillStyle = `rgba(255,176,96,${s.flare * 0.28})`;
+      ctx.fillRect(0, 0, c.w, c.h);
+    }
+    plateVignette(c, ctx, 0.6);
+  }
+};
+
+/* ─────────────── 4. NINEVEH — carry the cry through the city ─────────────── */
+const cry = {
+  titleEn: "Yet forty days", titleZh: "再等四十日",
+  promptEn: "Nineveh is three days wide and the message is one sentence. Walk the street — drag to move — and stop where people are listening long enough to cry it out.",
+  promptZh: "尼尼微宽得要走三天，而信息只有一句话。沿街走——拖动前进——在有人愿意听的地方停下来，把话喊出去。",
+  hintEn: "Drag to walk · stop and tap to cry", hintZh: "拖动行走 · 停下点击呼喊",
+  hint() { return tx(this.hintEn, this.hintZh); },
+  init(c) {
+    c.maxHearts = 0; c.hearts = 0;
+    c.state = {
+      t: 0, left: 46, p: 0.08, last: null, calls: 0, wave: 0,
+      doors: [{ u: 0.3, done: false }, { u: 0.56, done: false }, { u: 0.8, done: false }],
+      cloth: [], motes: []
+    };
+    c.setHint(this.hint());
+  },
+  onDown(c) {
+    const s = c.state;
+    s.last = null;                    // a fresh press never reads as a jump
+    for (const d of s.doors) {
+      if (d.done) continue;
+      if (Math.abs(d.u - s.p) < 0.07) {
+        d.done = true; s.calls++; s.wave = 1;
+        c.hit("good"); c.addScore(20);
+        c.float(c.w * 0.5, c.h * 0.55, tx("They stop", "他们停住了"), "#ffd58a");
+        c.ring(c.w * 0.5, c.h * 0.6, "rgba(255,214,150,.5)", 90);
+        s.cloth.push({ u: d.u, life: 1 });
+        return;
+      }
+    }
+  },
+  step(c, dt) {
+    const s = c.state, q = c.pointer;
+    s.t += dt; s.left -= dt;
+    s.wave = Math.max(0, s.wave - dt * 1.4);
+    if (q.down && s.last) {
+      s.p = clamp(s.p + (q.x - s.last.x) / (c.w * 1.15), 0, 1);
+    }
+    s.last = { x: q.x, y: q.y };
+    for (const k of s.cloth) k.life = Math.min(1, k.life + dt * 1.5);
+    if (Math.random() < dt * 10) {
+      s.motes.push({ x: rnd(0, c.w), y: rnd(c.h * 0.3, c.h * 0.8), v: rnd(3, 10), life: rnd(1.4, 3) });
+    }
+    for (const m of s.motes) { m.life -= dt; m.y -= m.v * dt; m.x += dt * 4; }
+    s.motes = s.motes.filter((m) => m.life > 0);
+    const near = s.doors.some((d) => !d.done && Math.abs(d.u - s.p) < 0.07);
+    c.progress = s.calls / 3;
+    c.setHint(near
+      ? tx("Tap to cry out: “Yet forty days!”", "点击呼喊：「再等四十日！」")
+      : `${tx("Drag to walk · stop and tap to cry", "拖动行走 · 停下点击呼喊")}   ${s.calls}/3`);
+    if (s.calls >= 3) { c.hit("unlock"); c.end(true, c.score + 60); return; }
+    if (s.left <= 0) c.end(s.calls > 0, c.score);
+  },
+  draw(c, ctx) {
+    const s = c.state;
+    const pan = -(s.p - 0.5) * c.w * 0.55;
+    const t = plateT(c);
+    const img = loadArt("assets/art/cry.jpg");
+    let drawn = false;
+    if (img && img.complete && img.naturalWidth > 0) {
+      try {
+        ctx.drawImage(img, t.dx + pan, t.dy, PLATE.w * t.s, PLATE.h * t.s);
+        drawn = true;
+      } catch { drawn = false; }
+    }
+    if (!drawn) {
+      const g = ctx.createLinearGradient(0, 0, 0, c.h);
+      g.addColorStop(0, "#241a12"); g.addColorStop(0.6, "#3a2a1c"); g.addColorStop(1, "#1a120c");
+      ctx.fillStyle = g; ctx.fillRect(0, 0, c.w, c.h);
+    }
+    ctx.fillStyle = "rgba(8,8,10,.2)"; ctx.fillRect(0, 0, c.w, c.h);
+
+    // where the street is listening
+    for (const d of s.doors) {
+      const x = c.w * 0.5 + (d.u - s.p) * c.w * 0.95;
+      if (x < -120 || x > c.w + 120) continue;
+      const near = Math.abs(d.u - s.p) < 0.07;
+      if (!d.done) {
+        // a pool of torchlight on the cobbles: somewhere people have stopped
+        ctx.save();
+        ctx.globalCompositeOperation = "screen";
+        const pool = ctx.createRadialGradient(x, c.h * 0.86, 4, x, c.h * 0.86, near ? 96 : 62);
+        pool.addColorStop(0, `rgba(255,206,138,${near ? 0.26 + Math.sin(s.t * 3.4) * 0.08 : 0.12})`);
+        pool.addColorStop(1, "rgba(255,160,80,0)");
+        ctx.fillStyle = pool;
+        ctx.beginPath(); ctx.ellipse(x, c.h * 0.86, near ? 96 : 62, near ? 30 : 20, 0, 0, TAU); ctx.fill();
+        ctx.restore();
+        /* An arch of warm light around the doorway: the street is busy, so the
+           one thing the player must find has to be the brightest thing on it. */
+        ctx.strokeStyle = `rgba(255,222,166,${near ? 0.5 + Math.sin(s.t * 3.2) * 0.16 : 0.2})`;
+        ctx.lineWidth = near ? 3 : 1.8;
+        const top = c.h * 0.5, base = c.h * 0.86, half = near ? 72 : 58;
+        ctx.beginPath();
+        ctx.moveTo(x - half, base);
+        ctx.lineTo(x - half, top + half * 0.7);
+        ctx.quadraticCurveTo(x, top - half * 0.35, x + half, top + half * 0.7);
+        ctx.lineTo(x + half, base);
+        ctx.stroke();
+      } else {
+        // sackcloth going down over the stones, and the street gone quiet
+        ctx.save();
+        ctx.globalAlpha = d.life ?? 1;
+        const sk = ctx.createLinearGradient(0, c.h * 0.7, 0, c.h * 0.84);
+        sk.addColorStop(0, "rgba(64,58,48,.92)");
+        sk.addColorStop(1, "rgba(34,30,26,.92)");
+        ctx.fillStyle = sk;
+        ctx.beginPath();
+        ctx.moveTo(x - 70, c.h * 0.74);
+        ctx.quadraticCurveTo(x, c.h * 0.7, x + 70, c.h * 0.75);
+        ctx.lineTo(x + 86, c.h * 0.85);
+        ctx.quadraticCurveTo(x, c.h * 0.8, x - 86, c.h * 0.84);
+        ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = "rgba(150,138,116,.5)"; ctx.lineWidth = 1.4;
+        for (let i = -3; i <= 3; i++) {
+          ctx.beginPath();
+          ctx.moveTo(x + i * 18, c.h * 0.735);
+          ctx.lineTo(x + i * 22, c.h * 0.84);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+    for (const m of s.motes) {
+      ctx.fillStyle = `rgba(226,206,170,${Math.min(0.4, m.life * 0.22)})`;
+      ctx.beginPath(); ctx.arc(m.x, m.y, 1.5, 0, TAU); ctx.fill();
+    }
+    // the cry itself: rings off the mouth of the street
+    if (s.wave > 0.02) {
+      ctx.strokeStyle = `rgba(255,226,176,${s.wave * 0.55})`;
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.arc(c.w * 0.5, c.h * 1.02, 60 + (1 - s.wave) * 220 + i * 40, -Math.PI * 0.86, -Math.PI * 0.14);
+        ctx.stroke();
+      }
+    }
+    // walking dust
+    if (c.pointer.down) {
+      ctx.fillStyle = "rgba(198,174,138,.2)";
+      ctx.beginPath(); ctx.ellipse(c.w * 0.5, c.h * 0.9, 46, 10, 0, 0, TAU); ctx.fill();
+    }
+    plateVignette(c, ctx, 0.62);
+  }
+};
+
 /* ---------------------------------------------------------------- 4. STORM */
 
 const storm = {
@@ -1445,7 +2149,11 @@ const esther = {
   }
 };
 
-export const GAMES = { sling, lions, jericho, tend, storm, prodigal, esther };
+export const GAMES = {
+  sling, lions, jericho, tend, stones,
+  window: windowScene, flame, cry,
+  storm, prodigal, esther
+};
 
 /* ══════════════════════ 7a. BURNING BUSH — follow the flock ══════════════════════ */
 const desert = {
@@ -2052,6 +2760,12 @@ for (const [key, cfg] of Object.entries(PRELUDES)) {
   GAMES[key] = withStages(GAMES[key], cfg);
   GAMES[key].fg = FG[key] || "rocks";
 }
+
+/* The single-act scenes, unwrapped. The exported GAMES entries carry their own
+   preparation acts, so an oracle that wants to test the climax itself has to be
+   able to reach past them — otherwise a prelude that times out hides whether
+   the scene it introduces can even be finished. */
+export const SCENES = { jericho, tend, stones, window: windowScene, flame, cry };
 
 export const ACT_COUNTS = Object.fromEntries(
   Object.entries(GAMES).map(([k, g]) => [k, g.actCount || 1])

@@ -7,7 +7,7 @@
    own timer (or that leaves a character off-screen / NaN) is a bug. */
 
 import { ACT_BUILDERS } from "../src/engine/stages.js";
-import { PRELUDES, GAMES } from "../src/engine/games.js";
+import { PRELUDES, GAMES, SCENES } from "../src/engine/games.js";
 import { clamp, rnd, dist } from "../src/engine/scene.js";
 
 const gradient = { addColorStop() {} };
@@ -138,7 +138,7 @@ function driveClimax(key, game) {
       if (key === "sling") {
         if (frames % 70 === 1) { p.startX = 60; p.startY = 500; game.onDown?.(c, p); }
         if (frames % 70 === 2) { p.x = 300; p.y = 250; game.onMove?.(c, p); game.onUp?.(c, p); }
-      } else if (["lions", "jericho", "prodigal", "esther"].includes(key)) {
+      } else if (["lions", "prodigal", "esther"].includes(key)) {
         p.down = frames % 8 !== 0; p.x = 40 + ((frames * 17) % 310); p.y = 300 + Math.sin(frames / 6) * 120;
       } else if (key === "storm") {
         p.down = frames % 9 !== 0; p.x = 40 + ((frames * 13) % 310); p.y = 380;
@@ -151,6 +151,50 @@ function driveClimax(key, game) {
         p.down = true; p.x = g.x; p.y = g.y;
       } else if (key === "deep") {
         p.down = true; p.x = c.w * 0.26; p.y = s.orbs?.[0]?.y ?? c.h * 0.5;
+      } else if (key === "jericho") {
+        const spot = s.spot || { x: c.w * 0.3, y: c.h * 0.8 };
+        p.down = true; p.x = spot.x;
+        if (s.phase === "lift") { if (p.y < 10) p.y = spot.y; p.y -= 10; } else p.y = spot.y;
+      } else if (key === "stones") {
+        p.down = true;
+        const st = s.spots?.find((x) => !x.got);
+        if (st && st.px !== undefined) {
+          const dx = st.px - p.x, dy = st.py - p.y;
+          const d = Math.hypot(dx, dy) || 1;
+          const step = Math.min(d, 2.4);
+          p.x += (dx / d) * step; p.y += (dy / d) * step;
+        }
+      } else if (key === "window") {
+        p.down = true;
+        if (s.phase === "latch") {
+          const l = s.latchPt || { x: c.w * 0.54, y: c.h * 0.48 };
+          p.x = l.x;
+          if (s.latch === 0 || p.y < 10) p.y = l.y;
+          p.y -= 7;
+        } else if (s.l < 1) {
+          if (p.x > (s.seamX ?? c.w * 0.5) - 40) p.x = (s.seamX ?? c.w * 0.5) - 45;
+          p.x = Math.max(8, p.x - 11); p.y = c.h * 0.4;
+        } else {
+          if (p.x < (s.seamX ?? c.w * 0.5) + 40) p.x = (s.seamX ?? c.w * 0.5) + 45;
+          p.x = Math.min(c.w - 8, p.x + 11); p.y = c.h * 0.4;
+        }
+      } else if (key === "flame") {
+        p.down = true;
+        if (p.y < 10) p.y = c.h * 0.9;
+        const mark = [0.42, 0.66, 0.88].find((m, i) => !s.steady?.[i]) ?? 0.88;
+        p.down = (s.approach ?? 0) < mark + 0.01;
+        if (p.down) p.y -= 1.6;
+      } else if (key === "cry") {
+        p.down = true;
+        const door = s.doors?.find((x) => !x.done);
+        if (door) {
+          if (Math.abs(door.u - s.p) < 0.05) {
+            game.onDown?.(c, p);
+          } else if (p.x > c.w - 46) {
+            p.down = false; game.onUp?.(c, p);
+            p.x = 36; p.down = true; s.last = null; game.onDown?.(c, p);
+          } else p.x += 11;
+        }
       } else if (key === "tend") {
         /* Sweep along the arm: first to wash the length of the wound, then to
            wind the linen round it. A real finger traces the same diagonal. */
@@ -170,7 +214,7 @@ function driveClimax(key, game) {
     } catch (e) { errors.push(`frame ${frames}: ${e.stack?.split("\n").slice(0, 2).join(" ")}`); break; }
   }
   if (!c.ended) errors.push(`climax never ended within ${maxFrames} frames`);
-  return errors;
+  return { errors, ended: c.ended };
 }
 
 /* ------------------------------------------------------------------ run */
@@ -185,8 +229,13 @@ for (const [key, list] of Object.entries(PRELUDES)) {
   }
 }
 console.log("\nClimax games:");
+for (const [key, game] of Object.entries(SCENES)) {
+  const r = driveClimax(key, game);
+  if (r.ended && !r.ended.success) allErrors.push(`${key} (raw): the scene cannot be finished — it ended "${r.ended.success ? "win" : "loss"}" with score ${r.ended.score}`);
+  for (const e of r.errors) allErrors.push(`${key} (raw): ${e}`);
+}
 for (const [key, game] of Object.entries(GAMES)) {
-  const errs = driveClimax(key, game);
+  const errs = driveClimax(key, game).errors;
   console.log(`  ${key.padEnd(20)} ${errs.length ? "FAIL" : "ok"}`);
   for (const e of errs) allErrors.push(`${key}: ${e}`);
 }
