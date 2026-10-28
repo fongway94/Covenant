@@ -497,9 +497,20 @@ export function startScene(canvas, key, onResult, seed = {}) {
     trail.push({ x: p.x, y: p.y, life: 0.34, total: 0.34 });
     game.onDown?.(c, pointer);
   }
+  /* These three handlers are bound to `window`, because a finger that leaves the
+     canvas must keep steering the scene. That also means they see every touch in
+     the app — including touches on the Pause and Skip buttons drawn over the
+     canvas. Calling preventDefault on a touchend that did not belong to the
+     canvas cancels the browser's synthetic click for that touch, and a <button>
+     with no click event is a dead button. So default-preventing is scoped to
+     gestures that actually started on the canvas. */
+  function onCanvasTarget(t) {
+    return !!t && (t === canvas || (typeof t.closest === "function" && t.closest("#action-canvas") === canvas));
+  }
+
   function move(e) {
     if (!pointer.down && !pointer.x) return;
-    e.preventDefault?.();
+    if (pointer.down) e.preventDefault?.();
     const p = pos(e);
     pointer.x = p.x; pointer.y = p.y;
     pointer.dx = pointer.x - pointer.startX; pointer.dy = pointer.y - pointer.startY;
@@ -510,7 +521,8 @@ export function startScene(canvas, key, onResult, seed = {}) {
     game.onMove?.(c, pointer);
   }
   function up(e) {
-    e.preventDefault?.();
+    // Only a gesture that ends on the canvas may swallow its own click.
+    if (pointer.down || onCanvasTarget(e.target)) e.preventDefault?.();
     if (e.changedTouches?.[0]) { const p = pos(e); pointer.x = p.x; pointer.y = p.y; }
     pointer.down = false; pointer.justUp = true;
     game.onUp?.(c, pointer);
