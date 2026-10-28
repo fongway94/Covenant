@@ -39,7 +39,7 @@ export function titleHtml(ui) {
           <button class="btn btn-ghost" data-action="go" data-view="about">${icon("scroll", 16)} ${tx("About", "关于")}</button>
         </div>
       </div>
-      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.9.7", "互动圣经故事角色扮演游戏 · v0.9.7 原型")}</div>
+      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.9.8", "互动圣经故事角色扮演游戏 · v0.9.8 原型")}</div>
     </div>
   </div>`;
 }
@@ -112,12 +112,12 @@ export function aboutHtml(ui) {
       <h3>For churches &amp; ministries</h3>
       <p>Before publishing, have your content reviewed by your own pastors or theological advisors. Translation choice, denominational distinctives and age-appropriateness are decisions best made by your community. See <code>docs/GAME_DESIGN.md</code> for the content guidelines and a chapter template.</p>
       <div class="divider"></div>
-      <p class="tiny muted center">Artwork generated for this project · interface and story text written for Covenant · v0.9.7 prototype</p>
+      <p class="tiny muted center">Artwork generated for this project · interface and story text written for Covenant · v0.9.8 prototype</p>
       ` : `
       <p class="verse">「你的话是我脚前的灯，是我路上的光。」 <span style="font-style:normal;font-size:.8em;color:var(--muted)">— 诗篇 119:105</span></p>
-      <p>《Covenant／圣约》是一款以圣经真实故事为核心的互动角色扮演游戏。你不是去阅读<em>关于</em>大卫、但以理或以斯帖的故事，而是站在他们身旁——你的选择会塑造你自己的品格：勇气、智慧、怜悯与信心。</p>
+      <p>《Covenant／圣约》是一款以圣经真实故事为核心的互动角色扮演游戏。你不是在读<em>关于</em>大卫、但以理或以斯帖的故事，而是站在他们身旁——你的选择会塑造你自己：勇气、智慧、怜悯、信心。</p>
       <h3>为什么这样设计</h3>
-      <p>在游戏里长大的一代人，不只想要听一个故事，他们想要<strong>身在故事之中</strong>。现代圣经译本比以往都容易取得，但许多人从未真正读过圣经的故事脉络。一款用心制作的游戏，可以打开这扇门——特别是对青少年和年轻人。</p>
+      <p>在游戏里长大的一代人，不满足于只听人讲故事，他们想亲自走进去。今天圣经译本比以往都容易拿到，可许多人从没顺着读完圣经的故事线。一款用心做的游戏，可以推开这扇门——尤其对青少年和刚成年的读者。</p>
       <h3>我们怎样忠于经文</h3>
       <ul>
         <li>玩家是一位<strong>见证者</strong>，绝不是改写结局的英雄。大卫仍然迎战歌利亚；风浪仍然止息。</li>
@@ -128,15 +128,15 @@ export function aboutHtml(ui) {
         <li>结局<strong>不是人格测验</strong>。它是一面镜子，照出你实际做过的事，摆在一位圣经人物旁边——包括那人真实的失败——然后送你去读那段经文。唯有耶和华看内心（撒母耳记上 16:7）。</li>
       </ul>
       <h3>这个原型里有什么</h3>
-      <p>十个可玩章节、十五个可操控的场景——溪水里的一只手、抬上驴背的重量、抬起的铁闩、不可催促的火、穿过尼尼微的一声呼喊、给一无所有的儿子披上三样东西、跪着伸手去触的金杖、黑暗中扯下的海草、双手交替爬上桑树——带任务与旅人的营地、呼吸祷告、默认开启的沉浸／无提示模式、会呼吸的程序配乐、终章、四种品格、圣灵九果、十件圣物、九枚印记、离线游玩，以及自动保存在本机。</p>
+      <p>十个可玩章节、十五个要动手的场景——在溪水里摸索石子、把伤者抬上驴背、抬起窗上的铁闩、慢慢靠近一团烧不尽的火、在尼尼微街头喊出那句话、给一无所有的儿子披上袍子戒指和鞋、跪着等金杖伸过来、在黑暗里扯掉海草、两手交替爬上桑树。此外还有：有任务和旅人的营地、呼吸祷告、默认开启的沉浸模式（不弹提示）、会呼吸的程序配乐、终章、四种品格、圣灵九果、十件圣物、九枚印记、离线可玩，进度自动存在本机。</p>
       <h3>玩完全程，你会得到什么</h3>
-      <p>你不是「通关」圣经——你是在不改变经文结局的前提下，见证十段故事。你的选择会培养勇气、智慧、怜悯与信心；你可以收集最多 9 个果子、10 件圣物、9 枚印记，祷告、反思、完成营地任务。终章会给你一枚完成印记和一面<strong>「旅程之镜」</strong>：四种品格、四种走路方式，以及一位与你相似的圣经人物——包括他真实的失败，和一段你可以去读的经文。这是「你练习成为怎样的人」的画像，不是衡量你价值的分数。真正的成就，是你在游戏之外怎样活出这些品格。</p>
+      <p>你不是在「通关」圣经。十段故事的结局一个都不会改，你能做的是全程在场。你的选择会养成勇气、智慧、怜悯、信心；你可以集满 9 个果子、10 件圣物、9 枚印记，可以祷告、反思、完成营地任务。走到终章，你会得到一枚完成印记，和一面<strong>「旅程之镜」</strong>：你的四种品格、四种走路的方式，以及一位与你相似的圣经人物——连同他真实的失败，和一段等着你去读的经文。它照出的是你一路练出来的样子，不是给你打分的成绩单。至于往后怎么活，那是游戏之外的事。</p>
       <h3>技术实现</h3>
       <p>纯 HTML、CSS 与 JavaScript——无需编译，没有追踪，没有广告。它可在任何手机浏览器中运行，可作为 PWA 安装到主屏幕，也可用 <code>Capacitor</code> 打包上架 iOS App Store 与 Google Play。详见 <code>docs/MOBILE_DEPLOY.md</code>。</p>
       <h3>给教会与事工团队</h3>
       <p>正式发布前，请让你们的牧者或神学顾问审阅内容。译本选择、宗派特色与适龄程度，最好由你们的群体决定。参见 <code>docs/GAME_DESIGN.md</code> 中的内容规范与章节模板。</p>
       <div class="divider"></div>
-      <p class="tiny muted center">插画为本项目生成 · 界面与故事文本为 Covenant 创作 · v0.9.7 原型</p>
+      <p class="tiny muted center">插画为本项目生成 · 界面与故事文本为 Covenant 创作 · v0.9.8 原型</p>
       `}
       <button class="btn btn-ghost btn-sm" style="margin-top:14px" data-action="go" data-view="title">${tx("Back to the title", "返回首页")}</button>
     </div>
