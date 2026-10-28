@@ -26,7 +26,7 @@ const DEFAULT_WAYS = { step: 0, notice: 0, stay: 0, wait: 0 };
 
 const DEFAULT_ADVENTURE = {
   cycles: 0, guidance: 2, quests: {}, day: 1, npcMet: [], breaths: 0,
-  lastBreathDay: 0, ways: { ...DEFAULT_WAYS }
+  lastBreathDay: 0, ways: { ...DEFAULT_WAYS }, hintsUsed: 0
 };
 
 export function newGame(name, callingId) {
@@ -78,6 +78,7 @@ export function loadGame() {
     if (!Array.isArray(s.adventure.npcMet)) s.adventure.npcMet = [];
     s.adventure.ways = { ...DEFAULT_WAYS, ...(s.adventure.ways || {}) };
     for (const k of WAY_KEYS) s.adventure.ways[k] = Math.max(0, Number(s.adventure.ways[k]) || 0);
+    s.adventure.hintsUsed = Math.max(0, Number(s.adventure.hintsUsed) || 0);
     return s;
   } catch { return null; }
 }
@@ -216,6 +217,14 @@ export function addWay(s, key, n = 1) {
   if (!a.ways) a.ways = { ...DEFAULT_WAYS };
   a.ways[key] = Math.max(0, Math.min(999, (Number(a.ways[key]) || 0) + n));
   return a.ways[key];
+}
+
+/** Hints are assistance, not observation: they must NOT distort the mirror.
+    Immersive / no-tips mode is the honest baseline for behaviour analysis. */
+export function addHintUse(s, n = 1) {
+  const a = adventure(s);
+  a.hintsUsed = Math.max(0, (Number(a.hintsUsed) || 0) + n);
+  return a.hintsUsed;
 }
 
 /** Virtue gained on a choice also reveals a way of walking. */

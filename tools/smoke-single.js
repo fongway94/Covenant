@@ -14,7 +14,14 @@ const errors = [];
 const vc = new VirtualConsole();
 vc.on("jsdomError", (e) => errors.push(String(e)));
 vc.on("error", (...a) => errors.push(a.join(" ")));
-const dom = new JSDOM(html, { url: "https://example.com/", runScripts: "dangerously", pretendToBeVisual: true, virtualConsole: vc });
+const dom = new JSDOM(html, {
+  url: "https://example.com/", runScripts: "dangerously", pretendToBeVisual: true, virtualConsole: vc,
+  beforeParse(window) {
+    // jsdom has no canvas: stub before the inlined bundle runs so neither the
+    // 2D action scenes nor the WebGL atmosphere layer trip a jsdomError.
+    window.HTMLCanvasElement.prototype.getContext = () => null;
+  }
+});
 const d = dom.window.document;
 const check = (cond, msg) => { if (!cond) throw new Error("ASSERT: " + msg); };
 

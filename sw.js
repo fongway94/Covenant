@@ -1,5 +1,5 @@
 /* Covenant offline cache. Bump CACHE on every content release. */
-const CACHE = 'covenant-v8';
+const CACHE = 'covenant-v9';
 const ASSETS = [
   './',
   './index.html',
@@ -20,6 +20,9 @@ const ASSETS = [
   './src/data/mirror.js',
   './src/data/deeper.js',
   './src/data/portraits.js',
+  './src/data/moments.js',
+  './src/engine/moments.js',
+  './src/engine/atmosphere.js',
   './src/data/zh-story.js',
   './src/data/zh-ui.js',
   './src/screens/home.js',

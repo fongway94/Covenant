@@ -1,6 +1,6 @@
 {
   "name": "covenant",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "description": "Covenant — an interactive Bible story RPG for iOS, Android and the web.",
   "type": "module",
@@ -24,7 +24,8 @@
     "check:acts": "node tools/check-acts.js",
     "check:audio": "node tools/check-audio.js",
     "check:mirror": "node tools/check-mirror.js",
-    "check:redletter": "node tools/check-redletter.js"
+    "check:redletter": "node tools/check-redletter.js",
+    "check:moments": "node tools/check-moments.js"
   },
   "devDependencies": {
     "@capacitor/cli": "^6.2.0",

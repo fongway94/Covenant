@@ -1,8 +1,10 @@
 import { esc, icon } from "../core/util.js";
 import { STATS, STAT_KEYS, FRUITS, RELICS, countDone } from "../data/compendium.js";
 import { chapterById } from "../data/chapters.js";
-import { addStat, addXp, grantFruit, checkSeals, completeChapter, recordReflection, hasPrayed, pray as prayState, saveGame, xpNeeded, spendGuidance, adventure, markFinale, addWay, addWaysFromStats } from "../core/state.js";
+import { addStat, addXp, grantFruit, checkSeals, completeChapter, recordReflection, hasPrayed, pray as prayState, saveGame, xpNeeded, spendGuidance, adventure, markFinale, addWay, addWaysFromStats, addHintUse } from "../core/state.js";
 import { deeperFor } from "../data/deeper.js";
+import { momentFor } from "../data/moments.js";
+import { startMoment } from "../engine/moments.js";
 import { sfx } from "../core/audio.js";
 import { bus } from "../core/bus.js";
 import { tx, isZh } from "../core/i18n.js";
@@ -50,7 +52,8 @@ export function startChapter(ui, id) {
     chapterId: id, nodeId: ch.start, phase: "lines", lineIndex: 0,
     reply: null, mini: null, result: null, bump: {}, typing: false,
     timer: null, miniRaf: null, reflectionChoice: null,
-    doneNodes: {}, game: null, hotspots: null, revealed: false
+    doneNodes: {}, game: null, hotspots: null, revealed: false,
+    moment: null, momentController: null, scrollRead: {}
   };
   ui.view = "story";
   sfx("choose");
@@ -65,6 +68,7 @@ function stopScene(ui) {
 export function cleanupStory(ui) {
   const s = ui.story;
   if (!s) return;
+  if (s.momentController) { try { s.momentController.stop(); } catch { /* noop */ } s.momentController = null; }
   if (s.timer) { clearInterval(s.timer); s.timer = null; }
   if (s.miniRaf && typeof cancelAnimationFrame === "function") { cancelAnimationFrame(s.miniRaf); s.miniRaf = null; }
   s.typing = false;
@@ -128,6 +132,7 @@ export function mountStory(ui) {
   else if (p === "action") mountActionScene(ui);
   else if (p === "hotspots") mountHotspots(ui);
   else if (p === "reward") burstReward(ui);
+  else if (p === "moment") mountMoment(ui);
 }
 
 /* ------------------------------------------------------------------ choices */
@@ -184,7 +189,7 @@ export function revealHints(ui) {
   const s = st(ui);
   if (!s || s.phase !== "choices" || s.revealed) return false;
   if (!spendGuidance(ui.state, 1)) { toast(tx("You need one Guidance. Pray or rest at the campfire.", "你需要 1 点引导。可以祷告，或在营火旁歇息。"), "✟"); return false; }
-  addWay(ui.state, "notice", 1);
+  addHintUse(ui.state, 1);
   s.revealed = true;
   sfx("unlock");
   bus.render();
@@ -199,7 +204,7 @@ export function guidedChoose(ui, index) {
   const choice = node(ui).choices[index];
   if (!choice || meets(ui, choice.require)) return false;
   if (!spendGuidance(ui.state, 2)) { toast(tx("You need two Guidance. Pray or rest at the campfire.", "你需要 2 点引导。可以祷告，或在营火旁歇息。"), "✟"); return false; }
-  addWay(ui.state, "step", 2);
+  addHintUse(ui.state, 1);
   toast(tx("Guidance opened the door", "引导为你开了门"), "✟");
   chooseOption(ui, index, true);
   return true;
@@ -236,6 +241,8 @@ function afterLines(ui) {
   const s = st(ui);
   const n = node(ui);
   const key = s.nodeId;
+  const m = momentFor(chapter(ui).id, key, isZh(), s.doneNodes);
+  if (m) { startMomentPhase(ui, m); return; }
   if (n.game && !s.doneNodes[key + ":game"]) { startAction(ui, n.game); return; }
   if (n.hotspots && !s.doneNodes[key + ":hot"]) { startHotspots(ui, n.hotspots); return; }
   if (n.mini && !n.game) {
@@ -820,10 +827,98 @@ function outcomeHtml(ui) {
   return "";
 }
 
+/* --------------------------------------------------- story moments (v0.7)
+   Short tactile interactions embedded inside the dialogue. One shared engine,
+   two per chapter, no new screens or resources. */
+
+function startMomentPhase(ui, m) {
+  const s = st(ui);
+  s.moment = m;
+  s.phase = "moment";
+  sfx("unlock");
+  bus.render();
+}
+
+function mountMoment(ui) {
+  const s = st(ui);
+  const host = document.getElementById("moment-stage");
+  if (!host || !s.moment || s.momentController) return;
+  s.momentController = startMoment(host, s.moment, (res) => finishMoment(ui, res));
+}
+
+function finishMoment(ui, res) {
+  const s = st(ui);
+  if (!s || s.phase !== "moment" || !s.moment) return;
+  const m = s.moment;
+  s.doneNodes[s.nodeId + ":moment"] = true;
+  s.momentController = null;
+  s.moment = null;
+  if (res?.success) {
+    addXp(ui.state, 6);
+    addWay(ui.state, m.way, 1);
+    sfx("good");
+    toast(m.done, "✦");
+  } else {
+    sfx("tap");
+    toast(tx("You move on.", "你继续往前走。"), "✧");
+  }
+  saveGame(ui.state);
+  s.phase = "lines";
+  afterLines(ui);
+}
+
+export function skipMoment(ui) {
+  const s = st(ui);
+  if (s?.phase !== "moment") return;
+  if (s.momentController) s.momentController.skip();
+  else finishMoment(ui, { success: false, skipped: true });
+}
+
+const MOMENT_KIND = {
+  hold: B("HOLD", "按住"), tap: B("TAP", "轻点"), trace: B("TRACE", "描线"),
+  balance: B("BALANCE", "平衡"), rhythm: B("RHYTHM", "节奏")
+};
+function B(en, zh) { return { en, zh }; }
+function momentKindLabel(k, zh) { return (MOMENT_KIND[k] || B("INTERACT", "互动"))[zh ? "zh" : "en"]; }
+
+function momentHtml(ui) {
+  const s = st(ui);
+  const ch = chapter(ui);
+  const m = s.moment;
+  const zh = isZh();
+  return `<div class="screen story moment-screen">
+    <div class="story-art" style="background-image:url('${ch.art}')">
+      <div class="story-parallax" style="background-image:url('${ch.art}')"></div>
+      <div class="story-top">
+        <button class="icon-btn" data-action="ask-leave" aria-label="${tx("Leave chapter", "离开章节")}">${icon("back", 17)}</button>
+        <div class="story-chapter">${esc(ch.title)}</div>
+        <div class="story-top-actions">${musicButton()}<button class="icon-btn" data-action="open-scroll" aria-label="${tx("Open the scroll", "打开书卷")}">${icon("scroll", 17)}</button></div>
+      </div>
+      <div class="story-tag">${tx(`Chapter ${ch.roman}`, `第 ${ch.roman} 章`)} · ${esc(ch.ref)}</div>
+      <div class="story-foreground"></div><div class="story-frame"></div>
+      <div class="story-dust"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="story-body">
+      <div class="story-art-echo" style="background-image:url('${ch.art}')"></div>
+      ${hudRow(ui, ch)}
+      <div class="moment-card">
+        <div class="eyebrow">${tx("A moment in the story", "故事里的一刻")} · ${esc(momentKindLabel(m.kind, zh))}</div>
+        <h2>${esc(m.title)}</h2>
+        <p class="small muted">${esc(m.prompt)}</p>
+        <div class="moment-stage" id="moment-stage" data-kind="${esc(m.kind)}"></div>
+        <div class="moment-meter-track"><i id="moment-meter"></i></div>
+        <div class="moment-feedback" id="moment-feedback"></div>
+        <button class="btn btn-ghost btn-sm" data-action="moment-skip">${tx("Skip this moment", "跳过这一刻")}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 export function storyHtml(ui) {
   const s = st(ui);
   const ch = chapter(ui);
 
+  if (s.phase === "moment") return momentHtml(ui);
   if (s.phase === "action") return actionHtml(ui);
   if (s.phase === "action-result") return actionResultHtml(ui);
   if (s.phase === "hotspots" || s.phase === "hotspots-done") return hotspotsHtml(ui);

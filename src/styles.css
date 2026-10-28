@@ -1365,6 +1365,7 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 .mirror-way.strong > b { color: var(--gold-light); }
 .mirror-way-verse { font-family: var(--serif); font-size: .76rem; font-style: italic; color: var(--gold-light); margin: 10px 0 0; text-align: center; }
 .mirror-way-verse span { display: block; font-style: normal; font-size: .6rem; color: var(--muted); margin-top: 2px; }
+.mirror-hint-note { margin: 10px 0 0; padding: 8px 10px; border-radius: 9px; background: rgba(79,184,168,.08); border-left: 2px solid rgba(79,184,168,.5); font-size: .66rem; line-height: 1.55; color: var(--muted); }
 
 .mirror-figure {
   padding: 18px 16px; border-radius: 18px;
@@ -1447,4 +1448,132 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 @media (prefers-reduced-motion: reduce) {
   .choice-area .choice, .go-deeper, .journey-mirror, .card-quiet, .finale-card,
   .result-panel, .result-stars span.on, .story-figure.has-art, .mirror-seal { animation: none !important; }
+}
+
+/* ==================================================================
+   v0.7 — story moments + GPU atmosphere
+   ================================================================== */
+
+/* The WebGL pass sits above the artwork but below all text and buttons. */
+.atmo-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 2; display: block;
+}
+.title-art > .atmo-canvas, .camp-hero > .atmo-canvas, .finale-art > .atmo-canvas { z-index: 1; }
+.action-screen > .atmo-canvas { z-index: 1; }
+
+/* ---- Story moments ---- */
+.moment-screen .story-body { justify-content: flex-start; }
+.moment-card {
+  position: relative; z-index: 3; margin-top: 6px;
+  padding: 14px 14px 12px; border-radius: 18px;
+  background: linear-gradient(180deg, rgba(12,26,35,.96), rgba(7,16,22,.98));
+  border: 1px solid rgba(231,183,91,.32);
+  box-shadow: 0 14px 40px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,244,214,.07);
+  display: grid; gap: 8px;
+  animation: staggerIn .38s ease both;
+}
+.moment-card h2 { font-family: var(--serif); font-size: 1.28rem; margin: 0; color: var(--gold-light); }
+.moment-card > p { margin: 0; line-height: 1.5; }
+.moment-stage {
+  position: relative; height: 210px; border-radius: 14px; overflow: hidden;
+  touch-action: none; user-select: none; -webkit-user-select: none;
+  background:
+    radial-gradient(70% 60% at 72% 8%, rgba(231,183,91,.14), transparent 70%),
+    linear-gradient(170deg, #142633, #08131b 78%);
+  border: 1px solid rgba(231,183,91,.18);
+  cursor: pointer;
+}
+.moment-stage::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.012) 3px 4px);
+}
+.moment-stage.miss { animation: momentMiss .28s ease; }
+@keyframes momentMiss { 0%,100% { transform: none; } 30% { transform: translateX(-5px); } 70% { transform: translateX(5px); } }
+
+.moment-ring {
+  position: absolute; left: 50%; top: 50%; width: 130px; height: 130px;
+  transform: translate(-50%,-50%); border-radius: 50%;
+  background: conic-gradient(var(--gold) var(--p, 0%), rgba(255,255,255,.07) 0);
+  display: grid; place-items: center;
+  box-shadow: 0 0 0 1px rgba(231,183,91,.3), 0 0 30px rgba(231,183,91,.14);
+  transition: box-shadow .2s;
+}
+.moment-ring.charged { box-shadow: 0 0 0 2px rgba(231,183,91,.65), 0 0 46px rgba(231,183,91,.5); }
+.moment-ring-inner {
+  width: 106px; height: 106px; border-radius: 50%; display: grid; place-items: center;
+  background: #0a1720; color: var(--gold-light); font-size: 2rem;
+  box-shadow: inset 0 0 24px rgba(0,0,0,.7);
+}
+.moment-node {
+  position: absolute; width: 54px; height: 54px; border-radius: 50%;
+  transform: translate(-50%,-50%); border: 1px solid rgba(247,221,165,.8);
+  background: radial-gradient(circle at 34% 30%, #f7dda5, #a97c31 76%);
+  color: #2b1d08; font-size: 1.4rem; line-height: 1; cursor: pointer;
+  box-shadow: 0 0 0 6px rgba(231,183,91,.12), 0 0 26px rgba(231,183,91,.45);
+  animation: nodePop .32s cubic-bezier(.2,.8,.3,1) both, nodeGlow 1.4s ease-in-out infinite .32s;
+}
+@keyframes nodePop { from { transform: translate(-50%,-50%) scale(.2); opacity: 0; } to { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
+@keyframes nodeGlow { 0%,100% { box-shadow: 0 0 0 6px rgba(231,183,91,.12), 0 0 22px rgba(231,183,91,.38); } 50% { box-shadow: 0 0 0 12px rgba(231,183,91,.04), 0 0 34px rgba(231,183,91,.6); } }
+
+.moment-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.moment-path {
+  fill: none; stroke: rgba(247,221,165,.28); stroke-width: 3; vector-effect: non-scaling-stroke;
+  stroke-linecap: round; stroke-dasharray: 4 7;
+}
+.moment-token {
+  position: absolute; left: 50%; top: 88%; width: 30px; height: 30px;
+  transform: translate(-50%,-50%); border-radius: 50%;
+  display: grid; place-items: center; color: #2b1d08; font-size: .9rem;
+  background: radial-gradient(circle at 34% 28%, #fff0c8, #d7a44d 74%);
+  box-shadow: 0 0 0 6px rgba(231,183,91,.13), 0 0 30px rgba(231,183,91,.6);
+  pointer-events: none;
+}
+.moment-bar {
+  position: absolute; left: 6%; right: 6%; top: 50%; height: 16px;
+  transform: translateY(-50%); border-radius: 99px;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+}
+.moment-band {
+  position: absolute; top: -6px; height: 28px; border-radius: 8px;
+  background: linear-gradient(90deg, rgba(231,183,91,.18), rgba(231,183,91,.5), rgba(231,183,91,.18));
+  border: 1px solid rgba(247,221,165,.6);
+  box-shadow: 0 0 20px rgba(231,183,91,.35);
+}
+.moment-cursor {
+  position: absolute; top: -12px; left: 50%; width: 10px; height: 40px;
+  margin-left: -5px; border-radius: 6px; background: var(--paper);
+  box-shadow: 0 0 14px rgba(255,255,255,.7);
+}
+.moment-hint { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; color: rgba(247,221,165,.5); font-size: 1.5rem; }
+.moment-tap-hint { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(247,221,165,.18); font-size: 4rem; }
+.moment-hint, .moment-tap-hint { pointer-events: none; }
+.moment-spark {
+  position: absolute; width: 5px; height: 5px; border-radius: 50%;
+  background: #f7dda5; pointer-events: none;
+  box-shadow: 0 0 10px #e7b75b;
+  animation: sparkFly .5s ease-out forwards;
+}
+@keyframes sparkFly {
+  from { opacity: 1; transform: translate(0,0) scale(1); }
+  to { opacity: 0; transform: translate(var(--dx),var(--dy)) scale(.2); }
+}
+
+.moment-meter-track { height: 6px; border-radius: 99px; background: rgba(255,255,255,.08); overflow: hidden; }
+.moment-meter-track i {
+  display: block; height: 100%; width: 0; border-radius: 99px;
+  background: linear-gradient(90deg, #a97c31, #f7dda5); transition: width .1s linear;
+  box-shadow: 0 0 12px rgba(231,183,91,.5);
+}
+.moment-feedback { min-height: 18px; text-align: center; font-size: .74rem; color: var(--gold-light); font-family: var(--serif); }
+.moment-card .btn { width: 100%; }
+
+@media (max-height: 700px) {
+  .moment-stage { height: 160px; }
+  .moment-ring { width: 106px; height: 106px; }
+  .moment-ring-inner { width: 86px; height: 86px; font-size: 1.6rem; }
+  .moment-card h2 { font-size: 1.12rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .moment-card, .moment-node, .moment-spark, .moment-stage.miss { animation: none !important; }
 }

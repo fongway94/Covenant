@@ -274,7 +274,11 @@ export const MIRROR_COPY = {
   readingTitle: B("Your ten passages", "你的十段经文"),
   readingIntro: B("Every story you witnessed has a real address in the Bible. Here is the reading list — start anywhere.",
     "你在场的每一个故事，在圣经里都有真实的地址。这是你的阅读清单——从任何一处开始都可以。"),
-  notFortune: B("A mirror, not a label", "一面镜子，不是一个标签")
+  notFortune: B("A mirror, not a label", "一面镜子，不是一个标签"),
+  hintsClean: B("You walked with the hints hidden. This mirror reflects choices you made without being told what they meant.",
+    "你是在提示隐藏的情况下走完的。这面镜子反映的，是没有人先告诉你含义时，你自己做出的选择。"),
+  hintsSeen: B("You asked for help with hints {n} time(s). Those moments are counted separately — they are not scored as observation.",
+    "你曾 {n} 次请求提示帮助。这些时刻被单独记录——不会被算作「观察」。")
 };
 
 /* --------------------------------------------------------------- analysis */

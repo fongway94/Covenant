@@ -62,6 +62,7 @@ function playChapter(id) {
       while (phase() === "mini" && spins++ < 30) click('[data-action="mini-tap"]');
       continue;
     }
+    if (p === "moment") { click('[data-action="moment-skip"]'); continue; }
     if (p === "action") { click('[data-action="game-skip"]'); continue; }
     if (p === "action-result") { click('[data-action="action-done"]'); continue; }
     if (p === "hotspots") {
@@ -155,6 +156,7 @@ try {
   for (let i = 0; i < 40 && phase() !== "choices"; i++) {
     if (phase() === "lines" || phase() === "reply") tapStoryLines();
     else if (phase() === "next") click('[data-action="story-continue"]');
+    else if (phase() === "moment") click('[data-action="moment-skip"]');
     else break;
   }
   assert(phase() === "choices", "clean mode test never reached a choice page");

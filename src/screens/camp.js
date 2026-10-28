@@ -125,7 +125,7 @@ export function campHtml(ui) {
     ${hudHtml(ui)}
     <div class="scroll camp-scroll safe-bottom">
       <div class="camp-hero" style="background-image:url('assets/art/camp.jpg')">
-        <div class="camp-tint" style="background:${phase.tint}"></div>
+          <div class="camp-tint" style="background:${phase.tint}"></div>
         <div class="camp-orb" style="background:${phase.orb}"></div>
         <div class="camp-stars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <div class="camp-hero-top">
@@ -246,6 +246,9 @@ function mirrorHtml(s) {
       <div class="eyebrow" style="margin-bottom:8px">${P(C.waysTitle)}</div>
       ${wayRows}
       <p class="mirror-way-verse">“${esc(pick(strongest.verse, zh))}” <span>— ${esc(pick(strongest.ref, zh))}</span></p>
+      <p class="mirror-hint-note">${esc((s.adventure?.hintsUsed || 0) === 0
+        ? pick(C.hintsClean, zh)
+        : pick(C.hintsSeen, zh).replace("{n}", String(s.adventure.hintsUsed)))}</p>
     </div>
 
     ${mirrorFigureHtml(a.primary, zh, true)}

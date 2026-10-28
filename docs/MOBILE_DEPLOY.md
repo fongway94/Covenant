@@ -1,3 +1,5 @@
+> **v0.7 更新**：缓存升级 `covenant-v9`。新增 `src/data/moments.js`、`src/engine/moments.js`、`src/engine/atmosphere.js` 与 `tools/check-moments.js`（`npm run check:moments`）。WebGL 着色器**没有外部资源**，单文件离线包仍然自包含；不支持 WebGL 时自动降级。6 张写实场景图已替换，剩余 7 张待补。
+>
 > **v0.6 更新**：离线缓存升级为 `covenant-v8`。新增 `src/data/mirror.js`、`src/data/deeper.js`、`src/data/portraits.js`（已在缓存清单中）以及 `assets/art/portrait-jesus.jpg`；新增两个校验脚本 `tools/check-mirror.js`、`tools/check-redletter.js`（`npm run check:mirror` / `npm run check:redletter`）。仍然**没有外部音频文件**。
 >
 > **v0.5 更新**：离线缓存升级为 `covenant-v7`。`src/core/audio.js` 重写为多声部自适应配乐（和弦进行、拨弦、对抗旋律、框鼓、卷积混响）——仍然**没有外部音频文件**，因此缓存清单无需新增资源。新增 `tools/check-audio.js`（`npm run check:audio`）。

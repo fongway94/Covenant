@@ -15,11 +15,18 @@ import {
   continueStory, prayNow, openScroll, miniTap, miniSkip, reflectAnswer,
   goToReflection, leaveStory, finishStory,
   skipAction, actionDone, hotspotTap, hotspotDone, hotspotSkip,
-  revealHints, guidedChoose
+  revealHints, guidedChoose, skipMoment
 } from "./screens/story.js";
+import { mountAtmosphere } from "./engine/atmosphere.js";
 
 const root = document.getElementById("app");
 const toastsEl = document.getElementById("toasts");
+
+/* One WebGL context, moved into whichever art container is currently on
+   screen. Re-attaching an existing canvas keeps its context alive. */
+const atmoCanvas = document.createElement("canvas");
+atmoCanvas.className = "atmo-canvas";
+atmoCanvas.setAttribute("aria-hidden", "true");
 
 const ui = {
   view: "title",
@@ -99,6 +106,11 @@ function render() {
   }
   root.innerHTML = html + (ui.modal ? modalHtml(ui) : "");
   root.dataset.render = String(++renderCount);
+  const art = root.querySelector(".story-art, .action-screen, .title-art, .camp-hero, .finale-art");
+  if (art) {
+    art.appendChild(atmoCanvas);
+    mountAtmosphere(atmoCanvas, { intensity: ui.view === "story" ? 1 : 0.72 });
+  }
   if (ui.view === "story" && ui.story) mountStory(ui);
   if (ui.view === "map") {
     const cur = root.querySelector(".map-node.current");
@@ -210,6 +222,7 @@ root.addEventListener("click", (e) => {
     case "pray-now": if (!prayHeld) prayNow(ui); break;
     case "mini-tap": miniTap(ui); break;
     case "mini-skip": miniSkip(ui); break;
+    case "moment-skip": skipMoment(ui); break;
 
     case "game-skip": skipAction(ui); break;
     case "action-done": actionDone(ui); break;

@@ -1,3 +1,32 @@
+# v0.7 — 每章两个「故事里的一刻」+ GPU 体积光 + 写实场景图
+
+## 不用游戏引擎的理由
+
+引擎能帮的是 **GPU 着色器**，不是美术。Unity / Godot / Phaser 会让单文件离线包变大、要求重写 10 个稳定关卡，而且不会自动让图变好看。所以直接用 WebGL 写了一个零依赖的全站着色器层：
+
+- `src/engine/atmosphere.js`：3 道缓慢漂移的体积光柱、悬浮尘埃、1/12 秒更新的胶片颗粒、柔和暗角与暖色调。约 130 行，无外部贴图、无网络请求。
+- `main.js` 创建**一个持久 canvas**，每次渲染把它移进当前场景的美术容器（`.story-art` / `.action-screen` / `.title-art` / `.camp-hero` / `.finale-art`）。移动同一个 canvas 不会重建 WebGL context。canvas 脱离 DOM 时跳过绘制。
+- 无 WebGL 时静默降级为原来的静态美术；`prefers-reduced-motion` 也受尊重。
+
+## 写实场景图
+
+6 张（elah / lions / jericho / storm / prodigal / esther）换成电影级写实渲染，统一 848×1264 竖版。`tools/process-art.py` 负责把生成器输出（可能是 1408×768 横版或 848×1264 竖版）居中裁切、Lanczos 缩放、轻微锐化与上下渐暗，保证标题文字可读。剩余 7 张待下一轮补齐（平台每回合图像生成上限 10）。
+
+## 20 个「故事里的一刻」
+
+`src/data/moments.js`（数据）+ `src/engine/moments.js`（引擎）。5 种交互：hold / tap / trace / balance / rhythm，每章 2 个，出现在指定 node 的台词之后。
+
+- `afterLines()` 先检查 `momentFor()`，再依次处理 game / hotspots / mini / choices；`s.doneNodes[nodeId+":moment"]` 保证只出现一次。
+- `storyHtml()` 在 `phase === "moment"` 时输出 `momentHtml()`，复用章节美术和 HUD，只把对话区换成一张互动卡。
+- 完成 +6 XP、+1 对应的走路方式；随时可跳过；跳过或超时都不会卡住剧情。
+- `npm run check:moments` 用 jsdom 校验数据完整性、双语、5 种引擎都能启动、跳过能结束、tap 能被真正点赢。
+
+## 沉浸模式的分析纯度
+
+`revealHints()` / `guidedChoose()` 现在调用 `addHintUse()` 记到 `adventure.hintsUsed`，不再记入走路方式。终章「旅程之镜」会据此显示不同说明。默认 `cleanMode: true` 保持不变。
+
+---
+
 # v0.6 — 旅程之镜、红字原则、每章回到圣经、共享画面特效
 
 ## 旅程之镜（不是人格测验）
