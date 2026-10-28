@@ -459,7 +459,10 @@ export function setAmbience(kind, intensity = 0) {
   currentKind = kind;
   const preset = PRESETS[kind] || PRESETS.camp;
   if (layers) fadeOutLayers(layers);
-  layers = makeLayers(c, preset);
+  /* Building the layer graph is the one place a context that survived a long
+     suspend can throw (InvalidStateError). Never let that escape into a render
+     or a tap handler — a silent score is infinitely better than a dead screen. */
+  try { layers = makeLayers(c, preset); } catch { layers = null; currentKind = null; return; }
   layers.intensity = intensity;
   applyChord(c, layers, 0, c.currentTime);
   try {

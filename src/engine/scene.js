@@ -699,6 +699,7 @@ export function startScene(canvas, key, onResult, seed = {}) {
     pause() { if (!alive) return; c.paused = true; pointer.down = false; if (game.onUp) { try { game.onUp(c, pointer); } catch { /* noop */ } } },
     resume() { if (!alive) return; c.paused = false; last = 0; },
     isPaused() { return c.paused; },
+    alive() { return alive; },
     stop() { if (!alive) return; alive = false; ended = true; if (raf) cancelAnimationFrame(raf); detach(); },
     skip() { if (!alive) return; alive = false; ended = true; if (raf) cancelAnimationFrame(raf); detach(); onResult({ score: 0, success: false, skipped: true }); }
   };

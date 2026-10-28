@@ -348,24 +348,48 @@ function finishAction(ui, result) {
   bus.render();
 }
 
+/* Pause and resume used to rebuild the whole app with bus.render(). That is a
+   lot of DOM work to do at the exact moment a phone is being locked, and it
+   made the paused screen depend on a successful re-render: if anything in the
+   render pipeline threw (a suspended AudioContext after a long sleep was the
+   usual suspect), the last painted frame — the pause card — stayed on screen
+   and every later tap died in the same exception, which read as a frozen game.
+   The card is already in the DOM at all times, so both directions now toggle
+   one class and touch state only. A re-render happens only when the DOM is
+   demonstrably wrong, and it can no longer swallow the way out. */
+
 /** Freeze the action scene. Used by the pause button and by app-switch. */
-export function pauseGame(ui) {
+export function pauseGame(ui, opts = {}) {
   const s = st(ui);
   if (!s?.game || s.phase !== "action") return false;
   s.game.paused = true;
   try { s.game.controller?.pause(); } catch { /* noop */ }
-  bus.render();
+  const card = typeof document !== "undefined" && document.querySelector(".action-paused");
+  if (card) card.classList.add("on");
+  else if (!opts.silent) bus.render();     // the overlay vanished: rebuild once
   return true;
 }
 
 /** Resume exactly where the player left off. */
 export function resumeGame(ui) {
   const s = st(ui);
-  if (!s?.game || s.phase !== "action") return false;
+  const card = typeof document !== "undefined" && document.querySelector(".action-paused");
+  // Hand the screen back first, whatever the state says: a card that cannot be
+  // dismissed is the one bug a player can never work around.
+  if (card) card.classList.remove("on");
+  if (!s?.game) return false;
   s.game.paused = false;
-  try { s.game.controller?.resume(); } catch { /* noop */ }
+  const ctrl = s.game.controller;
+  let live = false;
+  try { live = !!(ctrl && (ctrl.alive ? ctrl.alive() : true)); } catch { live = false; }
+  if (live) { try { ctrl.resume(); } catch { /* noop */ } }
+  else {
+    /* The scene lost its loop while the phone was asleep. Rather than leave a
+       dead picture behind a dismissed card, rebuild it on the same canvas. */
+    s.game.controller = null;
+    try { bus.render(); } catch { /* the card is already gone; nothing else to do */ }
+  }
   sfx("tap");
-  bus.render();
   return true;
 }
 
@@ -781,6 +805,7 @@ function actionHtml(ui) {
         <h3>${tx("The story waits for you", "故事在等你")}</h3>
         <p class="small muted">${tx("Nothing moves while you are away — no timers, no lost stones.", "你不在时一切静止——计时暂停，石子不会消失。")}</p>
         <button class="btn btn-primary btn-sm" data-action="game-resume">${icon("play", 15)} ${tx("Resume", "继续")}</button>
+        <button class="btn btn-ghost btn-sm" data-action="game-skip">${tx("Leave this scene", "离开这个关卡")}</button>
       </div>
     </div>
   </div>`;

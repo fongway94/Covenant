@@ -39,6 +39,8 @@ function tapStoryLines(limit = 80) {
   throw new Error("dialogue never finished");
 }
 
+let pauseChecked = false;
+
 function playChapter(id) {
   assert(bus.ui.view === "map", `expected map before ${id}, got ${bus.ui.view}`);
   click(`.map-node[data-id="${id}"]`);
@@ -63,7 +65,29 @@ function playChapter(id) {
       continue;
     }
     if (p === "moment") { click('[data-action="moment-skip"]'); continue; }
-    if (p === "action") { click('[data-action="game-skip"]'); continue; }
+    if (p === "action") {
+      /* Pause/resume regression: coming back from a locked phone left a card
+         that could not be dismissed. Both directions must work from state
+         alone, and must survive a scene whose animation loop died in sleep. */
+      if (!pauseChecked) {
+        pauseChecked = true;
+        click('[data-action="game-pause"]');
+        assert($(".action-paused")?.classList.contains("on"), "pause card did not open");
+        assert(bus.ui.story.game.paused === true, "pause did not set state");
+        assert(!!$("#action-canvas"), "pausing must not remove the scene canvas");
+        click('[data-action="game-resume"]');
+        assert(!$(".action-paused")?.classList.contains("on"), "resume did not dismiss the pause card");
+        assert(bus.ui.story.game.paused === false, "resume did not clear the paused state");
+
+        click('[data-action="game-pause"]');
+        bus.ui.story.game.controller = null;   // the loop died while the screen was off
+        click('[data-action="game-resume"]');
+        assert(!$(".action-paused")?.classList.contains("on"),
+          "resume left the card up after a scene lost its loop");
+        assert(bus.ui.story.game.paused === false, "resume did not clear state after a dead loop");
+      }
+      click('[data-action="game-skip"]'); continue;
+    }
     if (p === "action-result") { click('[data-action="action-done"]'); continue; }
     if (p === "hotspots") {
       let taps = 0;

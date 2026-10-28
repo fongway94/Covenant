@@ -49,8 +49,12 @@ const SCALE = { small: 0.92, normal: 1, large: 1.14 };
 function applySettings() {
   const settings = ui.state?.settings;
   document.documentElement.style.setProperty("--scale", SCALE[settings?.textSize] || 1);
-  setEnabled(settings?.sound ?? true);
-  setMusicEnabled(settings?.music ?? isMusicEnabled());
+  /* Audio is the one subsystem that can be left in a broken state by the OS —
+     a suspended or dropped AudioContext after a long sleep. It must never be
+     able to abort a render: render() runs from every tap handler, so a throw
+     here turns the whole app into a screen that ignores input. */
+  try { setEnabled(settings?.sound ?? true); } catch { /* audio is optional */ }
+  try { setMusicEnabled(settings?.music ?? isMusicEnabled()); } catch { /* audio is optional */ }
 }
 
 /** Pick the ambient bed for the current screen. Cheap + idempotent. */
@@ -133,7 +137,7 @@ function render() {
   translateDOM(root);
   // Leftover reward toasts used to cover the lantern-search header.
   if (ui.story?.phase === "hotspots" && toastsEl) toastsEl.innerHTML = "";
-  syncAmbience();
+  try { syncAmbience(); } catch { /* a dead audio context must not break the screen */ }
 }
 bus.render = render;
 
@@ -423,17 +427,58 @@ document.addEventListener("keydown", (e) => {
 const kickAudio = () => { audioUnlocked = true; resumeAudio(); syncAmbience(); };
 document.addEventListener("pointerdown", kickAudio, { once: true });
 document.addEventListener("keydown", kickAudio, { once: true });
-document.addEventListener("visibilitychange", () => {
-  duckAmbience(document.hidden);
-  /* Leaving the app mid-scene must not cost the player stones or time: freeze
-     the world and show the resume card. They resume deliberately. */
-  if (document.hidden) {
-    if (ui.story?.phase === "action" && !ui.story.game?.paused) pauseGame(ui);
+/* A phone lock is not an ordinary tab switch: the OS may freeze the page
+   between two statements, drop the animation loop and suspend audio. So both
+   halves of the cycle are written to be idempotent and to repair the screen
+   from state, never to trust that a previous handler ran to completion. */
+function syncPauseCard() {
+  const shouldShow = ui.story?.phase === "action" && !!ui.story.game?.paused;
+  const card = document.querySelector(".action-paused");
+  if (!card) {
+    // Paused with no card on screen would be a dead end: rebuild the screen.
+    if (shouldShow) { try { bus.render(); } catch { /* noop */ } }
+    return;
   }
-  /* Also freeze decorative CSS timers (the lantern countdown fill, dust, etc.)
-     so switching apps never burns a player's time. */
-  document.body.classList.toggle("app-paused", document.hidden);
+  card.classList.toggle("on", shouldShow);
+}
+
+function onHidden() {
+  try { duckAmbience(true); } catch { /* noop */ }
+  /* Leaving the app mid-scene must not cost the player stones or time: freeze
+     the world and show the resume card. `silent` keeps the lock moment free of
+     a full DOM rebuild — that is the riskiest thing to do to a page the OS is
+     about to freeze. */
+  if (ui.story?.phase === "action" && !ui.story.game?.paused) pauseGame(ui, { silent: true });
+  else syncPauseCard();
+  document.body.classList.add("app-paused");
+}
+
+function onVisible() {
+  /* Whatever happened while the screen was off, the app must come back usable:
+     the frozen-animation class always goes, and the pause card is re-derived
+     from state rather than left over from the last painted frame. */
+  document.body.classList.remove("app-paused");
+  try { duckAmbience(false); } catch { /* noop */ }
+  syncPauseCard();
+  if (ui.story?.phase === "action" && ui.story.game && !ui.story.game.paused) {
+    const ctrl = ui.story.game.controller;
+    let live = false;
+    try { live = !!(ctrl && (ctrl.alive ? ctrl.alive() : true)); } catch { live = false; }
+    if (!live) {
+      // The loop died during sleep. Rebuild it instead of showing a dead frame.
+      ui.story.game.controller = null;
+      try { bus.render(); } catch { /* nothing else we can do here */ }
+    }
+  }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) onHidden(); else onVisible();
 });
+/* iOS restores a backgrounded page through pagehide/pageshow, and sometimes
+   without a visibilitychange at all. */
+window.addEventListener("pageshow", (e) => { if (!document.hidden && e.persisted) onVisible(); });
+window.addEventListener("focus", () => { if (!document.hidden) document.body.classList.remove("app-paused"); });
 
 /* ------------------------------------------------------------ offline cache */
 
