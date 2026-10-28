@@ -1,3 +1,5 @@
+> **v0.7.1 更新**：整套 13 张场景图已全部换成电影级写实渲染，缓存升级 `covenant-v10`（美术换图必须换缓存版本，否则老用户会看到旧图）。旁白改成印记徽章、营地月亮下移。`_art_raw/` 是生成原图暂存目录，已在 `.gitignore`，不进仓库。
+>
 > **v0.7 更新**：缓存升级 `covenant-v9`。新增 `src/data/moments.js`、`src/engine/moments.js`、`src/engine/atmosphere.js` 与 `tools/check-moments.js`（`npm run check:moments`）。WebGL 着色器**没有外部资源**，单文件离线包仍然自包含；不支持 WebGL 时自动降级。6 张写实场景图已替换，剩余 7 张待补。
 >
 > **v0.6 更新**：离线缓存升级为 `covenant-v8`。新增 `src/data/mirror.js`、`src/data/deeper.js`、`src/data/portraits.js`（已在缓存清单中）以及 `assets/art/portrait-jesus.jpg`；新增两个校验脚本 `tools/check-mirror.js`、`tools/check-redletter.js`（`npm run check:mirror` / `npm run check:redletter`）。仍然**没有外部音频文件**。

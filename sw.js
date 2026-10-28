@@ -1,5 +1,5 @@
 /* Covenant offline cache. Bump CACHE on every content release. */
-const CACHE = 'covenant-v9';
+const CACHE = 'covenant-v10';
 const ASSETS = [
   './',
   './index.html',

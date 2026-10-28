@@ -32,7 +32,7 @@ function meets(ui, require) {
 }
 
 function speakerMarkup(ch, who) {
-  if (!who) return `<div class="speaker narrator" id="speaker"><span class="portrait narrator-pop" style="background-image:url('${chapterPortrait(ch.id)}')">✧</span>${tx("The Story", "旁白")}</div>`;
+  if (!who) return `<div class="speaker narrator" id="speaker"><span class="portrait narrator-pop">✧</span><span class="who">${tx("The Story", "旁白")}</span></div>`;
   const c = ch.cast[who] || { name: who, role: "" };
   const art = portraitFor(who);
   return `<div class="speaker" id="speaker"><span class="portrait has-art" style="background-image:url('${art}')"></span><span class="who">${esc(c.name)}${c.role ? `<span class="role">${esc(c.role)}</span>` : ""}</span></div>`;

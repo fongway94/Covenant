@@ -126,7 +126,6 @@ export function campHtml(ui) {
     <div class="scroll camp-scroll safe-bottom">
       <div class="camp-hero" style="background-image:url('assets/art/camp.jpg')">
           <div class="camp-tint" style="background:${phase.tint}"></div>
-        <div class="camp-orb" style="background:${phase.orb}"></div>
         <div class="camp-stars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <div class="camp-hero-top">
           <div class="camp-day"><div class="eyebrow">${tx(`Day ${day} of ${CHAPTERS.length}`, `第 ${day} / ${CHAPTERS.length} 天`)} · ${esc(isZh() ? phase.zh : phase.en)}</div>
