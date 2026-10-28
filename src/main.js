@@ -207,10 +207,13 @@ root.addEventListener("click", (e) => {
       toast(next ? tx("Ambient music on", "环境音乐已开启") : tx("Ambient music off", "环境音乐已关闭"), next ? "♪" : "✧");
       break;
     }
-    case "set-text":
+    case "set-text": {
       ui.state.settings.textSize = el.dataset.size;
       saveGame(ui.state); sfx("tap"); render();
+      const label = { small: tx("Small text", "小字号"), normal: tx("Normal text", "中字号"), large: tx("Large text", "大字号") }[el.dataset.size];
+      if (label) toast(label, "A");
       break;
+    }
     case "toggle-demo":
       ui.state.settings.showAll = !ui.state.settings.showAll;
       saveGame(ui.state); sfx("tap"); render();

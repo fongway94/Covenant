@@ -37,11 +37,15 @@
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; margin: 0; }
+/* The scale has to live on the ROOT element: every text rule in this file is
+   written in rem, and rem resolves against <html>, not <body>. Scaling body
+   changed nothing anybody could see. */
+html { font-size: calc(16px * var(--scale)); }
 body {
   background: #050a0e;
   color: var(--paper);
   font-family: var(--sans);
-  font-size: calc(16px * var(--scale));
+  font-size: 1rem;
   line-height: 1.5;
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
@@ -357,7 +361,7 @@ p { margin: 0 0 .85em; }
 .speaker .role { font-family: var(--sans); font-size: .6rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
 .speaker.narrator { color: var(--teal); }
 .dialogue-text {
-  font-family: var(--serif); font-size: calc(1.02rem * var(--scale)); line-height: 1.62;
+  font-family: var(--serif); font-size: 1.02rem; line-height: 1.62;
   color: #f0e7d5; min-height: 3.2em; margin: 0;
 }
 .dialogue-text em { color: var(--gold-light); }
@@ -547,7 +551,7 @@ p { margin: 0 0 .85em; }
 @media (max-height: 680px) {
   .story-art { flex-basis: 25%; min-height: 120px; }
   .dialogue { padding: 10px 13px; }
-  .dialogue-text { font-size: calc(.95rem * var(--scale)); min-height: 2.8em; }
+  .dialogue-text { font-size: .95rem; min-height: 2.8em; }
   .choice { padding: 9px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {

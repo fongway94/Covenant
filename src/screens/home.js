@@ -39,7 +39,7 @@ export function titleHtml(ui) {
           <button class="btn btn-ghost" data-action="go" data-view="about">${icon("scroll", 16)} ${tx("About", "关于")}</button>
         </div>
       </div>
-      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.8.0", "互动圣经故事角色扮演游戏 · v0.8.0 原型")}</div>
+      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.8.1", "互动圣经故事角色扮演游戏 · v0.8.1 原型")}</div>
     </div>
   </div>`;
 }
@@ -112,7 +112,7 @@ export function aboutHtml(ui) {
       <h3>For churches &amp; ministries</h3>
       <p>Before publishing, have your content reviewed by your own pastors or theological advisors. Translation choice, denominational distinctives and age-appropriateness are decisions best made by your community. See <code>docs/GAME_DESIGN.md</code> for the content guidelines and a chapter template.</p>
       <div class="divider"></div>
-      <p class="tiny muted center">Artwork generated for this project · interface and story text written for Covenant · v0.8.0 prototype</p>
+      <p class="tiny muted center">Artwork generated for this project · interface and story text written for Covenant · v0.8.1 prototype</p>
       ` : `
       <p class="verse">「你的话是我脚前的灯，是我路上的光。」 <span style="font-style:normal;font-size:.8em;color:var(--muted)">— 诗篇 119:105</span></p>
       <p>《Covenant／圣约》是一款以圣经真实故事为核心的互动角色扮演游戏。你不是去阅读<em>关于</em>大卫、但以理或以斯帖的故事，而是站在他们身旁——你的选择会塑造你自己的品格：勇气、智慧、怜悯与信心。</p>
@@ -136,7 +136,7 @@ export function aboutHtml(ui) {
       <h3>给教会与事工团队</h3>
       <p>正式发布前，请让你们的牧者或神学顾问审阅内容。译本选择、宗派特色与适龄程度，最好由你们的群体决定。参见 <code>docs/GAME_DESIGN.md</code> 中的内容规范与章节模板。</p>
       <div class="divider"></div>
-      <p class="tiny muted center">插画为本项目生成 · 界面与故事文本为 Covenant 创作 · v0.8.0 原型</p>
+      <p class="tiny muted center">插画为本项目生成 · 界面与故事文本为 Covenant 创作 · v0.8.1 原型</p>
       `}
       <button class="btn btn-ghost btn-sm" style="margin-top:14px" data-action="go" data-view="title">${tx("Back to the title", "返回首页")}</button>
     </div>

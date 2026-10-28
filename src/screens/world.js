@@ -198,11 +198,12 @@ export function characterHtml(ui) {
         <div class="setting-row">
           <div class="lbl">${tx("Text size", "字号")}<small>${tx("For reading comfort", "让阅读更舒适")}</small></div>
           <div class="seg">
-            <button class="${s.settings.textSize === "small" ? "active" : ""}" data-action="set-text" data-size="small">A</button>
-            <button class="${s.settings.textSize === "normal" ? "active" : ""}" data-action="set-text" data-size="normal">A</button>
-            <button class="${s.settings.textSize === "large" ? "active" : ""}" data-action="set-text" data-size="large">A</button>
+            <button class="${s.settings.textSize === "small" ? "active" : ""}" data-action="set-text" data-size="small" style="font-size:.82em" aria-label="${tx("Small", "小")}">A</button>
+            <button class="${s.settings.textSize === "normal" ? "active" : ""}" data-action="set-text" data-size="normal" style="font-size:1em" aria-label="${tx("Normal", "中")}">A</button>
+            <button class="${s.settings.textSize === "large" ? "active" : ""}" data-action="set-text" data-size="large" style="font-size:1.28em" aria-label="${tx("Large", "大")}">A</button>
           </div>
         </div>
+        <p class="tiny muted" style="margin:-2px 0 10px;font-family:var(--serif)">${tx("“The LORD is my shepherd; I shall not want.” — Psalm 23:1", "「耶和华是我的牧者，我必不至缺乏。」——诗篇 23:1")}</p>
         <div class="setting-row">
           <div class="lbl">${tx("Language", "语言")}<small>${tx("中文 / EN", "中文 / English")}</small></div>
           <button class="btn btn-ghost btn-sm" data-action="toggle-lang">${isZh() ? "English" : "中文"}</button>
@@ -223,7 +224,7 @@ export function characterHtml(ui) {
       </div>
 
       <button class="btn btn-danger btn-sm" style="margin-top:14px" data-action="ask-reset">${icon("refresh", 15)} ${tx("Erase this journey", "清除这段旅程")}</button>
-      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.8.0 · Everything is saved only on this device.", "Covenant v0.8.0 · 所有进度仅保存在本机。")}</p>
+      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.8.1 · Everything is saved only on this device.", "Covenant v0.8.1 · 所有进度仅保存在本机。")}</p>
     </div>
     ${tabsHtml(ui, "character")}
   </div>`;
