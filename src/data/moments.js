@@ -15,8 +15,10 @@
 
 const B = (en, zh) => [en, zh];
 
-/* at = node id the moment appears after · kind = interaction · way = mirror axis */
-const M = (at, kind, title, prompt, done, way) => ({ at, kind, way, title, prompt, done });
+/* at = node id the moment appears after · kind = interaction · subject = which
+   painting the moment is drawn as · way = mirror axis */
+const M = (at, kind, subject, plate, fx, fy, title, prompt, done, way) =>
+  ({ at, kind, subject, plate, fx, fy, way, title, prompt, done });
 
 export const MOMENT_WAY_FALLBACK = {
   hold: "wait", tap: "step", trace: "notice", balance: "stay", rhythm: "wait"
@@ -24,101 +26,121 @@ export const MOMENT_WAY_FALLBACK = {
 
 export const MOMENTS = {
   elah: [
-    M("start2", "hold",
+    M("start2", "hold", "ground",
+      "elah", 0.42, 0.70,
       B("Hold your ground", "站稳"),
       B("The giant's shout rolls over the valley. Press and hold until your breathing steadies.", "巨人的喊声滚过山谷。按住不放，直到你的呼吸稳下来。"),
       B("You did not run. That is what courage looked like from the inside.", "你没有跑。从里面看，勇敢就是这个样子。"), "wait"),
-    M("arrival", "balance",
+    M("arrival", "balance", "provision",
+      "elah-field", 0.50, 0.60,
       B("Carry the provisions", "稳住供给"),
       B("Bread, cheese, a staff. Drag to keep the load level as you climb the ridge.", "饼、奶饼、一根杖。拖动保持平衡，把东西扛上山脊。"),
       B("You reach the top without dropping anything. Nobody noticed you arrive.", "你一样东西也没掉地爬到了山顶。没有人注意到你来了。"), "stay")
   ],
   lions: [
-    M("decree", "tap",
+    M("decree", "tap", "lines",
+      "window", 0.55, 0.70,
       B("Read the sealed decree", "读那盖印的禁令"),
       B("Tap each line as it surfaces. The law is already written — you can only witness it.", "每一行浮起时轻点它。律法已经写好——你只能见证。"),
       B("Thirty days. No prayer. The ink is still wet.", "三十天。不许祷告。墨迹还没干。"), "notice"),
-    M("upstairs", "hold",
+    M("upstairs", "hold", "shutter",
+      "lions", 0.55, 0.60,
       B("Keep the window open", "让窗户敞着"),
       B("Hold to keep the shutters open toward Jerusalem while the city goes quiet.", "按住，让朝向耶路撒冷的窗扇一直敞着，直到全城安静。"),
       B("Three times a day. The same as yesterday. The same as always.", "一日三次。和昨天一样。和往常一样。"), "wait")
   ],
   jericho: [
-    M("wounded", "tap",
+    M("wounded", "tap", "wound",
+      "tend", 0.42, 0.62,
       B("Bind the wounds", "包扎伤口"),
       B("Tap each wound to clean it with oil and wine. Be gentle — he is barely conscious.", "轻点每处伤口，用油和酒清洗。轻一点——他几乎失去意识。"),
       B("Oil, wine, bandages. Mercy has a cost and it is counted in linen.", "油、酒、绷带。怜悯是有代价的，代价是用布来数的。"), "stay"),
-    M("passers", "rhythm",
+    M("passers", "rhythm", "foot",
+      "jericho", 0.50, 0.64,
       B("Listen for footsteps", "听脚步声"),
       B("Two people pass on the road. Tap when each footstep reaches the golden mark.", "有两个人从路上经过。每一步踏到金色记号时轻点。"),
       B("They saw him. They crossed to the other side. The road is very quiet again.", "他们看见了他，却从那边绕过去了。路上又安静下来。"), "notice")
   ],
   storm: [
-    M("evening", "balance",
+    M("evening", "balance", "jars",
+      "storm", 0.55, 0.55,
       B("Ballast the boat", "稳住船身"),
       B("Drag the net and water jars to keep the boat level as the wind rises.", "拖动渔网和水罐，在风起时让船保持平稳。"),
       B("Everything is stowed. It will not be enough.", "一切都绑好了。但这还不够。"), "stay"),
-    M("storm", "hold",
+    M("storm", "hold", "rope",
+      "storm", 0.50, 0.50,
       B("Hold the rope", "抓住绳索"),
       B("Hold on. The wave is coming over the bow and the rope is all you have.", "抓紧。浪头正越过船头，你只剩这根绳子。"),
       B("The rope held. So did you.", "绳子没有断。你也没有。"), "wait")
   ],
   prodigal: [
-    M("famine", "trace",
+    M("famine", "trace", "road",
+      "prodigal", 0.58, 0.50,
       B("Trace the road home", "描出回家的路"),
       B("Drag along the road from the pigsty back to the father's house.", "沿着从猪圈回到父家的那条路拖动。"),
       B("The road is longer than you remember. He has been watching it the whole time.", "这条路比你记忆中更长。而他一直望着这条路。"), "notice"),
-    M("road", "tap",
+    M("road", "tap", "step",
+      "title", 0.48, 0.55,
       B("Run to him", "跑向他"),
       B("Tap each step. He is running too — which is not what you expected.", "轻点每一步。他也在跑——这和你预想的不一样。"),
       B("The robe arrives before the apology is finished.", "袍子先到，认罪的话还没说完。"), "step")
   ],
   esther: [
-    M("fast", "hold",
+    M("fast", "hold", "lamp",
+      "esther", 0.40, 0.76,
       B("Three days of fasting", "禁食三日"),
       B("Hold through the fast. Nothing happens. That is the point — you are waiting.", "按住，撑过禁食。什么也没有发生。这正是重点——你在等候。"),
       B("Three days. Then she will go in, though it is against the law.", "三天。然后她要进去，虽然这是违反禁令的。"), "wait"),
-    M("throne", "rhythm",
+    M("throne", "rhythm", "light",
+      "hall", 0.46, 0.52,
       B("Approach the throne", "走到宝座前"),
       B("Each step must land in the narrow moment of favour. Tap when the light reaches the mark.", "每一步都要踩在恩宠的那一刻。光芒到达记号时轻点。"),
       B("The scepter is extended. The decree is not yet reversed.", "金杖伸了出来。但谕令还没有被翻转。"), "step")
   ],
   bush: [
-    M("stray", "trace",
+    M("stray", "trace", "slope",
+      "bush", 0.50, 0.55,
       B("Follow the stray lamb", "循着迷羊的踪迹"),
       B("Trace the wandering path up the slope. The flock is behind you.", "沿着上坡那条弯弯曲曲的小径拖动。羊群在你身后。"),
       B("A lamb wandered. A bush is burning. Neither was on your schedule.", "一只羊走迷了。一丛荆棘烧着了。两件事都不在你的计划里。"), "notice"),
-    M("bush", "hold",
+    M("bush", "hold", "bush",
+      "flame", 0.50, 0.55,
       B("Turn aside and look", "转过身去看"),
       B("Hold still and look. The bush burns, but it is not consumed.", "按住不动，仔细看。荆棘在烧，却没有烧毁。"),
       B("Moses hid his face. There is no smoke and no hurry.", "摩西蒙住了脸。没有烟，也没有丝毫匆忙。"), "notice")
   ],
   ruth: [
-    M("field", "tap",
+    M("field", "tap", "barley",
+      "ruth", 0.38, 0.72,
       B("Gather the fallen barley", "拾取掉落的麦穗"),
       B("Tap each stalk left behind at the edges of the field. Leave nothing for pride.", "轻点田边掉落的每一根麦穗。别让骄傲使你留下任何一根。"),
       B("A handful of barley. Boaz told the reapers to drop more on purpose.", "一把麦穗。是波阿斯吩咐收割的人故意多留的。"), "notice"),
-    M("kindness", "balance",
+    M("kindness", "balance", "sheaf",
+      "ruth", 0.40, 0.70,
       B("Carry the sheaf", "扛着麦捆"),
       B("Keep the sheaf balanced on your shoulder all the way back to Naomi.", "一路把麦捆稳稳扛在肩上，回到拿俄米那里。"),
       B("She asks who noticed you. You say a man called Boaz.", "她问是谁留意了你。你说，是一个叫波阿斯的人。"), "stay")
   ],
   jonah: [
-    M("deep", "hold",
+    M("deep", "hold", "dark",
+      "belly", 0.50, 0.55,
       B("Three days in the dark", "黑暗中的三天"),
       B("Hold through the dark. There is nothing to do here but wait and pray.", "在黑暗中按住不放。这里除了等候和祷告，无事可做。"),
       B("Salvation is of the LORD. The fish has not moved yet.", "救恩出于耶和华。大鱼还没有动。"), "wait"),
-    M("nineveh", "rhythm",
+    M("nineveh", "rhythm", "sun",
+      "cry", 0.50, 0.55,
       B("Walk through the city", "走遍那城"),
       B("One day's walk into Nineveh. Tap each step when the light reaches the mark.", "往尼尼微走一日。每步在光到达记号时轻点。"),
       B("Forty days, he says. The whole city stops to listen.", "他说，再等四十天。全城都停下来听。"), "step")
   ],
   zacchaeus: [
-    M("tree", "trace",
+    M("tree", "trace", "branch",
+      "branches", 0.55, 0.35,
       B("Climb the sycamore", "爬上桑树"),
       B("Drag up the winding branches. You are short and the crowd is tall.", "沿着弯曲的树枝向上拖动。你个子矮，人群又高。"),
       B("You only wanted to see. Being seen was not part of the plan.", "你只是想看一眼。被看见并不在你的计划里。"), "step"),
-    M("house", "tap",
+    M("house", "tap", "coin",
+      "zacchaeus", 0.50, 0.62,
       B("Count out four coins", "数出四倍的钱"),
       B("Tap each coin as he counts. Fourfold — more than the Law required.", "他一枚一枚地数，你也跟着轻点。四倍——远超律法的要求。"),
       B("Nobody asked him to. That is what grace does when it is welcomed.", "没有人要求他这样做。这就是恩典被接纳之后所做的事。"), "stay")
@@ -132,7 +154,7 @@ export function momentFor(chapterId, nodeId, zh, done = {}) {
   if (!m || done[nodeId + ":moment"]) return null;
   const L = (b) => b[zh ? 1 : 0];
   return {
-    kind: m.kind, way: m.way || MOMENT_WAY_FALLBACK[m.kind],
+    kind: m.kind, subject: m.subject, plate: m.plate, fx: m.fx, fy: m.fy, way: m.way || MOMENT_WAY_FALLBACK[m.kind],
     title: L(m.title), prompt: L(m.prompt), done: L(m.done),
     at: m.at, chapterId
   };

@@ -12,6 +12,34 @@ const rand = (a, b) => a + Math.random() * (b - a);
 
 const KINDS = ["hold", "tap", "trace", "balance", "rhythm"];
 
+/* The painted layer. It returns false when there is no canvas (jsdom, ancient
+   WebView), and the DOM widget stays visible in that case, so the interaction
+   is always playable even when the art cannot be. */
+function makeCanvas(host, spec) {
+  if (!hasMomentArt(spec)) return null;
+  let cv = null, cctx = null;
+  try {
+    cv = document.createElement("canvas");
+    cv.className = "moment-canvas";
+    cctx = cv.getContext ? cv.getContext("2d") : null;
+  } catch { cctx = null; }
+  if (!cctx) return null;
+  /* The photograph is not drawn into the canvas: it is the stage's own
+     background, so the compositor keeps it sharp and the decode happens once
+     with the rest of the chapter's art. The canvas above it carries weather,
+     the act, and light. */
+  let plate = null;
+  if (spec.plate) {
+    plate = document.createElement("div");
+    plate.className = "moment-plate";
+    plate.style.backgroundImage = `url("assets/art/${spec.plate}.jpg")`;
+    host.appendChild(plate);
+  }
+  host.appendChild(cv);
+  host.classList.add("cv-live");
+  return { cv, cctx, plate, w: 0, h: 0, dpr: 0 };
+}
+
 function el(tag, cls, html = "") {
   const e = document.createElement(tag);
   if (cls) e.className = cls;
@@ -26,6 +54,8 @@ function point(e, host) {
   return { x: clamp(p.clientX - r.left, 0, w), y: clamp(p.clientY - r.top, 0, h), w, h };
 }
 
+import { drawMomentArt, hasMomentArt, momentPlateStyle, balanceAngle } from "./momentart.js";
+
 export function startMoment(host, spec, onDone) {
   if (!host || !KINDS.includes(spec.kind)) { onDone?.({ success: false, skipped: true, score: 0 }); return { stop() {}, skip() {} }; }
 
@@ -34,11 +64,12 @@ export function startMoment(host, spec, onDone) {
     kind: spec.kind, t: 0, progress: 0, down: false, target: 0.5,
     charge: 0, hits: 0, hit: 0, nodeT: 0, node: null,
     marker: 0, dir: 1, speed: 0.82, band: 0.5, bandW: 0.17,
-    pos: 0.5, vel: 0, good: 0, path: [], lastAction: -10,
+    pos: 0.5, vel: 0, good: 0, path: [], lastAction: -10, nodes: [],
     limit: spec.kind === "trace" ? 19 : spec.kind === "tap" ? 16 : 15
   };
   host.innerHTML = "";
   host.classList.add("moment-stage", "kind-" + spec.kind);
+  const view = makeCanvas(host, spec);
 
   const meter = () => document.getElementById("moment-meter");
   const feedback = () => document.getElementById("moment-feedback");
@@ -101,17 +132,23 @@ export function startMoment(host, spec, onDone) {
     if (nodeEl) nodeEl.remove();
     nodeEl = el("button", "moment-node", "✧");
     nodeEl.type = "button";
-    nodeEl.style.left = `${rand(12, 84)}%`;
-    nodeEl.style.top = `${rand(14, 78)}%`;
+    const fx = rand(0.16, 0.84), fy = rand(0.16, 0.8);
+    nodeEl.style.left = `${fx * 100}%`;
+    nodeEl.style.top = `${fy * 100}%`;
+    nodeEl.setAttribute("aria-label", "…");
     nodeEl.addEventListener("pointerdown", onNode);
     nodeEl.addEventListener("click", onNode);
     host.appendChild(nodeEl);
+    S.nodes.push({ el: nodeEl, fx, fy, hit: false });
+    if (S.nodes.length > 8) S.nodes = S.nodes.filter((n) => !n.hit || n.el === nodeEl);
     S.nodeT = 0;
   }
   function onNode(e) {
     e.stopPropagation(); e.preventDefault?.();
     if (!alive || finished || !nodeEl || nodeEl.dataset.hit) return;
     nodeEl.dataset.hit = "1";
+    const rec = S.nodes.find((n) => n.el === nodeEl);
+    if (rec) rec.hit = true;
     const p = point(e, host);
     spark(p.x, p.y);
     S.hit++;
@@ -184,7 +221,38 @@ export function startMoment(host, spec, onDone) {
   if (spec.kind === "tap") spawnNode();
 
   /* ------------------------------------------------------------- loop */
+  function drawArt() {
+    if (!view) return;
+    const cw = host.clientWidth || 0, ch = host.clientHeight || 0;
+    if (!cw || !ch) return;
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    if (view.plate && spec.kind === "balance") {
+      /* the painting itself tips; the load drawn on the canvas stays level */
+      const deg = (balanceAngle(S) * 180) / Math.PI;
+      view.plate.style.transform = `rotate(${deg.toFixed(2)}deg) scale(1.22)`;
+      view.plate.style.animation = "none";
+    }
+    if (view.plate && (view.w !== cw || view.h !== ch)) {
+      const st = momentPlateStyle(spec, cw, ch);
+      view.plate.style.backgroundSize = st.backgroundSize;
+      view.plate.style.backgroundPosition = st.backgroundPosition;
+      view.plate.style.transformOrigin = st.transformOrigin;
+    }
+    if (view.w !== cw || view.h !== ch || view.dpr !== dpr) {
+      view.w = cw; view.h = ch; view.dpr = dpr;
+      view.cv.width = Math.round(cw * dpr);
+      view.cv.height = Math.round(ch * dpr);
+      view.cv.style.width = `${cw}px`;
+      view.cv.style.height = `${ch}px`;
+    }
+    const ctx = view.cctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cw, ch);
+    drawMomentArt(ctx, cw, ch, spec, S, dpr);
+  }
+
   function draw() {
+    drawArt();
     if (ringEl) {
       ringEl.style.setProperty("--p", `${Math.round(S.charge * 100)}%`);
       ringEl.classList.toggle("charged", S.charge > 0.75);

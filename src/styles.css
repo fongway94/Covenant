@@ -1490,7 +1490,7 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 .moment-card h2 { font-family: var(--serif); font-size: 1.28rem; margin: 0; color: var(--gold-light); }
 .moment-card > p { margin: 0; line-height: 1.5; }
 .moment-stage {
-  position: relative; height: 210px; border-radius: 14px; overflow: hidden;
+  position: relative; height: 236px; border-radius: 14px; overflow: hidden;
   touch-action: none; user-select: none; -webkit-user-select: none;
   background:
     radial-gradient(70% 60% at 72% 8%, rgba(231,183,91,.14), transparent 70%),
@@ -1503,6 +1503,49 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
   background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.012) 3px 4px);
 }
 .moment-stage.miss { animation: momentMiss .28s ease; }
+/* v0.8.9 — the painted moment layer. When a canvas subject exists, the old
+   widget chrome (ring, bar, dashed path, glowing token) is hidden and the
+   canvas draws the physical thing; the tap buttons stay, transparent, so the
+   hit targets and the DOM oracles are unchanged. */
+/* The photograph: a crop of the chapter's own plate, painted by the
+   compositor. It creeps in while the moment runs so the frame is never a still
+   backdrop. */
+.moment-plate {
+  position: absolute; inset: 0;
+  background-repeat: no-repeat;
+  background-color: #0a0d10;
+  border-radius: 14px;
+  animation: momentPush 18s ease-out both;
+  will-change: transform;
+}
+@keyframes momentPush {
+  from { transform: scale(1); }
+  to { transform: scale(1.055); }
+}
+.moment-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+  border-radius: 14px;
+}
+.moment-stage.cv-live {
+  background: #0a0d10;
+  border-color: rgba(231,183,91,.26);
+  box-shadow: inset 0 0 40px rgba(0,0,0,.55);
+}
+.moment-stage.cv-live::before { display: none; }
+.moment-stage.cv-live .moment-ring,
+.moment-stage.cv-live .moment-bar,
+.moment-stage.cv-live .moment-hint,
+.moment-stage.cv-live .moment-svg,
+.moment-stage.cv-live .moment-tap-hint,
+.moment-stage.cv-live .moment-band,
+.moment-stage.cv-live .moment-cursor,
+.moment-stage.cv-live .moment-token { display: none; }
+.moment-stage.cv-live .moment-node {
+  background: none; border: 0; box-shadow: none; animation: none;
+  color: transparent; opacity: 0;
+}
+.moment-stage.cv-live .moment-node:focus-visible { outline: 2px solid rgba(247,221,165,.6); opacity: 1; }
+
 @keyframes momentMiss { 0%,100% { transform: none; } 30% { transform: translateX(-5px); } 70% { transform: translateX(5px); } }
 
 .moment-ring {
@@ -1583,7 +1626,7 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 .moment-card .btn { width: 100%; }
 
 @media (max-height: 700px) {
-  .moment-stage { height: 160px; }
+  .moment-stage { height: 186px; }
   .moment-ring { width: 106px; height: 106px; }
   .moment-ring-inner { width: 86px; height: 86px; font-size: 1.6rem; }
   .moment-card h2 { font-size: 1.12rem; }
