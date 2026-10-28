@@ -98,7 +98,7 @@ function climaxInput(key, c, frame) {
       if (frame % 60 === 1) { p.startX = 60; p.startY = 500; g.onDown?.(c, p); }
       if (frame % 60 === 2) { p.x = 300; p.y = 250; g.onMove?.(c, p); g.onUp?.(c, p); }
       break;
-    case "lions": case "prodigal": case "esther":
+    case "lions":
       p.down = frame % 8 !== 0; p.x = 40 + ((frame * 17) % 310); p.y = 300 + Math.sin(frame / 6) * 120;
       break;
     case "storm":
@@ -114,11 +114,6 @@ function climaxInput(key, c, frame) {
     case "glean": {
       const grain = s.grain?.find((x) => !x.got);
       p.down = true; p.x = grain?.x ?? c.w * 0.5; p.y = grain?.y ?? c.h * 0.7;
-      break;
-    }
-    case "deep": {
-      const orb = s.orbs?.[0];
-      p.down = true; p.x = c.w * 0.26; p.y = orb?.y ?? c.h * 0.5;
       break;
     }
     case "jericho": {
@@ -179,6 +174,41 @@ function climaxInput(key, c, frame) {
       }
       break;
     }
+    case "prodigal": {
+      const gift = s.gifts?.find((g) => !s.placed?.[g.id]);
+      if (gift && gift.tx !== undefined) {
+        if (s._carry !== gift.id) { s._carry = gift.id; p.down = true; p.x = gift.sx; p.y = gift.sy; }
+        else {
+          p.x += (gift.tx - p.x) * 0.3; p.y += (gift.ty - p.y) * 0.3;
+          if (Math.hypot(gift.tx - p.x, gift.ty - p.y) < 8) p.down = false;
+        }
+      } else { p.down = false; s._carry = null; }
+      break;
+    }
+    case "esther": {
+      const cyc = frame % 90;
+      if (s.phase === "walk") {
+        if (cyc < 12) { p.down = true; p.y = c.h * 0.72 - cyc * 8; p.x = c.w * 0.5; }
+        else p.down = false;
+      } else if (s.phase === "kneel") { p.down = true; p.x = c.w * 0.5; p.y = c.h * 0.62; }
+      else { p.down = true; p.x = c.w * 0.5; p.y = c.h * 0.557; }   // reach for the sceptre head
+      break;
+    }
+    case "deep": {
+      if (s.phase === "kelp") {
+        const k = s.strands?.find((x) => !x.free);
+        if (k) { p.down = true; p.x = k.x + Math.sin(frame * 1.9) * 34; p.y = k.y; }
+        else p.down = false;
+      } else p.down = false;
+      break;
+    }
+    case "climb": {
+      const cyc = frame % 24;
+      p.x = s.side ? c.w * 0.78 : c.w * 0.22;
+      if (cyc < 9) { p.down = true; if (cyc === 0 || p.y < 20) p.y = c.h * 0.62; p.y -= 9; }
+      else p.down = false;
+      break;
+    }
     case "tend": {
       // sweep the finger along the painted forearm: wash, then bind
       const tri = (frame % 140) / 140;
@@ -188,13 +218,6 @@ function climaxInput(key, c, frame) {
       p.y = c.h * (0.72 - 0.26 * t2);
       break;
     }
-    case "climb":
-      if (frame % 7 === 0 && g.onDown && s.seq) {
-        p.x = s.seq[s.step] === 0 ? c.w * 0.25 : c.w * 0.75;
-        p.y = c.h * 0.6;
-        g.onDown(c, p);
-      }
-      break;
     default: break;
   }
 }

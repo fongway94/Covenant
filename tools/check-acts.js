@@ -138,7 +138,7 @@ function driveClimax(key, game) {
       if (key === "sling") {
         if (frames % 70 === 1) { p.startX = 60; p.startY = 500; game.onDown?.(c, p); }
         if (frames % 70 === 2) { p.x = 300; p.y = 250; game.onMove?.(c, p); game.onUp?.(c, p); }
-      } else if (["lions", "prodigal", "esther"].includes(key)) {
+      } else if (key === "lions") {
         p.down = frames % 8 !== 0; p.x = 40 + ((frames * 17) % 310); p.y = 300 + Math.sin(frames / 6) * 120;
       } else if (key === "storm") {
         p.down = frames % 9 !== 0; p.x = 40 + ((frames * 13) % 310); p.y = 380;
@@ -149,8 +149,6 @@ function driveClimax(key, game) {
       } else if (key === "glean") {
         const g = s.grain?.find((x) => !x.got) || { x: c.w * 0.5, y: c.h * 0.7 };
         p.down = true; p.x = g.x; p.y = g.y;
-      } else if (key === "deep") {
-        p.down = true; p.x = c.w * 0.26; p.y = s.orbs?.[0]?.y ?? c.h * 0.5;
       } else if (key === "jericho") {
         const spot = s.spot || { x: c.w * 0.3, y: c.h * 0.8 };
         p.down = true; p.x = spot.x;
@@ -195,6 +193,37 @@ function driveClimax(key, game) {
             p.x = 36; p.down = true; s.last = null; game.onDown?.(c, p);
           } else p.x += 11;
         }
+      } else if (key === "prodigal") {
+        const gift = s.gifts?.find((g) => !s.placed?.[g.id]);
+        if (gift && gift.tx !== undefined) {
+          if (s._carry !== gift.id) { s._carry = gift.id; p.down = true; p.x = gift.sx; p.y = gift.sy; }
+          else {
+            p.x += (gift.tx - p.x) * 0.3; p.y += (gift.ty - p.y) * 0.3;
+            if (Math.hypot(gift.tx - p.x, gift.ty - p.y) < 8) p.down = false;
+          }
+        } else { p.down = false; s._carry = null; }
+      } else if (key === "esther") {
+        const cyc = frames % 90;
+        if (s.phase === "walk") {
+          if (cyc < 12) { p.down = true; p.y = c.h * 0.72 - cyc * 8; p.x = c.w * 0.5; }
+          else p.down = false;
+        } else if (s.phase === "kneel") {
+          p.down = true; p.x = c.w * 0.5; p.y = c.h * 0.62;
+        } else { p.down = true; p.x = c.w * 0.5; p.y = c.h * 0.557; }   // reach for the sceptre head
+      } else if (key === "deep") {
+        if (s.phase === "kelp") {
+          const k = s.strands?.find((x) => !x.free);
+          if (k) {
+            p.down = true;
+            p.x = k.x + Math.sin(frames * 1.9) * 34;
+            p.y = k.y;
+          } else p.down = false;
+        } else p.down = false;   // the belly is pressing: do not move
+      } else if (key === "climb") {
+        const cyc = frames % 24;
+        p.x = s.side ? c.w * 0.78 : c.w * 0.22;
+        if (cyc < 9) { p.down = true; if (cyc === 0 || p.y < 20) p.y = c.h * 0.62; p.y -= 9; }
+        else p.down = false;
       } else if (key === "tend") {
         /* Sweep along the arm: first to wash the length of the wound, then to
            wind the linen round it. A real finger traces the same diagonal. */
@@ -203,9 +232,6 @@ function driveClimax(key, game) {
         p.down = true;
         p.x = c.w * (0.08 + 0.68 * t2);
         p.y = c.h * (0.72 - 0.26 * t2);
-      } else if (key === "climb" && frames % 7 === 0 && s.seq) {
-        p.x = s.seq[s.step] === 0 ? c.w * 0.25 : c.w * 0.75; p.y = c.h * 0.6;
-        game.onDown?.(c, p);
       }
       game.step?.(c, 1 / 60);
       if (frames % 5 === 0) game.draw?.(c, ctx);

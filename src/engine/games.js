@@ -1891,263 +1891,306 @@ const storm = {
 
 /* ------------------------------------------------------------- 5. PRODIGAL */
 
-const prodigal = {
-  titleEn: "The Long Way Home", titleZh: "奔向父家",
-  promptEn: "Auto-run toward home. Tap to jump pigs, thorns and empty cups. Catch the memories of home floating above.",
-  promptZh: "自动朝家奔跑。点击跳过猪群、荆棘和空酒杯，接住空中那些关于家的记忆。",
-  hintEn: "Tap to jump · Catch memories", hintZh: "点击跳跃 · 接住记忆",
-  hint(c) { return tx(this.hintEn, this.hintZh); },
-  init(c) {
-    c.maxHearts = 3; c.hearts = 3;
-    c.state = { gy: c.h * 0.79, p: { y: c.h * 0.79, vy: 0, onGround: true }, objs: [], spawn: 0, dist: 0, inv: 0, caught: 0 };
-    c.setHint(this.hint());
-  },
-  jump(c) {
-    const s = c.state;
-    if (!s.p.onGround) return;
-    s.p.vy = -430; s.p.onGround = false; c.hit("tap"); c.spark(c.w * 0.24, s.gy, "#e7b75b", 6, 60);
-  },
-  onDown(c) { prodigal.jump(c); },
-  onKey(c, k, down) { if (down && (k === " " || k === "arrowup" || k === "w")) prodigal.jump(c); },
-  step(c, dt) {
-    const s = c.state;
-    s.dist += dt * 5.6; s.inv = Math.max(0, s.inv - dt);
-    c.progress = clamp(s.dist / 100, 0, 1);
-    s.p.vy += 1150 * dt; s.p.y += s.p.vy * dt;
-    if (s.p.y >= s.gy) { s.p.y = s.gy; s.p.vy = 0; s.p.onGround = true; }
-    s.spawn -= dt;
-    if (s.spawn <= 0) {
-      s.spawn = rnd(0.72, 1.05);
-      const type = Math.random();
-      s.objs.push({ x: c.w + 30, y: type < 0.22 ? s.gy - rnd(70, 105) : s.gy, kind: type < 0.22 ? "mem" : type < 0.6 ? "pig" : "thorn", got: false, spin: rnd(0, 6) });
-    }
-    const px = c.w * 0.24;
-    for (let i = s.objs.length - 1; i >= 0; i--) {
-      const o = s.objs[i]; o.x -= (180 + c.progress * 70) * dt; o.spin += dt * 4;
-      const oy = o.kind === "mem" ? o.y : o.y - 22;
-      if (dist(px, s.p.y - 18, o.x, oy) < (o.kind === "mem" ? 24 : 26)) {
-        s.objs.splice(i, 1);
-        if (o.kind === "mem") {
-          s.caught++; c.addScore(25); c.hit("good"); c.spark(o.x, oy, "#f4d79b", 16, 130);
-          c.float(o.x, oy - 16, "+25", "#f4d79b");
-        } else if (s.inv <= 0) { s.inv = 1.1; c.hurt(1); if (c.hearts <= 0) return; }
-      } else if (o.x < -40) s.objs.splice(i, 1);
-    }
-    c.setHint(`${tx("Tap to jump · Catch memories", "点击跳跃 · 接住记忆")}   ${s.caught}`);
-    if (c.progress >= 1) c.end(true, Math.round(c.score + 55));
-  },
-  draw(c, ctx) {
-    const s = c.state;
-    bg(c, ctx, "#22384a", "#c99a61", 18);
-    star(ctx, c.w * 0.82, 46, 10, "#f4d79b", 0.35);
-    /* The father's house, still far off at the start and close at the end. It is
-       the goal, so it has to read as a lit home from the first frame: warm
-       halo, mud-brick wall, a doorway with light spilling out of it. */
-    /* Home is a lamp on the ground at the far end of the road, not a building
-       floating in the sky. At this size a lit doorway and its halo are all the
-       eye needs, and because it stands ON the road line it never reads as an
-       object pasted over the painting. It swells as the runner closes. */
-    const near = 0.55 + c.progress * 0.45;
-    const hx = c.w * (0.9 - c.progress * 0.06), hy = s.gy + 4;
-    const hw = 30 * near, hh = 22 * near;
-    glow(ctx, hx, hy - hh * 0.5, 46 * near, "rgba(255,214,150,ALPHA)", 0.26 + c.progress * 0.28);
-    ctx.fillStyle = "rgba(28,22,15,.92)";
-    ctx.fillRect(hx - hw / 2, hy - hh, hw, hh);
-    ctx.beginPath();
-    ctx.moveTo(hx - hw * 0.62, hy - hh);
-    ctx.lineTo(hx, hy - hh - hh * 0.42);
-    ctx.lineTo(hx + hw * 0.62, hy - hh);
-    ctx.closePath(); ctx.fill();
-    const dg = ctx.createRadialGradient(hx, hy - hh * 0.45, 0.5, hx, hy - hh * 0.45, hh * 0.7);
-    dg.addColorStop(0, "rgba(255,236,186,.98)"); dg.addColorStop(1, "rgba(255,198,120,0)");
-    ctx.fillStyle = dg;
-    ctx.beginPath(); ctx.ellipse(hx, hy - hh * 0.42, hw * 0.3, hh * 0.5, 0, 0, TAU); ctx.fill();
-    ctx.fillStyle = "#ffeec2";
-    ctx.fillRect(hx - hw * 0.1, hy - hh * 0.62, hw * 0.2, hh * 0.42);
-    /* The road. It used to be one flat brown rectangle butted against the
-       artwork, which read as a masking error. Now the artwork's own dust melts
-       into the drawn ground through a soft horizon band, the dirt carries the
-       ruts of a cart track running away from the player, and the grit scrolls
-       so the running always has ground speed under it. */
-    const road = ctx.createLinearGradient(0, s.gy - 26, 0, c.h);
-    road.addColorStop(0, "rgba(150,116,72,0)");
-    road.addColorStop(0.18, "rgba(122,95,60,.92)");
-    road.addColorStop(1, "rgba(58,44,29,1)");
-    ctx.fillStyle = road; ctx.fillRect(0, s.gy - 26, c.w, c.h - s.gy + 26);
-    // cart ruts: soft, low-contrast, and only in the near half of the road, so
-    // they read as worn track and never as dark shapes standing on it
-    for (const [rx, rw] of [[0.46, 0.05], [0.74, 0.045]]) {
-      const top = s.gy + (c.h - s.gy) * 0.34;
-      const g4 = ctx.createLinearGradient(0, top, 0, c.h);
-      g4.addColorStop(0, "rgba(26,19,12,0)");
-      g4.addColorStop(1, "rgba(26,19,12,.26)");
-      ctx.fillStyle = g4;
-      ctx.beginPath();
-      ctx.moveTo(c.w * (rx - rw * 0.4), top);
-      ctx.lineTo(c.w * (rx + rw * 0.4), top);
-      ctx.quadraticCurveTo(c.w * (rx + rw * 1.5), c.h * 0.94, c.w * (rx + rw * 2.2), c.h);
-      ctx.lineTo(c.w * (rx - rw * 2.0), c.h);
-      ctx.quadraticCurveTo(c.w * (rx - rw * 1.2), c.h * 0.94, c.w * (rx - rw * 0.4), top);
-      ctx.closePath(); ctx.fill();
-    }
-    // dust kicked up at the horizon, where the painting meets the drawn road
-    const haze = ctx.createLinearGradient(0, s.gy - 30, 0, s.gy + 54);
-    haze.addColorStop(0, "rgba(196,164,116,0)");
-    haze.addColorStop(0.5, "rgba(196,164,116,.18)");
-    haze.addColorStop(1, "rgba(150,116,72,0)");
-    ctx.fillStyle = haze; ctx.fillRect(0, s.gy - 30, c.w, 84);
-    // grit and small stones streaming past
-    for (let i = 0; i < 34; i++) {
-      const sp = 40 + hash(i) * 90;
-      const x = ((hash(i * 3.1) * (c.w + 80) - c.t * sp) % (c.w + 80) + c.w + 80) % (c.w + 80) - 40;
-      const y = s.gy + 4 + hash(i * 7.7) * (c.h - s.gy);
-      const r = 1.1 + hash(i * 11) * 2.4;
-      ctx.fillStyle = i % 4 ? "rgba(28,21,13,.42)" : "rgba(196,160,104,.22)";
-      ctx.beginPath(); ctx.ellipse(x, y, r * 2.1, r, 0, 0, TAU); ctx.fill();
-    }
-    for (const o of s.objs) {
-      if (o.kind === "mem") { glow(ctx, o.x, o.y, 20, "rgba(244,215,155,ALPHA)", 0.5); star(ctx, o.x, o.y + Math.sin(c.t * 3 + o.spin) * 3, 9, "#f4d79b", 0.95); }
-      else if (o.kind === "pig") pig(ctx, o.x, o.y, 0.9, c.t + o.spin);
-      else {
-        ctx.save(); ctx.translate(o.x, o.y); ctx.strokeStyle = "#4a6a48"; ctx.lineWidth = 3;
-        for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(i * 7, 0); ctx.lineTo(i * 9, -20); ctx.stroke(); }
-        ctx.restore();
-      }
-    }
-    ctx.globalAlpha = s.inv > 0 ? 0.5 + Math.sin(c.t * 30) * 0.3 : 1;
-    const ph = bodyH(c, 0.21, 88, 180);
-    actorShadow(ctx, c.w * 0.24, s.p.y + 2, ph * 0.2, 0.3);
-    const drewProd = actor(ctx, "prodigal", c.w * 0.24, s.p.y, ph, {
-      rot: 0.06 + Math.sin(c.t * 10) * 0.02, squash: 1 + Math.sin(c.t * 10) * 0.015
-    });
-    if (!drewProd) pilgrim(ctx, c.w * 0.24, s.p.y, 1.05, c.t * 3.4, 1, 1, true);
-    ctx.globalAlpha = 1;
+/* ─────────────── 5. THE COURTYARD — the robe, the ring, the shoes ───────────────
+   "Bring forth the best robe... and put a ring on his hand, and shoes on his
+   feet." The old scene was an auto-runner over pigs and empty cups. The father's
+   welcome is not an obstacle course; it is three things put on a person who
+   cannot put them on himself, so the player does the putting. */
+const GIFTS = [
+  { id: "robe", en: "the robe", zh: "袍子", from: [0.405, 0.5], to: [0.545, 0.402], r: 0.075 },
+  { id: "ring", en: "the ring", zh: "戒指", from: [0.762, 0.652], to: [0.699, 0.778], r: 0.055 },
+  { id: "shoes", en: "the shoes", zh: "鞋", from: [0.79, 0.885], to: [0.383, 0.906], r: 0.06 }
+];
+
+function paintRing(ctx, x, y, s) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.strokeStyle = "#f0c46a"; ctx.lineWidth = 2.4;
+  ctx.beginPath(); ctx.arc(0, 0, 6, 0, TAU); ctx.stroke();
+  ctx.fillStyle = "rgba(255,236,180,.9)";
+  ctx.beginPath(); ctx.arc(0, -6, 2.4, 0, TAU); ctx.fill();
+  ctx.restore();
+}
+function paintShoe(ctx, x, y, s, ang = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.scale(s, s);
+  const g = ctx.createLinearGradient(0, -6, 0, 8);
+  g.addColorStop(0, "#a97a4e"); g.addColorStop(1, "#5a3a22");
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(-12, 4); ctx.quadraticCurveTo(-13, -6, -2, -6);
+  ctx.quadraticCurveTo(10, -6, 13, 2); ctx.quadraticCurveTo(14, 7, 4, 7);
+  ctx.quadraticCurveTo(-8, 7, -12, 4); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "rgba(240,214,168,.4)"; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(-9, 1); ctx.lineTo(8, 1); ctx.stroke();
+  ctx.restore();
+}
+function paintRobeCloth(ctx, x, y, s, lift) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-0.2); ctx.scale(s, s);
+  const g = ctx.createLinearGradient(0, -26, 0, 26);
+  g.addColorStop(0, "#f6ecd2"); g.addColorStop(0.5, "#ddc9a4"); g.addColorStop(1, "#9c8763");
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(-22, -18);
+  ctx.quadraticCurveTo(0, -30 - lift * 8, 24, -14);
+  ctx.quadraticCurveTo(30, 6, 10, 22);
+  ctx.quadraticCurveTo(-14, 30, -24, 10);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "rgba(126,104,74,.4)"; ctx.lineWidth = 1.3;
+  for (let i = -2; i <= 2; i++) {
+    ctx.beginPath(); ctx.moveTo(i * 9, -16); ctx.quadraticCurveTo(i * 11, 2, i * 8, 20); ctx.stroke();
   }
-};
+  ctx.restore();
+}
 
-/* --------------------------------------------------------------- 6. ESTHER */
-
-const esther = {
-  titleEn: "The Golden Sceptre", titleZh: "伸出的金杖",
-  promptEn: "Hold to walk toward the throne only while the golden sceptre is raised. Release and freeze when it falls — the guards are watching.",
-  promptZh: "金杖举起时按住前进，金杖落下时立刻松手静止——守卫正在看着你。",
-  hintEn: "Hold to advance · Release to freeze", hintZh: "按住前进 · 松手静止",
-  hint(c) { return tx(this.hintEn, this.hintZh); },
+const prodigal = {
+  titleEn: "Bring forth the best robe", titleZh: "把上好的袍子拿来",
+  promptEn: "He is on his knees and has nothing left to put on himself. Drag the robe to his shoulders, the ring to his hand, the shoes to his feet.",
+  promptZh: "他跪在地上，已经什么都没有了。把袍子披到他肩上，把戒指套到他手上，把鞋穿到他脚上。",
+  hintEn: "Drag each gift onto him", hintZh: "把每一件礼物拖到他身上",
+  hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
-    c.maxHearts = 3; c.hearts = 3;
+    c.maxHearts = 0; c.hearts = 0;
     c.state = {
-      progress: 0, up: true, timer: 2.4, warn: false, moving: false,
-      tokens: [0.25, 0.52, 0.78].map((p) => ({ p, got: false })), cooldown: 0
+      t: 0, left: 70, held: null, heldWhat: null, pos: {}, placed: {},
+      gifts: GIFTS.map((g) => ({ ...g })), warm: 0, sparks: []
     };
     c.setHint(this.hint());
   },
   step(c, dt) {
-    const s = c.state;
-    s.timer -= dt; s.cooldown = Math.max(0, s.cooldown - dt);
-    s.warn = s.up && s.timer < 0.55;
-    if (s.timer <= 0) { s.up = !s.up; s.timer = s.up ? rnd(2.0, 2.7) : rnd(1.2, 1.7); c.hit(s.up ? "good" : "tap"); }
-    s.moving = c.pointer.down || c.keys.has(" ") || c.keys.has("arrowright") || c.keys.has("d");
-    if (s.moving && !s.up && s.cooldown <= 0) {
-      s.cooldown = 1.3; s.progress = Math.max(0, s.progress - 0.09); c.hurt(1);
-      if (c.hearts <= 0) return;
-    } else if (s.moving && s.up) {
-      s.progress += dt * 0.19; c.addScore(dt * 8);
+    const s = c.state, q = c.pointer;
+    s.t += dt; s.left -= dt;
+    const scale = pp(c, 0, 0).s;
+    if (q.down) {
+      if (!s.heldWhat) {
+        for (const g of s.gifts) {
+          if (s.placed[g.id]) continue;
+          const p = s.pos[g.id] || pp(c, g.from[0], g.from[1]);
+          if (dist(q.x, q.y, p.x, p.y) < g.r * 620) { s.heldWhat = g.id; break; }
+        }
+      }
+      if (s.heldWhat) s.pos[s.heldWhat] = { x: q.x, y: q.y };
+    } else if (s.heldWhat) {
+      const g = s.gifts.find((x) => x.id === s.heldWhat);
+      const target = pp(c, g.to[0], g.to[1]);
+      const p = s.pos[g.id];
+      if (dist(p.x, p.y, target.x, target.y) < 86) {
+        s.placed[g.id] = true; c.hit("good"); c.addScore(25);
+        c.spark(target.x, target.y, "#f6e6c4", 18, 120);
+        c.float(target.x, target.y - 34, tx(g.en, g.zh), "#f6e6c4");
+        s.warm = Math.min(1, s.warm + 0.34);
+        const n = Object.keys(s.placed).length;
+        if (n >= 3) { c.hit("complete"); c.end(true, c.score + 70); return; }
+      } else {
+        c.hit("miss");
+        c.float(p.x, p.y - 24, tx("not there", "放这儿不对"), "#d8b48e");
+      }
+      delete s.pos[g.id];
+      s.heldWhat = null;
     }
-    for (const tk of s.tokens) {
-      if (!tk.got && s.progress >= tk.p) {
-        tk.got = true; c.addScore(30); c.hit("good");
-        const x = c.w * (0.16 + tk.p * 0.66);
-        c.spark(x, c.h * 0.7, "#f0c46a", 18, 140); c.float(x, c.h * 0.7 - 20, "+30", "#f0c46a");
+    for (const g of s.gifts) {
+      if (g.sx === undefined) {
+        const a = pp(c, g.from[0], g.from[1]), b = pp(c, g.to[0], g.to[1]);
+        g.sx = a.x; g.sy = a.y; g.tx = b.x; g.ty = b.y;
       }
     }
-    c.progress = clamp(s.progress, 0, 1);
-    c.setHint(s.up
-      ? `${tx("SCEPTRE UP — hold to walk", "金杖举起——按住前进")}${s.warn ? " !" : ""}`
-      : tx("SCEPTRE DOWN — freeze!", "金杖落下——快停下！"));
-    if (c.progress >= 1) c.end(true, Math.round(c.score + 60));
+    const n = Object.keys(s.placed).length;
+    c.progress = n / 3;
+    c.setHint(`${tx("Drag each gift onto him", "把每一件礼物拖到他身上")}   ${n}/3`);
+    if (s.left <= 0) c.end(n >= 3, c.score);
+    void scale;
   },
   draw(c, ctx) {
     const s = c.state;
-    bg(c, ctx, "#1b2438", "#3a2b3f", 22);
-    /* The chapter artwork already paints the hall, the throne and the king, so
-       the scene no longer draws a second set of pillars and a second king on
-       top of them. What the *player* needs to read is the sceptre and the
-       floor they must cross. */
-    ctx.save();
-    ctx.fillStyle = "rgba(9,14,26,.42)"; ctx.fillRect(0, 0, c.w, c.h);
-    ctx.restore();
-    // the aisle: a faint gold path from the door to the throne
-    const aisle = ctx.createLinearGradient(0, c.h * 0.7, 0, c.h);
-    aisle.addColorStop(0, "rgba(240,196,106,.14)");
-    aisle.addColorStop(1, "rgba(240,196,106,0)");
-    ctx.fillStyle = aisle; ctx.fillRect(c.w * 0.08, c.h * 0.7, c.w * 0.6, c.h * 0.3);
-    glow(ctx, c.w * 0.9, c.h * 0.55, 70, "rgba(240,196,106,ALPHA)", s.up ? 0.5 : 0.16);
-    /* The artwork already has a sceptre in the king's hand, pointing down. The
-       mechanic is "is it raised?", so the raised state is drawn as a gold light
-       travelling up the painted shaft, and the fallen state as that light going
-       out. No second sceptre, no invented anatomy. */
-    const sx = c.w * 0.545, sy = c.h * 0.665;      // the painted staff's butt
-    const tipY = c.h * 0.42;
-    ctx.save();
-    if (s.up) {
-      const g3 = ctx.createLinearGradient(sx, sy, sx, tipY);
-      g3.addColorStop(0, "rgba(255,228,150,0)");
-      g3.addColorStop(0.55, `rgba(255,228,150,${0.5 + Math.sin(c.t * 3) * 0.08})`);
-      g3.addColorStop(1, "rgba(255,246,214,.95)");
-      ctx.strokeStyle = g3; ctx.lineWidth = 4; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx, tipY); ctx.stroke();
-      glow(ctx, sx, tipY, 26, "rgba(255,236,170,ALPHA)", 0.7 + Math.sin(c.t * 3) * 0.1);
-      ctx.fillStyle = "#fff6d6";
-      ctx.beginPath(); ctx.arc(sx, tipY, 4.5, 0, TAU); ctx.fill();
-    } else {
-      ctx.globalAlpha = 0.28;
-      ctx.strokeStyle = "#8a7440"; ctx.lineWidth = 2.4; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx, sy - 60); ctx.stroke();
-      ctx.globalAlpha = 1;
+    plateArt(c, ctx, "assets/art/robe.jpg", 0.14 + (1 - s.warm) * 0.12);
+    // the father's welcome warms the courtyard as each gift lands
+    if (s.warm > 0) {
+      const w = pp(c, 0.5, 0.55);
+      const g = ctx.createRadialGradient(w.x, w.y, 20, w.x, w.y, c.w * 0.7);
+      g.addColorStop(0, `rgba(255,214,150,${0.06 + s.warm * 0.14})`);
+      g.addColorStop(1, "rgba(255,170,90,0)");
+      ctx.fillStyle = g; ctx.fillRect(0, 0, c.w, c.h);
     }
-    ctx.restore();
-    // floor
-    ctx.fillStyle = "#5a4a3c"; ctx.fillRect(0, c.h * 0.72, c.w, c.h * 0.28);
-    ctx.strokeStyle = "rgba(240,196,106,.18)"; ctx.lineWidth = 1;
-    for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(0, c.h * 0.74 + i * 22); ctx.lineTo(c.w, c.h * 0.74 + i * 22); ctx.stroke(); }
-    // light indicator
-    ctx.fillStyle = s.up ? "#6fd0a8" : "#e0705f";
-    ctx.beginPath(); ctx.arc(c.w * 0.5, 34, 9 + (s.warn ? Math.sin(c.t * 20) * 3 : 0), 0, TAU); ctx.fill();
-    ctx.fillStyle = "#f4e7cb"; ctx.font = `600 12px ${c.font}`; ctx.textAlign = "center";
-    ctx.fillText(s.up ? tx("GO", "前进") : tx("FREEZE", "静止"), c.w * 0.5, 58);
-    // guards
-    for (const gx of [c.w * 0.235, c.w * 0.655]) {
-      const gy = c.h * 0.735;
-      // spear, body, helmet — reads as a guard at a glance, costs six shapes
-      ctx.strokeStyle = "rgba(198,170,110,.5)"; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(gx + 12, gy - 62); ctx.lineTo(gx + 12, gy + 6); ctx.stroke();
-      ctx.fillStyle = "rgba(24,32,44,.85)";
-      ctx.beginPath(); ctx.moveTo(gx - 9, gy); ctx.lineTo(gx - 7, gy - 44); ctx.lineTo(gx + 7, gy - 44);
-      ctx.lineTo(gx + 9, gy); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = "rgba(58,70,88,.95)";
-      ctx.beginPath(); ctx.arc(gx, gy - 52, 8, Math.PI, TAU); ctx.fill();
-      ctx.fillStyle = "rgba(198,170,110,.55)";
-      ctx.beginPath(); ctx.moveTo(gx - 9, gy - 54); ctx.lineTo(gx, gy - 64); ctx.lineTo(gx + 9, gy - 54); ctx.closePath(); ctx.fill();
-      if (s.moving && !s.up) {
-        ctx.fillStyle = "rgba(255,138,106,.9)";
-        ctx.beginPath(); ctx.arc(gx, gy - 52, 2.2, 0, TAU); ctx.fill();
+    for (const g of s.gifts) {
+      if (s.placed[g.id]) {
+        const t = pp(c, g.to[0], g.to[1]);
+        ctx.save();
+        ctx.globalCompositeOperation = "screen";
+        const halo = ctx.createRadialGradient(t.x, t.y, 2, t.x, t.y, 34);
+        halo.addColorStop(0, "rgba(255,236,190,.3)");
+        halo.addColorStop(1, "rgba(255,200,120,0)");
+        ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(t.x, t.y, 34, 0, TAU); ctx.fill();
+        ctx.restore();
+        /* The robe is already being laid on his shoulders in the painting, so
+           it is lit rather than drawn again. The ring and the shoes are the two
+           things the picture leaves off him. */
+        if (g.id === "ring") paintRing(ctx, t.x, t.y, 1.15);
+        if (g.id === "shoes") { paintShoe(ctx, t.x - 16, t.y + 2, 0.72, -0.08); paintShoe(ctx, t.x + 12, t.y + 6, 0.68, 0.1); }
+        continue;
+      }
+      const p = s.pos[g.id] || pp(c, g.from[0], g.from[1]);
+      const held = s.heldWhat === g.id;
+      const bob = Math.sin(s.t * 2 + g.from[0] * 9) * 2;
+      ctx.save();
+      ctx.globalAlpha = held ? 1 : 0.9;
+      if (g.id === "robe") paintRobeCloth(ctx, p.x, p.y + bob, 1.1, held ? 1 : 0);
+      if (g.id === "ring") paintRing(ctx, p.x, p.y + bob, 1.3);
+      if (g.id === "shoes") { paintShoe(ctx, p.x - 10, p.y + bob, 1, -0.12); paintShoe(ctx, p.x + 12, p.y + 4 + bob, 0.95, 0.1); }
+      ctx.restore();
+      // where it belongs, while you are carrying it
+      if (held) {
+        const t = pp(c, g.to[0], g.to[1]);
+        ctx.strokeStyle = `rgba(247,221,165,${0.35 + Math.sin(s.t * 5) * 0.15})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(t.x, t.y, 30, 0, TAU); ctx.stroke();
+        ctx.setLineDash?.([]);
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(t.x, t.y); ctx.stroke();
       }
     }
-    // player
-    const px = c.w * (0.16 + s.progress * 0.66), py = c.h * 0.75;
-    const eh = bodyH(c, 0.23, 96, 200);
-    actorShadow(ctx, px, py + 2, eh * 0.22, 0.32);
-    const drewEsther = actor(ctx, "esther", px, py, eh, {
-      rot: s.moving ? 0.035 + Math.sin(c.t * 8) * 0.015 : Math.sin(c.t * 0.9) * 0.006,
-      squash: 1 + Math.sin(c.t * 1.5) * 0.005
-    });
-    if (!drewEsther) pilgrim(ctx, px, py, 1.05, s.moving ? c.t * 3 : 0, 1, 1, true);
-    for (const tk of s.tokens) if (!tk.got) {
-      const x = c.w * (0.16 + tk.p * 0.66);
-      star(ctx, x, py - 58 + Math.sin(c.t * 3 + tk.p * 9) * 4, 7, "#f0c46a", 0.75);
-    }
+    plateVignette(c, ctx, 0.55);
   }
 };
+
+/* ─────────────── 6. THE HALL — three steps, then kneel ─────────────── */
+const STEPS = 3;
+
+/* --------------------------------------------------------------- 6. ESTHER */
+
+const esther = {
+  titleEn: "If I perish, I perish", titleZh: "我若死就死吧",
+  promptEn: "Cross the hall a step at a time, and let each step finish before you take the next. Then kneel at the edge of the carpet and wait: the sceptre is his to extend, not yours to take.",
+  promptZh: "一步一步穿过大厅，每一步都走完再走下一步。然后在毯边跪下等候：金杖由他伸出，不是你去拿。",
+  hintEn: "Drag up to step · then kneel", hintZh: "向上拖动走一步 · 然后跪下",
+  hint() { return tx(this.hintEn, this.hintZh); },
+  init(c) {
+    c.maxHearts = 0; c.hearts = 0;
+    c.state = { t: 0, left: 72, phase: "walk", steps: 0, pressY: null, lastStep: -9, rush: 0, kneel: 0, scepter: 0, guards: 0 };
+    c.setHint(this.hint());
+  },
+  step(c, dt) {
+    const s = c.state, q = c.pointer;
+    s.t += dt; s.left -= dt;
+    s.rush = Math.max(0, s.rush - dt * 1.2);
+    s.guards = Math.max(0, s.guards - dt * 1.4);
+    if (s.phase === "walk") {
+      if (q.down) {
+        if (s.pressY === null) s.pressY = q.y;
+        if (s.pressY - q.y > 62) {
+          const gap = s.t - s.lastStep;
+          if (gap < 0.85) {
+            // too quick for a king's hall: the guards close the way
+            s.steps = Math.max(0, s.steps - 1); s.guards = 1; s.rush = 1;
+            c.hit("miss"); c.bump(5);
+            c.float(c.w / 2, c.h * 0.55, tx("Not so fast", "别走得太急"), "#e8a06f");
+          } else {
+            s.steps++; s.lastStep = s.t;
+            c.hit("good"); c.addScore(12);
+            c.ring(c.w * 0.5, c.h * (0.9 - s.steps * 0.09), "rgba(255,220,160,.5)", 60);
+          }
+          s.pressY = q.y;
+          if (s.steps >= STEPS) { s.phase = "kneel"; c.hit("unlock"); c.setHint(tx("Kneel, and wait", "跪下，等候")); }
+        }
+      } else s.pressY = null;
+      c.progress = (s.steps / STEPS) * 0.6;
+      if (s.phase === "walk") c.setHint(`${tx("Drag up to step · then kneel", "向上拖动走一步 · 然后跪下")}   ${s.steps}/${STEPS}`);
+    } else if (s.phase === "kneel") {
+      if (q.down) { s.kneel += dt; c.progress = 0.6 + Math.min(1, s.kneel / 1.8) * 0.2; }
+      else s.kneel = Math.max(0, s.kneel - dt * 0.6);
+      if (s.kneel >= 1.8) {
+        s.phase = "sceptre"; c.hit("unlock");
+        c.float(c.w / 2, c.h * 0.42, tx("He holds it out", "他伸出金杖"), "#ffe6ac");
+      }
+      c.setHint(`${tx("Kneel, and wait", "跪下，等候")}   ${Math.round(Math.min(1, s.kneel / 1.8) * 100)}%`);
+    } else {
+      s.scepter = Math.min(1, s.scepter + dt * 0.8);
+      c.progress = 0.8 + s.scepter * 0.2;
+      c.setHint(tx("Touch the sceptre", "触摸金杖"));
+      if (s.scepter >= 1) {
+        const tip = pp(c, 0.5, 0.66);
+        if (q.down && dist(q.x, q.y, tip.x, tip.y) < 90) {
+          c.hit("complete"); c.spark(tip.x, tip.y, "#fff0c8", 30, 170);
+          c.end(true, c.score + 80);
+        }
+      }
+    }
+    if (s.left <= 0 && !c.ended) c.end(false, c.score);
+  },
+  draw(c, ctx) {
+    const s = c.state;
+    plateArt(c, ctx, "assets/art/hall.jpg", 0.1);
+    const throne = pp(c, 0.47, 0.5);
+    // the way already walked, lit on the carpet
+    const done = s.phase === "walk" ? s.steps / STEPS : 1;
+    for (let i = 0; i < 3; i++) {
+      const p = pp(c, 0.5, 0.9 - i * 0.075);
+      const on = (i + 1) / 3 <= done || (s.phase !== "walk" && i >= 0);
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      const g = ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, on ? 60 : 34);
+      g.addColorStop(0, `rgba(255,222,164,${on ? 0.22 : 0.07})`);
+      g.addColorStop(1, "rgba(255,180,90,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.ellipse(p.x, p.y, on ? 60 : 34, on ? 22 : 12, 0, 0, TAU); ctx.fill();
+      ctx.restore();
+      if (on && s.phase === "walk" && i + 1 === s.steps) {
+        ctx.fillStyle = `rgba(255,236,196,${0.4 + Math.sin(s.t * 4) * 0.15})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, TAU); ctx.fill();
+      }
+    }
+    // kneeling: the light gathers on you
+    if (s.phase !== "walk") {
+      const p = pp(c, 0.5, 0.62);
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      const g = ctx.createRadialGradient(p.x, p.y, 6, p.x, p.y, 120);
+      g.addColorStop(0, `rgba(255,226,170,${0.12 + s.scepter * 0.2})`);
+      g.addColorStop(1, "rgba(255,180,90,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.ellipse(p.x, p.y, 120, 60, 0, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
+    // the sceptre reaches out across the hall: a gold rod, held out, not taken
+    if (s.scepter > 0) {
+      const from = { x: throne.x + 10, y: throne.y + 26 };
+      const to = pp(c, 0.5, 0.66);
+      const ex = from.x + (to.x - from.x) * s.scepter, ey = from.y + (to.y - from.y) * s.scepter;
+      const ang = Math.atan2(ey - from.y, ex - from.x);
+      ctx.save();
+      ctx.translate(from.x, from.y); ctx.rotate(ang);
+      const len = Math.hypot(ex - from.x, ey - from.y);
+      const g = ctx.createLinearGradient(0, -4, 0, 4);
+      g.addColorStop(0, "#fff3c8"); g.addColorStop(0.5, "#e3b25e"); g.addColorStop(1, "#8d6224");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.roundRect ? ctx.roundRect(0, -3, len, 6, 3) : ctx.rect(0, -3, len, 6); ctx.fill();
+      ctx.restore();
+      // the head of the sceptre at the far end, where the hand must reach
+      ctx.fillStyle = "rgba(255,238,196,.95)";
+      ctx.beginPath(); ctx.arc(ex, ey, 6, 0, TAU); ctx.fill();
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      const halo = ctx.createRadialGradient(ex, ey, 2, ex, ey, 44);
+      halo.addColorStop(0, "rgba(255,236,190,.55)");
+      halo.addColorStop(1, "rgba(255,200,120,0)");
+      ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(ex, ey, 44, 0, TAU); ctx.fill();
+      ctx.restore();
+      if (s.scepter >= 1) {
+        ctx.strokeStyle = `rgba(255,240,200,${0.3 + Math.sin(s.t * 3) * 0.14})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(ex, ey, 30, 0, TAU); ctx.stroke();
+      }
+    }
+    // the guards at the threshold, when you hurry
+    if (s.guards > 0.02) {
+      for (const side of [0.1, 0.9]) {
+        const p = pp(c, side, 0.8);
+        ctx.strokeStyle = `rgba(220,180,140,${s.guards * 0.5})`;
+        ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(p.x - 30, p.y - 60); ctx.lineTo(p.x + 40, p.y + 40); ctx.stroke();
+      }
+    }
+    plateVignette(c, ctx, 0.6);
+  }
+};
+
+/* ─────────────── 9. THE BELLY — three days, and the prayer ─────────────── */
 
 export const GAMES = {
   sling, lions, jericho, tend, stones,
@@ -2417,200 +2460,289 @@ const glean = {
 
 /* ══════════════════════ 7c. JONAH — cast the prayer into the deep ══════════════════════ */
 const deep = {
-  art: "assets/art/jonah.jpg", weather: "rain",
-  titleEn: "Into the deep", titleZh: "投入深海",
-  promptEn: "Hold your breath and swim through the storm. Catch the three bubbles of prayer before you reach the shore. Avoid the rocks and jellyfish.",
-  promptZh: "屏住呼吸，穿越风浪游向岸边。途中接住 3 颗祷告气泡，避开礁石和水母。",
-  hintEn: "Drag up / down to swim · catch 3 prayer bubbles", hintZh: "上下拖动游泳 · 接住 3 颗祷告气泡",
+  titleEn: "Three days in the deep", titleZh: "在深处三日",
+  promptEn: "The belly breathes, and when it presses in you must be perfectly still. Between the swells, pull the kelp off your arms before it wraps you.",
+  promptZh: "鱼腹在呼吸，它收紧的时候你必须完全不动。两次收紧之间，把缠上手臂的海草扯下来。",
+  hintEn: "Clear the kelp · hold still when the belly presses", hintZh: "扯下海草 · 鱼腹收紧时保持不动",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
     c.state = {
-      y: c.h * 0.55, ty: c.h * 0.55, t: 0, dist: 0, bubbles: 0, hb: 0, hurt: 0,
-      obs: [], orbs: [], spawned: 0, wave: 0
+      t: 0, left: 74, round: 0, phase: "kelp", hold: 0, press: 0, swell: 0,
+      strands: [], grip: 0, gripI: -1, last: null, splash: [], prayers: []
     };
     c.setHint(this.hint());
+    spawnKelp(c);
   },
   step(c, dt) {
-    const s = c.state; s.t += dt; s.dist = Math.min(1, s.t / 26); s.wave += dt; s.hb -= dt;
-    const q = c.pointer;
-    if (q.down && q.y > c.h * 0.14) s.ty = clamp(q.y, c.h * 0.24, c.h * 0.86);
-    s.y += clamp((s.ty - s.y) * dt * 7, -170 * dt, 170 * dt);
-    if (s.spawned < 26 && s.t > s.spawned * 0.92) {
-      const i = s.spawned++;
-      if (i % 3 === 1 && s.orbs.length + s.bubbles < 6) s.orbs.push({ x: c.w + 20, y: rnd(c.h * 0.3, c.h * 0.8), t: 0 });
-      else s.obs.push({ x: c.w + 20, y: rnd(c.h * 0.26, c.h * 0.84), r: rnd(13, 20), jelly: i % 4 === 0, t: 0 });
-    }
-    for (const o of s.obs) { o.x -= (120 + s.dist * 60) * dt; o.t += dt; }
-    for (const o of s.orbs) { o.x -= (110 + s.dist * 50) * dt; o.t += dt; }
-    s.obs = s.obs.filter(o => o.x > -30);
-    s.orbs = s.orbs.filter(o => o.x > -30);
-    const px = c.w * 0.26;
-    for (const o of s.orbs) if (!o.got && dist(px, s.y, o.x, o.y) < 25) {
-      o.got = true; s.bubbles++; c.addScore(12); c.hit("good");
-      c.spark(o.x, o.y, "#fff3cf", 18, 140);
-    }
-    s.orbs = s.orbs.filter(o => !o.got);
-    for (const o of s.obs) if (s.hb <= 0 && dist(px, s.y, o.x, o.y) < o.r + 9) {
-      s.hb = 1.1; s.hurt = 1; c.hurt(1);
-      if (c.hearts <= 0) return;
-    }
-    s.hurt = Math.max(0, s.hurt - dt);
-    c.progress = s.dist;
-    c.setHint(`${this.hint()}   ${tx("PRAYERS", "祷告")} ${s.bubbles}/3   ${tx("SHORE", "岸边")} ${Math.round(s.dist * 100)}%`);
-    if (s.dist >= 1) c.end(s.bubbles >= 3, c.score + s.bubbles * 5);
-  },
-  draw(c, ctx) {
-    const s = c.state; bg(c, ctx, "#12283c", "#0c3c4a", 8);
-    for (let i = 0; i < 5; i++) {
-      const x = (i * 0.23 + s.wave * 0.02) % 1 * c.w;
-      ctx.fillStyle = "rgba(150,220,225,.045)";
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + 30, 0); ctx.lineTo(x + 70, c.h); ctx.lineTo(x + 20, c.h); ctx.fill();
-    }
-    ctx.strokeStyle = "rgba(180,236,232,.35)"; ctx.lineWidth = 2;
-    ctx.beginPath();
-    for (let x = 0; x <= c.w; x += 8) {
-      const y = c.h * 0.16 + Math.sin(x * 0.03 + s.wave * 2.5) * 5 + Math.sin(x * 0.07 - s.wave) * 2;
-      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-    ctx.fillStyle = "rgba(6,26,32,.6)";
-    ctx.beginPath(); ctx.moveTo(0, c.h);
-    for (let x = 0; x <= c.w; x += 12) ctx.lineTo(x, c.h * 0.92 - Math.sin(x * 0.018 + 1.4) * 13);
-    ctx.lineTo(c.w, c.h); ctx.fill();
-    for (const o of s.obs) {
-      if (o.jelly) {
-        const g = ctx.createRadialGradient(o.x, o.y, 2, o.x, o.y, o.r * 1.8);
-        g.addColorStop(0, "rgba(255,180,220,.55)"); g.addColorStop(1, "rgba(255,140,200,0)");
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(o.x, o.y, o.r * 1.8, 0, TAU); ctx.fill();
-        ctx.fillStyle = "rgba(255,196,222,.8)";
-        ctx.beginPath(); ctx.arc(o.x, o.y, o.r * 0.7, Math.PI, TAU); ctx.fill();
-        ctx.strokeStyle = "rgba(255,196,222,.7)"; ctx.lineWidth = 1.5;
-        for (let i = -2; i <= 2; i++) {
-          ctx.beginPath(); ctx.moveTo(o.x + i * 5, o.y + 2);
-          ctx.quadraticCurveTo(o.x + i * 5 + Math.sin(o.t * 4 + i) * 4, o.y + o.r, o.x + i * 5, o.y + o.r * 1.7); ctx.stroke();
+    const s = c.state, q = c.pointer;
+    s.t += dt; s.left -= dt;
+    s.press = Math.max(0, s.press - dt);
+    if (s.phase === "kelp") {
+      const speed = s.last ? dist(q.x, q.y, s.last.x, s.last.y) / Math.max(0.001, dt) : 0;
+      let near = -1, nd = 1e9;
+      for (let idx = 0; idx < s.strands.length; idx++) {
+        const k = s.strands[idx];
+        if (k.free) continue;
+        const d = dist(q.x, q.y, k.x, k.y);
+        if (d < 46 && d < nd) { nd = d; near = idx; }
+      }
+      if (q.down && near >= 0 && speed > 120) {
+        if (s.gripI !== near) { s.gripI = near; s.grip = 0; }
+        s.grip += dt * 2.2;
+        if (s.grip >= 1) {
+          const k = s.strands[near];
+          k.free = true; s.grip = 0; s.gripI = -1;
+          c.hit("good"); c.addScore(10);
+          c.spark(k.x, k.y, "#9fd8d0", 12, 110);
+          s.splash.push({ x: k.x, y: k.y, life: 0.7 });
         }
-      } else {
-        shadow(ctx, o.x, o.y + o.r * 0.7, o.r, 4, 0.4);
-        ctx.fillStyle = "#2b3f42"; ctx.beginPath(); ctx.ellipse(o.x, o.y, o.r, o.r * 0.8, 0.4, 0, TAU); ctx.fill();
-        ctx.fillStyle = "rgba(160,220,220,.2)"; ctx.beginPath(); ctx.ellipse(o.x - 4, o.y - 4, o.r * 0.35, o.r * 0.2, 0.4, 0, TAU); ctx.fill();
+      } else { s.grip = Math.max(0, s.grip - dt * 1.5); s.gripI = -1; }
+      if (s.strands.every((k) => k.free)) {
+        s.phase = "swell"; s.swell = 0; s.hold = 0;
+        c.setHint(tx("Be still", "不要动"));
+      }
+      const left = s.strands.filter((k) => !k.free).length;
+      c.progress = (s.round / 3) * 0.9 + (1 - left / Math.max(1, s.strands.length)) * 0.1;
+      if (s.phase === "kelp") c.setHint(`${tx("Clear the kelp", "扯下海草")}   ${s.strands.length - left}/${s.strands.length}`);
+    } else {
+      s.swell += dt;
+      const moving = q.down && s.last && dist(q.x, q.y, s.last.x, s.last.y) > 3.5;
+      if (moving) {
+        s.hold = Math.max(0, s.hold - dt * 2);
+        if (s.press <= 0) { s.press = 1; c.hurt(1); if (c.hearts <= 0) return; }
+      } else s.hold += dt;
+      c.progress = (s.round / 3) * 0.9 + Math.min(1, s.hold / 1.5) * 0.1;
+      c.setHint(`${tx("Be still — the belly is pressing", "不要动——鱼腹在收紧")}   ${Math.round(Math.min(1, s.hold / 1.5) * 100)}%`);
+      if (s.hold >= 1.5) {
+        s.round++;
+        c.hit("good"); c.addScore(24);
+        const line = roundPrayer(s.round);
+        c.float(c.w / 2, c.h * 0.4, line, "#cfe8e4");
+        s.prayers.push({ text: line, life: 2.4 });
+        if (s.round >= 3) {
+          c.hit("complete"); c.spark(c.w * 0.5, c.h * 0.3, "#dff2ee", 34, 160);
+          c.end(true, c.score + 80); return;
+        }
+        s.phase = "kelp"; spawnKelp(c);
+        c.setHint(tx("Clear the kelp", "扯下海草"));
       }
     }
-    for (const o of s.orbs) {
-      const g = ctx.createRadialGradient(o.x, o.y, 1, o.x, o.y, 22);
-      g.addColorStop(0, "rgba(255,247,210,.9)"); g.addColorStop(0.4, "rgba(216,180,108,.45)"); g.addColorStop(1, "rgba(216,180,108,0)");
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(o.x, o.y, 22, 0, TAU); ctx.fill();
-      star(ctx, o.x, o.y, 8, "#fff3cf", 0.85);
-    }
-    const px = c.w * 0.26;
-    ctx.save(); ctx.translate(px, s.y);
-    shadow(ctx, 0, 16, 18, 4, 0.4);
-    ctx.rotate(clamp((s.ty - s.y) * 0.002, -0.32, 0.32));
-    ctx.fillStyle = "#e8d2a6"; ctx.beginPath(); ctx.ellipse(0, 0, 15, 8, 0, 0, TAU); ctx.fill();
-    ctx.fillStyle = "#c9a45c"; ctx.beginPath(); ctx.arc(13, -3, 6.5, 0, TAU); ctx.fill();
-    ctx.strokeStyle = "#c9a45c"; ctx.lineWidth = 3.5; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(-19, Math.sin(s.t * 12) * 8 - 6); ctx.stroke();
-    ctx.restore();
-    for (let i = 0; i < 4; i++) {
-      const by = s.y - ((s.t * 26 + i * 15) % 42);
-      ctx.strokeStyle = "rgba(220,245,245,.4)"; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(px - 14 - i * 3, by, 2 + i * 0.5, 0, TAU); ctx.stroke();
-    }
-    if (s.hurt > 0) { ctx.fillStyle = `rgba(214,92,66,${s.hurt * 0.2})`; ctx.fillRect(0, 0, c.w, c.h); }
+    s.last = { x: q.x, y: q.y };
+    for (const w of s.splash) w.life -= dt;
+    s.splash = s.splash.filter((w) => w.life > 0);
+    for (const p of s.prayers) p.life -= dt;
+    s.prayers = s.prayers.filter((p) => p.life > 0);
+    if (s.left <= 0 && !c.ended) c.end(false, c.score);
   },
-  onDown(c, q) { return q.y > c.h * 0.14; }, onMove() { return true; }
+  draw(c, ctx) {
+    const s = c.state;
+    plateArt(c, ctx, "assets/art/belly.jpg", 0.28 + s.swell * 0.12);
+    const light = pp(c, 0.5, 0.3);
+    // the ribs close in as the belly presses
+    if (s.phase === "swell" || s.swell > 0) {
+      const k = Math.min(1, s.swell / 1.5);
+      ctx.fillStyle = `rgba(3,8,10,${0.1 + k * 0.28})`;
+      ctx.fillRect(0, 0, c.w, c.h);
+      ctx.strokeStyle = `rgba(120,170,164,${0.1 + k * 0.2})`;
+      ctx.lineWidth = 2;
+      for (const side of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(c.w * (0.5 + side * 0.52), 0);
+        ctx.quadraticCurveTo(c.w * (0.5 + side * (0.38 - k * 0.06)), c.h * 0.5, c.w * (0.5 + side * 0.52), c.h);
+        ctx.stroke();
+      }
+    }
+    /* Kelp: a tapered blade with fronds, not a stick. It sways in the water and
+       catches on the arm, which is why it has to be pulled off. */
+    for (let idx = 0; idx < s.strands.length; idx++) {
+      const k = s.strands[idx];
+      if (k.free) continue;
+      const wob = Math.sin(s.t * 0.9 + k.i) * 8;
+      const tipX = k.x + wob, tipY = k.y - 64;
+      const g = ctx.createLinearGradient(tipX, tipY, k.x, k.y + 70);
+      g.addColorStop(0, "rgba(96,140,104,.85)");
+      g.addColorStop(0.45, "rgba(44,86,72,.95)");
+      g.addColorStop(1, "rgba(14,32,28,.95)");
+      ctx.save();
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(tipX - 3, tipY);
+      ctx.quadraticCurveTo(tipX - 14 + wob * 0.2, k.y - 20, k.x - 11, k.y + 34);
+      ctx.quadraticCurveTo(k.x - 3, k.y + 58, k.x + 4, k.y + 62);
+      ctx.quadraticCurveTo(k.x + 13, k.y + 26, tipX + 12 + wob * 0.2, k.y - 22);
+      ctx.quadraticCurveTo(tipX + 5, k.y - 44, tipX + 3, tipY);
+      ctx.closePath(); ctx.fill();
+      // the spine and a couple of fronds
+      ctx.strokeStyle = "rgba(150,196,160,.35)"; ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(tipX, tipY + 4);
+      ctx.quadraticCurveTo(k.x + wob * 0.3, k.y - 10, k.x + 1, k.y + 52);
+      ctx.stroke();
+      for (let f = 0; f < 3; f++) {
+        const fy = k.y - 30 + f * 26;
+        ctx.beginPath();
+        ctx.moveTo(k.x + wob * 0.2, fy);
+        ctx.quadraticCurveTo(k.x + 22, fy - 8, k.x + 30, fy + 6);
+        ctx.stroke();
+      }
+      ctx.restore();
+      // where the hand should take hold
+      const gripPt = { x: k.x + wob * 0.4, y: k.y };
+      ctx.strokeStyle = `rgba(190,232,224,${0.16 + Math.sin(s.t * 2.4 + k.i) * 0.06})`;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(gripPt.x, gripPt.y, 30, 0, TAU); ctx.stroke();
+      if (s.gripI === idx && s.grip > 0.05) {
+        ctx.strokeStyle = "rgba(214,244,238,.9)"; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(gripPt.x, gripPt.y, 26, -Math.PI / 2, -Math.PI / 2 + s.grip * TAU); ctx.stroke();
+      }
+    }
+    for (const w of s.splash) {
+      ctx.strokeStyle = `rgba(190,230,226,${w.life * 0.5})`; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(w.x, w.y, (1 - w.life) * 40 + 6, 0, TAU); ctx.stroke();
+    }
+    // the shaft of light: dim while the belly presses, brighter each day survived
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    const beam = ctx.createLinearGradient(0, light.y - 40, 0, c.h);
+    beam.addColorStop(0, `rgba(210,238,236,${0.1 + s.round * 0.05 - s.swell * 0.03})`);
+    beam.addColorStop(1, "rgba(150,210,205,0)");
+    ctx.fillStyle = beam;
+    ctx.beginPath();
+    ctx.moveTo(c.w * 0.42, light.y); ctx.lineTo(c.w * 0.58, light.y);
+    ctx.lineTo(c.w * 0.82, c.h); ctx.lineTo(c.w * 0.18, c.h);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+    for (const p of s.prayers) {
+      ctx.globalAlpha = Math.min(1, p.life / 1.2);
+      ctx.fillStyle = "#dff0ec";
+      ctx.font = `600 15px ${c.font || "system-ui"}`;
+      ctx.textAlign = "center";
+      ctx.fillText(p.text, c.w / 2, c.h * 0.42);
+      ctx.globalAlpha = 1;
+    }
+    plateVignette(c, ctx, 0.66);
+  }
 };
+function spawnKelp(c) {
+  const s = c.state;
+  s.strands = [0, 1, 2].map((i) => ({
+    i: i + s.round * 3,
+    x: c.w * (0.22 + i * 0.28) + (i % 2 ? 16 : -12),
+    y: c.h * (0.56 + (i % 2) * 0.08),
+    free: false
+  }));
+  s.grip = 0; s.gripI = -1;
+  // keep the kelp inside the frame
+  for (const k of s.strands) k.x = clamp(k.x, 40, c.w - 40);
+}
+function roundPrayer(n) {
+  return [
+    tx("Out of the belly of hell cried I", "我从阴间的腹中呼求"),
+    tx("Yet hast thou brought up my life", "你却将我的性命救上来"),
+    tx("Salvation is of the LORD", "救恩出于耶和华")
+  ][Math.min(2, n - 1)];
+}
+
+/* ─────────────── 10. THE SYCAMORE — hand over hand ─────────────── */
 
 /* ══════════════════════ 7d. ZACCHAEUS — climb the sycamore ══════════════════════ */
 const climb = {
-  art: "assets/art/zacchaeus.jpg", weather: "petals",
   titleEn: "Climb the sycamore", titleZh: "爬上桑树",
-  promptEn: "Tap the left or right branch in the order the crowd points. Ten good holds and you will see Jesus pass beneath you. Hesitate and you slip.",
-  promptZh: "按人群指示的顺序，点左或右的树枝。抓稳十次，你就会看见耶稣从树下经过。犹豫就会滑落。",
-  hintEn: "Tap LEFT / RIGHT as the glow shows · 10 holds", hintZh: "按亮起的树枝点左 / 右 · 抓稳 10 次",
+  promptEn: "Hand over hand: pull up on the side the light is on, then the other. Eight holds and you are above the crowd — pull on the wrong branch and you lose your grip.",
+  promptZh: "双手交替：在哪一侧有光，就从那一侧往上拉。抓住八次，你就高过人群——拉错了枝子会脱手。",
+  hintEn: "Drag up on the lit side", hintZh: "在有光的一侧向上拖",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
-    const seq = Array.from({ length: 10 }, (_, i) => (i % 3 === 2 ? (i % 2) : (i % 2 ? 1 : 0)));
-    c.state = { seq, step: 0, t: 0, hold: 1.7, slip: 0, cheer: 0 };
+    c.state = { t: 0, left: 68, holds: 0, side: 0, sway: 0, pressY: null, slip: 0, branch: 0 };
     c.setHint(this.hint());
   },
   step(c, dt) {
-    const s = c.state; s.t += dt; s.hold -= dt; s.slip = Math.max(0, s.slip - dt); s.cheer = Math.max(0, s.cheer - dt);
-    if (s.hold <= 0) { s.slip = 0.6; s.hold = 1.7; c.hurt(1); if (c.hearts <= 0) return; }
-    c.progress = s.step / 10;
-    c.setHint(`${this.hint()}   ${tx("HOLD", "抓稳")} ${s.step}/10   ${tx("TIME", "时间")} ${s.hold.toFixed(1)}s`);
+    const s = c.state, q = c.pointer;
+    s.t += dt; s.left -= dt;
+    s.slip = Math.max(0, s.slip - dt * 1.6);
+    s.sway += (Math.sin(s.t * 1.1) * 0.02 - s.sway) * dt * 2;
+    if (q.down) {
+      if (s.pressY === null) s.pressY = q.y;
+      const pull = s.pressY - q.y;
+      if (pull > 58) {
+        const onSide = (q.x > c.w * 0.5) === (s.side === 1);
+        if (onSide) {
+          s.holds++; s.side = 1 - s.side; s.pressY = q.y;
+          s.branch = 1; c.hit("good"); c.addScore(12);
+          c.spark(q.x, q.y, "#e8d9a8", 12, 110);
+          s.sway += (s.side ? 1 : -1) * 0.03;
+        } else {
+          s.holds = Math.max(0, s.holds - 1); s.pressY = q.y; s.slip = 1;
+          c.hit("miss"); c.hurt(1);
+          if (c.hearts <= 0) return;
+        }
+      }
+    } else s.pressY = null;
+    s.branch = Math.max(0, s.branch - dt * 0.8);
+    c.progress = Math.min(1, s.holds / 8);
+    c.setHint(`${tx("Drag up on the lit side", "在有光的一侧向上拖")}   ${Math.min(8, s.holds)}/8`);
+    if (s.holds >= 8) {
+      c.hit("complete");
+      c.float(c.w / 2, c.h * 0.36, tx("He is passing below", "他从下面经过"), "#ffe6ac");
+      c.end(true, c.score + 70);
+    }
+    if (s.left <= 0 && !c.ended) c.end(s.holds >= 8, c.score);
   },
   draw(c, ctx) {
-    const s = c.state; bg(c, ctx, "#2b3340", "#5d6b52", 12);
-    const scroll = s.step * 9;
-    /* The chapter art already paints a sycamore, so the trunk is a soft shadow
-       behind the handholds instead of a second tree drawn in flat brown. */
-    const trunk = ctx.createLinearGradient(c.w * 0.4, 0, c.w * 0.6, 0);
-    trunk.addColorStop(0, "rgba(18,22,18,0)");
-    trunk.addColorStop(0.5, "rgba(24,26,20,.5)");
-    trunk.addColorStop(1, "rgba(18,22,18,0)");
-    ctx.fillStyle = trunk;
-    ctx.beginPath(); ctx.moveTo(c.w * 0.4, c.h); ctx.lineTo(c.w * 0.455, c.h * 0.1);
-    ctx.lineTo(c.w * 0.545, c.h * 0.1); ctx.lineTo(c.w * 0.6, c.h); ctx.fill();
-    ctx.strokeStyle = "rgba(240,216,170,.10)"; ctx.lineWidth = 2;
-    for (let y = c.h * 0.15; y < c.h; y += 30) { ctx.beginPath(); ctx.moveTo(c.w * 0.46, y); ctx.lineTo(c.w * 0.54, y + 7); ctx.stroke(); }
-    for (let i = 0; i < 11; i++) {
-      const y = c.h * 0.84 - i * 38 + scroll, dir = i % 2 ? 1 : -1;
-      if (y < -20 || y > c.h + 20) continue;
-      const active = i === s.step;
-      ctx.strokeStyle = active ? "#f1d492" : "#574431"; ctx.lineWidth = active ? 9 : 7; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(c.w * 0.5, y + 8);
-      ctx.quadraticCurveTo(c.w * (0.5 + dir * 0.16), y - 4, c.w * (0.5 + dir * 0.28), y - 12); ctx.stroke();
-      if (active) {
-        const gx = c.w * (0.5 + dir * 0.28), gy = y - 12;
-        const g = ctx.createRadialGradient(gx, gy, 2, gx, gy, 38);
-        g.addColorStop(0, "rgba(255,239,186,.7)"); g.addColorStop(1, "rgba(255,214,120,0)");
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(gx, gy, 38, 0, TAU); ctx.fill();
-        ctx.fillStyle = "rgba(255,244,208,.95)"; ctx.font = `bold 11px ${c.font}`; ctx.textAlign = "center";
-        ctx.fillText(tx(dir < 0 ? "LEFT" : "RIGHT", dir < 0 ? "左" : "右"), gx, gy - 20);
-      }
-    }
-    for (let i = 0; i < 14; i++) {
-      const x = c.w * (0.06 + ((i * 0.237) % 0.88));
-      const y = c.h * (0.1 + ((i * 0.19) % 0.5)) + Math.sin(i * 2.1) * 18;
-      const r = 26 + (i % 4) * 9;
-      const g2 = ctx.createRadialGradient(x, y, 2, x, y, r);
-      g2.addColorStop(0, "rgba(38,66,44,.62)");
-      g2.addColorStop(1, "rgba(24,44,30,0)");
-      ctx.fillStyle = g2;
-      ctx.beginPath(); ctx.ellipse(x, y, r, r * 0.62, i * 0.6, 0, TAU); ctx.fill();
-    }
-    const zy = c.h * 0.84 - s.step * 38 + scroll;
-    const zx = c.w * (0.5 + (s.seq[Math.min(s.step, 9)] ? 0.18 : -0.18));
-    const zh = bodyH(c, 0.17, 74, 150);
-    const drewZac = actor(ctx, "zacchaeus", zx, zy + zh * 0.42, zh, {
-      flip: s.seq[Math.min(s.step, 9)] ? 1 : -1,
-      rot: Math.sin(s.t * 2.4) * 0.02,
-      squash: 1 + (s.cheer > 0 ? Math.sin(s.cheer * 20) * 0.02 : 0)
-    });
-    if (!drewZac) npc(ctx, zx, zy - 2, { s: 0.9, phase: s.t, robe: "#7c5a34", cloth: "#2c241b" });
-    const crowd = 1 - s.step / 14;
-    for (let i = 0; i < 6; i++) {
-      const x = c.w * (0.1 + i * 0.16), y = c.h * 0.93;
-      npc(ctx, x, y, { s: 0.5 * crowd, phase: s.t + i, robe: ["#4a5a68", "#6b5540", "#3f5b54"][i % 3], cloth: "#18232b" });
-    }
-    npc(ctx, c.w * (0.2 + (s.t * 0.035) % 0.7), c.h * 0.96, { s: 0.62, phase: s.t * 0.8, robe: "#e9e2d0", cloth: "#8a6f4a", glow: "rgba(255,236,180,.22)" });
-    const f = clamp(s.hold / 1.7, 0, 1);
-    ctx.fillStyle = "rgba(0,0,0,.4)"; roundRect(ctx, c.w * 0.28, c.h * 0.12, c.w * 0.44, 7, 3); ctx.fill();
-    ctx.fillStyle = f > 0.35 ? "#d6b46c" : "#d65c42"; roundRect(ctx, c.w * 0.28, c.h * 0.12, c.w * 0.44 * f, 7, 3); ctx.fill();
-    if (s.slip > 0) { ctx.fillStyle = `rgba(214,92,66,${s.slip * 0.3})`; ctx.fillRect(0, 0, c.w, c.h); }
-  },
-  onDown(c, q) {
     const s = c.state;
-    if (q.y < c.h * 0.18 || s.step >= 10) return true;
-    const pick = q.x < c.w * 0.5 ? 0 : 1;
-    if (pick === s.seq[s.step]) {
-      s.step++; c.addScore(6); s.hold = 1.7; s.cheer = 0.5; c.hit("good");
-      c.spark(q.x, q.y, "#f4d79b", 12, 110);
-      if (s.step >= 10) c.end(true, c.score + 20);
-    } else { s.slip = 0.6; c.hurt(1); }
-    return true;
+    ctx.save();
+    ctx.translate(c.w / 2, c.h / 2);
+    ctx.rotate(s.sway + (s.slip > 0.5 ? Math.sin(s.t * 40) * 0.012 : 0));
+    ctx.translate(-c.w / 2, -c.h / 2);
+    /* Climbing is a change of scale, not a change of framing: the canopy opens
+       around you and the road below recedes. Zooming cannot leave a seam, which
+       sliding the plate did. */
+    const zoom = 1 + s.holds * 0.021;
+    ctx.translate(c.w / 2, c.h * 0.62);
+    ctx.scale(zoom, zoom);
+    ctx.translate(-c.w / 2, -c.h * 0.62);
+    plateArt(c, ctx, "assets/art/branches.jpg", 0.12 + s.holds * 0.012);
+    // the two holds: screen space, so they stay put while the tree grows
+    for (const side of [0, 1]) {
+      const p = { x: c.w * (side ? 0.72 : 0.27), y: c.h * 0.46 };
+      const lit = side === s.side;
+      ctx.save();
+      if (lit) {
+        ctx.globalCompositeOperation = "screen";
+        const g = ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, 54);
+        g.addColorStop(0, `rgba(255,238,190,${0.2 + Math.sin(s.t * 4) * 0.06})`);
+        g.addColorStop(1, "rgba(255,200,120,0)");
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, 54, 0, TAU); ctx.fill();
+        ctx.restore();
+        ctx.strokeStyle = `rgba(255,236,190,${0.5 + Math.sin(s.t * 4) * 0.14})`;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 22, 0, TAU); ctx.stroke();
+        ctx.fillStyle = "rgba(255,244,214,.85)";
+        ctx.beginPath();
+        const ay = p.y + 40 + Math.sin(s.t * 3) * 3;
+        ctx.moveTo(p.x, ay - 12); ctx.lineTo(p.x - 7, ay); ctx.lineTo(p.x + 7, ay);
+        ctx.closePath(); ctx.fill();
+      } else {
+        ctx.strokeStyle = "rgba(226,196,150,.16)"; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 20, 0, TAU); ctx.stroke();
+      }
+      void lit;
+    }
+    ctx.restore();
+    // how high you have come
+    for (let i = 0; i < 8; i++) {
+      const y = c.h * 0.86 - i * 16;
+      const x = c.w - 16;
+      ctx.fillStyle = i < s.holds ? "rgba(255,226,170,.85)" : "rgba(226,196,150,.2)";
+      ctx.beginPath(); ctx.arc(x, y, 3, 0, TAU); ctx.fill();
+    }
+    if (s.slip > 0.02) {
+      ctx.fillStyle = `rgba(200,120,90,${s.slip * 0.18})`;
+      ctx.fillRect(0, 0, c.w, c.h);
+    }
+    plateVignette(c, ctx, 0.55);
   }
 };
 
@@ -2765,7 +2897,7 @@ for (const [key, cfg] of Object.entries(PRELUDES)) {
    preparation acts, so an oracle that wants to test the climax itself has to be
    able to reach past them — otherwise a prelude that times out hides whether
    the scene it introduces can even be finished. */
-export const SCENES = { jericho, tend, stones, window: windowScene, flame, cry };
+export const SCENES = { jericho, tend, stones, window: windowScene, flame, cry, prodigal, esther, deep, climb };
 
 export const ACT_COUNTS = Object.fromEntries(
   Object.entries(GAMES).map(([k, g]) => [k, g.actCount || 1])
