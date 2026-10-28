@@ -55,17 +55,24 @@ function point(e, host) {
 }
 
 import { drawMomentArt, hasMomentArt, momentPlateStyle, balanceAngle } from "./momentart.js";
+import { tx } from "../core/i18n.js";
 
 export function startMoment(host, spec, onDone) {
   if (!host || !KINDS.includes(spec.kind)) { onDone?.({ success: false, skipped: true, score: 0 }); return { stop() {}, skip() {} }; }
 
   let alive = true, finished = false, raf = null, interval = null, last = 0;
+  const LIMIT = () => (spec.kind === "trace" ? 19 : spec.kind === "tap" ? 16 : 15);
   const S = {
     kind: spec.kind, t: 0, progress: 0, down: false, target: 0.5,
     charge: 0, hits: 0, hit: 0, nodeT: 0, node: null,
     marker: 0, dir: 1, speed: 0.82, band: 0.5, bandW: 0.17,
-    pos: 0.5, vel: 0, good: 0, path: [], lastAction: -10, nodes: [],
-    limit: spec.kind === "trace" ? 19 : spec.kind === "tap" ? 16 : 15
+    pos: 0.5, vel: 0, good: 0, zero: 0.5, path: [], lastAction: -10, nodes: [],
+    /* No interaction may complete itself. `touched` is the record of the
+       player having actually put a finger on the act; nothing scores without
+       it, and a clock that runs out asks for another go instead of handing out
+       the reward for having done nothing. */
+    touched: false, sayAt: -1, retries: 0,
+    limit: LIMIT()
   };
   host.innerHTML = "";
   host.classList.add("moment-stage", "kind-" + spec.kind);
@@ -147,6 +154,7 @@ export function startMoment(host, spec, onDone) {
     e.stopPropagation(); e.preventDefault?.();
     if (!alive || finished || !nodeEl || nodeEl.dataset.hit) return;
     nodeEl.dataset.hit = "1";
+    S.touched = true;
     const rec = S.nodes.find((n) => n.el === nodeEl);
     if (rec) rec.hit = true;
     const p = point(e, host);
@@ -163,7 +171,7 @@ export function startMoment(host, spec, onDone) {
     if (!alive || finished) return;
     e.preventDefault?.();
     const p = point(e, host);
-    S.down = true; S.target = p.x / p.w;
+    S.down = true; S.target = p.x / p.w; S.touched = true;
     if (S.kind === "rhythm") {
       if (S.t - S.lastAction < 0.12) return;
       S.lastAction = S.t;
@@ -183,7 +191,7 @@ export function startMoment(host, spec, onDone) {
     if (!alive || finished) return;
     e.preventDefault?.();
     const p = point(e, host);
-    if (S.kind === "balance") S.target = p.x / p.w;
+    if (S.kind === "balance" && S.down) { S.target = p.x / p.w; S.touched = true; }
     if (S.kind === "trace" && S.down) traceTo(p);
     if (tokenEl && (S.kind === "trace" || S.kind === "balance")) {
       tokenEl.style.left = `${p.x}px`; tokenEl.style.top = `${p.y}px`;
@@ -279,19 +287,55 @@ export function startMoment(host, spec, onDone) {
     } else if (S.kind === "trace") {
       if (!S.progress) setProgress(0.01);
     } else if (S.kind === "balance") {
-      S.vel = (S.vel + (Math.sin(S.t * 1.9) * 0.85 + Math.cos(S.t * 0.83) * 0.45) * dt) * 0.975;
-      if (S.down) S.pos += (S.target - S.pos) * Math.min(1, dt * 5);
-      else S.pos += S.vel * dt;
-      S.pos = clamp(S.pos, 0.04, 0.96);
-      if (Math.abs(S.pos - 0.5) < 0.13) S.good += dt;
-      setProgress(S.good / 3.6);
-      if (S.good >= 3.6) return finish(true);
+      /* The ridge itself tips underfoot; the load is level only while the
+         bubble sits in its notch. The player drags, the ground keeps moving,
+         so nothing here can be won by leaving the phone alone. */
+      /* the ridge starts already tipped, so the first thing the player does is
+         a correction — not a wait */
+      S.zero = 0.5 + Math.sin(S.t * 0.85 + 2.2) * 0.22 + Math.sin(S.t * 1.6 + 1.7) * 0.09;
+      if (S.down) S.pos += (S.target - S.pos) * Math.min(1, dt * 10);
+      S.pos = clamp(S.pos, 0.02, 0.98);
+      if (S.touched && Math.abs(S.pos - S.zero) < 0.11) S.good += dt;
+      else S.good = Math.max(0, S.good - dt * 0.8);
+      setProgress(S.good / 3.0);
+      if (S.good >= 3.0) return finish(true);
+      /* One sentence of instruction, then a countdown — never a bar to decode. */
+      const left = Math.max(0, 3 - S.good).toFixed(1);
+      const line = !S.touched
+        ? tx("Press and drag until the bubble sits in the notch", "按住左右拖动，让气泡停在凹槽里")
+        : tx(`Bubble in the notch — ${left}s`, `气泡稳住——还剩 ${left} 秒`);
+      if (line !== S.sayAt) { S.sayAt = line; say(line); }
     } else if (S.kind === "rhythm") {
       S.marker += S.dir * S.speed * dt;
       if (S.marker > 1) { S.marker = 1; S.dir = -1; }
       if (S.marker < 0) { S.marker = 0; S.dir = 1; }
     }
-    if (S.t > S.limit) return finish(false);
+    /* Running out of time never ends a moment. With no finger on the act it is
+       not even a clock — it waits. Once the player has tried, a spent clock
+       asks for another go rather than moving the story on without them; the
+       explicit 跳过这一刻 button is the only way past it. */
+    if (S.t > S.limit) {
+      if (!S.touched) { S.limit += 30; }
+      else retryAttempt();
+    }
+  }
+
+  /** Reset a spent attempt in place. The act stays on screen and playable. */
+  function retryAttempt() {
+    S.t = 0; S.limit = LIMIT(); S.retries++;
+    S.progress = 0; S.good = 0; S.charge = 0; S.hits = 0; S.hit = 0; S.nodeT = 0;
+    S.marker = 0; S.dir = 1; S.band = rand(0.16, 0.84);
+    S.pos = 0.5; S.vel = 0; S.zero = 0.5; S.down = false; S.target = 0.5;
+    /* S.path is the drawn route itself — it is built once at mount and must
+       survive a retry, or the line and its hit test are gone for good. */
+    S.lastAction = -10;
+    setProgress(0);
+    if (nodeEl) { nodeEl.remove(); nodeEl = null; }
+    S.nodes = [];
+    if (spec.kind === "tap") spawnNode();
+    if (tokenEl) { tokenEl.style.left = "50%"; tokenEl.style.top = "90%"; }
+    say(tx("Time — once more.", "时间到，再来一次。"));
+    S.sayAt = "";
   }
 
   function frame(ts) {

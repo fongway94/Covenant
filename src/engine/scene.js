@@ -423,6 +423,9 @@ export function startScene(canvas, key, onResult, seed = {}) {
     /* Readout for the lifted touch marker: 0..1 while a hold is in progress,
        null when there is nothing to show. Cleared every frame. */
     touchHold: null, touchFade: 0, touchAt: { x: 0, y: 0 },
+    /* Did a finger ever land on this scene? A clock that runs out is not a
+       success for a player who never moved — see the result below. */
+    touched: false,
     /* Set to false by a scene that already draws its own instrument above the
        finger (a pouring flask, a sling pouch) so the two do not collide. */
     touchUi: true,
@@ -468,7 +471,10 @@ export function startScene(canvas, key, onResult, seed = {}) {
       if (raf && typeof cancelAnimationFrame === "function") cancelAnimationFrame(raf);
       detach();
       c.hit(success ? "complete" : "miss");
-      onResult({ score: c.score, success: !!success, skipped: false });
+      /* `untouched` lets the story refuse to reward a scene that ended while
+         the player's hands were off the phone. The story still moves on — it
+         just does not pretend the act was performed. */
+      onResult({ score: c.score, success: !!success, skipped: false, untouched: !c.touched });
     }
   };
 
@@ -491,7 +497,7 @@ export function startScene(canvas, key, onResult, seed = {}) {
     e.preventDefault?.();
     const p = pos(e); pointer.x = p.x; pointer.y = p.y;
     pointer.startX = p.x; pointer.startY = p.y; pointer.dx = 0; pointer.dy = 0;
-    pointer.down = true; pointer.justDown = true;
+    pointer.down = true; pointer.justDown = true; c.touched = true;
     // Universal tactile feedback — every scene gets the same juicy tap.
     c.ring(p.x, p.y, "rgba(247,221,165,.55)", 34);
     for (let i = 0; i < 5; i++) {
@@ -534,7 +540,7 @@ export function startScene(canvas, key, onResult, seed = {}) {
     game.onUp?.(c, pointer);
   }
   function keydown(e) {
-    keys.add(e.key.toLowerCase());
+    keys.add(e.key.toLowerCase()); c.touched = true;
     if ([" ", "arrowleft", "arrowright", "arrowup", "arrowdown"].includes(e.key.toLowerCase())) e.preventDefault?.();
     game.onKey?.(c, e.key.toLowerCase(), true);
   }

@@ -17,8 +17,8 @@ const B = (en, zh) => [en, zh];
 
 /* at = node id the moment appears after · kind = interaction · subject = which
    painting the moment is drawn as · way = mirror axis */
-const M = (at, kind, subject, plate, fx, fy, title, prompt, done, way) =>
-  ({ at, kind, subject, plate, fx, fy, way, title, prompt, done });
+const M = (at, kind, subject, plate, fx, fy, title, prompt, done, way, opts = {}) =>
+  ({ at, kind, subject, plate, fx, fy, way, title, prompt, done, ...opts });
 
 export const MOMENT_WAY_FALLBACK = {
   hold: "wait", tap: "step", trace: "notice", balance: "stay", rhythm: "wait"
@@ -27,15 +27,15 @@ export const MOMENT_WAY_FALLBACK = {
 export const MOMENTS = {
   elah: [
     M("start2", "hold", "ground",
-      "elah", 0.42, 0.70,
+      "elah", 0.46, 0.68,
       B("Hold your ground", "站稳"),
       B("The giant's shout rolls over the valley. Press and hold until your breathing steadies.", "巨人的喊声滚过山谷。按住不放，直到你的呼吸稳下来。"),
-      B("You did not run. That is what courage looked like from the inside.", "你没有跑。从里面看，勇敢就是这个样子。"), "wait"),
+      B("You did not run. That is what courage looked like from the inside.", "你没有跑。从里面看，勇敢就是这个样子。"), "wait", { span: 0.56 }),
     M("arrival", "balance", "provision",
-      "elah-field", 0.50, 0.60,
+      "elah-field", 0.44, 0.68,
       B("Carry the provisions", "稳住供给"),
-      B("Bread, cheese, a staff. Drag to keep the load level as you climb the ridge.", "饼、奶饼、一根杖。拖动保持平衡，把东西扛上山脊。"),
-      B("You reach the top without dropping anything. Nobody noticed you arrive.", "你一样东西也没掉地爬到了山顶。没有人注意到你来了。"), "stay")
+      B("A pole across your shoulders, bread on one end and cheese on the other. Drag left and right to keep the bubble in its notch while the ridge tips underfoot.", "扁担压在肩上，一头是饼，一头是奶饼。山脊在脚下倾斜——左右拖动，让气泡一直停在凹槽里。"),
+      B("You reach the top without dropping anything. Nobody noticed you arrive.", "你一样东西也没掉地爬到了山顶。没有人注意到你来了。"), "stay", { span: 0.56 })
   ],
   lions: [
     M("decree", "tap", "lines",
@@ -65,7 +65,7 @@ export const MOMENTS = {
     M("evening", "balance", "jars",
       "storm", 0.55, 0.55,
       B("Ballast the boat", "稳住船身"),
-      B("Drag the net and water jars to keep the boat level as the wind rises.", "拖动渔网和水罐，在风起时让船保持平稳。"),
+      B("A pole of water jars on your shoulders while the deck heaves. Drag left and right to keep the bubble in its notch.", "两罐水挑在肩上，甲板一直在晃。左右拖动，让气泡停在凹槽里。"),
       B("Everything is stowed. It will not be enough.", "一切都绑好了。但这还不够。"), "stay"),
     M("storm", "hold", "rope",
       "storm", 0.50, 0.50,
@@ -118,7 +118,7 @@ export const MOMENTS = {
     M("kindness", "balance", "sheaf",
       "ruth", 0.40, 0.70,
       B("Carry the sheaf", "扛着麦捆"),
-      B("Keep the sheaf balanced on your shoulder all the way back to Naomi.", "一路把麦捆稳稳扛在肩上，回到拿俄米那里。"),
+      B("The sheaf rides a pole on your shoulder all the way to Naomi. Drag left and right to keep the bubble in its notch.", "麦捆挑在肩上，一路回到拿俄米那里。左右拖动，让气泡停在凹槽里。"),
       B("She asks who noticed you. You say a man called Boaz.", "她问是谁留意了你。你说，是一个叫波阿斯的人。"), "stay")
   ],
   jonah: [
@@ -154,7 +154,8 @@ export function momentFor(chapterId, nodeId, zh, done = {}) {
   if (!m || done[nodeId + ":moment"]) return null;
   const L = (b) => b[zh ? 1 : 0];
   return {
-    kind: m.kind, subject: m.subject, plate: m.plate, fx: m.fx, fy: m.fy, way: m.way || MOMENT_WAY_FALLBACK[m.kind],
+    kind: m.kind, subject: m.subject, plate: m.plate, fx: m.fx, fy: m.fy, span: m.span,
+    way: m.way || MOMENT_WAY_FALLBACK[m.kind],
     title: L(m.title), prompt: L(m.prompt), done: L(m.done),
     at: m.at, chapterId
   };

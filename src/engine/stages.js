@@ -1529,9 +1529,9 @@ function dodgeStage(cfg) {
       }
       // Spears must be spaced further apart than one full jump cycle, or the
       // player is still airborne when the next one arrives and cannot dodge.
-      if (s.spawn < 14 && s.t > s.spawn * 1.15) {
+      if (s.spawn < 14 && s.t > s.spawn * 1.45) {
         s.spawn++;
-        s.hazards.push({ x: c.w + 20, y: c.h * 0.78 - rnd(0, 14), r: rnd(11, 17),
+        s.hazards.push({ x: c.w + 20, y: c.h * 0.78 - rnd(0, 6), r: rnd(8, 11),
           rot: rnd(0, TAU), hit: false, land: rnd(0.2, 0.8) });
       }
       for (const hz of s.hazards) { hz.x -= dt * (c.w * 0.34); hz.rot += dt * 3; }
@@ -1598,22 +1598,34 @@ function dodgeStage(cfg) {
       // spears already in the ground, still quivering
       for (const st of s.stuck) {
         const q = Math.sin(c.t * 22 + st.x) * 0.03 * Math.min(1, st.life);
-        spearArt(ctx, st.x, st.y - 54, st.rot + q, 74, Math.min(1, st.life), 1.9);
+        spearArt(ctx, st.x, st.y - 40, st.rot + q, 46, Math.min(1, st.life), 1.35);
       }
       for (const pf of s.puffs) {
         ctx.fillStyle = `rgba(196,178,144,${pf.life * 0.3})`;
         ctx.beginPath(); ctx.arc(pf.x, pf.y, pf.r, 0, TAU); ctx.fill();
       }
 
-      // the spears in the air: a blur behind each one, then the thing itself
+      /* The spears in the air. They are coming at you, so they are drawn
+         foreshortened — a short iron head and a hand's width of shaft, not a
+         five-foot pole lying across the road. A full-length spear was wider
+         than David was tall and read as a fence you had to jump over rather
+         than something arriving. */
       for (const hz of s.hazards) {
-        const sp = hz.r > 14 ? 1.9 : 1.55;
-        const rot = 0.06 + Math.sin(c.t * 5 + hz.land * 9) * 0.05;
-        for (let g = 1; g <= 3; g++) {
-          spearArt(ctx, hz.x + g * 20, hz.y - g * 0.8, rot, 74, 0.09 - g * 0.025, sp);
+        const sp = hz.r > 9.2 ? 1.2 : 1.05;
+        /* the point leads: it is thrown at you, not away from you */
+        const rot = Math.PI - 0.1 + Math.sin(c.t * 5 + hz.land * 9) * 0.05;
+        /* one soft smear behind the head, because it is travelling fast */
+        spearArt(ctx, hz.x + 12, hz.y + 1.5, rot, 56, 0.16, sp * 0.93);
+        actorShadow(ctx, hz.x, horizon + 4, 20, 0.18);
+        /* the dust it drags along the ground, so it reads against the giant's
+           own greaves while it is still on his side of the valley */
+        for (let i = 1; i <= 3; i++) {
+          ctx.fillStyle = `rgba(208,188,152,${0.16 / i})`;
+          ctx.beginPath();
+          ctx.arc(hz.x + i * 13, horizon - 2 - Math.sin(c.t * 6 + i) * 3, 5 + i * 3, 0, TAU);
+          ctx.fill();
         }
-        actorShadow(ctx, hz.x, horizon + 4, 22, 0.14);
-        spearArt(ctx, hz.x, hz.y - 10, rot, 74, 1, sp);
+        spearArt(ctx, hz.x, hz.y - 6, rot, 56, 1, sp);
       }
 
       const dH = clamp(c.h * 0.30, 110, 200);

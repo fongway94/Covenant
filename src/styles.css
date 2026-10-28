@@ -1477,20 +1477,42 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 .action-screen > .atmo-canvas { z-index: 1; }
 
 /* ---- Story moments ---- */
-.moment-screen .story-body { justify-content: flex-start; }
+/* v0.9.3 — a moment is one screen and it has to fit one screen. The card owns
+   everything under the top bar: the painted stage takes whatever is left, and
+   the skip button is pinned to the foot of the card so it can never be pushed
+   past the bottom edge (it used to sit below a fixed 236px stage and run off a
+   390x620 viewport entirely). */
+.moment-screen .story-art {
+  flex: 0 0 auto; height: clamp(84px, 13vh, 124px); min-height: 84px;
+  background-position: center 30%;
+}
+.moment-screen .story-art::after {
+  background: linear-gradient(180deg, rgba(6,12,17,.72) 0%, rgba(6,12,17,.3) 52%, #0b141c 100%);
+}
+.moment-screen .story-top { padding: max(8px, env(safe-area-inset-top)) 14px 4px; }
+.moment-screen .story-top .icon-btn { width: 34px; height: 34px; }
+.moment-screen .story-chapter { font-size: .86rem; }
+.moment-screen .story-tag { bottom: 5px; font-size: .55rem; letter-spacing: .16em; }
+.moment-screen .story-body {
+  justify-content: flex-start; overflow-y: auto; overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.moment-screen .story-hud { padding: 2px 0 6px; }
 .moment-card {
-  position: relative; z-index: 3; margin-top: 6px;
-  padding: 14px 14px 12px; border-radius: 18px;
+  position: relative; z-index: 3; margin-top: 4px;
+  padding: 12px 14px 12px; border-radius: 18px;
   background: linear-gradient(180deg, rgba(12,26,35,.96), rgba(7,16,22,.98));
   border: 1px solid rgba(231,183,91,.32);
   box-shadow: 0 14px 40px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,244,214,.07);
-  display: grid; gap: 8px;
+  display: flex; flex-direction: column; gap: 8px;
+  flex: 1 1 auto; min-height: 0;
   animation: staggerIn .38s ease both;
 }
 .moment-card h2 { font-family: var(--serif); font-size: 1.28rem; margin: 0; color: var(--gold-light); }
 .moment-card > p { margin: 0; line-height: 1.5; }
 .moment-stage {
-  position: relative; height: 236px; border-radius: 14px; overflow: hidden;
+  position: relative; flex: 1 1 auto; min-height: 132px;
+  border-radius: 14px; overflow: hidden;
   touch-action: none; user-select: none; -webkit-user-select: none;
   background:
     radial-gradient(70% 60% at 72% 8%, rgba(231,183,91,.14), transparent 70%),
@@ -1623,13 +1645,23 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
   box-shadow: 0 0 12px rgba(231,183,91,.5);
 }
 .moment-feedback { min-height: 18px; text-align: center; font-size: .74rem; color: var(--gold-light); font-family: var(--serif); }
-.moment-card .btn { width: 100%; }
+.moment-card .btn { width: 100%; flex: 0 0 auto; min-height: 42px; margin-top: auto; }
+/* the eyebrow, title and prompt must never squeeze the stage out of the card */
+.moment-card .eyebrow, .moment-card h2, .moment-card > p { flex: 0 0 auto; }
 
 @media (max-height: 700px) {
-  .moment-stage { height: 186px; }
+  .moment-stage { min-height: 118px; }
+  .moment-screen .story-art { height: 76px; min-height: 76px; }
   .moment-ring { width: 106px; height: 106px; }
   .moment-ring-inner { width: 86px; height: 86px; font-size: 1.6rem; }
   .moment-card h2 { font-size: 1.12rem; }
+}
+@media (max-height: 640px) {
+  .moment-screen .story-art { height: 66px; min-height: 66px; }
+  .moment-card { padding: 10px 12px; gap: 6px; }
+  .moment-card > p { font-size: .8rem; line-height: 1.42; }
+  .moment-screen .story-hud { padding: 0 0 4px; }
+  .moment-stage { min-height: 108px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .moment-card, .moment-node, .moment-spark, .moment-stage.miss { animation: none !important; }

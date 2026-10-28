@@ -337,7 +337,7 @@ function finishAction(ui, result) {
   const key = s.game.key;
   s.game.controller = null;
   s.doneNodes[s.nodeId + ":game"] = true;
-  const success = !!result.success && !result.skipped;
+  const success = !!result.success && !result.skipped && !result.untouched;
   if (success) {
     applyEffects(ui, { stat: { courage: 1, faith: 1 }, xp: 14, flag: key + "Won" }, "Action");
     addWay(ui.state, "step", 2);   // entered the scene rather than skipping it

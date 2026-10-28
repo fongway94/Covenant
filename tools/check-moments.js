@@ -91,6 +91,24 @@ for (const kind of KINDS) {
   controller.stop();
 }
 
+/* Nothing may pass itself. A balance moment used to win three and a half
+   seconds after it opened, with the phone in the player's pocket; the meter
+   filled and the reward landed for a move nobody made. */
+{
+  const host = document.getElementById("host");
+  host.innerHTML = "";
+  let resolved = null;
+  const controller = startMoment(host,
+    { kind: "balance", subject: "provision", plate: "elah-field", fx: 0.44, fy: 0.68,
+      way: "stay", title: "T", prompt: "P", done: "D", at: "x", chapterId: "elah" },
+    (r) => { resolved = r; });
+  await new Promise((r) => setTimeout(r, 4500));
+  if (resolved) fail("balance moment resolved on its own with no input");
+  const meter = document.getElementById("moment-meter");
+  if (meter && parseFloat(meter.style.width) > 0) fail("balance meter fills with no input");
+  controller.stop();
+}
+
 dom.window.close();
 if (errs.length) { errs.forEach((e) => console.error("  ✗ " + e)); process.exit(1); }
 console.log(`\n✓ Story moments: ${momentCount()} across ${CHAPTERS.length} chapters, ` +

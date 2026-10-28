@@ -81,23 +81,37 @@ function jar(ctx, x, y, s, tilt = 0, fill = "#1a1e22") {
   ctx.restore();
 }
 
-/* A woven basket, close enough to see the weave: a dark interior, stakes
-   running down, bands wrapping round, and a lit rim where the light catches. */
+/* A woven basket, close enough to see the weave: a warm body lit from the
+   upper right, a dark mouth, stakes running down, bands wrapping round, and a
+   contact shadow so it sits in the photograph instead of on top of it. */
 function basket(ctx, x, y, s, kind, tilt) {
   ctx.save();
   ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(s, s);
-  // body
+  /* the shade it throws on whatever it stands over */
+  const sh = ctx.createRadialGradient(0, 16, 1, 0, 16, 24);
+  sh.addColorStop(0, "rgba(8,7,5,.6)");
+  sh.addColorStop(1, "rgba(8,7,5,0)");
+  ctx.fillStyle = sh;
+  ctx.beginPath(); ctx.ellipse(0, 15, 21, 6.5, 0, 0, TAU); ctx.fill();
+  /* body */
+  const lit = ctx.createLinearGradient(-14, -9, 12, 16);
+  lit.addColorStop(0, "rgba(104,68,32,.99)");
+  lit.addColorStop(0.42, "rgba(188,136,74,.99)");
+  lit.addColorStop(1, "rgba(66,42,20,.99)");
   body(ctx, () => {
     ctx.moveTo(-15, -8);
     ctx.quadraticCurveTo(-14, 6, -9.5, 13);
     ctx.quadraticCurveTo(0, 17, 9.5, 13);
     ctx.quadraticCurveTo(14, 6, 15, -8);
     ctx.closePath();
-  }, "rgba(28,20,13,.96)", "rgba(255,198,138,.45)", 1.1);
-  // the mouth, dark inside
-  ctx.fillStyle = "rgba(14,11,8,.95)";
-  ctx.beginPath(); ctx.ellipse(0, -8, 15, 3.2, 0, 0, TAU); ctx.fill();
-  // weave: stakes then bands
+  }, lit, null);
+  /* the mouth, dark inside */
+  const mouth = ctx.createLinearGradient(0, -11, 0, -5);
+  mouth.addColorStop(0, "rgba(26,17,9,.98)");
+  mouth.addColorStop(1, "rgba(8,6,4,.98)");
+  ctx.fillStyle = mouth;
+  ctx.beginPath(); ctx.ellipse(0, -8, 15, 3.4, 0, 0, TAU); ctx.fill();
+  /* weave: stakes then bands */
   ctx.save();
   ctx.beginPath();
   ctx.moveTo(-15, -8);
@@ -105,36 +119,50 @@ function basket(ctx, x, y, s, kind, tilt) {
   ctx.quadraticCurveTo(0, 17, 9.5, 13);
   ctx.quadraticCurveTo(14, 6, 15, -8);
   ctx.closePath(); ctx.clip();
-  ctx.strokeStyle = "rgba(196,150,98,.17)"; ctx.lineWidth = 0.8;
+  ctx.strokeStyle = "rgba(238,196,140,.15)"; ctx.lineWidth = 0.8;
   for (let i = -6; i <= 6; i++) {
     ctx.beginPath();
     ctx.moveTo(i * 2.4, -9);
     ctx.quadraticCurveTo(i * 2.7, 6, i * 2.1, 15);
     ctx.stroke();
   }
-  ctx.strokeStyle = "rgba(240,196,140,.1)"; ctx.lineWidth = 1;
+  ctx.strokeStyle = "rgba(255,206,150,.1)"; ctx.lineWidth = 1;
   for (let i = 0; i < 4; i++) {
     const yy = -6 + i * 5;
     ctx.beginPath();
     ctx.moveTo(-15, yy); ctx.quadraticCurveTo(0, yy + 3.6, 15, yy); ctx.stroke();
   }
+  /* the lit right wall of the basket */
+  const wall = ctx.createLinearGradient(2, 0, 15, 0);
+  wall.addColorStop(0, "rgba(255,214,160,0)");
+  wall.addColorStop(1, "rgba(255,214,160,.16)");
+  ctx.fillStyle = wall; ctx.fillRect(0, -8, 16, 26);
   ctx.restore();
-  // rim, and the handle
-  ctx.strokeStyle = "rgba(246,196,138,.5)"; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.ellipse(0, -8, 15, 3.2, 0, 0, TAU); ctx.stroke();
+  /* the rim, and the one edge the light catches — not an outline */
+  ctx.strokeStyle = "rgba(250,206,150,.5)"; ctx.lineWidth = 1.3;
+  ctx.beginPath(); ctx.ellipse(0, -8, 15, 3.4, 0, 0, TAU); ctx.stroke();
+  ctx.strokeStyle = "rgba(255,224,176,.42)"; ctx.lineWidth = 1.1;
+  ctx.beginPath();
+  ctx.moveTo(13.6, -7);
+  ctx.quadraticCurveTo(13, 5, 8.6, 12.4);
+  ctx.stroke();
+  ctx.strokeStyle = "rgba(10,8,6,.45)"; ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(-13.6, -7);
+  ctx.quadraticCurveTo(-13, 5, -8.6, 12.4);
+  ctx.stroke();
   if (kind === "bread") {
     for (let i = 0; i < 3; i++) {
       const bx = -8 + i * 8, by = -11 - (i === 1 ? 2.6 : 0);
       const rot = -0.28 + i * 0.28;
       const g = ctx.createLinearGradient(bx - 5, by - 4, bx + 5, by + 4);
-      g.addColorStop(0, "rgba(206,158,96,.98)");
-      g.addColorStop(0.55, "rgba(158,110,62,.98)");
-      g.addColorStop(1, "rgba(96,62,34,.98)");
+      g.addColorStop(0, "rgba(226,178,112,.99)");
+      g.addColorStop(0.55, "rgba(176,126,72,.99)");
+      g.addColorStop(1, "rgba(110,72,38,.99)");
       ctx.fillStyle = g;
       ctx.beginPath(); ctx.ellipse(bx, by, 6.2, 3.8, rot, 0, TAU); ctx.fill();
-      ctx.strokeStyle = "rgba(255,222,168,.4)"; ctx.lineWidth = 0.8;
+      ctx.strokeStyle = "rgba(255,232,182,.5)"; ctx.lineWidth = 0.8;
       ctx.beginPath(); ctx.ellipse(bx - 0.6, by - 0.8, 5.4, 3, rot, 0, TAU); ctx.stroke();
-      // the cuts across the crust
       ctx.strokeStyle = "rgba(84,52,26,.7)"; ctx.lineWidth = 0.7;
       for (let k = -1; k <= 1; k++) {
         ctx.beginPath();
@@ -144,24 +172,23 @@ function basket(ctx, x, y, s, kind, tilt) {
       }
     }
   } else if (kind === "cheese") {
-    // a wedge on a cloth, pale and slightly translucent at the tip
     ctx.fillStyle = "rgba(58,44,30,.9)";
     ctx.beginPath(); ctx.moveTo(-11, -8); ctx.lineTo(12, -9); ctx.lineTo(10, -3); ctx.lineTo(-10, -2); ctx.closePath(); ctx.fill();
     const g = ctx.createLinearGradient(-8, -10, 8, -2);
-    g.addColorStop(0, "rgba(232,214,166,.97)");
-    g.addColorStop(1, "rgba(182,158,116,.97)");
+    g.addColorStop(0, "rgba(242,228,186,.99)");
+    g.addColorStop(1, "rgba(192,168,124,.99)");
     ctx.fillStyle = g;
     ctx.beginPath(); ctx.moveTo(-8, -9); ctx.lineTo(9, -10.4); ctx.lineTo(7.4, -4.6); ctx.lineTo(-7, -3.4); ctx.closePath(); ctx.fill();
     ctx.fillStyle = "rgba(150,122,74,.9)";
     ctx.beginPath(); ctx.moveTo(-7, -3.4); ctx.lineTo(7.4, -4.6); ctx.lineTo(7, -2.6); ctx.lineTo(-6.6, -1.4); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = "rgba(255,246,214,.5)"; ctx.lineWidth = 0.7;
+    ctx.strokeStyle = "rgba(255,248,220,.6)"; ctx.lineWidth = 0.7;
     ctx.beginPath(); ctx.moveTo(-7.4, -8.6); ctx.lineTo(8.2, -10); ctx.stroke();
   } else if (kind === "jars") {
-    jar(ctx, -6.5, -3, 0.42, -0.12, "rgba(30,26,22,.97)");
-    jar(ctx, 6.5, -3.5, 0.42, 0.1, "rgba(30,26,22,.97)");
+    jar(ctx, -6.5, -3, 0.42, -0.12, "rgba(96,74,50,.99)");
+    jar(ctx, 6.5, -3.5, 0.42, 0.1, "rgba(96,74,50,.99)");
   } else if (kind === "sheaf") {
     for (let i = 0; i < 7; i++) {
-      ctx.strokeStyle = "rgba(214,182,116,.85)"; ctx.lineWidth = 0.9;
+      ctx.strokeStyle = "rgba(232,200,134,.9)"; ctx.lineWidth = 0.9;
       ctx.beginPath();
       ctx.moveTo(-4 + i * 1.2, -6);
       ctx.quadraticCurveTo(-6 + i * 2.2, -14, -9 + i * 2.6 + Math.sin(i) * 6, -22 - hash(i) * 5);
@@ -533,101 +560,187 @@ const HOLD = {
 };
 
 /* ------------------------------------------------------------- balance */
-/* The world sways; the load in your hands does not have to. The plate itself
-   tips by this angle and the player drags against it, so "balance" is not a
-   cursor on a bar — it is the horizon going crooked and coming back. */
+/* The ridge tips underfoot. The painting swings by this angle and the load in
+   your hands has to swing against it, so the horizon is the world moving and
+   never the camera — which is what a player reads as "the ground is crooked",
+   not as a bug. */
 export function balanceAngle(S) {
   const t = S?.t || 0;
-  return (Math.sin(t * 1.55) * 0.05 + Math.sin(t * 0.73 + 1.1) * 0.028) - ((S?.pos ?? 0.5) - 0.5) * 0.42;
+  return ((S?.zero ?? 0.5) - 0.5) * 0.44 + Math.sin(t * 0.9) * 0.012;
 }
 
-/* A load the player has to keep level, drawn as a plumb line hanging from the
-   top of the frame. The world inside the painting tips; the cord does not,
-   because a cord never does — so "level" is something the player can actually
-   see, and it costs the frame one thin line and a small weight. */
-function plumb(ctx, w, h, t, level, shape) {
-  const U = h / 100;
-  const sway = Math.sin(t * 1.15) * U * 1.6 + Math.sin(t * 2.7) * U * 0.4;
-  const top = 0, bobY = h * 0.66;
-  const bx = w * 0.5 + sway;
-  // the cord, catching the light on one side
-  ctx.strokeStyle = "rgba(28,22,16,.9)"; ctx.lineWidth = U * 1.1;
-  ctx.beginPath(); ctx.moveTo(w * 0.5, top); ctx.quadraticCurveTo(w * 0.5 + sway * 0.4, bobY * 0.5, bx, bobY); ctx.stroke();
-  ctx.strokeStyle = "rgba(255,214,164,.35)"; ctx.lineWidth = U * 0.35;
-  ctx.beginPath(); ctx.moveTo(w * 0.5 - U * 0.4, top); ctx.quadraticCurveTo(w * 0.5 + sway * 0.4 - U * 0.4, bobY * 0.5, bx - U * 0.4, bobY); ctx.stroke();
-  // the light that says whether it is hanging true
-  if (level > 0) {
-    soft(ctx, bx, bobY + U * 6, U * 20, U * 12, "255,206,132", 0.05 + level * 0.16);
-  }
-  soft(ctx, bx, bobY, U * 9, U * 9, "255,226,180", 0.05);
-  // the weight: a carved stone for a plumb, an oil flask for provisions
+/* A shoulder-pole with the load slung off both ends: cords that hang plumb, a
+   brass level clamped at the yoke, and a bubble that leaves its notch the
+   moment the load is off level. The plate is the ridge; this is only what the
+   player is carrying. */
+const rrect = (ctx, x, y, w, h, r) => {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+};
+
+function carryBeam(ctx, w, h, rel, t, kind, touched) {
+  const U = h / 100, cx = w * 0.5, cy = h * 0.46;
+  const ang = clamp(rel, -0.6, 0.6) * 0.9;
+  const half = w * 0.40;
+  const sway = Math.sin(t * 1.5) * U * 0.5;
+  const level = Math.abs(rel) < 0.11;
+
+  /* the pole: dark under-edge, wood, one lit top edge, cord bindings */
   ctx.save();
-  ctx.translate(bx, bobY);
-  if (shape === "flask") {
-    body(ctx, () => {
-      ctx.moveTo(-U * 2, 0);
-      ctx.quadraticCurveTo(-U * 6.4, U * 4, -U * 5, U * 8);
-      ctx.quadraticCurveTo(-U * 3, U * 12, 0, U * 12);
-      ctx.quadraticCurveTo(U * 3, U * 12, U * 5, U * 8);
-      ctx.quadraticCurveTo(U * 6.4, U * 4, U * 2, 0);
-      ctx.closePath();
-    }, "rgba(26,22,18,.98)", "rgba(255,206,150,.5)", 1.2);
-    ctx.strokeStyle = "rgba(255,208,152,.25)"; ctx.lineWidth = U * 0.5;
-    ctx.beginPath(); ctx.moveTo(-U * 2, U * 2); ctx.quadraticCurveTo(-U * 4.6, U * 6, -U * 3.4, U * 9); ctx.stroke();
-  } else {
-    body(ctx, () => {
-      ctx.moveTo(-U * 4.4, 0);
-      ctx.quadraticCurveTo(-U * 5.6, U * 6, -U * 3, U * 10);
-      ctx.quadraticCurveTo(0, U * 13, U * 3, U * 10);
-      ctx.quadraticCurveTo(U * 5.6, U * 6, U * 4.4, 0);
-      ctx.closePath();
-    }, "rgba(30,29,26,.98)", "rgba(255,206,150,.42)", 1.2);
-    ctx.strokeStyle = "rgba(255,212,160,.2)"; ctx.lineWidth = U * 0.6;
-    ctx.beginPath(); ctx.moveTo(-U * 2.6, U * 2); ctx.quadraticCurveTo(-U * 3.4, U * 6, -U * 1.6, U * 8.6); ctx.stroke();
+  ctx.translate(cx, cy + sway); ctx.rotate(ang);
+  const sag = U * 1.4;
+  ctx.lineJoin = "round";
+  /* a pole, not a plank: it is thick at the shoulder and whittles away to the
+     ends where the cords are tied */
+  const pole = (dx = 0, dy = 0) => {
+    ctx.beginPath();
+    ctx.moveTo(-half, -U * 1.9 + dy);
+    ctx.quadraticCurveTo(0, sag - U * 1.9 + dy, half, -U * 1.9 + dy);
+    ctx.quadraticCurveTo(half + U * 1.1, -U * 1.0 + dy, half, -U * 0.5 + dy);
+    ctx.quadraticCurveTo(0, sag + U * 2.5 + dy, -half, -U * 0.5 + dy);
+    ctx.quadraticCurveTo(-half - U * 1.1, -U * 1.0 + dy, -half, -U * 1.9 + dy);
+    ctx.closePath();
+  };
+  ctx.fillStyle = "rgba(12,9,7,.55)";
+  ctx.save(); ctx.translate(0, U * 0.9); pole(); ctx.fill(); ctx.restore();
+  const wood = ctx.createLinearGradient(0, -U * 2.4, 0, U * 2.6);
+  wood.addColorStop(0, "rgba(186,142,90,.99)");
+  wood.addColorStop(0.42, "rgba(126,92,53,.99)");
+  wood.addColorStop(1, "rgba(54,38,22,.99)");
+  ctx.fillStyle = wood; pole(); ctx.fill();
+  ctx.strokeStyle = "rgba(18,13,9,.5)"; ctx.lineWidth = U * 0.6; pole(); ctx.stroke();
+  ctx.strokeStyle = "rgba(252,224,178,.5)"; ctx.lineWidth = U * 0.7;
+  ctx.beginPath(); ctx.moveTo(-half * 0.97, -U * 1.8); ctx.quadraticCurveTo(0, sag - U * 1.7, half * 0.97, -U * 1.8); ctx.stroke();
+  /* grain */
+  ctx.strokeStyle = "rgba(40,28,16,.22)"; ctx.lineWidth = U * 0.35;
+  for (let i = -1; i <= 1; i += 2) {
+    ctx.beginPath();
+    ctx.moveTo(-half * 0.9, -U * 0.9 + i * U * 0.7);
+    ctx.quadraticCurveTo(0, sag + i * U * 0.7, half * 0.9, -U * 0.9 + i * U * 0.7);
+    ctx.stroke();
   }
-  // the ring it hangs from
-  ctx.strokeStyle = "rgba(210,186,144,.6)"; ctx.lineWidth = U * 0.7;
-  ctx.beginPath(); ctx.arc(0, -U * 0.6, U * 1.4, 0, TAU); ctx.stroke();
+  for (const sx of [-0.84, 0.84]) {
+    ctx.strokeStyle = "rgba(232,204,158,.3)"; ctx.lineWidth = U * 0.8;
+    for (let i = -1; i <= 1; i++) {
+      ctx.beginPath(); ctx.moveTo(sx * half + i * U * 1.3, -U * 2.2); ctx.lineTo(sx * half + i * U * 1.3, U * 1.6); ctx.stroke();
+    }
+  }
   ctx.restore();
+
+  /* the loads. The cords stay plumb, so the tilt of the pole is the tilt of the
+     load against the horizon — legible at a glance. */
+  const drop = h * 0.26, bs = U * 0.58;
+  for (const sx of [-1, 1]) {
+    const ex = cx + Math.cos(ang) * sx * half * 0.84;
+    const ey = cy + sway + Math.sin(ang) * sx * half * 0.84 - U * 0.3;
+    ctx.strokeStyle = "rgba(14,11,8,.9)"; ctx.lineWidth = U * 1;
+    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex, ey + drop); ctx.stroke();
+    ctx.strokeStyle = "rgba(244,220,176,.2)"; ctx.lineWidth = U * 0.35;
+    ctx.beginPath(); ctx.moveTo(ex - U * 0.5, ey); ctx.lineTo(ex - U * 0.5, ey + drop); ctx.stroke();
+    const kindOf = kind === "jars" ? "jars" : kind === "sheaf" ? "sheaf" : (sx < 0 ? "cheese" : "bread");
+    basket(ctx, ex, ey + drop, bs, kindOf, ang * 0.3);
+  }
+
+  /* the brass level at the yoke — a housing, a notch, and a bubble that has to
+     come home. This is the whole scoreboard, and it is a real thing to hold. */
+  const th = Math.max(9, h * 0.058), tw = Math.min(w * 0.29, th * 5);
+  const ly = cy + sway - h * 0.20;
+  ctx.strokeStyle = "rgba(18,14,10,.9)"; ctx.lineWidth = U * 1.3;
+  ctx.beginPath(); ctx.moveTo(cx, ly + th * 0.4); ctx.lineTo(cx, cy + sway - U * 1.4); ctx.stroke();
+  ctx.fillStyle = "rgba(18,15,11,.94)";
+  rrect(ctx, cx - tw / 2 - th * 0.34, ly - th * 0.8, tw + th * 0.68, th * 1.6, th * 0.7); ctx.fill();
+  const gl = ctx.createLinearGradient(0, ly - th * 0.6, 0, ly + th * 0.6);
+  gl.addColorStop(0, "rgba(214,178,116,.9)");
+  gl.addColorStop(0.5, "rgba(150,118,70,.92)");
+  gl.addColorStop(1, "rgba(88,66,38,.94)");
+  ctx.strokeStyle = gl; ctx.lineWidth = U * 0.9;
+  rrect(ctx, cx - tw / 2 - th * 0.34, ly - th * 0.8, tw + th * 0.68, th * 1.6, th * 0.7); ctx.stroke();
+  /* the glass, and the safe notch in its middle */
+  ctx.fillStyle = "rgba(12,14,14,.86)";
+  rrect(ctx, cx - tw / 2, ly - th * 0.42, tw, th * 0.84, th * 0.42); ctx.fill();
+  ctx.strokeStyle = `rgba(255,226,172,${level ? 0.55 : 0.28})`; ctx.lineWidth = U * 0.5;
+  for (const sx of [-1, 1]) {
+    ctx.beginPath();
+    ctx.moveTo(cx + sx * tw * 0.115, ly - th * 0.34);
+    ctx.lineTo(cx + sx * tw * 0.115, ly + th * 0.34);
+    ctx.stroke();
+  }
+  /* the bubble: gold when it is home, dark amber when it is not */
+  const bx = cx + clamp(rel, -0.5, 0.5) * 2 * tw * 0.34;
+  ctx.beginPath(); ctx.arc(bx, ly, th * 0.3, 0, TAU);
+  ctx.fillStyle = level ? "rgba(255,222,158,.98)" : "rgba(196,146,74,.92)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(28,22,14,.9)"; ctx.lineWidth = U * 0.4; ctx.stroke();
+  if (level) soft(ctx, bx, ly, th * 1.5, th * 1.2, "255,214,150", 0.4);
+
+  /* the gesture, said once: the arrows go the moment the player drags */
+  if (!touched) {
+    const ay = Math.min(h * 0.93, cy + sway + drop + h * 0.15);
+    ctx.save();
+    ctx.lineCap = "round";
+    const pulse = 0.62 + Math.sin(t * 2.6) * 0.16;
+    for (const sx of [-1, 1]) {
+      const ax = cx + sx * w * 0.2;
+      /* a dark bed first, or a pale chevron on sunlit rock disappears */
+      ctx.strokeStyle = "rgba(8,7,5,.55)"; ctx.lineWidth = U * 2.4;
+      ctx.beginPath();
+      ctx.moveTo(ax - sx * U * 2.6, ay - U * 2.4);
+      ctx.lineTo(ax, ay);
+      ctx.lineTo(ax - sx * U * 2.6, ay + U * 2.4);
+      ctx.stroke();
+      ctx.strokeStyle = `rgba(255,236,196,${pulse})`; ctx.lineWidth = U * 1.1;
+      ctx.beginPath();
+      ctx.moveTo(ax - sx * U * 2.6, ay - U * 2.4);
+      ctx.lineTo(ax, ay);
+      ctx.lineTo(ax - sx * U * 2.6, ay + U * 2.4);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
 }
 
 const BALANCE = {
   /* elah — bread, cheese and a staff, and a ridge that will not sit level. */
-  provision(ctx, w, h, pos, t) {
-    plumb(ctx, w, h, t, clamp(1 - Math.abs(pos - 0.5) / 0.2, 0, 1), "flask");
+  provision(ctx, w, h, rel, t, kind, touched) {
+    carryBeam(ctx, w, h, rel, t, "provision", touched);
     // crumb and dust coming off the load when the ridge tips
-    const spill = clamp((Math.abs(pos - 0.5) - 0.16) / 0.2, 0, 1);
+    const spill = clamp((Math.abs(rel) - 0.13) / 0.2, 0, 1);
     for (let i = 0; i < 16; i++) {
       const ph = (t * 1.1 + hash(i * 3.9)) % 1;
-      const dir = pos > 0.5 ? 1 : -1;
-      ctx.fillStyle = `rgba(232,208,166,${(1 - ph) * 0.35 * spill})`;
+      const dir = rel > 0 ? 1 : -1;
+      ctx.fillStyle = `rgba(232,208,166,${(1 - ph) * 0.4 * spill})`;
       ctx.beginPath();
-      ctx.arc(w * 0.5 + dir * (w * 0.16 + ph * w * 0.3), h * 0.5 + ph * h * 0.24, h * 0.004 * (0.6 + hash(i)), 0, TAU);
+      ctx.arc(w * 0.5 + dir * (w * 0.16 + ph * w * 0.3), h * 0.62 + ph * h * 0.3, h * 0.004 * (0.6 + hash(i)), 0, TAU);
       ctx.fill();
     }
   },
 
   /* storm — the jars are heavy and the deck keeps moving. */
-  jars(ctx, w, h, pos, t) {
-    plumb(ctx, w, h, t, clamp(1 - Math.abs(pos - 0.5) / 0.2, 0, 1), "stone");
+  jars(ctx, w, h, rel, t, kind, touched) {
+    carryBeam(ctx, w, h, rel, t, "jars", touched);
     for (let i = 0; i < 16; i++) {
       const ph = (t * (0.6 + hash(i) * 0.8) + hash(i * 5.5)) % 1;
       ctx.fillStyle = `rgba(206,228,236,${(1 - ph) * 0.2})`;
-      ctx.beginPath(); ctx.arc(hash(i * 2.9) * w, h * 0.8 - ph * h * 0.4, h * 0.004 * (0.6 + hash(i)), 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(hash(i * 2.9) * w, h * 0.86 - ph * h * 0.4, h * 0.004 * (0.6 + hash(i)), 0, TAU); ctx.fill();
     }
   },
 
   /* ruth — the sheaf is heavier than it looks. */
-  sheaf(ctx, w, h, pos, t) {
-    plumb(ctx, w, h, t, clamp(1 - Math.abs(pos - 0.5) / 0.2, 0, 1), "flask");
+  sheaf(ctx, w, h, rel, t, kind, touched) {
+    carryBeam(ctx, w, h, rel, t, "sheaf", touched);
     // straw blown off the bundle
     for (let i = 0; i < 14; i++) {
       const ph = (t * 0.5 + hash(i * 4.4)) % 1;
-      const dir = pos > 0.5 ? 1 : -1;
+      const dir = rel > 0 ? 1 : -1;
       ctx.strokeStyle = `rgba(222,192,128,${(1 - ph) * 0.4})`;
       ctx.lineWidth = h * 0.003;
       const x = w * 0.5 + dir * (w * 0.12 + ph * w * 0.34);
-      const y = h * 0.45 + Math.sin(ph * 4 + i) * h * 0.06 + ph * h * 0.2;
+      const y = h * 0.6 + Math.sin(ph * 4 + i) * h * 0.06 + ph * h * 0.2;
       ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - dir * h * 0.02, y + h * 0.012); ctx.stroke();
     }
   }
@@ -667,11 +780,19 @@ const TAP = {
         ctx.beginPath(); ctx.moveTo(-U * 1.4, 0); ctx.lineTo(U * 1.4, 0); ctx.stroke();
         ctx.restore();
       } else {
-        // not read yet: a line surfacing out of the dark, breathing
-        const a = 0.18 + 0.1 * Math.sin(t * 2.2 + i);
-        ctx.strokeStyle = `rgba(236,220,188,${a})`; ctx.lineWidth = U * 0.9;
+        /* not read yet: a line surfacing out of the dark, breathing. It has to
+           be findable on a bright or a dark painting alike, so it carries its
+           own shadow and a knot of warm light at the point to touch. */
+        const a = 0.42 + 0.14 * Math.sin(t * 2.2 + i);
+        ctx.strokeStyle = "rgba(12,10,8,.55)"; ctx.lineWidth = U * 2.6;
         ctx.beginPath(); ctx.moveTo(x - w2, y); ctx.quadraticCurveTo(x, y - U * 1.2, x + w2, y); ctx.stroke();
-        soft(ctx, x, y, w * 0.13, U * 7, "255,214,160", 0.06 + 0.05 * Math.sin(t * 1.9 + i));
+        ctx.strokeStyle = `rgba(248,232,198,${a})`; ctx.lineWidth = U * 1.1;
+        ctx.beginPath(); ctx.moveTo(x - w2, y); ctx.quadraticCurveTo(x, y - U * 1.2, x + w2, y); ctx.stroke();
+        soft(ctx, x, y - U * 0.4, w * 0.15, U * 8, "255,214,160", 0.16 + 0.09 * Math.sin(t * 1.9 + i));
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        soft(ctx, x, y - U * 0.4, U * 5, U * 5, "255,226,170", 0.3 + 0.12 * Math.sin(t * 2.4 + i));
+        ctx.restore();
       }
     });
   },
@@ -900,31 +1021,55 @@ const TRACE = {
 /* ------------------------------------------------------------- rhythm */
 /* A thing crosses the frame on a beat. It is never a cursor: it is a shadow
    moving over lit ground, and the band is the patch of light it has to cross. */
+/* The beat has to be visible on a sunlit road and in a dark hall alike, which
+   pure light cannot do: it is drawn as a shadow crossing a pool of light, with
+   the leading edge lit. Shadow reads on the bright painting, the pool reads on
+   the dark one, and the pair reads on both. */
 function beatGround(ctx, w, h, marker, band, t, o = {}) {
   const groundY = o.groundY ?? h * 0.82;
   const tint = o.tint || "255,216,158";
   const hit = Math.abs(marker - band) < 0.085;
+  const rx = w * 0.13, ry = h * 0.062;
   ctx.save();
-  ctx.globalCompositeOperation = "lighter";
-  // the mark: a patch of light lying on the ground, always there
-  const lg = ctx.createRadialGradient(band * w, groundY, 0, band * w, groundY, w * 0.2);
-  lg.addColorStop(0, `rgba(${tint},${0.18 + (hit ? 0.18 : 0)})`);
-  lg.addColorStop(0.55, `rgba(${tint},0.05)`);
-  lg.addColorStop(1, `rgba(${tint},0)`);
-  ctx.fillStyle = lg;
-  ctx.beginPath(); ctx.ellipse(band * w, groundY, w * 0.2, h * 0.1, 0, 0, TAU); ctx.fill();
-  // the beat itself: a warm gleam crossing the floor, trailing a little light
+  /* the mark: a pool of light with a dark rim, so it is a place on the ground */
+  const dark = ctx.createRadialGradient(band * w, groundY, 0, band * w, groundY, rx * 1.25);
+  dark.addColorStop(0, "rgba(8,9,10,.46)");
+  dark.addColorStop(0.72, "rgba(8,9,10,.3)");
+  dark.addColorStop(1, "rgba(8,9,10,0)");
+  ctx.fillStyle = dark;
+  ctx.beginPath(); ctx.ellipse(band * w, groundY, rx * 1.25, ry * 1.3, 0, 0, TAU); ctx.fill();
+  const pool = ctx.createRadialGradient(band * w, groundY, 0, band * w, groundY, rx);
+  pool.addColorStop(0, `rgba(${tint},${hit ? 0.5 : 0.3})`);
+  pool.addColorStop(0.6, `rgba(${tint},${hit ? 0.22 : 0.12})`);
+  pool.addColorStop(1, `rgba(${tint},0)`);
+  ctx.fillStyle = pool;
+  ctx.beginPath(); ctx.ellipse(band * w, groundY, rx, ry, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = `rgba(255,232,182,${hit ? 0.62 : 0.3})`;
+  ctx.lineWidth = Math.max(1, h * 0.004);
+  ctx.beginPath(); ctx.ellipse(band * w, groundY, rx * 0.82, ry * 0.8, 0, 0, TAU); ctx.stroke();
+
+  /* the beat: a shadow sweeping across, lit on the edge that leads */
   const mx = marker * w;
-  for (let i = 0; i < 6; i++) {
-    const f = i / 5;
-    soft(ctx, mx - f * w * 0.06, groundY - f * h * 0.01, w * (0.075 - f * 0.01), h * (0.05 - f * 0.006), tint, (0.1 - f * 0.013) * (hit ? 1.4 : 1));
-  }
-  soft(ctx, mx, groundY - h * 0.012, w * 0.03, h * 0.02, "255,240,206", hit ? 0.2 : 0.1);
+  const sg = ctx.createRadialGradient(mx, groundY, 0, mx, groundY, w * 0.1);
+  sg.addColorStop(0, "rgba(6,7,9,.5)");
+  sg.addColorStop(0.6, "rgba(6,7,9,.26)");
+  sg.addColorStop(1, "rgba(6,7,9,0)");
+  ctx.fillStyle = sg;
+  ctx.beginPath(); ctx.ellipse(mx, groundY, w * 0.1, h * 0.05, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = `rgba(255,236,196,${hit ? 0.7 : 0.4})`;
+  ctx.lineWidth = Math.max(1, h * 0.005);
+  ctx.beginPath();
+  ctx.ellipse(mx, groundY, w * 0.052, h * 0.03, 0, -Math.PI * 0.62, Math.PI * 0.62);
+  ctx.stroke();
+
   if (hit) {
-    soft(ctx, mx, groundY, w * 0.12, h * 0.075, tint, 0.12);
+    ctx.beginPath();
+    ctx.ellipse(mx, groundY, w * 0.09, h * 0.045, 0, 0, TAU);
+    ctx.strokeStyle = "rgba(255,240,206,.55)"; ctx.lineWidth = Math.max(1, h * 0.004);
+    ctx.stroke();
     for (let i = 0; i < 10; i++) {
       const a2 = hash(i * 3.1) * TAU, r = hash(i * 5.5) * h * 0.06;
-      ctx.fillStyle = `rgba(255,240,204,${0.34 * (1 - r / (h * 0.06))})`;
+      ctx.fillStyle = `rgba(255,242,210,${0.42 * (1 - r / (h * 0.06))})`;
       ctx.beginPath(); ctx.arc(mx + Math.cos(a2) * r, groundY + Math.sin(a2) * r * 0.35, h * 0.004, 0, TAU); ctx.fill();
     }
   }
@@ -1044,6 +1189,20 @@ export function drawMomentArt(ctx, w, h, spec, S, dpr = 1) {
   }
   atmosphere(ctx, w, h, S.t);
   ctx.restore();
+  /* A hold has no object of its own in most frames — the painting is the thing
+     you are holding on to. One warm ring says where the finger goes, and it is
+     gone the moment the player presses: an affordance, not a widget. */
+  if (spec?.kind === "hold" && !S.touched) {
+    const hx = w * 0.5, hy = h * 0.5;
+    const hr = Math.min(w, h) * (0.15 + Math.sin(S.t * 2.1) * 0.012);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(hx, hy, hr, 0, TAU);
+    ctx.strokeStyle = "rgba(8,8,8,.5)"; ctx.lineWidth = 7; ctx.stroke();
+    ctx.strokeStyle = `rgba(255,234,190,${0.46 + Math.sin(S.t * 2.1) * 0.12})`; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(hx, hy, hr * 0.17, 0, TAU);
+    ctx.fillStyle = "rgba(255,240,206,.9)"; ctx.fill();
+    ctx.restore();
+  }
   /* the load stays level while the world tips, so the act is drawn unrotated */
   /* Light-based acts (a gleam on the floor, ink surfacing, a trail of dust) are
      drawn straight onto the frame: knocking them back through the silhouette
@@ -1055,7 +1214,10 @@ export function drawMomentArt(ctx, w, h, spec, S, dpr = 1) {
   target.save();
   const subject = spec?.subject;
   if (spec?.kind === "hold" && HOLD[subject]) HOLD[subject](target, w, h, clamp(S.charge, 0, 1), S.t);
-  else if (spec?.kind === "balance" && BALANCE[subject]) BALANCE[subject](target, w, h, S.pos, S.t, S.down);
+  else if (spec?.kind === "balance" && BALANCE[subject]) {
+    /* the load is level only relative to the ground, and the ground moves */
+    BALANCE[subject](target, w, h, (S.pos ?? 0.5) - (S.zero ?? 0.5), S.t, subject, !!S.touched);
+  }
   else if (spec?.kind === "tap" && TAP[subject]) TAP[subject](target, w, h, S.t, S.nodes || []);
   else if (spec?.kind === "trace" && TRACE[subject]) TRACE[subject](target, w, h, S.path, S.progress, S.t);
   else if (spec?.kind === "rhythm" && RHYTHM[subject]) RHYTHM[subject](target, w, h, S.marker, S.band, S.t);
@@ -1065,7 +1227,7 @@ export function drawMomentArt(ctx, w, h, spec, S, dpr = 1) {
     target.save();
     target.setTransform(dpr, 0, 0, dpr, 0, 0);
     target.globalCompositeOperation = "source-atop";
-    target.fillStyle = "rgba(12,15,18,.42)";
+    target.fillStyle = "rgba(12,15,18,.28)";
     target.fillRect(0, 0, w, h);
     target.restore();
     ctx.drawImage(buf, 0, 0, w, h);
