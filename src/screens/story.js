@@ -363,6 +363,11 @@ export function pauseGame(ui, opts = {}) {
   const s = st(ui);
   if (!s?.game || s.phase !== "action") return false;
   s.game.paused = true;
+  /* Who asked for the pause matters. A pause the player chose stays until they
+     say otherwise; a pause the phone forced (screen lock, app switch) is lifted
+     automatically when they come back, because a card that depends on a tap
+     arriving is one wedged input pipeline away from a dead screen. */
+  s.game.pausedBy = opts.by === "user" ? "user" : "system";
   try { s.game.controller?.pause(); } catch { /* noop */ }
   const card = typeof document !== "undefined" && document.querySelector(".action-paused");
   if (card) card.classList.add("on");
@@ -379,6 +384,7 @@ export function resumeGame(ui) {
   if (card) card.classList.remove("on");
   if (!s?.game) return false;
   s.game.paused = false;
+  s.game.pausedBy = null;
   const ctrl = s.game.controller;
   let live = false;
   try { live = !!(ctrl && (ctrl.alive ? ctrl.alive() : true)); } catch { live = false; }

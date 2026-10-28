@@ -156,8 +156,10 @@ bus.go = go;
 let suppressClick = false;
 let prayTimer = null;
 let prayHeld = false;
+let cardHandledAt = 0;
 
 root.addEventListener("click", (e) => {
+  if (cardHandledAt && Date.now() - cardHandledAt < 900) { cardHandledAt = 0; return; }
   if (suppressClick) { suppressClick = false; return; }
   const el = e.target.closest("[data-action]");
   if (!el) return;
@@ -243,7 +245,7 @@ root.addEventListener("click", (e) => {
     case "mini-skip": miniSkip(ui); break;
     case "moment-skip": skipMoment(ui); break;
 
-    case "game-pause": pauseGame(ui); break;
+    case "game-pause": pauseGame(ui, { by: "user" }); break;
     case "game-resume": resumeGame(ui); break;
     case "game-skip": skipAction(ui); break;
     case "action-done": actionDone(ui); break;
@@ -428,9 +430,25 @@ const kickAudio = () => { audioUnlocked = true; resumeAudio(); syncAmbience(); }
 document.addEventListener("pointerdown", kickAudio, { once: true });
 document.addEventListener("keydown", kickAudio, { once: true });
 /* A phone lock is not an ordinary tab switch: the OS may freeze the page
-   between two statements, drop the animation loop and suspend audio. So both
-   halves of the cycle are written to be idempotent and to repair the screen
-   from state, never to trust that a previous handler ran to completion. */
+   between two statements, drop the animation loop, suspend audio, and — on
+   iOS — swallow the synthetic click that follows a restored page. So the whole
+   cycle is written to need nothing from the previous step: state is re-derived,
+   the DOM is rebuilt, and the way out of a pause never depends on a tap. */
+
+/* Every input state that can be left mid-gesture when the screen locks. A
+   finger that was down when the phone froze never sends its pointerup, so a
+   stale drag or a held key would otherwise survive into the next session. */
+function resetTransientInput() {
+  drag = null;
+  suppressClick = false;
+  cardHandledAt = 0;
+  prayHeld = false;
+  if (prayTimer) { clearTimeout(prayTimer); prayTimer = null; }
+  for (const el of root.querySelectorAll(".dragging, .holding, .walking")) {
+    el.classList.remove("dragging", "holding", "walking");
+  }
+}
+
 function syncPauseCard() {
   const shouldShow = ui.story?.phase === "action" && !!ui.story.game?.paused;
   const card = document.querySelector(".action-paused");
@@ -442,8 +460,12 @@ function syncPauseCard() {
   card.classList.toggle("on", shouldShow);
 }
 
+let wasHidden = false;
+
 function onHidden() {
+  wasHidden = true;
   try { duckAmbience(true); } catch { /* noop */ }
+  resetTransientInput();
   /* Leaving the app mid-scene must not cost the player stones or time: freeze
      the world and show the resume card. `silent` keeps the lock moment free of
      a full DOM rebuild — that is the riskiest thing to do to a page the OS is
@@ -453,24 +475,73 @@ function onHidden() {
   document.body.classList.add("app-paused");
 }
 
+let autoResumeTimer = null;
+function clearAutoResume() { if (autoResumeTimer) { clearTimeout(autoResumeTimer); autoResumeTimer = null; } }
+
 function onVisible() {
+  wasHidden = false;
   /* Whatever happened while the screen was off, the app must come back usable:
      the frozen-animation class always goes, and the pause card is re-derived
      from state rather than left over from the last painted frame. */
   document.body.classList.remove("app-paused");
   try { duckAmbience(false); } catch { /* noop */ }
+  resetTransientInput();
+
+  const inAction = ui.story?.phase === "action" && !!ui.story.game;
+  if (inAction) {
+    /* Rebuild the action screen once on return. It costs one render and it is
+       the difference between "the page came back" and "the page came back as a
+       photograph": a fresh DOM means fresh buttons, a fresh canvas mount and no
+       half-finished handler from the moment the OS froze us. */
+    try { bus.render(); } catch { /* the screen is still whatever was there */ }
+  }
   syncPauseCard();
-  if (ui.story?.phase === "action" && ui.story.game && !ui.story.game.paused) {
+
+  if (inAction) {
     const ctrl = ui.story.game.controller;
     let live = false;
     try { live = !!(ctrl && (ctrl.alive ? ctrl.alive() : true)); } catch { live = false; }
-    if (!live) {
+    if (!live && !ui.story.game.paused) {
       // The loop died during sleep. Rebuild it instead of showing a dead frame.
       ui.story.game.controller = null;
       try { bus.render(); } catch { /* nothing else we can do here */ }
     }
+    /* A pause the phone forced is lifted on its own. Waiting for a tap means
+       one wedged input path leaves the player staring at a card that answers
+       nothing — which is exactly what a locked phone used to do. */
+    if (ui.story.game.paused && (ui.story.game.pausedBy || "system") !== "user") {
+      clearAutoResume();
+      autoResumeTimer = setTimeout(() => {
+        autoResumeTimer = null;
+        if (ui.story?.phase === "action" && ui.story.game?.paused && ui.story.game.pausedBy !== "user") {
+          try { resumeGame(ui); } catch { /* card taps still work */ }
+        }
+      }, 650);
+    }
   }
 }
+
+/* Taps on the pause card are handled on pointerdown, in the capture phase.
+   pointerdown always reaches the page; the click that follows it does not,
+   because after a restored page iOS can drop it and because our own scenes call
+   preventDefault on pointer events. Whatever happens, the card answers. */
+document.addEventListener("pointerdown", (e) => {
+  const el = e.target.closest?.(".action-paused");
+  if (!el || !el.classList.contains("on")) return;
+  const act = e.target.closest?.("[data-action]")?.dataset.action;
+  clearAutoResume();
+  cardHandledAt = Date.now();
+  if (act === "game-skip") { try { skipAction(ui); } catch { /* noop */ } }
+  else { try { resumeGame(ui); } catch { /* noop */ } }
+}, true);
+document.addEventListener("keydown", (e) => {
+  if (e.key !== " " && e.key !== "Enter") return;
+  const card = document.querySelector(".action-paused.on");
+  if (!card) return;
+  e.preventDefault();
+  clearAutoResume();
+  try { resumeGame(ui); } catch { /* noop */ }
+});
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) onHidden(); else onVisible();
@@ -478,7 +549,11 @@ document.addEventListener("visibilitychange", () => {
 /* iOS restores a backgrounded page through pagehide/pageshow, and sometimes
    without a visibilitychange at all. */
 window.addEventListener("pageshow", (e) => { if (!document.hidden && e.persisted) onVisible(); });
-window.addEventListener("focus", () => { if (!document.hidden) document.body.classList.remove("app-paused"); });
+window.addEventListener("focus", () => {
+  if (document.hidden) return;
+  document.body.classList.remove("app-paused");
+  if (wasHidden && ui.story?.phase === "action") onVisible();
+});
 
 /* ------------------------------------------------------------ offline cache */
 
