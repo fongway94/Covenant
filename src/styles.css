@@ -1714,7 +1714,7 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
 
 
 /* ==================================================================
-   v0.9.5 — read it first, then start
+   v0.9.6 — the background first, and Chinese that reads naturally
    Every interaction used to begin the moment its screen appeared: a marker
    already sliding, a clock already running, a scene already live. Now each one
    opens on a briefing that states the act, the gesture and the stakes, and
@@ -1784,3 +1784,66 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
 .action-head.compact h2 { font-size: 1.02rem; margin: 0 0 2px; }
 .action-head.compact p { font-size: .84rem; line-height: 1.4; max-width: 100%; }
 .action-head.compact .action-tools { margin-bottom: 4px; }
+
+/* ---------- chapter background card (prelude) ---------- */
+.prelude-screen { background: #07111a; }
+.prelude-art {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center 22%;
+  filter: saturate(1.02) brightness(.92);
+  transform: scale(1.05);
+}
+.prelude-scrim {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7,17,26,.62) 0%, rgba(7,17,26,.28) 26%, rgba(7,17,26,.72) 58%, rgba(7,17,26,.96) 100%),
+    radial-gradient(140% 60% at 50% 0%, rgba(7,17,26,.05), rgba(7,17,26,.5) 80%);
+}
+.prelude {
+  position: relative; z-index: 1; flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+  padding: max(20px, env(safe-area-inset-top)) 16px max(14px, env(safe-area-inset-bottom));
+  gap: 12px;
+}
+.prelude-head { flex: 0 0 auto; text-align: center; }
+.prelude-head h2 { font-size: 1.5rem; margin: 6px 0 4px; }
+.prelude-head .small { margin: 0; }
+.prelude-body {
+  flex: 0 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  display: grid; gap: 9px; align-content: start;
+  padding: 11px 12px; border-radius: 16px;
+  background: rgba(9,18,25,.72); border: 1px solid rgba(231,183,91,.16);
+  backdrop-filter: blur(3px);
+}
+.prelude-body::-webkit-scrollbar { width: 0; }
+.prelude-row { display: flex; gap: 10px; align-items: flex-start; }
+.prelude-mark {
+  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 8px;
+  display: grid; place-items: center; font-size: .82rem;
+  color: var(--gold); background: rgba(231,183,91,.1);
+  border: 1px solid rgba(231,183,91,.22);
+}
+.prelude-row b {
+  display: block; font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 3px;
+}
+.prelude-row p {
+  margin: 0; font-family: var(--serif); font-size: .88rem; line-height: 1.56; color: #e9e0cd;
+}
+.prelude-cast { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 2px; }
+.prelude-chip {
+  display: inline-flex; align-items: baseline; gap: 5px;
+  padding: 4px 9px; border-radius: 99px;
+  background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.09);
+  font-size: .78rem; color: var(--paper);
+}
+.prelude-chip i { font-style: normal; color: var(--muted); font-size: .72rem; }
+.prelude-foot { flex: 0 0 auto; display: grid; gap: 8px; margin-top: auto; }
+.prelude-start { width: 100%; min-height: 54px; font-size: 1.02rem; }
+
+.prelude-more { display: none; margin: 0 0 2px; letter-spacing: .04em; }
+.prelude.has-more .prelude-more { display: block; }
+.prelude.has-more .prelude-body {
+  mask-image: linear-gradient(180deg, #000 calc(100% - 22px), transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 22px), transparent 100%);
+}

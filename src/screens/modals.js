@@ -39,6 +39,12 @@ function scrollInner(ch) {
       <div class="eyebrow" style="margin-bottom:6px">${tx("Elias’ note", "以利亚斯的笔记")}</div>
       <p class="small" style="margin:0">${esc(ch.scroll.note)}</p>
     </div>
+    ${ch.brief ? `<div class="card-quiet" style="margin-top:12px">
+      <div class="eyebrow" style="margin-bottom:6px">${tx("Background · before this scene", "背景 · 这一幕之前")}</div>
+      <p class="small" style="margin:0 0 8px"><strong class="gold">${tx("When and where", "时间与地点")}</strong> ${esc(ch.brief.place)}</p>
+      <p class="small" style="margin:0 0 8px"><strong class="gold">${tx("Who is here", "这里有谁")}</strong> ${esc(ch.brief.who)}</p>
+      <p class="small" style="margin:0"><strong class="gold">${tx("What is at stake", "要紧的是")}</strong> ${esc(ch.brief.stake)}</p>
+    </div>` : ""}
     <p class="tiny muted" style="margin-top:12px">${esc(ch.scroll.timeline)}</p>
     ${scrollDeeper(ch)}
     <p class="tiny muted">${tx("Scripture quotations: King James Version (public domain). Narrative dialogue is written for this game and is not scripture.", "经文引用：英王钦定本／中文和合本（公有领域）。叙事对白为本游戏创作，并非经文。")}</p>

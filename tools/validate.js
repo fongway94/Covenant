@@ -18,6 +18,9 @@ for (const ch of CHAPTERS) {
     if (!ch[field]) warn(`${p} missing ${field}`);
   }
   if (!ch.scroll?.verse || !ch.scroll?.ref || !ch.scroll?.note) warn(`${p} incomplete scroll`);
+  for (const k of ["place", "who", "stake"]) {
+    if (!ch.brief?.[k] || String(ch.brief[k]).length < 40) warn(`${p} incomplete background (${k})`);
+  }
   if (!ch.ending?.title || !ch.ending?.text || !ch.ending?.takeaway) warn(`${p} incomplete ending`);
   if (!ch.reflection?.q || ch.reflection?.options?.length !== 3) warn(`${p} reflection must have 3 options`);
   for (const o of ch.reflection?.options || []) {

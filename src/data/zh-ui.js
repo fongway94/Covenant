@@ -10,8 +10,7 @@ export const ZH_UI = {
   "How to play": "玩法说明",
   "About": "关于",
   "Guide": "指引",
-  "An interactive Bible story RPG · prototype v0.1": "互动圣经故事角色扮演游戏 · v0.1 原型",
-  "The beginning of the road": "路的起点",
+    "The beginning of the road": "路的起点",
   "Who is walking?": "是谁在路上？",
   "You are a pilgrim carrying a scroll that opens into the stories of Scripture. Your choices will shape the person you become.": "你是一位手执书卷的朝圣者。书卷会把你带进圣经的故事里。你的选择，将塑造你成为怎样的人。",
   "Your name": "你的名字",
@@ -55,8 +54,7 @@ export const ZH_UI = {
   "For churches & ministries": "给教会与事工团队",
   "Before publishing, have your content reviewed by your own pastors or theological advisors. Translation choice, denominational distinctives and age-appropriateness are decisions best made by your community. See": "正式发布前，请让你们的牧者或神学顾问审阅内容。译本选择、宗派特色与适龄程度，最好由你们的群体决定。参见",
   " for the content guidelines and a chapter template.": "中的内容规范与章节模板。",
-  "Artwork generated for this project · interface and story text written for Covenant · v0.1 prototype": "插画为本项目生成 · 界面与故事文本为 Covenant 创作 · v0.1 原型",
-
+  
   /* ---- map / hud / tabs ---------------------------------------------- */
   "Map": "地图", "Journal": "日志", "Character sheet": "角色卡",
   "Your journal": "你的日志", "Things you have gathered": "你收集的一切",
@@ -90,8 +88,7 @@ export const ZH_UI = {
   "A two-minute guide": "两分钟看懂玩法",
   "Toggle sound": "切换音效", "Toggle all chapters": "切换全部章节",
   "Erase this journey": "清除这段旅程",
-  "Covenant v0.1 · Everything is saved only on this device.": "Covenant v0.1 · 所有进度仅保存在本机。",
-
+  
   /* ---- modals --------------------------------------------------------- */
   "Elias’ note": "以利亚斯的笔记",
   "Scripture quotations: King James Version (public domain). Narrative dialogue is written for this game and is not scripture.": "经文引用：英王钦定本／中文和合本（公有领域）。叙事对白为本游戏创作，并非经文。",
@@ -276,8 +273,8 @@ export const ZH_UI = {
   "Grow Courage in earlier chapters": "在前面的章节中提升勇气",
   "You did not look away.": "你没有移开视线。",
   "Your eyes flickered. David did not.": "你的目光闪了一下，大卫没有。",
-  "Steady. She holds.": "稳住了，船撑住了。",
-  "She slips sideways — brace!": "船身侧滑——抓紧！",
+  "Steady. She holds.": "稳住了。船身没有偏。",
+  "She slips sideways — brace!": "船身往一侧滑——抓稳！",
   "Hold your nerve": "稳住心神", "Hold the tiller": "掌稳船舵",
   "Keep your eyes steady as David runs. Tap when the light reaches the golden mark.": "大卫奔跑时保持目光稳定。当光点到达金色标记时点击。",
   "Three waves. Tap as each swell reaches the golden mark to keep the bow into the wind.": "三道浪。每道浪涌到金色标记时点击，保持船头迎风。",
@@ -349,16 +346,16 @@ export const ZH_COMPENDIUM = {
     selfcontrol: { name: "节制", note: "箴言 16:32 —— 治服己心的，强如取城。" }
   },
   relics: {
-    stones: { name: "五块光滑的石子", chapter: "以拉谷", desc: "从溪中取来的凉石，小得能放进牧人的袋子里；却足够应付一个不可能的早晨。", ref: "撒母耳记上 17:40" },
+    stones: { name: "五块光滑的石子", chapter: "以拉谷", desc: "从溪里捡来的凉石头，小得能放进牧人的口袋，却够对付一个不可能的早晨。", ref: "撒母耳记上 17:40" },
     signet: { name: "王的印戒", chapter: "狮子坑", desc: "压在封住坑口的胶泥上——提醒我们：人的法令，并不是最后的定论。", ref: "但以理书 6:17" },
-    denarii: { name: "二两银子", chapter: "耶利哥路上", desc: "两天工钱，留给店主照顾一个陌生人。有代价的怜悯。", ref: "路加福音 10:35" },
-    rope: { name: "渔夫的绳索", chapter: "平静了吧", desc: "从一艘本该沉没的船上解下、被盐渍硬的绳子。它撑住了。", ref: "马可福音 4:39" },
-    ring: { name: "父亲的戒指", chapter: "远方之地", desc: "儿子的身份之印，戴在一只空了很久的手上。", ref: "路加福音 15:22" },
-    scepter: { name: "金杖", chapter: "为现今的机会", desc: "向一位冒着生命危险站在门廊里的王后伸出来。", ref: "以斯帖记 5:2" },
-    sandals: { name: "脱下的鞋", chapter: "燃烧的荆棘", desc: "留在那丛烧不尽的荆棘旁边。圣地，就是被留意到的普通土地。", ref: "出埃及记 3:5" },
-    grain:   { name: "一把大麦", chapter: "拾穗的麦田", desc: "一位田主故意掉下、从不求人感谢的麦穗。仁慈，就是留下田角不割。", ref: "路得记 2:16" },
-    fishsign:{ name: "约拿的神迹", chapter: "大鱼腹中", desc: "在黑暗里的三天，是一间安静的屋子，不是牢房。怜悯在海底等候。", ref: "马太福音 12:39" },
-    coin4:   { name: "四倍的钱币", chapter: "爬上桑树", desc: "一个只想爬树看一眼的人，数出四倍的钱。恩典先到，账单后到。", ref: "路加福音 19:8" }
+    denarii: { name: "二两银子", chapter: "耶利哥路上", desc: "两天的工钱，交给店主，请他照顾一个陌生人。怜悯是要花钱的。", ref: "路加福音 10:35" },
+    rope: { name: "渔夫的绳索", chapter: "住了吧，静了吧", desc: "从一艘本该沉掉的船上解下来的绳子，被海水泡得发硬。它到底撑住了。", ref: "马可福音 4:39" },
+    ring: { name: "父亲的戒指", chapter: "远方", desc: "儿子身份的凭据，戴在一只空了很久的手上。", ref: "路加福音 15:22" },
+    scepter: { name: "金杖", chapter: "为现今的机会", desc: "向一位站在门廊里、拿命在赌的王后伸了出来。", ref: "以斯帖记 5:2" },
+    sandals: { name: "脱下的鞋", chapter: "燃烧的荆棘", desc: "留在那丛烧不完的荆棘旁边。所谓圣地，就是被人认真留意的普通土地。", ref: "出埃及记 3:5" },
+    grain:   { name: "一把大麦", chapter: "拾穗的麦田", desc: "田主故意留下的麦穗，从没打算让人道谢。仁慈，就是留一角麦田不割。", ref: "路得记 2:16" },
+    fishsign:{ name: "约拿的神迹", chapter: "大鱼腹中", desc: "黑暗里的那三天，是一间安静的屋子，不是牢房。怜悯在海底等着他。", ref: "马太福音 12:39" },
+    coin4:   { name: "四倍的钱币", chapter: "爬上桑树", desc: "一个只想爬树看一眼的人，数出了四倍的钱。恩典先来，账单后到。", ref: "路加福音 19:8" }
   },
   seals: {
     first_light: { name: "初光", desc: "完成你的第一章。" },
@@ -378,8 +375,8 @@ export const ZH_COMPENDIUM = {
     { text: "你要专心仰赖耶和华，不可倚靠自己的聪明。", ref: "箴言 3:5" },
     { text: "凡求告耶和华的，耶和华便与他们相近。", ref: "诗篇 145:18" },
     { text: "但那等候耶和华的，必从新得力。", ref: "以赛亚书 40:31" },
-    { text: "我必与你同在；这就是我打发你去的兆头。", ref: "出埃及记 3:12" },
-    { text: "愿耶和华照你所行的赏赐你，愿你得着充足的赏赐。", ref: "路得记 2:12" },
+    { text: "我必与你同在。", ref: "出埃及记 3:12" },
+    { text: "愿耶和华照你所行的赏赐你。你来投靠耶和华以色列神的翅膀下，愿你满得他的赏赐。", ref: "路得记 2:12" },
     { text: "救恩出于耶和华。", ref: "约拿书 2:9" },
     { text: "人子来，为要寻找拯救失丧的人。", ref: "路加福音 19:10" }
   ]

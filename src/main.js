@@ -11,7 +11,7 @@ import { mapHtml, journalHtml, characterHtml } from "./screens/world.js";
 import { modalHtml } from "./screens/modals.js";
 import { campHtml, finaleHtml, startBreath, tapBreath } from "./screens/camp.js";
 import {
-  storyHtml, mountStory, cleanupStory, startChapter, tapStory, chooseOption,
+  storyHtml, mountStory, cleanupStory, startChapter, tapStory, chooseOption, exitChapterToMap,
   continueStory, prayNow, openScroll, miniTap, miniSkip, reflectAnswer,
   goToReflection, leaveStory, finishStory,
   skipAction, actionDone, hotspotTap, hotspotDone, hotspotSkip,
@@ -238,6 +238,7 @@ root.addEventListener("click", (e) => {
 
     case "ask-leave": ui.modal = { type: "leave" }; render(); break;
     case "confirm-leave": leaveStory(ui); break;
+    case "chapter-exit": exitChapterToMap(ui); break;
     case "open-scroll": openScroll(ui); break;
     case "tap-story": tapStory(ui); break;
     case "choose": chooseOption(ui, Number(el.dataset.index)); break;

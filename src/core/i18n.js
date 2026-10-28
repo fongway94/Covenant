@@ -111,6 +111,9 @@ export function applyDataLanguage() {
     ch.theme = zh ? (z.theme ?? t(e.theme)) : e.theme;
     ch.length = zh ? (z.length ?? t(e.length)) : e.length;
     ch.intro = zh ? (z.intro ?? t(e.intro)) : e.intro;
+    ch.brief = zh
+      ? { place: z.brief?.place ?? t(e.brief.place), who: z.brief?.who ?? t(e.brief.who), stake: z.brief?.stake ?? t(e.brief.stake) }
+      : { place: e.brief.place, who: e.brief.who, stake: e.brief.stake };
     ch.scroll.verse = zh ? (z.scroll?.verse ?? t(e.scroll.verse)) : e.scroll.verse;
     ch.scroll.ref = zh ? (z.scroll?.ref ?? e.scroll.ref) : e.scroll.ref;
     ch.scroll.note = zh ? (z.scroll?.note ?? t(e.scroll.note)) : e.scroll.note;

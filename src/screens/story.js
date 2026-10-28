@@ -49,7 +49,7 @@ export function startChapter(ui, id) {
   cleanupStory(ui);
   ui.modal = null;
   ui.story = {
-    chapterId: id, nodeId: ch.start, phase: "lines", lineIndex: 0,
+    chapterId: id, nodeId: ch.start, phase: ch.brief ? "prelude" : "lines", lineIndex: 0,
     reply: null, mini: null, result: null, bump: {}, typing: false,
     timer: null, miniRaf: null, reflectionChoice: null,
     doneNodes: {}, game: null, hotspots: null, revealed: false,
@@ -133,6 +133,22 @@ export function mountStory(ui) {
   else if (p === "hotspots") mountHotspots(ui);
   else if (p === "reward") burstReward(ui);
   else if (p === "moment") mountMoment(ui);
+  else if (p === "prelude") mountPrelude();
+}
+
+/* If the background is longer than the card, say so once instead of silently
+   cropping it — at the largest text size on a short phone it will not fit. */
+function mountPrelude() {
+  const body = document.querySelector(".prelude-body");
+  const card = document.querySelector(".prelude");
+  if (!body || !card) return;
+  const sync = () => {
+    const hidden = body.scrollHeight - body.scrollTop - body.clientHeight > 4;
+    card.classList.toggle("has-more", hidden);
+  };
+  body.addEventListener("scroll", sync, { passive: true });
+  sync();
+  requestAnimationFrame(sync);
 }
 
 /* ------------------------------------------------------------------ choices */
@@ -219,6 +235,7 @@ export function continueStory(ui) {
 
 export function tapStory(ui) {
   const s = st(ui);
+  if (s.phase === "prelude") { s.phase = "lines"; sfx("tap"); bus.render(); return; }
   if (s.typing) { finishTyping(ui); return; }
   if (s.phase !== "lines" && s.phase !== "reply") return;
   const lines = currentLines(ui);
@@ -715,6 +732,16 @@ export function reflectAnswer(ui, index) {
 
 export function goToReflection(ui) { st(ui).phase = "reflect"; sfx("tap"); bus.render(); }
 
+/** Leave the background card (or any un-started chapter) without touching progress. */
+export function exitChapterToMap(ui) {
+  stopScene(ui);
+  cleanupStory(ui);
+  ui.story = null;
+  ui.modal = null;
+  ui.view = "map";
+  bus.render();
+}
+
 export function leaveStory(ui) {
   stopScene(ui);
   cleanupStory(ui);
@@ -1114,10 +1141,48 @@ function momentHtml(ui) {
   </div>`;
 }
 
+/* The background card. One physical page before the story starts: where and
+   when this happens, who is in the room, and what is actually at stake — for
+   players who have never read the passage. Nothing ticks until it is closed. */
+function preludeHtml(ui) {
+  const ch = chapter(ui);
+  const b = ch.brief || {};
+  const people = Object.entries(ch.cast || {})
+    .filter(([k]) => k !== "elias")
+    .map(([, c]) => `<span class="prelude-chip"><b>${esc(c.name)}</b>${c.role ? `<i>${esc(c.role)}</i>` : ""}</span>`)
+    .join("");
+  const row = (mark, label, text) => text
+    ? `<div class="prelude-row"><span class="prelude-mark">${mark}</span><div><b>${label}</b><p>${esc(text)}</p></div></div>`
+    : "";
+  return `<div class="screen story prelude-screen">
+    <div class="prelude-art" style="background-image:url('${ch.art}')"></div>
+    <div class="prelude-scrim"></div>
+    <div class="prelude">
+      <div class="prelude-head">
+        <div class="eyebrow">${tx(`Background · Chapter ${ch.roman}`, `开始之前 · 第 ${ch.roman} 章`)}</div>
+        <h2>${esc(ch.title)}</h2>
+        <p class="small muted">${esc(ch.subtitle)} · ${esc(ch.ref)}</p>
+      </div>
+      <div class="prelude-body">
+        ${row("◷", tx("When and where", "时间与地点"), b.place)}
+        ${row("◍", tx("Who is here", "这里有谁"), b.who)}
+        ${row("✧", tx("What is at stake", "要紧的是"), b.stake)}
+        ${people ? `<div class="prelude-cast">${people}</div>` : ""}
+      </div>
+      <div class="prelude-foot">
+        <p class="prelude-more tiny muted center">${tx("Swipe for the rest of the background", "向上滑动，读完这段背景")}</p>
+        <button class="btn btn-primary prelude-start" data-action="tap-story">${icon("play", 16)} ${tx("Step into the scene", "走进这一幕")}</button>
+        <button class="btn btn-ghost btn-sm" data-action="chapter-exit">${tx("Back to the map", "回到地图")}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 export function storyHtml(ui) {
   const s = st(ui);
   const ch = chapter(ui);
 
+  if (s.phase === "prelude") return preludeHtml(ui);
   if (s.phase === "moment") return momentHtml(ui);
   if (s.phase === "action") return actionHtml(ui);
   if (s.phase === "action-result") return actionResultHtml(ui);

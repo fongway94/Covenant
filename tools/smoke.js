@@ -48,9 +48,18 @@ function playChapter(id) {
   assert(bus.ui.view === "story", `chapter ${id} did not open`);
 
   let guard = 0;
+  let sawPrelude = false;
   while (guard++ < 300) {
     const p = phase();
     if (p === "reward") break;
+    if (p === "prelude") {
+      assert(!!$(".prelude .prelude-row"), `prelude for ${id} has no background rows`);
+      assert(!!$(".prelude-start"), `prelude for ${id} has no start button`);
+      sawPrelude = true;
+      click(".prelude-start");
+      assert(phase() === "lines", `prelude for ${id} did not hand over to the story`);
+      continue;
+    }
     if (p === "lines" || p === "reply") { tapStoryLines(); continue; }
     if (p === "choices") {
       const c = $$('[data-action="choose"]')[0];
@@ -137,6 +146,7 @@ function playChapter(id) {
     }
     throw new Error(`unexpected phase ${p} in ${id}`);
   }
+  assert(sawPrelude, `${id} never showed the background card`);
   assert(phase() === "reward", `${id} did not reach the reward screen (phase=${phase()})`);
   click('[data-action="reflect"]');
   assert(phase() === "reflect", `reflection did not open for ${id}`);
@@ -209,7 +219,8 @@ try {
   click('.map-node[data-id="elah"]');
   click('[data-action="enter-chapter"]');
   for (let i = 0; i < 40 && phase() !== "choices"; i++) {
-    if (phase() === "lines" || phase() === "reply") tapStoryLines();
+    if (phase() === "prelude") click(".prelude-start");
+    else if (phase() === "lines" || phase() === "reply") tapStoryLines();
     else if (phase() === "next") click('[data-action="story-continue"]');
     else if (phase() === "moment") click('[data-action="moment-skip"]');
     else break;

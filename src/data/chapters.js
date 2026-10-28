@@ -29,6 +29,11 @@ export const CHAPTERS = [
     pos: [26, 9],
     length: "8–10 min",
     intro: "A shepherd boy walks into a valley where an entire army has been silent for forty days.",
+    brief: {
+      place: "c. 1020 BC, in the Valley of Elah. The Israelite army and the Philistine army are camped on two ridges with a valley between them, and neither side has moved for forty days.",
+      who: "King Saul commands Israel. The Philistines have a champion named Goliath — close to three metres tall, in bronze scale armour, with a spear shaft like a weaver’s beam. Nobody in Israel will go out to him.",
+      stake: "Both sides agreed to a deal: one fighter each, and the losing nation becomes servants. You are in the camp as a witness. You cannot change the ending — only what you do with the forty days."
+    },
     scroll: {
       verse: "And all this assembly shall know that the LORD saveth not with sword and spear: for the battle is the LORD’S, and he will give you into our hands.",
       ref: "1 Samuel 17:47 (KJV)",
@@ -161,6 +166,11 @@ export const CHAPTERS = [
     pos: [70, 27],
     length: "8–10 min",
     intro: "A decree is signed that makes prayer illegal. An old man opens his window anyway.",
+    brief: {
+      place: "c. 539 BC, in Babylon. The empire has just changed hands, and the new ruler, Darius the Mede, is reorganising the government.",
+      who: "Daniel was carried off from Jerusalem as a teenager. He is nearly eighty now, and the king has just put him in charge of the whole province. The other officials hate him for it.",
+      stake: "They can find no corruption in him, so they attack his prayer. A law is drafted: for thirty days nobody may pray to anyone except the king. Break it and you go into a pit of lions — and a Persian law cannot be revoked, not even by the king who signed it."
+    },
     scroll: {
       verse: "My God hath sent his angel, and hath shut the lions’ mouths, that they have not hurt me: forasmuch as before him innocency was found in me.",
       ref: "Daniel 6:22 (KJV)",
@@ -287,6 +297,11 @@ export const CHAPTERS = [
     pos: [30, 44],
     length: "8–10 min",
     intro: "A lawyer asks Jesus a question. Jesus answers with a story — and you wake up inside it.",
+    brief: {
+      place: "c. AD 30, on the road from Jerusalem down to Jericho — seventeen miles of limestone cliffs, sharp bends, and no soldiers.",
+      who: "A lawyer has just tested a teacher named Jesus with a question: “Who is my neighbour?” Jesus answers with a story, and you find yourself standing inside it.",
+      stake: "A traveller lies beaten in the ditch. A priest and a temple assistant have already seen him and crossed the road. Someone still has to stop — and in this story the one who stops is the man nobody expects."
+    },
     scroll: {
       verse: "Then said Jesus unto him, Go, and do thou likewise.",
       ref: "Luke 10:37 (KJV)",
@@ -434,6 +449,11 @@ export const CHAPTERS = [
     pos: [72, 61],
     length: "8–10 min",
     intro: "A boat, a sudden squall, and a Teacher asleep on a cushion in the stern.",
+    brief: {
+      place: "c. AD 30, evening on the Sea of Galilee — a lake sunk in a bowl of hills, where cold air pours down the slopes and can lift the water into walls within minutes.",
+      who: "Jesus has been teaching from a boat all day. Several of his followers are professional fishermen who have worked this lake their whole lives. He has just said, “Let us pass over unto the other side.”",
+      stake: "You are in the boat. When the squall hits, the question stops being about the weather and becomes about the man asleep on the cushion in the stern."
+    },
     scroll: {
       verse: "And he arose, and rebuked the wind, and said unto the sea, Peace, be still. And the wind ceased, and there was a great calm.",
       ref: "Mark 4:39 (KJV)",
@@ -557,6 +577,11 @@ export const CHAPTERS = [
     pos: [28, 78],
     length: "9–11 min",
     intro: "A son asks for his inheritance early. His father gives it — and then waits by the road.",
+    brief: {
+      place: "c. AD 30, in Galilee. Jesus is answering religious leaders who complain that he welcomes the wrong people, and he tells three stories in a row about something lost: a sheep, a coin, a son.",
+      who: "A father and two sons. The younger asks for his inheritance now — in that culture, the same as saying “I wish you were dead”. The elder stays, works, and keeps every rule.",
+      stake: "This story is not mainly about the son who leaves. Watch the father: what he does once the money is gone is the part that would have shocked Jesus’ first listeners."
+    },
     scroll: {
       verse: "It was meet that we should make merry, and be glad: for this thy brother was dead, and is alive again; and was lost, and is found.",
       ref: "Luke 15:32 (KJV)",
@@ -703,6 +728,11 @@ export const CHAPTERS = [
     pos: [68, 93],
     length: "9–11 min",
     intro: "A decree of destruction. A queen who has not been summoned. One line in the law that could cost her everything.",
+    brief: {
+      place: "c. 480 BC, in Susa, the winter capital of Persia — the largest empire in the world at the time. The queen, Esther, is Jewish, and almost nobody in the palace knows it.",
+      who: "Haman, the king’s favourite, was publicly refused a bow by Mordecai — a Jew, and Esther’s older cousin, who raised her. So Haman has drawn up a decree: on one day, every Jew in the empire may be killed. The king has signed it.",
+      stake: "Esther is the only person close enough to the king to intervene, and he has not called for her in thirty days. Walking into the throne room uninvited is a death sentence unless he holds out his golden sceptre."
+    },
     scroll: {
       verse: "For if thou altogether holdest thy peace at this time, then shall there enlargement and deliverance arise to the Jews from another place … and who knoweth whether thou art come to the kingdom for such a time as this?",
       ref: "Esther 4:14 (KJV)",
