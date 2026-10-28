@@ -18,8 +18,14 @@ const hash = (n) => { const x = Math.sin(n * 91.7 + 13.3) * 43758.5453; return x
 /* ---------------------------------------------------------------- shared UI */
 
 function stageBg(c, ctx, cfg) {
-  drawBackdrop(c, ctx, cfg.art, { top: "#172934", bottom: "#0b141c", alpha: 0.46, weather: cfg.weather });
-  goldenHour(c, ctx);
+  /* A night act keeps its painting dark: the light the player is timing
+     against has to be the brightest thing in the frame. */
+  const night = cfg.mode === "shade";
+  drawBackdrop(c, ctx, cfg.art, {
+    top: night ? "#0b141c" : "#172934", bottom: night ? "#05090d" : "#0b141c",
+    alpha: night ? 0.74 : 0.46, weather: cfg.weather
+  });
+  if (!night) goldenHour(c, ctx);
 }
 
 /** Parchment-style briefing card + timer bar + goal pips shared by all acts. */
@@ -39,11 +45,21 @@ function stageChrome(c, ctx, cfg, s) {
   ctx.fillStyle = "rgba(244,231,203,.62)"; ctx.font = `11px ${c.font}`;
   wrapText(ctx, T(cfg.prompt), 26, y + 53, w - 52, 12, 3);
 
-  // timer bar
+  /* The bar is time left, then time spent: past the line it fills with amber
+     instead of stopping, so the cost of the delay is visible rather than a
+     countdown to failure. */
   const ratio = clamp((s.left ?? cfg.seconds) / cfg.seconds, 0, 1);
   ctx.fillStyle = "rgba(255,255,255,.1)"; roundRect(ctx, 26, y + hh - 12, w - 52, 5, 2.5); ctx.fill();
-  ctx.fillStyle = ratio > 0.3 ? "#d6b46c" : "#d65c42";
-  roundRect(ctx, 26, y + hh - 12, (w - 52) * ratio, 5, 2.5); ctx.fill();
+  if (s.left >= 0) {
+    ctx.fillStyle = ratio > 0.3 ? "#d6b46c" : "#d65c42";
+    roundRect(ctx, 26, y + hh - 12, (w - 52) * ratio, 5, 2.5); ctx.fill();
+  } else {
+    const over = clamp(-s.left / (cfg.seconds * 1.6), 0, 1);
+    ctx.fillStyle = "#c08a4a";
+    roundRect(ctx, 26, y + hh - 12, (w - 52) * over, 5, 2.5); ctx.fill();
+    ctx.textAlign = "right"; ctx.fillStyle = "#e8b877"; ctx.font = `700 10px ${c.font}`;
+    ctx.fillText(`+${Math.ceil(-s.left)}s`, w - 26, y + hh - 16);
+  }
 
   // goal pips on the right of the title
   if (s.goalText) {
@@ -77,15 +93,27 @@ function wrapText(ctx, text, x, y, maxW, lh, maxLines) {
   for (let i = 0; i < Math.min(maxLines, lines.length); i++) ctx.fillText(lines[i], x, y + i * lh);
 }
 
+/* The clock is a score clock, not a trap. Nothing is lost because it ran out:
+   the act stays open, the bar turns amber, and every second past the line
+   costs part of what the act is worth. Only a very long silence closes it —
+   kindly, with the story moving on and a low score — so nobody is ever stuck
+   inside a preparation act. */
+function clockLabel(s) {
+  return s.left >= 0 ? `${Math.ceil(s.left)}s` : `+${Math.ceil(-s.left)}s`;
+}
 function tick(c, s, cfg, dt) {
   s.t += dt;
   s.left -= dt;
   s.flash = Math.max(0, (s.flash || 0) - dt * 2.2);
-  if (s.left <= 0 && !s.finished) {
+  if (s.finished) return;
+  const limit = cfg.seconds || 30;
+  if (s.left <= -limit * 3) {
     s.finished = true;
+    s.autoClosed = true;
+    c.autoClosed = true;
     if (cfg.carry) c.shared[cfg.carry] = Math.max(1, s.found || 0);
-    c.float(c.w / 2, c.h * 0.62, tx("Time! Move on.", "时间到！继续前进。"), "#d6b46c");
-    c.end(true, c.score);          // soft success — the story always continues
+    c.float(c.w / 2, c.h * 0.62, tx("The story goes on.", "故事继续。"), "#d6b46c");
+    c.end(true, c.score);
   }
 }
 function win(c, s, cfg, bonus) {
@@ -94,15 +122,14 @@ function win(c, s, cfg, bonus) {
   if (cfg.carry) c.shared[cfg.carry] = s.found || cfg.goal || cfg.rounds || 3;
   c.addScore(bonus);
   c.spark(c.w / 2, c.h * 0.55, "#f4d79b", 30, 200);
-  c.float(c.w / 2, c.h * 0.55 - 20, tx("READY!", "准备好了！"), "#f4d79b");
+  c.float(c.w / 2, c.h * 0.55 - 20,
+    s.left >= 0 ? tx("READY!", "准备好了！") : tx("READY — steady, not quick", "准备好了——稳，但不快"), "#f4d79b");
   c.hit("complete");
   c.end(true, c.score);
 }
 function penalty(c, s, seconds = 3, msg = "MISS") {
-  /* Clamping this at 1 used to pin the clock: a player who kept missing never
-     reached the end of the act, because every miss reset the floor. The act is
-     a preparation, not a trap — time has to be allowed to run out. */
-  s.left = Math.max(0, s.left - seconds);
+  /* A miss costs time, and time now costs score — never the act itself. */
+  s.left -= seconds;
   s.flash = 1; c.bump(7); c.hit("miss");
   c.float(c.w / 2, c.h * 0.6, tx(msg, "失误"), "#e08b78");
 }
@@ -155,7 +182,7 @@ function siftStage(cfg) {
       s.lens.x = p.x || s.lens.x; s.lens.y = p.y || s.lens.y;
       if (p.down || c.keys.has("arrowleft") || c.keys.has("arrowright")) reveal(c, s, s.lens.x, s.lens.y, s.lens.r);
       c.progress = s.found / cfg.goal;
-      c.setHint(`${T(cfg.hint)}   ${tx("FOUND", "已找到")} ${s.found}/${cfg.goal}   ${Math.ceil(s.left)}s`);
+      c.setHint(`${T(cfg.hint)}   ${tx("FOUND", "已找到")} ${s.found}/${cfg.goal}   ${clockLabel(s)}`);
       if (s.found >= cfg.goal) win(c, s, cfg, cfg.reward || 30);
     },
     draw(c, ctx) {
@@ -316,15 +343,22 @@ function drawSiftItem(ctx, it, cfg, t) {
 
 function rhythmStage(cfg) {
   const mode = cfg.mode || (cfg.hero === "ruth" ? "catch" : "shade");
+  /* WARN is where the guard's light starts to reach a lamp, LIT is where it
+     would see the flame — the gap between them is the player's reaction time,
+     and it is drawn. COVER is a whole hand's width, so a thumb is enough. */
+  const WARN = 172, LIT = 104, COVER = 78;
 
   function init(c) {
     if (cfg.hero) preloadSprites();
     const lamps = [[0.22, 0.68], [0.5, 0.74], [0.78, 0.68]].map(([fx, fy], i) => ({
-      x: c.w * fx, y: c.h * fy, saved: false, flare: 0, lit: 1, i
+      x: c.w * fx, y: c.h * fy, saved: false, flare: 0, lit: 1, i,
+      warn: 0, danger: false
     }));
     c.state = {
       t: 0, left: cfg.seconds, round: 0, flash: 0, finished: false, mode,
-      lamps, sweepX: -0.2, sweepV: 0.42, sweepY: c.h * 0.5,
+      /* The guard's light crosses the den slowly enough to be read: a little
+         over five seconds a pass, and a lamp is warned about before it is lit. */
+      lamps, sweepX: -0.2, sweepV: 0.27, sweepY: c.h * 0.5,
       sheaf: null, spawn: 0.6, caught: 0, dropped: 0, hands: 0, pulse: 0
     };
     c.setHint(T(cfg.hint));
@@ -342,17 +376,25 @@ function rhythmStage(cfg) {
       if (s.sweepX > 1.15) { s.sweepX = 1.15; s.sweepV = -Math.abs(s.sweepV); }
       if (s.sweepX < -0.15) { s.sweepX = -0.15; s.sweepV = Math.abs(s.sweepV); }
       const gx = s.sweepX * c.w;
+      /* WARN is where the guard's light starts to reach a lamp, LIT is where it
+         would see the flame. The gap between them is the player's reaction
+         time, and it is drawn: the lamp leans, its pool of light grows, its
+         flame bends away. COVER is a whole hand's width, measured from the
+         middle of the lamp, so a thumb on the flame is enough. */
       for (const l of s.lamps) {
         if (l.saved) continue;
-        const near = Math.abs(gx - l.x) < 96;
+        const d = Math.abs(gx - l.x);
+        l.warn = l.warn || 0;
+        l.warn += ((d < WARN && d > LIT ? 1 : 0) - l.warn) * Math.min(1, dt * 6);
+        l.danger = d <= LIT;
         // a hand actually over the lamp is the only thing that hides a flame
-        const covered = p.down && dist(p.x, p.y, l.x, l.y) < 52;
-        if (near) {
+        const covered = p.down && dist(p.x, p.y, l.x, l.y) < COVER;
+        if (d <= LIT) {
           if (covered) { l.lit = Math.max(0, l.lit - dt * 6); l.sheltered = true; }
           else {
             l.lit = 1;
             if ((l.cool || 0) <= 0) {
-              l.cool = 1.4; l.flare = 1;
+              l.cool = 2.4; l.flare = 1;
               penalty(c, s, 2, "SEEN");
               c.spark(l.x, l.y, "#e0a070", 14, 110);
             }
@@ -361,7 +403,7 @@ function rhythmStage(cfg) {
           l.lit = Math.min(1, l.lit + dt * 2);
           /* Once the light has come close, been hidden from, and moved well
              past, that lamp is safe — which is a thing the player can see. */
-          if (l.sheltered && Math.abs(gx - l.x) > 132) {
+          if (l.sheltered && d > 168) {
             l.saved = true; s.round++;
             c.addScore(12); c.hit("good");
             c.float(l.x, l.y - 44, tx("Unseen", "没被看见"), "#f4d79b");
@@ -407,22 +449,20 @@ function rhythmStage(cfg) {
       c.progress = s.round / cfg.rounds;
     }
 
-    c.setHint(`${T(cfg.hint)}   ${s.round}/${cfg.rounds}   ${Math.ceil(s.left)}s`);
+    c.setHint(`${T(cfg.hint)}   ${s.round}/${cfg.rounds}   ${clockLabel(s)}`);
   }
 
   function draw(c, ctx) {
     const s = c.state;
     stageBg(c, ctx, cfg);
-    const heroH = clamp(c.h * 0.19, 82, 168);
-
     if (mode === "shade") {
-      const drew = stageHero(c, ctx, cfg, c.w * 0.5, c.h * 0.86, heroH, {
-        rot: 0.02 + Math.sin(s.t * 0.8) * 0.01, squash: 1 + Math.sin(s.t * 1.2) * 0.008, shadow: 0.24
-      });
-      if (!drew) npc(ctx, c.w * 0.5, c.h * 0.82, { s: 1.2, phase: s.t, robe: cfg.robe || "#3c6070", cloth: "#14202a", glow: "rgba(247,221,165,.18)" });
-      // the three prayer lamps
+      /* Daniel is already kneeling in this painting — the den was shot with him
+         in it — so no actor is composited over the plate here. What moves is
+         the light, and a crude second figure would only stand next to him. */
+      /* 1. the clay bodies first: everything structural, before the den goes
+            dark. Nothing above this line may be bright, or the light the
+            player is timing against will not read. */
       for (const l of s.lamps) {
-        const covered = c.pointer.down && dist(c.pointer.x, c.pointer.y, l.x, l.y) < 52;
         ctx.save();
         ctx.fillStyle = "rgba(10,14,18,.5)";
         ctx.beginPath(); ctx.ellipse(l.x, l.y + 14, 24, 8, 0, 0, TAU); ctx.fill();
@@ -438,49 +478,104 @@ function rhythmStage(cfg) {
         ctx.fill();
         ctx.fillStyle = "#3a2718";
         ctx.beginPath(); ctx.ellipse(l.x, l.y + 6, 6, 2.4, 0, 0, TAU); ctx.fill();
-        // the flame, which your hand hides
+        ctx.restore();
+      }
+
+      /* 2. the den goes dark: the painting is already a night cave, and the
+            act only works if the dark is darker than the flames. */
+      ctx.save();
+      ctx.globalCompositeOperation = "multiply";
+      /* multiply by ~0.62 in the middle of the den and ~0.3 at the edges: the
+         painting stays a painting, but the flames are now the only bright
+         thing on screen. */
+      const dim = ctx.createRadialGradient(c.w * 0.5, c.h * 0.66, c.h * 0.1, c.w * 0.5, c.h * 0.58, c.h * 1.0);
+      dim.addColorStop(0, "rgba(168,172,178,1)");
+      dim.addColorStop(0.5, "rgba(120,126,136,1)");
+      dim.addColorStop(1, "rgba(58,64,74,1)");
+      ctx.fillStyle = dim;
+      ctx.fillRect(0, 0, c.w, c.h);
+      ctx.restore();
+
+      /* 3. and then the light: three flames, the guard's cone, its pool. This
+            is the only genuinely bright thing in the frame. */
+      for (const l of s.lamps) {
+        const covered = c.pointer.down && dist(c.pointer.x, c.pointer.y, l.x, l.y) < COVER;
+        ctx.save();
+        // the warning: the lamp leans away and a shadow of the guard's approach
+        if (l.warn > 0.02) {
+          ctx.save();
+          ctx.globalCompositeOperation = "screen";
+          const wg = ctx.createRadialGradient(l.x, l.y - 4, 2, l.x, l.y - 4, 74 * l.warn);
+          wg.addColorStop(0, `rgba(255,150,90,${0.3 * l.warn})`);
+          wg.addColorStop(1, "rgba(255,120,60,0)");
+          ctx.fillStyle = wg; ctx.beginPath(); ctx.arc(l.x, l.y - 4, 74 * l.warn, 0, TAU); ctx.fill();
+          ctx.restore();
+          ctx.strokeStyle = `rgba(255,170,110,${0.3 * l.warn})`; ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.arc(l.x, l.y + 2, 30, 0, TAU); ctx.stroke();
+        }
         if (l.lit > 0.02 && !covered) {
           ctx.save();
           ctx.globalCompositeOperation = "screen";
-          const fg = ctx.createRadialGradient(l.x, l.y - 6, 1, l.x, l.y - 6, 40 * l.lit);
-          fg.addColorStop(0, `rgba(255,228,168,${0.5 * l.lit})`);
+          const fg = ctx.createRadialGradient(l.x, l.y - 6, 1, l.x, l.y - 6, 54 * l.lit);
+          fg.addColorStop(0, `rgba(255,232,176,${0.62 * l.lit})`);
           fg.addColorStop(1, "rgba(255,180,90,0)");
-          ctx.fillStyle = fg; ctx.beginPath(); ctx.arc(l.x, l.y - 6, 40 * l.lit, 0, TAU); ctx.fill();
+          ctx.fillStyle = fg; ctx.beginPath(); ctx.arc(l.x, l.y - 6, 54 * l.lit, 0, TAU); ctx.fill();
           ctx.restore();
-          ctx.fillStyle = `rgba(255,238,196,${0.7 + Math.sin(s.t * 9 + l.i) * 0.2})`;
-          ctx.beginPath(); ctx.ellipse(l.x, l.y - 6 - l.lit * 3, 2.6, 5 + l.lit * 3, 0, 0, TAU); ctx.fill();
+          const bend = (l.warn || 0) * 2.2;
+          ctx.fillStyle = `rgba(255,244,208,${0.78 + Math.sin(s.t * 9 + l.i) * 0.18})`;
+          ctx.beginPath(); ctx.ellipse(l.x + bend, l.y - 7 - l.lit * 3, 2.8, 6 + l.lit * 3.4, bend * 0.08, 0, TAU); ctx.fill();
         }
         if (l.saved) {
-          ctx.strokeStyle = "rgba(247,221,165,.4)"; ctx.lineWidth = 1.4;
-          ctx.beginPath(); ctx.arc(l.x, l.y + 4, 26, 0, TAU); ctx.stroke();
+          ctx.strokeStyle = "rgba(247,221,165,.34)"; ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.arc(l.x, l.y + 4, 24, 0, TAU); ctx.stroke();
+        }
+        /* 4. and the one instruction, drawn on the lamp itself: a hand's width
+              of amber that pulses only while nobody is hiding it. */
+        if (!l.saved && !covered) {
+          const pulse = 0.5 + 0.5 * Math.sin(s.t * 2.4 + l.i * 1.2);
+          ctx.strokeStyle = `rgba(247,221,165,${0.16 + pulse * 0.16 + (l.warn || 0) * 0.3})`;
+          ctx.lineWidth = 1.6;
+          ctx.setLineDash([5, 5]);
+          ctx.beginPath(); ctx.arc(l.x, l.y + 2, 30 + (l.warn || 0) * 6, 0, TAU); ctx.stroke();
+          ctx.setLineDash([]);
         }
         ctx.restore();
       }
       // the guard's light: a cone crossing the den
       const gx = s.sweepX * c.w;
+      /* The cone's edge IS the danger line: it is exactly LIT wide where the
+         lamps stand, so what the player sees is what would see the flame. A
+         horizontal gradient keeps its sides soft, so it reads as a beam of
+         light and not as a triangle. */
       ctx.save();
       ctx.globalCompositeOperation = "screen";
-      const cone = ctx.createLinearGradient(gx, s.sweepY - 200, gx, s.sweepY + 160);
-      cone.addColorStop(0, "rgba(255,204,136,.3)");
-      cone.addColorStop(1, "rgba(255,150,70,0)");
-      ctx.fillStyle = cone;
+      const coneVertical = ctx.createLinearGradient(gx, s.sweepY - 200, gx, s.sweepY + 150);
+      coneVertical.addColorStop(0, "rgba(255,214,150,.2)");
+      coneVertical.addColorStop(0.65, "rgba(255,196,124,.12)");
+      coneVertical.addColorStop(1, "rgba(255,150,70,0)");
+      const coneSide = ctx.createLinearGradient(gx - LIT, 0, gx + LIT, 0);
+      coneSide.addColorStop(0, "rgba(0,0,0,0)");
+      coneSide.addColorStop(0.5, "rgba(255,255,255,1)");
+      coneSide.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = coneVertical;
       ctx.beginPath();
-      ctx.moveTo(gx - 26, s.sweepY - 220);
-      ctx.lineTo(gx + 26, s.sweepY - 220);
-      ctx.lineTo(gx + 130, s.sweepY + 130);
-      ctx.lineTo(gx - 130, s.sweepY + 130);
-      ctx.closePath(); ctx.fill();
+      ctx.moveTo(gx - 24, s.sweepY - 220);
+      ctx.lineTo(gx + 24, s.sweepY - 220);
+      ctx.lineTo(gx + LIT, s.sweepY + 130);
+      ctx.lineTo(gx - LIT, s.sweepY + 130);
+      ctx.closePath();
+      ctx.globalAlpha = 0.9; ctx.fill();
       ctx.restore();
       ctx.fillStyle = "rgba(255,222,168,.75)";
       ctx.beginPath(); ctx.arc(gx, s.sweepY - 220, 5.5, 0, TAU); ctx.fill();
       // the pool of light it throws on the rock, which is what you time against
       ctx.save();
       ctx.globalCompositeOperation = "screen";
-      const pool = ctx.createRadialGradient(gx, s.sweepY + 120, 4, gx, s.sweepY + 120, 120);
-      pool.addColorStop(0, "rgba(255,196,120,.34)");
+      const pool = ctx.createRadialGradient(gx, s.sweepY + 120, 4, gx, s.sweepY + 120, LIT * 1.05);
+      pool.addColorStop(0, "rgba(255,196,120,.26)");
       pool.addColorStop(1, "rgba(255,150,70,0)");
       ctx.fillStyle = pool;
-      ctx.beginPath(); ctx.ellipse(gx, s.sweepY + 120, 120, 46, 0, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(gx, s.sweepY + 120, LIT * 1.05, 40, 0, 0, TAU); ctx.fill();
       ctx.restore();
       if (c.pointer.down) handShadow(ctx, c.pointer.x, c.pointer.y + 4, 0.34, 1.35);
     }
@@ -656,7 +751,7 @@ function traceStage(cfg) {
       s.dust = s.dust.filter((d) => d.life > 0);
       s.wobble = Math.max(0, s.wobble - dt * 2);
       c.progress = s.progress;
-      c.setHint(`${T(cfg.hint)}   ${Math.round(s.progress * 100)}%   ${Math.ceil(s.left)}s`);
+      c.setHint(`${T(cfg.hint)}   ${Math.round(s.progress * 100)}%   ${clockLabel(s)}`);
       // A finger rarely reaches the exact top pixel on a phone. Once the last
       // stretch of road is walked, treat it as arrived instead of stalling.
       if (s.progress >= 0.94) { s.progress = 1; win(c, s, cfg, cfg.reward || 30); }
@@ -949,7 +1044,7 @@ function chargeStage(cfg) {
       c.progress = s.round / cfg.rounds;
     }
 
-    c.setHint(`${T(cfg.hint)}   ${s.round}/${cfg.rounds}   ${Math.ceil(s.left)}s`);
+    c.setHint(`${T(cfg.hint)}   ${s.round}/${cfg.rounds}   ${clockLabel(s)}`);
   }
 
   function draw(c, ctx) {

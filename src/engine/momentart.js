@@ -156,12 +156,12 @@ function basket(ctx, x, y, s, kind, tilt) {
       const bx = -8 + i * 8, by = -11 - (i === 1 ? 2.6 : 0);
       const rot = -0.28 + i * 0.28;
       const g = ctx.createLinearGradient(bx - 5, by - 4, bx + 5, by + 4);
-      g.addColorStop(0, "rgba(226,178,112,.99)");
-      g.addColorStop(0.55, "rgba(176,126,72,.99)");
-      g.addColorStop(1, "rgba(110,72,38,.99)");
+      g.addColorStop(0, "rgba(196,146,86,.99)");
+      g.addColorStop(0.55, "rgba(146,100,56,.99)");
+      g.addColorStop(1, "rgba(84,54,28,.99)");
       ctx.fillStyle = g;
       ctx.beginPath(); ctx.ellipse(bx, by, 6.2, 3.8, rot, 0, TAU); ctx.fill();
-      ctx.strokeStyle = "rgba(255,232,182,.5)"; ctx.lineWidth = 0.8;
+      ctx.strokeStyle = "rgba(255,226,178,.3)"; ctx.lineWidth = 0.8;
       ctx.beginPath(); ctx.ellipse(bx - 0.6, by - 0.8, 5.4, 3, rot, 0, TAU); ctx.stroke();
       ctx.strokeStyle = "rgba(84,52,26,.7)"; ctx.lineWidth = 0.7;
       for (let k = -1; k <= 1; k++) {
@@ -175,10 +175,10 @@ function basket(ctx, x, y, s, kind, tilt) {
     ctx.fillStyle = "rgba(58,44,30,.9)";
     ctx.beginPath(); ctx.moveTo(-11, -8); ctx.lineTo(12, -9); ctx.lineTo(10, -3); ctx.lineTo(-10, -2); ctx.closePath(); ctx.fill();
     const g = ctx.createLinearGradient(-8, -10, 8, -2);
-    g.addColorStop(0, "rgba(242,228,186,.99)");
-    g.addColorStop(1, "rgba(192,168,124,.99)");
+    g.addColorStop(0, "rgba(214,196,152,.96)");
+    g.addColorStop(1, "rgba(158,134,94,.97)");
     ctx.fillStyle = g;
-    ctx.beginPath(); ctx.moveTo(-8, -9); ctx.lineTo(9, -10.4); ctx.lineTo(7.4, -4.6); ctx.lineTo(-7, -3.4); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-6.4, -9); ctx.lineTo(7.2, -10); ctx.lineTo(6, -5.2); ctx.lineTo(-5.6, -4.2); ctx.closePath(); ctx.fill();
     ctx.fillStyle = "rgba(150,122,74,.9)";
     ctx.beginPath(); ctx.moveTo(-7, -3.4); ctx.lineTo(7.4, -4.6); ctx.lineTo(7, -2.6); ctx.lineTo(-6.6, -1.4); ctx.closePath(); ctx.fill();
     ctx.strokeStyle = "rgba(255,248,220,.6)"; ctx.lineWidth = 0.7;
@@ -242,18 +242,36 @@ const SPAN = {
   branches: 0.44, zacchaeus: 0.38
 };
 
-export function momentPlateStyle(spec, w, h) {
+/** The part of the painting the camera actually sees, in plate fractions. */
+function plateWindow(spec, w, h) {
   const span = clamp(spec?.span ?? SPAN[spec?.plate] ?? 0.42, 0.18, 1);
   const cx = spec?.fx ?? 0.5, cy = spec?.fy ?? 0.62;
-  const cropW = span * PW;
-  const cropH = cropW * (h / Math.max(1, w));
-  let x0 = clamp(cx * PW - cropW / 2, 0, Math.max(0, PW - cropW));
-  let y0 = clamp(cy * PH - cropH / 2, 0, Math.max(0, PH - cropH));
+  const cw = span;
+  const ch = (span * PW * (h / Math.max(1, w))) / PH;
+  const x0 = clamp(cx - cw / 2, 0, Math.max(0, 1 - cw));
+  const y0 = clamp(cy - ch / 2, 0, Math.max(0, 1 - ch));
+  return { x0, y0, cw, ch };
+}
+
+/* A point given in PLATE fractions, expressed in stage fractions. Wounds have
+   to sit on the arm the painting already has, so the data names them on the
+   painting and the camera decides where they land. */
+export function platePoint(spec, w, h, fx, fy) {
+  const win = plateWindow(spec, w, h);
+  return { fx: clamp((fx - win.x0) / win.cw, 0, 1), fy: clamp((fy - win.y0) / win.ch, 0, 1) };
+}
+
+export function momentPlateStyle(spec, w, h) {
+  const win = plateWindow(spec, w, h);
+  const cw = win.cw * PW;
+  let x0 = win.x0 * PW;
+  let y0 = win.y0 * PH;
+  const cropW = cw, cropH = win.ch * PH;
   const k = w / cropW;
   return {
     backgroundSize: `${(PW * k).toFixed(1)}px ${(PH * k).toFixed(1)}px`,
     backgroundPosition: `${(-x0 * k).toFixed(1)}px ${(-y0 * k).toFixed(1)}px`,
-    transformOrigin: `${((cx * PW - x0) * k).toFixed(0)}px ${((cy * PH - y0) * k).toFixed(0)}px`
+    transformOrigin: `${((spec?.fx ?? 0.5) * PW - x0) * k}px ${((spec?.fy ?? 0.62) * PH - y0) * k}px`
   };
 }
 
@@ -584,8 +602,11 @@ const rrect = (ctx, x, y, w, h, r) => {
 };
 
 function carryBeam(ctx, w, h, rel, t, kind, touched) {
-  const U = h / 100, cx = w * 0.5, cy = h * 0.46;
-  const ang = clamp(rel, -0.6, 0.6) * 0.9;
+  const U = h / 100, cx = w * 0.5, cy = h * 0.30;
+  /* Nine degrees is as far as a shoulder-pole visibly tips; past that the
+     picture stops being a pole and becomes a diagonal line. The bubble in the
+     brass housing carries the fine reading. */
+  const ang = clamp(rel, -0.6, 0.6) * 0.30;
   const half = w * 0.40;
   const sway = Math.sin(t * 1.5) * U * 0.5;
   const level = Math.abs(rel) < 0.11;
@@ -634,7 +655,7 @@ function carryBeam(ctx, w, h, rel, t, kind, touched) {
 
   /* the loads. The cords stay plumb, so the tilt of the pole is the tilt of the
      load against the horizon — legible at a glance. */
-  const drop = h * 0.26, bs = U * 0.58;
+  const drop = h * 0.17, bs = U * 0.38;
   for (const sx of [-1, 1]) {
     const ex = cx + Math.cos(ang) * sx * half * 0.84;
     const ey = cy + sway + Math.sin(ang) * sx * half * 0.84 - U * 0.3;
@@ -648,8 +669,8 @@ function carryBeam(ctx, w, h, rel, t, kind, touched) {
 
   /* the brass level at the yoke — a housing, a notch, and a bubble that has to
      come home. This is the whole scoreboard, and it is a real thing to hold. */
-  const th = Math.max(9, h * 0.058), tw = Math.min(w * 0.29, th * 5);
-  const ly = cy + sway - h * 0.20;
+  const th = Math.max(8, h * 0.05), tw = Math.min(w * 0.26, th * 5);
+  const ly = cy + sway - h * 0.13;
   ctx.strokeStyle = "rgba(18,14,10,.9)"; ctx.lineWidth = U * 1.3;
   ctx.beginPath(); ctx.moveTo(cx, ly + th * 0.4); ctx.lineTo(cx, cy + sway - U * 1.4); ctx.stroke();
   ctx.fillStyle = "rgba(18,15,11,.94)";
@@ -825,7 +846,103 @@ const TAP = {
         ctx.fillStyle = g;
         ctx.beginPath(); ctx.ellipse(x + U * 1, y + U * 0.4, U * 2.6, U * 1.2, 0.2, 0, TAU); ctx.fill();
       } else {
-        soft(ctx, x, y, U * 11, U * 7, "255,196,140", 0.09 + 0.06 * Math.sin(t * 2.6 + i));
+        /* The painting has a forearm and no wound on it, so the wound has to
+           be painted here — and it has to sit on this skin rather than on top
+           of it. Everything is drawn as low-alpha stain feathered in three
+           passes: the photograph underneath does the modelling, the colour
+           only says what happened. One thin broken ring, and no more, tells
+           the hand where to go. */
+        const pulse = 0.5 + 0.5 * Math.sin(t * 1.9 + i * 1.7);
+        const seed = i * 7.3 + 1.7;
+        const rot = -0.66 + (hash(seed) - 0.5) * 0.36;      // along the forearm
+        const L = U * (4.1 + hash(seed * 1.7) * 1.2);
+        const Wd = U * (1.85 + hash(seed * 2.9) * 0.6);
+        ctx.save();
+        ctx.translate(x, y); ctx.rotate(rot);
+
+        // 1. the bruise — wide, desaturated and almost all feather
+        for (let k = 0; k < 3; k++) {
+          const sp = 1 + k * 0.42, a = 0.2 / (k * 1.6 + 1);
+          const g = ctx.createRadialGradient(0, 0, U * 0.4, 0, 0, U * 7.4 * sp);
+          g.addColorStop(0, `rgba(70,36,34,${a * 1.3})`);
+          g.addColorStop(0.5, `rgba(92,54,46,${a * 0.5})`);
+          g.addColorStop(1, "rgba(92,54,46,0)");
+          ctx.fillStyle = g;
+          ctx.beginPath(); ctx.ellipse(0, 0, U * 7.4 * sp, U * 5.1 * sp, 0, 0, TAU); ctx.fill();
+        }
+
+        // 2. the torn bed, feathered: same ragged outline, three sizes
+        const outline = (k) => {
+          ctx.beginPath();
+          for (let n = 0; n <= 26; n++) {
+            const a = (n / 26) * TAU;
+            const jag = (0.66 + hash(seed + n * 2.11) * 0.58) * (1 + k * 0.22);
+            const px = Math.cos(a) * L * jag, py = Math.sin(a) * Wd * jag;
+            n ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+          }
+          ctx.closePath();
+        };
+        for (let k = 0; k < 3; k++) {
+          ctx.fillStyle = `rgba(${58 - k * 6},${20 - k * 2},${19 - k * 2},${[0.5, 0.24, 0.1][k]})`;
+          outline(k); ctx.fill();
+        }
+
+        // 3. the split itself: two thin tears, near-black, with a dry rim
+        for (let k = 0; k < 2; k++) {
+          const off = (k - 0.5) * Wd * 0.9, len = L * (0.5 + hash(seed + k) * 0.45);
+          ctx.strokeStyle = `rgba(26,10,9,${k ? 0.6 : 0.78})`;
+          ctx.lineWidth = U * (k ? 0.55 : 0.8); ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(-len, off);
+          ctx.quadraticCurveTo(-len * 0.2, off - U * 0.42, len * 0.4, off + U * 0.26);
+          ctx.quadraticCurveTo(len * 0.7, off + U * 0.7, len, off - U * 0.14);
+          ctx.stroke();
+        }
+        // the skin stretched over the bruise catches the lantern on its top edge
+        ctx.strokeStyle = "rgba(248,214,178,.16)"; ctx.lineWidth = U * 0.5;
+        ctx.beginPath(); ctx.moveTo(-L * 0.75, -Wd * 0.85);
+        ctx.quadraticCurveTo(0, -Wd * 1.35, L * 0.7, -Wd * 0.8); ctx.stroke();
+
+        // 4. dried blood: tapered trails running the way the arm lies
+        for (let k = 0; k < 2; k++) {
+          const sx = (hash(seed + k * 4.4) - 0.35) * L * 1.1;
+          const len = L * (0.8 + hash(seed + k * 2.2) * 1.4);
+          const g2 = ctx.createLinearGradient(sx, Wd * 0.2, sx + U * 0.5, Wd + len);
+          g2.addColorStop(0, "rgba(56,20,18,.34)");
+          g2.addColorStop(0.7, "rgba(56,20,18,.14)");
+          g2.addColorStop(1, "rgba(56,20,18,0)");
+          ctx.fillStyle = g2;
+          ctx.beginPath();
+          ctx.moveTo(sx - U * 0.36, Wd * 0.2);
+          ctx.quadraticCurveTo(sx + U * 0.34, Wd + len * 0.55, sx + U * 0.02, Wd + len);
+          ctx.quadraticCurveTo(sx - U * 0.44, Wd + len * 0.5, sx - U * 0.36, Wd * 0.2);
+          ctx.fill();
+        }
+        // spatter, and road grit pressed into the rim
+        for (let k = 0; k < 6; k++) {
+          const a = hash(seed + k * 6.1) * TAU, rr = U * (2.2 + hash(seed + k * 2.9) * 4.2);
+          ctx.fillStyle = `rgba(62,24,21,${0.12 + hash(seed + k) * 0.18})`;
+          ctx.beginPath();
+          ctx.ellipse(Math.cos(a) * rr * 1.4, Math.sin(a) * rr * 0.85, U * (0.18 + hash(seed + k * 3.3) * 0.24), U * 0.16, a, 0, TAU);
+          ctx.fill();
+        }
+        for (let k = 0; k < 8; k++) {
+          const a = hash(seed + k * 5.3) * TAU, rr = 0.8 + hash(seed + k * 1.9) * 0.45;
+          ctx.fillStyle = `rgba(${84 + k * 3},${64 + k * 2},${42 + k * 2},${0.16 + hash(seed + k) * 0.16})`;
+          ctx.beginPath();
+          ctx.ellipse(Math.cos(a) * L * rr, Math.sin(a) * Wd * rr, U * 0.26, U * 0.19, a, 0, TAU);
+          ctx.fill();
+        }
+
+        // 5. the one thing that says "put your hand here"
+        ctx.strokeStyle = `rgba(247,221,165,${0.26 + pulse * 0.22})`;
+        ctx.lineWidth = U * 0.44;
+        ctx.setLineDash([U * 2.2, U * 1.9]);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, U * 7.6 + pulse * U * 0.8, U * 5.6 + pulse * U * 0.6, 0, 0, TAU);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
       }
     });
   },

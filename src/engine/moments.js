@@ -54,7 +54,7 @@ function point(e, host) {
   return { x: clamp(p.clientX - r.left, 0, w), y: clamp(p.clientY - r.top, 0, h), w, h };
 }
 
-import { drawMomentArt, hasMomentArt, momentPlateStyle, balanceAngle } from "./momentart.js";
+import { drawMomentArt, hasMomentArt, momentPlateStyle, platePoint, balanceAngle } from "./momentart.js";
 import { tx } from "../core/i18n.js";
 
 export function startMoment(host, spec, onDone) {
@@ -71,7 +71,7 @@ export function startMoment(host, spec, onDone) {
        player having actually put a finger on the act; nothing scores without
        it, and a clock that runs out asks for another go instead of handing out
        the reward for having done nothing. */
-    touched: false, sayAt: -1, retries: 0,
+    touched: false, sayAt: -1, late: false,
     limit: LIMIT()
   };
   host.innerHTML = "";
@@ -139,7 +139,26 @@ export function startMoment(host, spec, onDone) {
     if (nodeEl) nodeEl.remove();
     nodeEl = el("button", "moment-node", "✧");
     nodeEl.type = "button";
-    const fx = rand(0.16, 0.84), fy = rand(0.16, 0.8);
+    let fx, fy;
+    if (Array.isArray(spec.spots) && spec.spots.length) {
+      /* Some acts happen on something the photograph already shows — a wound
+         has to open on the arm, not in the air beside it. The data names those
+         places on the painting; the camera decides where they land on screen. */
+      S.spotI = ((S.spotI ?? -1) + 1) % spec.spots.length;
+      const spot = spec.spots[S.spotI];
+      const r = host.getBoundingClientRect ? host.getBoundingClientRect() : null;
+      const win = { w: (r && r.width) || host.clientWidth || 320, h: (r && r.height) || host.clientHeight || 220 };
+      const pt = platePoint(spec, win.w, win.h, spot[0], spot[1]);
+      fx = pt.fx; fy = pt.fy;
+    } else if (Array.isArray(spec.spawn)) {
+      /* Some acts belong on a surface the painting already has — the ground, a
+         field, a table. A tap can be anywhere inside that band, never in the
+         air. */
+      const [x0, y0, x1, y1] = spec.spawn;
+      fx = rand(x0, x1); fy = rand(y0, y1);
+    } else {
+      fx = rand(0.16, 0.84); fy = rand(0.16, 0.8);
+    }
     nodeEl.style.left = `${fx * 100}%`;
     nodeEl.style.top = `${fy * 100}%`;
     nodeEl.setAttribute("aria-label", "…");
@@ -301,41 +320,25 @@ export function startMoment(host, spec, onDone) {
       if (S.good >= 3.0) return finish(true);
       /* One sentence of instruction, then a countdown — never a bar to decode. */
       const left = Math.max(0, 3 - S.good).toFixed(1);
-      const line = !S.touched
+      const over = S.late ? tx(` · over ${Math.round(S.t - S.limit)}s`, ` · 超时 ${Math.round(S.t - S.limit)} 秒`) : "";
+      const line = (!S.touched
         ? tx("Press and drag until the bubble sits in the notch", "按住左右拖动，让气泡停在凹槽里")
-        : tx(`Bubble in the notch — ${left}s`, `气泡稳住——还剩 ${left} 秒`);
+        : tx(`Bubble in the notch — ${left}s`, `气泡稳住——还剩 ${left} 秒`)) + over;
       if (line !== S.sayAt) { S.sayAt = line; say(line); }
     } else if (S.kind === "rhythm") {
       S.marker += S.dir * S.speed * dt;
       if (S.marker > 1) { S.marker = 1; S.dir = -1; }
       if (S.marker < 0) { S.marker = 0; S.dir = 1; }
     }
-    /* Running out of time never ends a moment. With no finger on the act it is
-       not even a clock — it waits. Once the player has tried, a spent clock
-       asks for another go rather than moving the story on without them; the
-       explicit 跳过这一刻 button is the only way past it. */
-    if (S.t > S.limit) {
-      if (!S.touched) { S.limit += 30; }
-      else retryAttempt();
+    /* Running out of time never ends a moment, and it never wipes one either.
+       Past the line the act stays exactly as the player left it and stays
+       playable; what a slow attempt costs is part of the score, nothing else.
+       The explicit 跳过这一刻 button is the only way past it. */
+    if (S.t > S.limit && !S.late) {
+      S.late = true;
+      if (S.kind !== "balance") say(tx("Still yours — it just counts slower", "还是你的——只是会慢一点"));
+      S.sayAt = "";
     }
-  }
-
-  /** Reset a spent attempt in place. The act stays on screen and playable. */
-  function retryAttempt() {
-    S.t = 0; S.limit = LIMIT(); S.retries++;
-    S.progress = 0; S.good = 0; S.charge = 0; S.hits = 0; S.hit = 0; S.nodeT = 0;
-    S.marker = 0; S.dir = 1; S.band = rand(0.16, 0.84);
-    S.pos = 0.5; S.vel = 0; S.zero = 0.5; S.down = false; S.target = 0.5;
-    /* S.path is the drawn route itself — it is built once at mount and must
-       survive a retry, or the line and its hit test are gone for good. */
-    S.lastAction = -10;
-    setProgress(0);
-    if (nodeEl) { nodeEl.remove(); nodeEl = null; }
-    S.nodes = [];
-    if (spec.kind === "tap") spawnNode();
-    if (tokenEl) { tokenEl.style.left = "50%"; tokenEl.style.top = "90%"; }
-    say(tx("Time — once more.", "时间到，再来一次。"));
-    S.sayAt = "";
   }
 
   function frame(ts) {
@@ -351,7 +354,9 @@ export function startMoment(host, spec, onDone) {
     if (finished) return;
     finished = true; alive = false;
     cleanup();
-    onDone?.({ success: !!success, skipped, score: Math.round(S.progress * 100) });
+    /* Lateness is a discount, not a verdict. */
+    const keep = S.late ? clamp(1 - (S.t - S.limit) / (S.limit * 1.2), 0.4, 1) : 1;
+    onDone?.({ success: !!success, skipped, late: S.late, score: Math.round(S.progress * 100 * keep) });
   }
   function cleanup() {
     if (raf !== null && typeof cancelAnimationFrame === "function") cancelAnimationFrame(raf);

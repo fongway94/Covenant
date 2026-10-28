@@ -398,6 +398,19 @@ export function scepter(ctx, x, y, up, t) {
 
 /* ------------------------------------------------------------- scene loop */
 
+/* ------------------------------------------------------------------ the clock
+   Time is a score clock, never a wall. Every scene keeps its own `state.left`,
+   but when it passes zero nothing ends: the picture stays live and playable,
+   the HUD says how far over the line it is, and the payout shrinks with the
+   delay. A slow player loses points, never the act. */
+function overInfo(c) {
+  const s = c.state || {};
+  if (typeof s.left !== "number" || typeof s.t !== "number") return { over: 0, keep: 1 };
+  const budget = Math.max(12, s.t + s.left);   // the act's own starting budget
+  const over = Math.max(0, -s.left);
+  return { over, keep: clamp(1 - over / (budget * 0.9), 0.3, 1) };
+}
+
 export function startScene(canvas, key, onResult, seed = {}) {
   const game = GAMES[key] || GAMES.sling;
   let ctx = null;
@@ -467,14 +480,17 @@ export function startScene(canvas, key, onResult, seed = {}) {
     end(success, score) {
       if (ended) return;
       ended = true; alive = false;
-      c.score = Math.max(0, Math.round(score ?? c.score));
+      /* Lateness is paid for in points, here, once — so no scene has to
+         remember to do it and none can disagree about the rule. */
+      const oi = overInfo(c);
+      c.score = Math.max(0, Math.round((score ?? c.score) * oi.keep));
       if (raf && typeof cancelAnimationFrame === "function") cancelAnimationFrame(raf);
       detach();
       c.hit(success ? "complete" : "miss");
       /* `untouched` lets the story refuse to reward a scene that ended while
          the player's hands were off the phone. The story still moves on — it
          just does not pretend the act was performed. */
-      onResult({ score: c.score, success: !!success, skipped: false, untouched: !c.touched });
+      onResult({ score: c.score, success: !!success, skipped: false, untouched: !c.touched, late: oi.over > 0 });
     }
   };
 
@@ -732,6 +748,13 @@ export function startScene(canvas, key, onResult, seed = {}) {
     // score
     ctx.textAlign = "right"; ctx.fillStyle = "rgba(244,231,203,.85)"; ctx.font = `600 12px ${c.font}`;
     ctx.fillText(`${tx("SCORE", "得分")} ${c.score}`, w - 16, top + 22);
+    /* Past the line the scene is still live; this is the whole cost of being
+       late, and it has to be readable at a glance. */
+    const oi = overInfo(c);
+    if (oi.over > 0) {
+      ctx.font = `700 11px ${c.font}`; ctx.fillStyle = "#e8b877";
+      ctx.fillText(`${tx("OVER", "超时")} +${Math.ceil(oi.over)}s`, w - 16, top + 38);
+    }
     if (c.combo >= 2) {
       ctx.font = `700 11px ${c.font}`;
       ctx.fillStyle = "#e7b75b";

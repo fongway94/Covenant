@@ -480,10 +480,10 @@ function mountHotspots(ui) {
     if (last && Math.hypot(p.clientX - last.clientX, p.clientY - last.clientY) < 3) return;
     last = p; light(p);
   }, { passive: true });
-  const bar = document.getElementById("hotspot-timer-fill");
-  bar?.addEventListener("animationend", () => {
-    if (ui.story?.phase === "hotspots") hotspotSkip(ui);
-  });
+  /* The lantern search has no clock any more. A search that ended itself after
+     twenty-eight seconds took the finding away from the player as surely as a
+     failing timer would; now the search ends when it is finished, or when the
+     three looks of focus are spent. */
 }
 
 function loseFocus(ui, msg) {
@@ -557,7 +557,6 @@ function hotspotsHtml(ui) {
   const title = tx(cfg.title, cfg.titleZh);
   const prompt = tx(cfg.prompt, cfg.promptZh);
   const decoy = cfg.decoyGlyph || "◇";
-  const seconds = cfg.seconds || 28;
   const dots = h.pos.map((p, i) => {
     const isReal = h.real.has(i);
     const found = h.found.includes(i);
@@ -569,7 +568,6 @@ function hotspotsHtml(ui) {
       <h2>${esc(title)}</h2>
       <p class="small">${esc(prompt)}</p>
       <div class="hotspot-count" id="hotspot-count">${tx("Found", "已找到")} ${h.found.length} / ${cfg.count}</div>
-      ${done ? "" : `<div class="hotspot-timer"><i id="hotspot-timer-fill" style="animation-duration:${seconds}s"></i></div>`}
       <div class="hotspot-focus" id="hotspot-focus">${tx("FOCUS", "专注")} ${[0, 1, 2].map((i) => `<i class="${i < h.focus ? "on" : ""}"></i>`).join("")}</div>
       <div class="hotspot-progress" id="hotspot-progress">${Array.from({ length: cfg.count }, (_, i) => `<i class="${i < h.found.length ? "on" : ""}"></i>`).join("")}</div>
     </div>
@@ -830,6 +828,7 @@ function actionResultHtml(ui) {
       <h2>${esc(ok ? tx("Well done!", "做得好！") : tx("The story continues.", "故事继续。"))}</h2>
       <div class="result-stars">${[0, 1, 2].map((i) => `<span class="${i < stars ? "on" : ""}">★</span>`).join("")}</div>
       <div class="result-score">${tx("SCORE", "得分")} <strong>${r.score || 0}</strong></div>
+      ${r.late ? `<div class="tiny muted">${tx("You took your time, so it scored less. Nothing was lost.", "你花的时间长了些，所以得分少一点。什么也没有失去。")}</div>` : ""}
       <div class="card-quiet small">${esc(ok ? tx("Bonus earned", "获得奖励") + " · +14 " + tx("XP", "经验") + " · +1 " + tx("Courage", "勇气") + " · +1 " + tx("Faith", "信心") : tx("No bonus", "没有奖励"))}</div>
       <button class="btn btn-primary" data-action="action-done">${tx("Keep going", "继续")} ${icon("forward", 16)}</button>
     </div>

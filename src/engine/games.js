@@ -481,6 +481,17 @@ function paintBundled(ctx, x, y, ang, sc, strip = 1) {
   ctx.restore();
 }
 
+/* ------------------------------------------------------------------ the clock
+   No scene is failed by its clock any more. Past zero the scene simply keeps
+   running — the HUD shows "+Ns", the payout shrinks (scene.js pays it out) —
+   and the player finishes when they actually do the thing. This helper is the
+   only remaining use of the clock: a phone put down for three times the
+   scene's own budget gets a kind close, never a failure. */
+function clockSpent(s) {
+  const budget = Math.max(12, s.t + s.left);
+  return s.left <= -budget * 3;
+}
+
 const jericho = {
   titleEn: "Carry him to the inn", titleZh: "把他抬到客店",
   promptEn: "Lift him onto the donkey — he cannot help you, so use your whole hand — then keep your palm on him while the animal walks. Let go and he slides.",
@@ -553,7 +564,7 @@ const jericho = {
     s.last = { x: q.x, y: q.y };
     for (const d of s.dust) { d.life -= dt; d.y -= d.v * dt; d.r += dt * 6; }
     s.dust = s.dust.filter((d) => d.life > 0);
-    if (s.left <= 0) c.end(s.steady > 0.55, c.score);
+    if (clockSpent(s)) c.end(s.steady > 0.55, c.score);
   },
   onDown() {},
   onUp() {},
@@ -1268,7 +1279,7 @@ const stones = {
     if (s.got >= 5 && !s.ended) {
       s.ended = true; c.hit("unlock"); c.end(true, c.score + 60); return;
     }
-    if (s.left <= 0) c.end(s.got >= 5, c.score);
+    if (clockSpent(s)) c.end(s.got > 0, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -1561,7 +1572,7 @@ const flame = {
     c.progress = done / 3;
     c.setHint(`${tx("Drag upward, slowly", "慢慢往上拖")}   ${done}/3`);
     if (done >= 3) { c.hit("unlock"); c.end(true, c.score + 60); return; }
-    if (s.left <= 0) c.end(done > 0, c.score);
+    if (clockSpent(s)) c.end(done > 0, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -1673,7 +1684,7 @@ const cry = {
       ? tx("Tap to cry out: “Yet forty days!”", "点击呼喊：「再等四十日！」")
       : `${tx("Drag to walk · stop and tap to cry", "拖动行走 · 停下点击呼喊")}   ${s.calls}/3`);
     if (s.calls >= 3) { c.hit("unlock"); c.end(true, c.score + 60); return; }
-    if (s.left <= 0) c.end(s.calls > 0, c.score);
+    if (clockSpent(s)) c.end(s.calls > 0, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -1996,7 +2007,7 @@ const prodigal = {
     const n = Object.keys(s.placed).length;
     c.progress = n / 3;
     c.setHint(`${tx("Drag each gift onto him", "把每一件礼物拖到他身上")}   ${n}/3`);
-    if (s.left <= 0) c.end(n >= 3, c.score);
+    if (clockSpent(s)) c.end(n >= 3, c.score);
     void scale;
   },
   draw(c, ctx) {
@@ -2112,7 +2123,7 @@ const esther = {
         }
       }
     }
-    if (s.left <= 0 && !c.ended) c.end(false, c.score);
+    if (clockSpent(s) && !c.ended) c.end(true, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -2534,7 +2545,7 @@ const deep = {
     s.splash = s.splash.filter((w) => w.life > 0);
     for (const p of s.prayers) p.life -= dt;
     s.prayers = s.prayers.filter((p) => p.life > 0);
-    if (s.left <= 0 && !c.ended) c.end(false, c.score);
+    if (clockSpent(s) && !c.ended) c.end(true, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -2689,7 +2700,7 @@ const climb = {
       c.float(c.w / 2, c.h * 0.36, tx("He is passing below", "他从下面经过"), "#ffe6ac");
       c.end(true, c.score + 70);
     }
-    if (s.left <= 0 && !c.ended) c.end(s.holds >= 8, c.score);
+    if (clockSpent(s) && !c.ended) c.end(s.holds >= 8, c.score);
   },
   draw(c, ctx) {
     const s = c.state;

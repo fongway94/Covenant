@@ -38,11 +38,15 @@ export const MOMENTS = {
       B("You reach the top without dropping anything. Nobody noticed you arrive.", "你一样东西也没掉地爬到了山顶。没有人注意到你来了。"), "stay", { span: 0.46 })
   ],
   lions: [
+    /* The decree is the open scroll on the mat in this painting: the nodes
+       are the lines of it, in plate fractions, so the ink surfaces on the
+       scroll and never in mid-air. */
     M("decree", "tap", "lines",
-      "window", 0.55, 0.70,
+      "window", 0.55, 0.78,
       B("Read the sealed decree", "读那盖印的禁令"),
       B("Tap each line as it surfaces. The law is already written — you can only witness it.", "每一行浮起时轻点它。律法已经写好——你只能见证。"),
-      B("Thirty days. No prayer. The ink is still wet.", "三十天。不许祷告。墨迹还没干。"), "notice"),
+      B("Thirty days. No prayer. The ink is still wet.", "三十天。不许祷告。墨迹还没干。"), "notice",
+      { spots: [[0.515, 0.856], [0.545, 0.868], [0.575, 0.858], [0.605, 0.870], [0.565, 0.882], [0.632, 0.858]] }),
     M("upstairs", "hold", "shutter",
       "lions", 0.55, 0.60,
       B("Keep the window open", "让窗户敞着"),
@@ -50,11 +54,14 @@ export const MOMENTS = {
       B("Three times a day. The same as yesterday. The same as always.", "一日三次。和昨天一样。和往常一样。"), "wait")
   ],
   jericho: [
+    /* The wounds are placed on the painting's own forearm — these are plate
+       fractions along the arm he is lying on, not screen positions. */
     M("wounded", "tap", "wound",
       "tend", 0.42, 0.62,
       B("Bind the wounds", "包扎伤口"),
       B("Tap each wound to clean it with oil and wine. Be gentle — he is barely conscious.", "轻点每处伤口，用油和酒清洗。轻一点——他几乎失去意识。"),
-      B("Oil, wine, bandages. Mercy has a cost and it is counted in linen.", "油、酒、绷带。怜悯是有代价的，代价是用布来数的。"), "stay"),
+      B("Oil, wine, bandages. Mercy has a cost and it is counted in linen.", "油、酒、绷带。怜悯是有代价的，代价是用布来数的。"), "stay",
+      { spots: [[0.26, 0.685], [0.31, 0.655], [0.375, 0.665], [0.44, 0.598], [0.485, 0.572], [0.52, 0.545]] }),
     M("passers", "rhythm", "foot",
       "jericho", 0.50, 0.64,
       B("Listen for footsteps", "听脚步声"),
@@ -114,7 +121,8 @@ export const MOMENTS = {
       "ruth", 0.38, 0.72,
       B("Gather the fallen barley", "拾取掉落的麦穗"),
       B("Tap each stalk left behind at the edges of the field. Leave nothing for pride.", "轻点田边掉落的每一根麦穗。别让骄傲使你留下任何一根。"),
-      B("A handful of barley. Boaz told the reapers to drop more on purpose.", "一把麦穗。是波阿斯吩咐收割的人故意多留的。"), "notice"),
+      B("A handful of barley. Boaz told the reapers to drop more on purpose.", "一把麦穗。是波阿斯吩咐收割的人故意多留的。"), "notice",
+      { spawn: [0.14, 0.46, 0.86, 0.82] }),
     M("kindness", "balance", "sheaf",
       "ruth", 0.40, 0.70,
       B("Carry the sheaf", "扛着麦捆"),
@@ -143,7 +151,8 @@ export const MOMENTS = {
       "zacchaeus", 0.50, 0.62,
       B("Count out four coins", "数出四倍的钱"),
       B("Tap each coin as he counts. Fourfold — more than the Law required.", "他一枚一枚地数，你也跟着轻点。四倍——远超律法的要求。"),
-      B("Nobody asked him to. That is what grace does when it is welcomed.", "没有人要求他这样做。这就是恩典被接纳之后所做的事。"), "stay")
+      B("Nobody asked him to. That is what grace does when it is welcomed.", "没有人要求他这样做。这就是恩典被接纳之后所做的事。"), "stay",
+      { spawn: [0.18, 0.58, 0.82, 0.84] })
   ]
 };
 
@@ -155,6 +164,7 @@ export function momentFor(chapterId, nodeId, zh, done = {}) {
   const L = (b) => b[zh ? 1 : 0];
   return {
     kind: m.kind, subject: m.subject, plate: m.plate, fx: m.fx, fy: m.fy, span: m.span,
+    spots: m.spots, spawn: m.spawn,
     way: m.way || MOMENT_WAY_FALLBACK[m.kind],
     title: L(m.title), prompt: L(m.prompt), done: L(m.done),
     at: m.at, chapterId
