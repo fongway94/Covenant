@@ -2778,31 +2778,31 @@ export const PRELUDES = {
   /* ---------------------------------------------------- 1. David (3 acts) */
   sling: [
     {
-      kind: "charge", hero: "david", ...P("elah-field", "leaves"),
-      title: ["Practise the sling", "练习甩石"],
-      prompt: ["The stones from the brook sit in your bag. Hold to wind the sling, then release inside the moving gold band — three clean swings before you step onto the field.",
-        "从溪边捡来的石子就在袋里。按住转动机弦，在移动的金色区间里松手——上阵前先练成三次干净的挥甩。"],
-      hint: ["Hold to wind · release in the band", "按住蓄力 · 在金带内松手"],
-      rounds: 3, seconds: 24, reward: 40
+      kind: "charge", mode: "sling", hero: "david", ...P("elah-field", "leaves"),
+      title: ["Wind the sling", "把机弦转起来"],
+      prompt: ["The stones from the brook sit in your bag. Turn the sling round your fist — a full circle — and let go while it is still singing. Three clean throws before you step onto the field.",
+        "从溪边捡来的石子就在袋里。绕着拳头把机弦转满一圈，趁它还带着风声时松手。上阵前先甩出三次干净的。"],
+      hint: ["Drag in a circle · release when it sings", "绕圈拖动 · 转起来后松手"],
+      rounds: 3, seconds: 30, reward: 40
     },
     {
       kind: "dodge", hero: "david", villain: "goliath", ...P("elah-field", "leaves"),
       title: ["Cross the valley", "穿过山谷"],
       prompt: ["Goliath hurls spears as David walks toward the line. Tap to leap over them. Four hits and you are knocked back — but the story goes on.",
         "大卫走向阵前时，歌利亚不断投出长枪。点击跳过。被击中四次会被逼退——但故事仍会继续。"],
-      hint: ["Tap to jump · reach the battle line", "点击跳跃 · 走到阵前"],
+      hint: ["Tap to leap · reach the battle line", "点击跃起 · 走到阵前"],
       seconds: 17, reward: 30
     }
   ],
 
   /* --------------------------------------------------------- 2. Daniel */
   lions: [{
-    kind: "rhythm", hero: "daniel", ...P("lions", "embers"),
-    title: ["Keep the night watch", "守住夜里的祷告"],
-    prompt: ["The guards pass in a rhythm. Tap as the light crosses the golden mark — three steady prayers before the den is sealed.",
-      "守卫按节奏巡行。当光点穿过金色标记时点击——在坑口被封住前，守住三次祷告。"],
-    hint: ["Tap on the mark · three times", "在标记处点击 · 共三次"],
-    rounds: 3, seconds: 22, reward: 30, robe: "#4a4260"
+    kind: "rhythm", mode: "shade", hero: "daniel", ...P("lions", "embers"),
+    title: ["Shelter the lamps", "遮住灯焰"],
+    prompt: ["A guard walks his round with a torch. Cup your hand over each prayer lamp as his light passes, or the flame flares and he sees it. Three lamps before the den is sealed.",
+      "守卫举着火把巡行。他的光经过时，用手遮住每一盏祷告的灯，否则火焰会窜起来被他看见。封坑之前，三盏都要守住。"],
+    hint: ["Hold your hand over a lamp as the light passes", "光经过时把手按在灯上"],
+    rounds: 3, seconds: 30, reward: 30, robe: "#4a4260"
   }],
 
   /* --------------------------------------------------------- 3. Jericho */
@@ -2817,12 +2817,12 @@ export const PRELUDES = {
 
   /* --------------------------------------------------------- 4. Storm */
   storm: [{
-    kind: "charge", hero: "fisherman", ...P("storm", "rain"),
+    kind: "charge", mode: "rope", hero: "fisherman", ...P("storm", "rain"),
     title: ["Haul the rope", "拉紧缆绳"],
-    prompt: ["Hold to haul the rope, then release exactly inside the moving gold band. Three clean pulls and the boat is ready for the waves.",
-      "按住拉绳，在移动的金色区间里松手。三次成功，船就能迎向风浪。"],
-    hint: ["Hold to pull · release in the band", "按住拉绳 · 在金带内松手"],
-    rounds: 3, seconds: 26, reward: 30
+    prompt: ["A wet rope, hand over hand. Drag it down the length of your reach, then let go and take the next hold. Three good hauls and the yard is up before the squall.",
+      "湿透的缆绳，一手一手往上拉。顺着手臂往下拖满一把，松手，再抓住下一把。拉上三把，横桁就能在风起前升起来。"],
+    hint: ["Drag down and release · three hauls", "向下拖动再松手 · 共三把"],
+    rounds: 3, seconds: 30, reward: 30
   }],
 
   /* --------------------------------------------------------- 5. Prodigal */
@@ -2837,11 +2837,11 @@ export const PRELUDES = {
 
   /* --------------------------------------------------------- 6. Esther */
   esther: [{
-    kind: "order", ...P("esther", "embers"),
-    title: ["Remember the decree", "记住谕旨的顺序"],
-    prompt: ["Watch the royal seals light up, then tap them back in the same order. Two rounds — the second is longer. A mistake costs you time.",
-      "看清王室印记亮起的顺序，再按同样的顺序点回来。两轮，第二轮更长。出错会损失时间。"],
-    hint: ["Repeat the order of the seals", "按印记的顺序点回来"],
+    kind: "order", mode: "seal", ...P("esther", "embers"),
+    title: ["Seal the decree", "在谕旨上用印"],
+    prompt: ["The herald reads the decree and the royal seals are pressed in order. Stamp them back into the wax in the same order — two readings, the second longer.",
+      "传令官宣读谕旨，王室印记按顺序盖上。照同样的顺序把印压回蜡里——宣读两遍，第二遍更长。"],
+    hint: ["Press the seals in the order read", "按宣读的顺序用印"],
     rounds: 2, seconds: 34, reward: 30
   }],
 
@@ -2852,37 +2852,37 @@ export const PRELUDES = {
     prompt: ["Three sheep have scattered into the ravine. Sweep the sand to uncover them before the light fails — avoid the empty shadows.",
       "三只羊走散在旱谷里。拂开沙土找出它们，趁天色未暗——避开那些空空的影子。"],
     hint: ["Drag to sweep · tap a sheep", "拖动拂开沙土 · 点击羊"],
-    goal: 3, decoys: 6, seconds: 24, reward: 25,
+    goal: 3, decoys: 4, seconds: 24, reward: 25,
     good: "#efe2c4", siltRgb: "108,80,50"
   }],
 
   /* --------------------------------------------------------- 8. Ruth */
   glean: [{
-    kind: "rhythm", hero: "ruth", ...P("ruth", "petals"),
-    title: ["Keep pace with the reapers", "跟上收割人的节奏"],
-    prompt: ["Gleaning means moving with the harvesters, not ahead of them. Tap when the sheaf-light crosses the golden mark — three times.",
-      "拾穗要跟着收割人的节奏，不能抢在前头。麦捆之光穿过金色标记时点击——共三次。"],
-    hint: ["Tap on the mark · three times", "在标记处点击 · 共三次"],
-    rounds: 3, seconds: 22, reward: 30, robe: "#5c6042"
+    kind: "rhythm", mode: "catch", hero: "ruth", ...P("ruth", "petals"),
+    title: ["Take what the reapers drop", "接住收割人落下的麦穗"],
+    prompt: ["Gleaning means moving with the harvesters, not ahead of them. Put your hand under each sheaf as it falls from their arms — three before the light goes.",
+      "拾穗要跟着收割人的节奏，不能抢在前头。麦穗从他们臂弯里掉下来时，把手伸到下面接住——在天黑之前接三次。"],
+    hint: ["Catch each falling sheaf", "接住落下的麦穗"],
+    rounds: 3, seconds: 30, reward: 30, robe: "#5c6042"
   }],
 
   /* --------------------------------------------------------- 9. Jonah */
   deep: [{
-    kind: "charge", ...P("jonah", "rain"),
+    kind: "charge", mode: "breath", ...P("jonah", "rain"),
     title: ["Hold your breath", "屏住呼吸"],
-    prompt: ["Each dive needs exactly the right breath. Hold, then release inside the moving gold band — three dives before the fish arrives.",
-      "每一次下潜都需要恰到好处的一口气。按住，在移动的金色区间里松手——大鱼到来前完成三次。"],
-    hint: ["Hold to breathe in · release in the band", "按住吸气 · 在金带内松手"],
-    rounds: 3, seconds: 26, reward: 30
+    prompt: ["Fill your lungs and go under. Hold while the water climbs and your sight narrows, then surface before the dark closes. Three good dives before the fish arrives.",
+      "吸满一口气，沉下去。水往上涨、视野一点点收窄的时候屏住，在黑暗合拢之前浮上来。大鱼到来前，三次干净的下潜。"],
+    hint: ["Hold to dive · surface before the dark closes", "按住下潜 · 在黑暗合拢前浮上来"],
+    rounds: 3, seconds: 30, reward: 30
   }],
 
   /* --------------------------------------------------------- 10. Zacchaeus */
   climb: [{
-    kind: "order", ...P("zacchaeus", "leaves"),
-    title: ["Read the branches", "看清树枝"],
-    prompt: ["The crowd points you up the tree. Watch which branches glow, then tap them back in order. Two rounds before Jesus passes.",
-      "人群指示你往树上爬。看清哪些树枝亮起，再按顺序点回来。耶稣经过前要完成两轮。"],
-    hint: ["Repeat the order of the branches", "按树枝的顺序点回来"],
+    kind: "order", mode: "branch", ...P("zacchaeus", "leaves"),
+    title: ["Take the boughs they point to", "顺着人群指的枝子"],
+    prompt: ["The crowd points you up the tree, one bough at a time. Watch which they choose, then take the same ones in the same order. Two climbs before Jesus passes.",
+      "人群一根一根地指你往树上去。看清他们指的是哪几根，再照同样的顺序爬上去。耶稣经过前要爬两趟。"],
+    hint: ["Take the boughs in the order pointed", "按指引的顺序爬枝子"],
     rounds: 2, seconds: 34, reward: 30
   }]
 };

@@ -57,15 +57,47 @@ function preludeInput(c, frame, seen) {
     }
     return;
   }
-  // rhythm: tap when the light is inside the golden band
-  if (typeof s.band === "number" && typeof s.pos === "number" && s.round !== undefined && !s.holding) {
-    if (Math.abs(s.pos - s.band) <= s.bandW / 2) tap(c.w * 0.5, c.h * 0.63);
+  // watch · shade: keep a hand on the lamp the guard's light is nearest
+  if (s.mode === "shade" && s.lamps) {
+    const gx = s.sweepX * c.w;
+    const target = [...s.lamps].filter((l) => !l.saved).sort((a, b) => Math.abs(gx - a.x) - Math.abs(gx - b.x))[0];
+    if (target) {
+      if (!p.down) { p.down = true; tap(target.x, target.y); }
+      else { p.x = target.x; p.y = target.y; }
+    }
     return;
   }
-  // charge: hold and release inside the band
-  if (typeof s.power === "number" && s.round !== undefined) {
-    if (!s.holding) { p.down = true; tap(c.w * 0.5, c.h * 0.6); }
-    else if (Math.abs(s.power - s.band) <= s.bandW / 2) { p.down = false; g.onUp?.(c, p); }
+  // watch · catch: stand under the falling sheaf and take it
+  if (s.mode === "catch" && s.sheaf !== undefined) {
+    if (s.sheaf && !s.sheaf.taken && !s.sheaf.missed) {
+      p.x = s.sheaf.x; p.y = s.sheaf.y;
+      const inReach = s.sheaf.y > c.h * 0.74 - 50 && s.sheaf.y < c.h * 0.74 + 34;
+      if (inReach && !p.down) { p.down = true; tap(p.x, p.y); }
+      else if (!inReach && p.down) { p.down = false; g.onUp?.(c, p); }
+    } else p.down = false;
+    return;
+  }
+  // grip · sling: turn it a full circle, then let go
+  if (s.mode === "sling") {
+    const pv = { x: c.w * 0.5, y: c.h * 0.62 };
+    const a = frame * 0.16;
+    if (s.rev < 0.95) {
+      if (!p.down) { p.down = true; tap(pv.x + 46, pv.y); }
+      p.x = pv.x + Math.cos(a) * 46; p.y = pv.y + Math.sin(a) * 46;
+    } else if (p.down) { p.down = false; g.onUp?.(c, p); }
+    return;
+  }
+  // grip · rope: one long haul, then release
+  if (s.mode === "rope") {
+    if (!p.down) { p.x = c.w * 0.5; p.y = c.h * 0.55; p.down = true; tap(p.x, p.y); }
+    else if (s.pull < 0.7) p.y += 9;
+    else { p.down = false; g.onUp?.(c, p); }
+    return;
+  }
+  // grip · breath: hold under, surface before the dark closes
+  if (s.mode === "breath" && typeof s.depth === "number") {
+    if (!p.down) { p.down = true; tap(c.w * 0.5, c.h * 0.6); }
+    else if (s.depth > 0.62) { p.down = false; g.onUp?.(c, p); }
     return;
   }
   // order: repeat the sequence during the input phase

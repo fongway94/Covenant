@@ -82,11 +82,44 @@ function driveAct(kind, cfg) {
           act.onMove?.(c, p);
           if (s.cells[left.cell].revealed) tap(c, act, left.x, left.y);
         }
-      } else if (kind === "rhythm") {
-        if (Math.abs(s.pos - s.band) <= s.bandW / 2) tap(c, act, c.w * 0.5, c.h * 0.63);
+      } else if (kind === "rhythm" && s.mode === "shade") {
+        /* Cover whichever lamp the guard's light is nearest, and stay on it. */
+        const gx = s.sweepX * c.w;
+        const target = [...s.lamps].filter((l) => !l.saved)
+          .sort((a, b) => Math.abs(gx - a.x) - Math.abs(gx - b.x))[0];
+        if (target) {
+          if (!p.down) { p.x = target.x; p.y = target.y; p.down = true; act.onDown?.(c, p); }
+          else { p.x = target.x; p.y = target.y; }
+        }
+      } else if (kind === "rhythm" && s.mode === "catch") {
+        /* Stand under the sheaf and take it as it arrives. */
+        if (s.sheaf && !s.sheaf.taken && !s.sheaf.missed) {
+          p.x = s.sheaf.x; p.y = s.sheaf.y;
+          const inReach = s.sheaf.y > c.h * 0.74 - 50 && s.sheaf.y < c.h * 0.74 + 34;
+          if (inReach && !p.down) { p.down = true; act.onDown?.(c, p); }
+          else if (!inReach && p.down) { p.down = false; act.onUp?.(c, p); }
+        } else { p.down = false; }
+      } else if (kind === "charge" && s.mode === "sling") {
+        /* Turn the sling a full revolution, then let go. */
+        const pv = { x: c.w * 0.5, y: c.h * 0.62 };
+        const a = frames * 0.16;
+        const rad = 46;
+        if (s.rev < 0.95) {
+          if (!p.down) { p.x = pv.x + rad; p.y = pv.y; p.down = true; act.onDown?.(c, p); }
+          p.x = pv.x + Math.cos(a) * rad; p.y = pv.y + Math.sin(a) * rad;
+        } else if (p.down) { p.down = false; act.onUp?.(c, p); }
+      } else if (kind === "charge" && s.mode === "rope") {
+        /* One long haul down the rope, then release. */
+        if (!p.down) {
+          p.x = c.w * 0.5; p.y = c.h * 0.55; p.down = true; act.onDown?.(c, p);
+        } else if (s.pull < 0.7) {
+          p.y += 9;
+        } else { p.down = false; act.onUp?.(c, p); }
       } else if (kind === "charge") {
-        if (!s.holding) tap(c, act, c.w * 0.5, c.h * 0.6);
-        else if (Math.abs(s.power - s.band) <= s.bandW / 2) { p.down = false; act.onUp?.(c, p); }
+        /* Breathe in, hold until the vision narrows, surface. */
+        if (!p.down) { p.x = c.w * 0.5; p.y = c.h * 0.6; p.down = true; act.onDown?.(c, p); }
+        else if (s.depth < 0.62) { /* keep holding */ }
+        else { p.down = false; act.onUp?.(c, p); }
       } else if (kind === "order") {
         if (s.phase === "input" && s.shown < s.seq.length) {
           const cell = s.cells[s.seq[s.shown]];
@@ -130,7 +163,10 @@ function driveClimax(key, game) {
   const errors = [];
   let frames = 0;
   try { game.init?.(c); } catch (e) { return [`init: ${e.message}`]; }
-  const maxFrames = 60 * 90;
+  /* A whole wrapped scene is its preparation acts plus the climax, and the
+     oracles here only drive the climax — the acts are given their full clocks
+     and then hand over. Budget for both. */
+  const maxFrames = 60 * 150;
   while (!c.ended && frames < maxFrames) {
     frames++; c.t = frames / 60;
     const p = c.pointer, s = c.state;
