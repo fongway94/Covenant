@@ -180,6 +180,19 @@ try {
   assert(bus.ui.view === "finale", "finale screen missing");
   assert(bus.ui.state.flags.finaleSeen, "finale was not recorded in the save");
 
+  // v0.6: the Journey Mirror is driven by real behaviour, shows a Bible
+  // profile with its honest failure, and sends the player back to Scripture.
+  const ways = bus.ui.state.adventure?.ways || {};
+  const wayTotal = ["step", "notice", "stay", "wait"].reduce((n, k) => n + (ways[k] || 0), 0);
+  assert(wayTotal > 0, "no walking behaviour was recorded for the Journey Mirror");
+  assert(!!$(".journey-mirror"), "Journey Mirror missing from finale");
+  assert(!!$(".mirror-figure .mirror-block.shadow"), "mirror must include the person's real failure");
+  assert($$(".reading-row").length === CHAPTERS.length, "ten-passage reading list missing");
+  click('.reading-row[data-id="jonah"]');
+  assert(!!$("#modal-backdrop"), "reading list did not open the scroll");
+  assert(!!$(".go-deeper") || !!$("#modal-backdrop"), "scroll is missing the go-deeper invitation");
+  click('[data-action="close-modal"]');
+
   // Journal tabs + item modals.
   click('[data-action="go"][data-view="journal"]');
   for (const tab of ["scrolls", "relics", "fruits", "seals"]) {

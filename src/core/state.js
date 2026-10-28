@@ -18,7 +18,16 @@ export const DEFAULT_SETTINGS = {
   settingsVersion: SETTINGS_VERSION
 };
 
-const DEFAULT_ADVENTURE = { cycles: 0, guidance: 2, quests: {}, day: 1, npcMet: [], breaths: 0, lastBreathDay: 0 };
+/* The four "ways of walking" for the Journey Mirror. These are counted from
+   real behaviour (choices, prayer, searching, NPCs, quests) — never from a
+   questionnaire. Old saves fall back to the virtue stats in mirror.js. */
+export const WAY_KEYS = ["step", "notice", "stay", "wait"];
+const DEFAULT_WAYS = { step: 0, notice: 0, stay: 0, wait: 0 };
+
+const DEFAULT_ADVENTURE = {
+  cycles: 0, guidance: 2, quests: {}, day: 1, npcMet: [], breaths: 0,
+  lastBreathDay: 0, ways: { ...DEFAULT_WAYS }
+};
 
 export function newGame(name, callingId) {
   const calling = CALLINGS.find((c) => c.id === callingId) || CALLINGS[0];
@@ -67,6 +76,8 @@ export function loadGame() {
     s.adventure = { ...DEFAULT_ADVENTURE, ...(s.adventure || {}) };
     if (!s.adventure.quests || Array.isArray(s.adventure.quests)) s.adventure.quests = {};
     if (!Array.isArray(s.adventure.npcMet)) s.adventure.npcMet = [];
+    s.adventure.ways = { ...DEFAULT_WAYS, ...(s.adventure.ways || {}) };
+    for (const k of WAY_KEYS) s.adventure.ways[k] = Math.max(0, Number(s.adventure.ways[k]) || 0);
     return s;
   } catch { return null; }
 }
@@ -130,6 +141,7 @@ export function pray(s, chapterId) {
   s.prayedIn.push(chapterId);
   addStat(s, "faith", 1);
   addGuidance(s, 1);       // prayer also stores a little Guidance for the road
+  addWay(s, "wait", 3);    // pausing to pray is the clearest "wait" signal
   addXp(s, 4);
   checkSeals(s);
   saveGame(s);
@@ -169,6 +181,7 @@ export function completeChapter(s, chapter) {
 
 export function recordReflection(s, chapterId, stat) {
   if (!s.reflections.includes(chapterId)) s.reflections.push(chapterId);
+  addWay(s, "notice", 2);  // sitting with the question is an act of attention
   addXp(s, 10);
   if (stat) for (const [k, v] of Object.entries(stat)) addStat(s, k, v);
   const levels = addXp(s, 0);
@@ -194,6 +207,23 @@ export function addGuidance(s, n) {
   const a = adventure(s);
   a.guidance = Math.max(0, Math.min(99, (a.guidance || 0) + (n || 0)));
   return a.guidance;
+}
+
+/** Record an observable behaviour for the Journey Mirror. No UI, no quiz. */
+export function addWay(s, key, n = 1) {
+  if (!WAY_KEYS.includes(key)) return 0;
+  const a = adventure(s);
+  if (!a.ways) a.ways = { ...DEFAULT_WAYS };
+  a.ways[key] = Math.max(0, Math.min(999, (Number(a.ways[key]) || 0) + n));
+  return a.ways[key];
+}
+
+/** Virtue gained on a choice also reveals a way of walking. */
+export function addWaysFromStats(s, stats) {
+  const map = { courage: "step", wisdom: "notice", compassion: "stay", faith: "wait" };
+  for (const [k, v] of Object.entries(stats || {})) {
+    if (map[k] && v) addWay(s, map[k], Math.min(3, Math.abs(v)));
+  }
 }
 
 export function spendGuidance(s, n = 1) {
@@ -228,6 +258,7 @@ export function claimQuest(s, id) {
   const a = adventure(s);
   if (a.quests[id] || q.progress(s) < q.goal) return null;
   a.quests[id] = Date.now();
+  addWay(s, "stay", 1);
   addGuidance(s, q.reward.guidance || 0);
   for (const [k, v] of Object.entries(q.reward)) if (k !== "guidance") addStat(s, k, v);
   addXp(s, 15);
@@ -244,6 +275,7 @@ export function breatheAtCamp(s) {
   if (a.lastBreathDay === day) return null;
   a.lastBreathDay = day;
   a.breaths = (a.breaths || 0) + 1;
+  addWay(s, "wait", 2);
   addGuidance(s, 2);
   addStat(s, "faith", 1);
   addXp(s, 6);
@@ -254,7 +286,7 @@ export function breatheAtCamp(s) {
 
 export function metNpc(s, id) {
   const a = adventure(s);
-  if (!a.npcMet.includes(id)) { a.npcMet.push(id); saveGame(s); }
+  if (!a.npcMet.includes(id)) { a.npcMet.push(id); addWay(s, "stay", 2); saveGame(s); }
 }
 
 export function markFinale(s) {

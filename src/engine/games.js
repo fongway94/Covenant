@@ -5,7 +5,7 @@
 import { tx, isZh } from "../core/i18n.js";
 import { clamp, rnd, dist, pilgrim, lion, pig, coin, giant, boat, scepter, star, roundRect,
   drawBackdrop, drawWeather, shadow, npc } from "./scene.js";
-import { goldenHour } from "./visual.js";
+import { goldenHour, lightRays, softVignette } from "./visual.js";
 import { withStages } from "./stages.js";
 
 const TAU = Math.PI * 2;
@@ -14,6 +14,8 @@ function bg(c, ctx, top, bottom, dust = 28) {
   if (c.game?.art) {
     drawBackdrop(c, ctx, c.game.art, { top, bottom, alpha: 0.44, weather: c.game.weather });
     goldenHour(c, ctx);
+    lightRays(c, ctx, 1);
+    softVignette(c, ctx, 0.3);
   } else {
     const g = ctx.createLinearGradient(0, 0, 0, c.h);
     g.addColorStop(0, top); g.addColorStop(1, bottom);

@@ -1,5 +1,5 @@
 /* Covenant offline cache. Bump CACHE on every content release. */
-const CACHE = 'covenant-v7';
+const CACHE = 'covenant-v8';
 const ASSETS = [
   './',
   './index.html',
@@ -17,6 +17,9 @@ const ASSETS = [
   './src/data/chapters-extra.js',
   './src/data/compendium.js',
   './src/data/quests.js',
+  './src/data/mirror.js',
+  './src/data/deeper.js',
+  './src/data/portraits.js',
   './src/data/zh-story.js',
   './src/data/zh-ui.js',
   './src/screens/home.js',
@@ -44,6 +47,7 @@ const ASSETS = [
   './assets/art/ruth.jpg',
   './assets/art/jonah.jpg',
   './assets/art/zacchaeus.jpg',
+  './assets/art/portrait-jesus.jpg',
   './assets/art/portrait-companion.jpg',
   './assets/art/portrait-hero.jpg',
   './assets/art/portrait-giant.jpg',
@@ -51,8 +55,7 @@ const ASSETS = [
   './assets/art/portrait-elder.jpg',
   './assets/art/portrait-radiance.jpg',
   './src/engine/visual.js',
-  './src/engine/stages.js',
-  './src/data/portraits.js'
+  './src/engine/stages.js'
 ];
 
 self.addEventListener('install', (event) => {

@@ -1,3 +1,36 @@
+# v0.6 — 旅程之镜、红字原则、每章回到圣经、共享画面特效
+
+## 旅程之镜（不是人格测验）
+
+见 `README.md` 与 `docs/GAME_DESIGN.md`。实现在 `src/data/mirror.js` / `src/screens/camp.js`：
+从 `adventure.ways`（step / notice / stay / wait）与 `stats` 归一化后打分，选出一主一副两位圣经人物；
+主档案完整展示「经文 / 为什么相似 / 诚实的失败 / 神的恩典 / 去读哪一段」，并可直接打开对应书卷。
+`npm run check:mirror` 校验数据完整性与确定性。
+
+## 红字原则
+
+见 `docs/GAME_DESIGN.md` 第 2 条。`npm run check:redletter` 在中英双语逐一核对 20 条 `jesus` / `voice` 台词。
+本次修正：中文《好撒玛利亚人》一段原本把律法师的回答错位放进耶稣口中，现已对齐 KJV／和合本；
+燃烧荆棘中「我是我所是」的解释性台词改为旁白（不再是神在说创作对白）；撒该一章耶稣的回复改为纯路加福音 19:10 引用。
+
+## 每章回到圣经
+
+`src/data/deeper.js`：10 章各一段真实经文地址、一个观察点、一个问题。章末奖励页与书卷弹窗都显示「再走一步」卡；
+终章汇总成可点击的十段经文阅读清单（`data-action="mirror-scroll"`）。
+
+## 共享画面特效
+
+`src/engine/scene.js`：universal 点击涟漪（`c.ring`）、拖曳光带（`trail`）、加色混合发光火花、
+冲击停顿（`hitStop`）、连击浮字与 HUD 提示、浮动文字带描边缩放。
+`src/engine/visual.js`：新增 `lightRays()`（缓慢漂移的体积光）与 `softVignette()`（呼吸暗角），
+由 `games.js` 的 `bg()` 统一调用，10 个关卡同时受益。
+`src/styles.css`：选项卡错落入场、结算星星弹出、完成印记光晕、按压反馈，以及 `prefers-reduced-motion` 降级。
+
+> 真机验证：Chromium 390×844 下跑过标题、营地、终章（中／英）、阅读清单弹窗、互动关卡、章末奖励页；
+> 无 console error、无 404，所有按钮都在可视区域内。
+
+---
+
 # v0.5 — 会呼吸的配乐、默认沉浸模式、说得清楚的结局
 
 > v0.4.1 的真机修复与关卡审查全部保留在下文。

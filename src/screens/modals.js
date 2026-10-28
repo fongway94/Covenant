@@ -2,6 +2,7 @@ import { esc, icon } from "../core/util.js";
 import { FRUITS, RELICS, SEALS, PROMISES, STATS } from "../data/compendium.js";
 import { isUnlocked, adventure } from "../core/state.js";
 import { CAMP_NPCS } from "../data/quests.js";
+import { deeperFor } from "../data/deeper.js";
 import { breathLabel } from "./camp.js";
 import { CHAPTERS, chapterById } from "../data/chapters.js";
 import { tx, isZh } from "../core/i18n.js";
@@ -12,6 +13,17 @@ function wrap(inner) {
       <div class="modal-grip"></div>
       ${inner}
     </div>
+  </div>`;
+}
+
+function scrollDeeper(ch) {
+  const d = deeperFor(ch.id, isZh());
+  if (!d) return "";
+  return `<div class="card-quiet go-deeper" style="margin-top:12px">
+    <div class="eyebrow" style="margin-bottom:6px">${tx("Go deeper · open the Bible", "再走一步 · 打开圣经")}</div>
+    <p class="small" style="margin:0 0 6px">${esc(d.hook)}</p>
+    <p class="small serif gold" style="margin:0">${esc(d.ask)}</p>
+    <p class="tiny muted" style="margin:8px 0 0">${tx("Read the whole passage:", "阅读整段经文：")} ${esc(d.ref)}</p>
   </div>`;
 }
 
@@ -28,6 +40,7 @@ function scrollInner(ch) {
       <p class="small" style="margin:0">${esc(ch.scroll.note)}</p>
     </div>
     <p class="tiny muted" style="margin-top:12px">${esc(ch.scroll.timeline)}</p>
+    ${scrollDeeper(ch)}
     <p class="tiny muted">${tx("Scripture quotations: King James Version (public domain). Narrative dialogue is written for this game and is not scripture.", "经文引用：英王钦定本／中文和合本（公有领域）。叙事对白为本游戏创作，并非经文。")}</p>
     <button class="btn btn-ghost btn-sm" style="margin-top:8px" data-action="close-modal">${tx("Close the scroll", "合上书卷")}</button>`;
 }
@@ -90,8 +103,10 @@ function howtoInner() {
       </ul>
       <h3>At the end of each chapter</h3>
       <p>You will receive a relic, a fruit of the Spirit, and one honest reflection question. There are no wrong answers — only different ones.</p>
+      <h3>Go deeper into the real Bible</h3>
+      <p>At the end of every chapter there is a <strong>Go deeper</strong> card: the exact passage, one detail to look for, and one honest question. Open the scroll any time to read the real verse, Elias’ historical note and the timeline. The finale collects all ten passages into a reading list you can tap.</p>
       <h3>What you achieve by finishing</h3>
-      <p>You will have witnessed all ten biblical stories without changing their outcome, grown Courage, Wisdom, Compassion and Faith, gathered up to 9 fruits, 10 relics and 9 seals, and practised pausing to pray before choosing. The finale gives you a completion seal and a mirror — a portrait of the person your choices formed — not a score of your worth. What you do with it happens outside the game.</p>
+      <p>You will have witnessed all ten biblical stories without changing their outcome, grown Courage, Wisdom, Compassion and Faith, gathered up to 9 fruits, 10 relics and 9 seals, and practised pausing to pray before choosing. The finale gives you a completion seal and a <strong>Journey Mirror</strong> — your four virtues, four ways of walking, and one biblical person whose story rhymes with yours, their real failure included, plus the passage to read. It is a portrait of the person your choices formed, not a personality type or a score of your worth. What you do with it happens outside the game.</p>
       <p class="tiny muted">Progress saves automatically on your device. No account, no ads, no tracking.</p>
       ` : `
       <p>你是一位<strong>手执书卷的朝圣者</strong>。书卷会带你进入圣经中十个真实的故事——你站在山谷里，坐在船上，在狮子坑外等候。</p>
@@ -111,8 +126,10 @@ function howtoInner() {
       </ul>
       <h3>每章结束的时候</h3>
       <p>你会得到一件圣物、一个圣灵的果子，以及一道诚实的反思题。那道题没有错答案——只有不同的答案。</p>
+      <h3>再走一步：读真正的圣经</h3>
+      <p>每章结束都有一张<strong>「再走一步」</strong>卡：准确的经文地址、一个值得留意的细节，以及一道诚实的问题。随时打开书卷，可阅读真正的经文、以利亚斯的历史注解与年代表。终章会把十段经文整理成一份可点击的阅读清单。</p>
       <h3>玩完全程，你会得到什么</h3>
-      <p>你会在不改变经文结局的前提下，见证十段圣经故事；培养勇气、智慧、怜悯与信心；最多收集 9 个果子、10 件圣物、9 枚印记；并练习「先祷告，再选择」。终章会给你一枚完成印记和一面镜子——一幅「你的选择塑造了怎样的人」的画像，而不是衡量你价值的分数。真正的后续，发生在游戏之外。</p>
+      <p>你会在不改变经文结局的前提下，见证十段圣经故事；培养勇气、智慧、怜悯与信心；最多收集 9 个果子、10 件圣物、9 枚印记；并练习「先祷告，再选择」。终章会给你一枚完成印记和一面<strong>「旅程之镜」</strong>——四种品格、四种走路方式，以及一位与你相似的圣经人物（包括他真实的失败）和一段你可以去读的经文。这是「你的选择塑造了怎样的人」的画像，不是人格类型，也不是衡量你价值的分数。真正的后续，发生在游戏之外。</p>
       <p class="tiny muted">进度自动保存在你的设备上。没有账号、没有广告、没有追踪。</p>
       `}
     </div>
@@ -208,6 +225,8 @@ function guidanceInner(ui) {
       <p>${tx("Nothing breaks — and that is now the default. Immersive / no-tips mode is ON from the start: hints, tags, gates and the little advice card are all hidden. Locked choices still exist but say only “Some doors open later”. You can spend 1 Guidance to reveal one page of hints, or 2 to open a locked choice, and you can switch tips back on in Settings. Scripture's outcome is identical either way — David still faces Goliath, the storm still stops.", "什么都不会坏——而且这已经是默认设置。「沉浸／无提示模式」从一开始就开启：提示、标签、门槛和那张小建议卡都被隐藏。被锁的选项依然存在，但只写着「有些门要到后来才开」。你可以花 1 点引导显明一页提示，或花 2 点开启一个被锁的选项；也可以在设置里重新打开提示。两种模式下，经文的结局完全一样——大卫仍然迎战歌利亚，风浪仍然止息。")}</p>
       <h3>${tx("And at the very end?", "那到了最后呢？")}</h3>
       <p>${tx("After ten chapters you reach a finale with a completion seal. It gives no hints and no score: it lists what you completed — ten stories witnessed, four virtues grown, up to 9 fruits, 10 relics and 9 seals gathered, prayers and reflections — then gives one honest paragraph about the person your choices formed, and a verse. You finish as a witness, not a winner: the achievement is the character you carry out, and the road continues outside the game.", "走完十章后，你会带着一枚完成印记来到终章。它不给提示，也不给分数：它列出你完成的事——在场见证十段故事、培养四种品格、最多收集 9 个果子、10 件圣物、9 枚印记、以及你的祷告与反思——然后给出一段关于「你的选择塑造了怎样的人」的诚实文字，和一节经文。你是以见证者的身份完成，而不是以赢家的身份通关；成就就是你带走的品格，而这条路在游戏之外继续。")}</p>
+      <h3>${tx("4 · Is the ending a personality test?", "4 · 结局是人格测验吗？")}</h3>
+      <p>${tx("No — and deliberately so. It is not MBTI, not a psychological assessment and not a prophecy. The “Journey Mirror” simply reports what you DID: the four virtues your choices grew, and four ways of walking recorded from your behaviour (stepping forward, noticing, staying, waiting). It then holds that beside a person God chose to write about — including their real failure — and sends you to the passage. Paul says these stories were “written for our learning” (Romans 15:4) and are “ensamples” for us (1 Corinthians 10:11); James compares the word to a mirror (James 1:23). Only the LORD looks on the heart (1 Samuel 16:7), so the game refuses to label you.", "不是——而且这是刻意的选择。它不是 MBTI，不是心理测评，也不是预言。「旅程之镜」只报告你做过的事：你的选择培养出哪四种品格，以及从你的行为记录下来的四种走路方式（迈步、观察、留下、等候）。然后把这些摆在神选择写下来的一个人旁边——包括他真实的失败——并送你去读那段经文。保罗说这些事「都是为教训我们写的」（罗马书 15:4），是「我们的鉴戒」（哥林多前书 10:11）；雅各把道比作镜子（雅各书 1:23）。唯有耶和华看内心（撒母耳记上 16:7），所以游戏拒绝给你贴标签。")}</p>
     </div>
     <p class="tiny muted center" style="margin:12px 0 0">${tx("You currently hold", "你目前拥有")} <strong class="gold">${a.guidance || 0}</strong> ${tx("Guidance.", "点引导。")}</p>
     <button class="btn btn-primary" style="margin-top:10px" data-action="close-modal">${tx("I understand", "我明白了")}</button>`;

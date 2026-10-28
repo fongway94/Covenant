@@ -115,7 +115,7 @@ export const EXTRA_CHAPTERS = [
         ),
         choices: [
           C(["Whisper: “Here am I”", "轻声说：「我在这里」"], "call", { stat: { faith: 2 }, xp: 9, reply: ["It is the same answer Abraham gave. Some sentences are handed down like a family trade.", "这也是亚伯拉罕的回答。有些句子，像一门家族手艺那样代代相传。"], replyBy: "elias" }),
-          C(["Ask what His name is", "问祂的名字是什么"], "call", { stat: { wisdom: 2 }, xp: 9, reply: ["The answer comes slowly: I AM THAT I AM. Not a label to hold, but a presence that simply is.", "答案缓缓而来：我是我所是。不是一个可以握住的标签，而是一位自有永有的存在。"], replyBy: "voice" }),
+          C(["Ask what His name is", "问祂的名字是什么"], "call", { stat: { wisdom: 2 }, xp: 9, reply: ["The answer comes slowly: “I AM THAT I AM” (Exodus 3:14). Not a label to hold — a presence that simply is.", "答案缓缓而来：「我是我所是」（出埃及记 3:14）。不是一个可以握住的标签，而是一位自有永有的存在。"], replyBy: "" }),
           C(["Say nothing, and stay on your knees", "什么也不说，只是跪着"], "call", { stat: { compassion: 2, faith: 1 }, xp: 9, reply: ["Silence is also an answer. The flame waits for you.", "沉默也是一种回答。火焰等着你。"], replyBy: "" })
         ]
       },
@@ -389,7 +389,7 @@ export const EXTRA_CHAPTERS = [
         choices: [
           C(["Help him carry the coins to the door", "帮他把钱币搬到门口"], "end", { stat: { compassion: 2 }, xp: 11, reply: ["The bags are heavy. He carries the heaviest one himself.", "袋子很重。最重的那一袋，他自己扛着。"], replyBy: "" }),
           C(["Tell the crowd what he just did", "把刚才的事告诉人群"], "end", { stat: { courage: 2 }, xp: 10, reply: ["Some of them do not believe you. A few go quiet. One woman starts to cry.", "有些人不相信你。有几个人安静下来。一个女人开始哭。"], replyBy: "" }),
-          C(["Ask Jesus why He chose this house", "问耶稣为何选这一家"], "end", { stat: { faith: 2 }, xp: 11, faith: true, tag: ["Faith", "信心"], reply: ["“The Son of man is come to seek and to save that which was lost,” He says. “That is the whole answer.”", "「人子来，为要寻找拯救失丧的人，」祂说，「这就是全部答案。」"], replyBy: "jesus" })
+          C(["Ask Jesus why He chose this house", "问耶稣为何选这一家"], "end", { stat: { faith: 2 }, xp: 11, faith: true, tag: ["Faith", "信心"], reply: ["“For the Son of man is come to seek and to save that which was lost.”", "「人子来，为要寻找拯救失丧的人。」"], replyBy: "jesus" })
         ]
       },
       end: {

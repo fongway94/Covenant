@@ -171,6 +171,42 @@ function roundRectLocal(ctx, x, y, w, h, r) {
   ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
 }
 
+/* Soft volumetric shafts from the upper corner. One shared pass — every
+   action scene gets depth for free with no extra assets or per-game code. */
+export function lightRays(c, ctx, strength = 1) {
+  const { w, h, t } = c;
+  ctx.save();
+  ctx.globalCompositeOperation = "screen";
+  const g = ctx.createLinearGradient(w * 0.86, 0, w * 0.1, h * 0.92);
+  g.addColorStop(0, `rgba(255,216,154,${0.13 * strength})`);
+  g.addColorStop(0.55, `rgba(255,196,120,${0.035 * strength})`);
+  g.addColorStop(1, "rgba(255,190,110,0)");
+  ctx.fillStyle = g;
+  const drift = Math.sin(t * 0.16) * w * 0.03;
+  for (let i = 0; i < 3; i++) {
+    const x0 = w * (0.68 + i * 0.11) + drift;
+    const spread = w * (0.07 + i * 0.025);
+    ctx.beginPath();
+    ctx.moveTo(x0, -10);
+    ctx.lineTo(x0 + spread, -10);
+    ctx.lineTo(x0 - w * 0.52 + spread * 1.5, h);
+    ctx.lineTo(x0 - w * 0.52 - spread, h);
+    ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* A faint breathing vignette, strongest around the edges. */
+export function softVignette(c, ctx, alpha = 0.34) {
+  const { w, h, t } = c;
+  ctx.save();
+  const g = ctx.createRadialGradient(w / 2, h * 0.46, h * 0.18, w / 2, h * 0.5, h * 0.78);
+  g.addColorStop(0, "rgba(3,8,12,0)");
+  g.addColorStop(1, `rgba(3,8,12,${alpha + Math.sin(t * 0.5) * 0.02})`);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+}
+
 /* Golden-hour grade applied over the backdrop: warm from above, cool below. */
 export function goldenHour(c, ctx) {
   const { w, h } = c;

@@ -22,7 +22,7 @@ const { newGame } = await import("../src/core/state.js");
 await import("../src/main.js");
 
 /* Brand names, scripture refs, code paths and numerals are not UI copy. */
-const ALLOW = /^(COVENANT|Covenant|Capacitor|PWA|KJV|XP|EN|OK|HTML|CSS|JavaScript|iOS|Android|Galatians|Psalm|docs\/|assets\/|src\/|www\/|[A-Za-z]{0,2})$/;
+const ALLOW = /^(COVENANT|Covenant|Capacitor|PWA|KJV|XP|EN|OK|MBTI|HTML|CSS|JavaScript|iOS|Android|Galatians|Psalm|docs\/|assets\/|src\/|www\/|[A-Za-z]{0,2})$/;
 const found = new Map();
 
 function scan(label) {
@@ -38,7 +38,7 @@ function scan(label) {
       if (!/[A-Za-z]{3,}/.test(s)) continue;
       if (ALLOW.test(s)) continue;
       const stripped = s
-        .replace(/\b(Covenant|圣约|HTML|CSS|JavaScript|PWA|iOS|Android|App Store|Google Play|Capacitor|KJV|XP|EN|English|OK|Galatians|I|II|III|IV|V|VI|VII|VIII|IX|X|v\d+(?:\.\d+)*)\b/gi, "")
+        .replace(/\b(Covenant|圣约|HTML|CSS|JavaScript|PWA|iOS|Android|App Store|Google Play|Capacitor|KJV|XP|EN|English|OK|MBTI|Galatians|I|II|III|IV|V|VI|VII|VIII|IX|X|v\d+(?:\.\d+)*)\b/gi, "")
         .replace(/[0-9]+/g, "");
       if (!/[A-Za-z]{3,}/.test(stripped)) continue;
       const key = s.slice(0, 120);

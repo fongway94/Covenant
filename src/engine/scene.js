@@ -304,28 +304,48 @@ export function startScene(canvas, key, onResult, seed = {}) {
   try { font = (typeof getComputedStyle === "function" && getComputedStyle(document.body).fontFamily) || font; } catch { /* noop */ }
   const pointer = { x: 0, y: 0, down: false, justDown: false, justUp: false, startX: 0, startY: 0, dx: 0, dy: 0 };
   const keys = new Set();
-  const particles = [], floats = [];
+  const particles = [], floats = [], ripples = [], trail = [];
 
   const c = {
-    w: 0, h: 0, t: 0, dt: 0.016, game, pointer, keys, particles, floats, font, hudTop: 112,
+    w: 0, h: 0, t: 0, dt: 0.016, game, pointer, keys, particles, floats,
+    ripples, trail, font, hudTop: 112,
     hearts: 3, maxHearts: 3, score: 0, progress: 0, shake: 0, flash: 0,
     hint: "", label: "", state: {}, shared: { ...seed },
+    combo: 0, comboAt: -10, hitStop: 0,
     rnd, clamp, dist,
     spark(x, y, color = "#f4d79b", n = 12, speed = 130) {
       for (let i = 0; i < n; i++) {
         const a = rnd(0, TAU), sp = rnd(speed * 0.3, speed);
-        particles.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40, life: rnd(0.4, 0.9), max: 0.9, r: rnd(1.5, 4), color });
+        particles.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40, life: rnd(0.4, 0.9), max: 0.9, r: rnd(1.5, 4), color, glow: true });
       }
     },
+    /** Expanding shockwave — a soft ring that reads as impact, not clutter. */
+    ring(x, y, color = "rgba(247,221,165,.7)", size = 46) {
+      ripples.push({ x, y, r: 4, max: size, life: 0.42, total: 0.42, color });
+      if (ripples.length > 12) ripples.shift();
+    },
     float(x, y, text, color = "#f4d79b") { floats.push({ x, y, text, color, life: 1.1 }); },
-    bump(n = 8) { c.shake = Math.max(c.shake, n); c.flash = 0.25; },
+    bump(n = 8) {
+      c.shake = Math.max(c.shake, n);
+      c.flash = 0.25;
+      c.hitStop = Math.min(0.075, c.hitStop + 0.035);
+      c.combo = 0;
+    },
     hit(name) { try { sfx(name); } catch { /* noop */ } },
     hurt(n = 1) {
       c.hearts = Math.max(0, c.hearts - n); c.bump(10); c.hit("miss");
       c.float(c.w / 2, c.h * 0.42, tx("-1 ♥", "-1 ♥"), "#e08b78");
       if (c.hearts <= 0) c.end(false, Math.round(c.score));
     },
-    addScore(n) { c.score += n; },
+    addScore(n) {
+      c.score += n;
+      c.combo = c.t - c.comboAt < 1.3 ? Math.min(9, c.combo + 1) : 1;
+      c.comboAt = c.t;
+      if (c.combo >= 3 && c.combo % 3 === 0) {
+        c.float(c.w / 2, c.h * 0.34, `×${c.combo}`, "#f7dda5");
+        c.ring(c.w / 2, c.h * 0.4, "rgba(247,221,165,.45)", 60);
+      }
+    },
     setHint(s) { c.hint = s; },
     end(success, score) {
       if (ended) return;
@@ -358,6 +378,15 @@ export function startScene(canvas, key, onResult, seed = {}) {
     const p = pos(e); pointer.x = p.x; pointer.y = p.y;
     pointer.startX = p.x; pointer.startY = p.y; pointer.dx = 0; pointer.dy = 0;
     pointer.down = true; pointer.justDown = true;
+    // Universal tactile feedback — every scene gets the same juicy tap.
+    c.ring(p.x, p.y, "rgba(247,221,165,.55)", 34);
+    for (let i = 0; i < 5; i++) {
+      const a = rnd(0, TAU), sp = rnd(24, 70);
+      particles.push({ x: p.x, y: p.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+        life: 0.32, max: 0.32, r: rnd(1, 2.2), color: "#f7dda5", glow: true });
+    }
+    trail.length = 0;
+    trail.push({ x: p.x, y: p.y, life: 0.34, total: 0.34 });
     game.onDown?.(c, pointer);
   }
   function move(e) {
@@ -366,6 +395,10 @@ export function startScene(canvas, key, onResult, seed = {}) {
     const p = pos(e);
     pointer.x = p.x; pointer.y = p.y;
     pointer.dx = pointer.x - pointer.startX; pointer.dy = pointer.y - pointer.startY;
+    if (pointer.down) {
+      trail.push({ x: p.x, y: p.y, life: 0.34, total: 0.34 });
+      if (trail.length > 26) trail.shift();
+    }
     game.onMove?.(c, pointer);
   }
   function up(e) {
@@ -414,22 +447,67 @@ export function startScene(canvas, key, onResult, seed = {}) {
       const f = floats[i]; f.life -= dt; f.y -= 28 * dt;
       if (f.life <= 0) floats.splice(i, 1);
     }
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      const r = ripples[i]; r.life -= dt;
+      r.r += (r.max - r.r) * Math.min(1, dt * 9);
+      if (r.life <= 0) ripples.splice(i, 1);
+    }
+    for (let i = trail.length - 1; i >= 0; i--) {
+      trail[i].life -= dt;
+      if (trail[i].life <= 0) trail.splice(i, 1);
+    }
     c.shake = Math.max(0, c.shake - dt * 34);
     c.flash = Math.max(0, c.flash - dt * 1.6);
+    c.hitStop = Math.max(0, c.hitStop - dt);
+    if (c.t - c.comboAt > 1.8) c.combo = 0;
   }
 
   function drawFx() {
+    // A ribbon following the finger — makes dragging feel physical.
+    if (trail.length > 1) {
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      ctx.lineCap = "round"; ctx.lineJoin = "round";
+      for (let i = 1; i < trail.length; i++) {
+        const a = trail[i - 1], b = trail[i];
+        ctx.globalAlpha = clamp(b.life / b.total, 0, 1) * 0.32;
+        ctx.strokeStyle = "#f7dda5";
+        ctx.lineWidth = 1.5 + (i / trail.length) * 3.5;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+      ctx.restore();
+    }
+    // Impact rings.
+    for (const r of ripples) {
+      ctx.save();
+      ctx.globalAlpha = clamp(r.life / r.total, 0, 1) * 0.8;
+      ctx.strokeStyle = r.color; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, TAU); ctx.stroke();
+      ctx.restore();
+    }
+    // Additive sparks with a soft bloom.
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
     for (const p of particles) {
-      ctx.globalAlpha = clamp(p.life / p.max, 0, 1); ctx.fillStyle = p.color;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, TAU); ctx.fill();
+      const alpha = clamp(p.life / p.max, 0, 1);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = p.color;
+      if (p.glow) { ctx.shadowColor = p.color; ctx.shadowBlur = 9; }
+      else ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (0.7 + alpha * 0.6), 0, TAU); ctx.fill();
     }
-    ctx.globalAlpha = 1;
-    ctx.textAlign = "center"; ctx.font = `bold 16px ${c.font}`;
+    ctx.restore();
+    ctx.textAlign = "center";
     for (const f of floats) {
-      ctx.globalAlpha = clamp(f.life / 1.1, 0, 1); ctx.fillStyle = f.color;
+      const k = clamp(f.life / 1.1, 0, 1);
+      ctx.save();
+      ctx.globalAlpha = k;
+      ctx.font = `bold ${Math.round(15 + (1 - k) * 5)}px ${c.font}`;
+      ctx.shadowColor = "rgba(0,0,0,.8)"; ctx.shadowBlur = 6;
+      ctx.fillStyle = f.color;
       ctx.fillText(f.text, f.x, f.y);
+      ctx.restore();
     }
-    ctx.globalAlpha = 1;
   }
 
   function hud() {
@@ -448,6 +526,11 @@ export function startScene(canvas, key, onResult, seed = {}) {
     // score
     ctx.textAlign = "right"; ctx.fillStyle = "rgba(244,231,203,.85)"; ctx.font = `600 12px ${c.font}`;
     ctx.fillText(`${tx("SCORE", "得分")} ${c.score}`, w - 16, top + 22);
+    if (c.combo >= 2) {
+      ctx.font = `700 11px ${c.font}`;
+      ctx.fillStyle = "#e7b75b";
+      ctx.fillText(`×${c.combo}`, 104, top + 22);
+    }
     // hint banner
     if (c.hint) {
       ctx.font = `500 13px ${c.font}`; ctx.textAlign = "center";
@@ -465,7 +548,11 @@ export function startScene(canvas, key, onResult, seed = {}) {
     resizeIfNeeded();
     ctx.save();
     if (c.shake > 0) ctx.translate(rnd(-c.shake, c.shake), rnd(-c.shake, c.shake));
-    try { game.step(c, dt); } catch (err) { if (typeof console !== "undefined") console.warn("[scene] step:", err); }
+    // A few frames of hit-stop on impact makes hits land without changing any
+    // game logic — physics still advances with the same dt afterwards.
+    if (c.hitStop <= 0) {
+      try { game.step(c, dt); } catch (err) { if (typeof console !== "undefined") console.warn("[scene] step:", err); }
+    }
     updateFx(dt);
     ctx.clearRect(-40, -40, c.w + 80, c.h + 80);
     try { game.draw(c, ctx); } catch (err) { if (typeof console !== "undefined") console.warn("[scene] draw:", err); }

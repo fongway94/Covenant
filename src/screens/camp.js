@@ -7,6 +7,8 @@ import { QUESTS, CAMP_NPCS } from "../data/quests.js";
 import { RELICS, FRUITS, SEALS, STATS, STAT_KEYS, STAT_MAX, countDone } from "../data/compendium.js";
 import { questState, campDay, dayPhase, adventure, breatheAtCamp } from "../core/state.js";
 import { tx, isZh } from "../core/i18n.js";
+import { analyseJourney, MIRROR_COPY, WAYS, WAY_KEYS, pick } from "../data/mirror.js";
+import { deeperFor } from "../data/deeper.js";
 import { hudHtml, tabsHtml } from "./world.js";
 
 const BREATH_STEPS = 3;      // inhale · hold · exhale
@@ -187,6 +189,99 @@ const MIRROR_ZH = {
   faith: "你比多数人更常停下来。在停歇里，你学会：神在被理解之前，就已经在场。"
 };
 
+/* ==================================================================
+   The Journey Mirror. Behaviour in -> Bible story out.
+   Deliberately NOT a personality type: see src/data/mirror.js for the
+   theological warrant (Romans 15:4, 1 Cor 10:11-12, James 1:23, 1 Sam 16:7).
+   ================================================================== */
+
+function mirrorFigureHtml(p, zh, primary) {
+  const C = MIRROR_COPY;
+  const block = (label, text, cls = "") => `<div class="mirror-block ${cls}">
+    <div class="eyebrow">${esc(pick(label, zh))}</div><p>${esc(pick(text, zh))}</p></div>`;
+  return `<div class="mirror-figure ${primary ? "primary" : "secondary-figure"}">
+    <div class="mirror-figure-head">
+      <div class="mirror-figure-glyph">${esc(p.glyph)}</div>
+      <div><div class="eyebrow">${esc(pick(C.eyebrow, zh))}</div>
+        <h3>${esc(pick(p.name, zh))}</h3>
+        <p class="tiny muted" style="margin:0">${esc(pick(p.role, zh))} · ${esc(pick(p.ref, zh))}</p></div>
+    </div>
+    <p class="verse" style="margin:12px 0 2px">“${esc(pick(p.verse, zh))}”</p>
+    <p class="tiny gold" style="margin:0 0 12px">— ${esc(pick(p.verseRef, zh))}</p>
+    ${block(C.whyTitle, p.why, "why")}
+    ${block(C.shadowTitle, p.shadow, "shadow")}
+    ${block(C.graceTitle, p.grace, "grace")}
+    ${block(C.readTitle, p.read, "read")}
+    <button class="btn btn-ghost btn-sm" style="margin-top:12px" data-action="mirror-scroll" data-id="${esc(p.chapter)}">${icon("scroll", 15)} ${esc(pick(C.readButton, zh))}</button>
+  </div>`;
+}
+
+function mirrorHtml(s) {
+  const zh = isZh();
+  const C = MIRROR_COPY;
+  const a = analyseJourney(s);
+  const P = (b) => esc(pick(b, zh));
+  const wayRows = WAY_KEYS.map((k) => {
+    const w = WAYS[k];
+    const pct = Math.round((a.wShare[k] || 0) * 100);
+    const strong = k === a.way;
+    return `<div class="mirror-way ${strong ? "strong" : ""}">
+      <span class="mirror-way-glyph">${esc(w.glyph)}</span>
+      <div class="mirror-way-body"><strong>${esc(pick(w.name, zh))}</strong>
+        <div class="mirror-way-bar"><i style="width:${Math.max(4, pct)}%"></i></div>
+        <small>${esc(pick(w.desc, zh))}</small></div>
+      <b>${pct}%</b></div>`;
+  }).join("");
+  const strongest = WAYS[a.way];
+
+  return `<div class="journey-mirror">
+    <div class="mirror-head">
+      <div class="mirror-seal">✦</div>
+      <div class="eyebrow">${P(C.eyebrow)} · ${P(C.notFortune)}</div>
+      <h2>${P(C.title)}</h2>
+      <p class="small muted" style="margin:6px 0 0">${P(C.intro)}</p>
+    </div>
+
+    <div class="mirror-panel">
+      <div class="eyebrow" style="margin-bottom:8px">${P(C.waysTitle)}</div>
+      ${wayRows}
+      <p class="mirror-way-verse">“${esc(pick(strongest.verse, zh))}” <span>— ${esc(pick(strongest.ref, zh))}</span></p>
+    </div>
+
+    ${mirrorFigureHtml(a.primary, zh, true)}
+
+    <div class="mirror-second">
+      <div><div class="eyebrow">${P(C.secondTitle)}</div>
+        <strong>${esc(a.secondary.glyph)} ${esc(pick(a.secondary.name, zh))}</strong></div>
+      <button class="btn btn-ghost btn-sm" data-action="mirror-scroll" data-id="${esc(a.secondary.chapter)}">${P(C.secondaryButton)}</button>
+    </div>
+
+    <div class="mirror-warrant">
+      <p class="verse">${P(C.warrant)}</p><p class="tiny gold">— ${P(C.warrantRef)}</p>
+      <p class="verse" style="margin-top:10px">${P(C.mirror)}</p><p class="tiny gold">— ${P(C.mirrorRef)}</p>
+      <p class="tiny muted" style="margin:10px 0 0">${P(C.caution)}</p>
+      <div class="mirror-disclaimer"><p>${P(C.disclaimer)}</p></div>
+    </div>
+  </div>`;
+}
+
+function readingListHtml(s) {
+  const zh = isZh();
+  const C = MIRROR_COPY;
+  return `<div class="reading-list">
+    <div class="eyebrow" style="margin-bottom:6px">${esc(pick(C.readingTitle, zh))}</div>
+    <p class="tiny muted" style="margin:0 0 10px">${esc(pick(C.readingIntro, zh))}</p>
+    ${CHAPTERS.map((ch, i) => {
+      const d = deeperFor(ch.id, zh);
+      const done = !!s.chapters?.[ch.id]?.completed;
+      return `<button class="reading-row" data-action="mirror-scroll" data-id="${esc(ch.id)}">
+        <span class="reading-num ${done ? "done" : ""}">${done ? "✓" : i + 1}</span>
+        <span class="reading-body"><strong>${esc(d?.ref || ch.ref)}</strong><small>${esc(d?.ask || "")}</small></span>
+        <span class="reading-arrow">›</span></button>`;
+    }).join("")}
+  </div>`;
+}
+
 export function finaleHtml(ui) {
   const s = ui.state;
   const done = countDone(s);
@@ -266,6 +361,8 @@ export function finaleHtml(ui) {
         </div>
       </div>
 
+      ${mirrorHtml(s)}
+
       <div class="card-quiet" style="margin-top:14px">
         <div class="eyebrow" style="margin-bottom:6px">${tx("A mirror, not a scoreboard", "一面镜子，不是计分板")}</div>
         <p class="small serif" style="margin:0;color:var(--gold-light)">${esc(isZh() ? MIRROR_ZH[key] : MIRROR_EN[key])}</p>
@@ -277,6 +374,10 @@ export function finaleHtml(ui) {
         <p class="tiny muted" style="margin:0">${clean
           ? tx("You walked with the hints hidden — that is the default way to play. No checklist at the end, no circle telling you what to feel. Ten stories happened exactly as Scripture records them, and you were there. What you carry out is yours to decide.", "你是在隐藏提示的情况下走完的——这本来就是游戏的默认方式。终点没有清单，也没有圆圈告诉你该有什么感受。十个故事完全按圣经记载发生，而你在场。你要带走什么，由你自己决定。")
           : tx("You chose to see the hint circles. You can turn Immersive mode back on in Settings at any time: the hints disappear, but the ending does not change. The finale is a mirror, not a checklist — it shows what your choices formed, and then it stops talking.", "你选择了看见提示圆圈。你随时可以在设置里重新开启沉浸模式：提示会消失，但结局不会改变。终章是一面镜子，不是清单——它显明你的选择塑造了什么，然后就安静下来。")}</p>
+      </div>
+
+      <div class="card-quiet" style="margin-top:12px; padding:14px">
+        ${readingListHtml(s)}
       </div>
 
       <div class="card-quiet" style="margin-top:12px">

@@ -1,10 +1,11 @@
 import { esc, icon } from "../core/util.js";
 import { STATS, STAT_KEYS, FRUITS, RELICS, countDone } from "../data/compendium.js";
 import { chapterById } from "../data/chapters.js";
-import { addStat, addXp, grantFruit, checkSeals, completeChapter, recordReflection, hasPrayed, pray as prayState, saveGame, xpNeeded, spendGuidance, adventure, markFinale } from "../core/state.js";
+import { addStat, addXp, grantFruit, checkSeals, completeChapter, recordReflection, hasPrayed, pray as prayState, saveGame, xpNeeded, spendGuidance, adventure, markFinale, addWay, addWaysFromStats } from "../core/state.js";
+import { deeperFor } from "../data/deeper.js";
 import { sfx } from "../core/audio.js";
 import { bus } from "../core/bus.js";
-import { tx } from "../core/i18n.js";
+import { tx, isZh } from "../core/i18n.js";
 import { startScene, gameInfo } from "../engine/scene.js";
 import { portraitFor, chapterPortrait } from "../data/portraits.js";
 import { musicButton } from "./home.js";
@@ -135,6 +136,7 @@ function applyEffects(ui, choice, label = "Choice") {
   const s = ui.state;
   const bump = {};
   for (const [k, v] of Object.entries(choice.stat || {})) bump[k] = addStat(s, k, v);
+  addWaysFromStats(s, choice.stat);   // recorded behaviour for the Journey Mirror
   const levels = addXp(s, choice.xp || 0);
   const gained = [];
   for (const f of (choice.give?.fruit ? [choice.give.fruit] : [])) if (grantFruit(s, f)) gained.push(f);
@@ -182,6 +184,7 @@ export function revealHints(ui) {
   const s = st(ui);
   if (!s || s.phase !== "choices" || s.revealed) return false;
   if (!spendGuidance(ui.state, 1)) { toast(tx("You need one Guidance. Pray or rest at the campfire.", "你需要 1 点引导。可以祷告，或在营火旁歇息。"), "✟"); return false; }
+  addWay(ui.state, "notice", 1);
   s.revealed = true;
   sfx("unlock");
   bus.render();
@@ -196,6 +199,7 @@ export function guidedChoose(ui, index) {
   const choice = node(ui).choices[index];
   if (!choice || meets(ui, choice.require)) return false;
   if (!spendGuidance(ui.state, 2)) { toast(tx("You need two Guidance. Pray or rest at the campfire.", "你需要 2 点引导。可以祷告，或在营火旁歇息。"), "✟"); return false; }
+  addWay(ui.state, "step", 2);
   toast(tx("Guidance opened the door", "引导为你开了门"), "✟");
   chooseOption(ui, index, true);
   return true;
@@ -272,7 +276,10 @@ export function prayNow(ui) {
 }
 
 export function openScroll(ui) {
-  ui.modal = { type: "scroll", id: st(ui).chapterId };
+  const s = st(ui);
+  s.scrollRead = s.scrollRead || {};
+  if (!s.scrollRead[s.chapterId]) { s.scrollRead[s.chapterId] = true; addWay(ui.state, "notice", 1); }
+  ui.modal = { type: "scroll", id: s.chapterId };
   sfx("tap");
   bus.render();
 }
@@ -311,6 +318,7 @@ function finishAction(ui, result) {
   const success = !!result.success && !result.skipped;
   if (success) {
     applyEffects(ui, { stat: { courage: 1, faith: 1 }, xp: 14, flag: key + "Won" }, "Action");
+    addWay(ui.state, "step", 2);   // entered the scene rather than skipping it
     sfx("good");
   }
   s.game.result = { ...result, success };
@@ -431,6 +439,7 @@ export function hotspotTap(ui, index) {
   if (!h.real.has(index)) { loseFocus(ui, "A false one. Look closer."); return; }
 
   h.found.push(index);
+  addWay(ui.state, "notice", 1);
   sfx("good");
   s.hotspotFound = s.hotspotFound || {};
   s.hotspotFound[s.nodeId] = h.found.length;
@@ -741,6 +750,20 @@ function actionResultHtml(ui) {
   </div>`;
 }
 
+/** One simple invitation per chapter to open the REAL passage. No new mechanic. */
+function rewardDeeperCard(ui, ch) {
+  const d = deeperFor(ch.id, isZh());
+  if (!d) return "";
+  return `<div class="go-deeper">
+    <div class="go-deeper-mark">✦</div>
+    <div class="eyebrow">${tx("Go deeper · open the Bible", "再走一步 · 打开圣经")}</div>
+    <h3>${esc(d.ref)}</h3>
+    <p class="small">${esc(d.hook)}</p>
+    <p class="small serif gold" style="margin:8px 0 0">${esc(d.ask)}</p>
+    <button class="btn btn-ghost btn-sm" style="margin-top:10px" data-action="open-scroll">${icon("scroll", 15)} ${tx("Open the scroll", "打开书卷")}</button>
+  </div>`;
+}
+
 function outcomeHtml(ui) {
   const s = st(ui);
   const ch = chapter(ui);
@@ -756,6 +779,7 @@ function outcomeHtml(ui) {
       <div class="card-quiet"><div class="eyebrow" style="margin-bottom:6px">${tx("What the story says", "故事在说什么")}</div>
         <p class="small serif" style="margin:0;color:var(--gold-light)">${esc(ch.ending.takeaway)}</p>
         <p class="tiny muted" style="margin:8px 0 0">${tx("Read the full account:", "阅读完整记载：")} ${esc(ch.ref)}</p></div>
+      ${rewardDeeperCard(ui, ch)}
       <div class="eyebrow" style="margin-top:4px">${tx("Added to your journal", "已加入你的日志")}</div>
       <div class="reward-row">
         <div class="reward"><span class="ico">${relic.glyph}</span><strong>${esc(relic.name)}</strong><small>${tx("Relic", "圣物")} · ${tx(r.newRelic ? "new" : "already kept", r.newRelic ? "新获得" : "已收藏")}</small></div>

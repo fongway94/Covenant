@@ -253,6 +253,10 @@ root.addEventListener("click", (e) => {
     case "seek-guidance": revealHints(ui); break;
     case "guided-choice": guidedChoose(ui, Number(el.dataset.index)); break;
     case "go-finale": markFinale(ui.state); go("finale"); break;
+    case "mirror-scroll":
+      ui.modal = { type: "item", kind: "verse", id: el.dataset.id };
+      sfx("tap"); render();
+      break;
     default: break;
   }
 });
