@@ -1847,3 +1847,7 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
   mask-image: linear-gradient(180deg, #000 calc(100% - 22px), transparent 100%);
   -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 22px), transparent 100%);
 }
+
+/* ---------- per-act briefing inside a running action scene ---------- */
+.act-gate { position: absolute; inset: 0; z-index: 7; }
+.act-gate .brief-full { padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom)); }

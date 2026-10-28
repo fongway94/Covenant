@@ -354,8 +354,29 @@ function mountActionScene(ui) {
     const found = Object.values(s.hotspotFound || {});
     if (found.length) seed.stones = found[found.length - 1];
   }
-  s.game.controller = startScene(canvas, s.game.key, (res) => finishAction(ui, res), seed);
+  s.game.controller = startScene(canvas, s.game.key, (res) => finishAction(ui, res), seed, {
+    /* An act was cleared. Hold the scene and tell the player — in the same
+       words the first card used — what the next act asks of the hand. */
+    onActGate: (info) => {
+      const live = ui.story;
+      if (!live || live.phase !== "action" || !live.game) return;
+      live.game.actGate = info;
+      sfx("choose");
+      bus.render();
+    }
+  });
   if (s.game.paused) s.game.controller.pause();
+}
+
+/** The player read the card for the next act: release the scene. */
+export function startAct(ui) {
+  const s = st(ui);
+  if (!s?.game?.actGate) return;
+  s.game.actGate = null;
+  sfx("tap");
+  bus.render();
+  const controller = s.game.controller;
+  if (controller) requestAnimationFrame(() => { try { controller.beginAct(); } catch { /* noop */ } });
 }
 
 function finishAction(ui, result) {
@@ -363,6 +384,7 @@ function finishAction(ui, result) {
   if (!s || s.phase !== "action" || !s.game) return;
   const key = s.game.key;
   s.game.controller = null;
+  s.game.actGate = null;   // a card for the next act must not outlive the scene
   s.doneNodes[s.nodeId + ":game"] = true;
   const success = !!result.success && !result.skipped && !result.untouched;
   if (success) {
@@ -590,11 +612,11 @@ function hotspotsBrief(ui, cfg) {
         eyebrow: tx("LANTERN SEARCH", "提灯搜寻"),
         title: tx(cfg.title, cfg.titleZh),
         prompt: tx(cfg.prompt, cfg.promptZh),
-        how: [tx("Drag your finger across the picture to move the lantern.", "用手指在画面上拖动，移动提灯。"),
-              tx("Only what the lantern touches can be seen.", "只有被提灯照到的地方才看得见。"),
-              tx("Pale shapes are decoys. Three wrong ones end the search.", "浅色的形状是假的。错三次搜寻就结束。")],
+        how: [tx("Your hand: drag across the picture and the lantern follows your finger.", "手怎么动：手指在画面上拖动，提灯跟着手指走。"),
+              tx("Only what the lantern touches can be seen. Pale shapes are decoys — three wrong ones end the search.", "只有被提灯照到的地方才看得见。浅色的影子是假的，点错三次就结束。")],
+        note: tx("Nothing has started yet — the dark stays dark until you light the lantern.", "现在还没有开始，点亮提灯才开始。"),
         start: "hotspot-start", startLabel: tx("Light the lantern", "点亮提灯"),
-        skip: "hotspot-skip", skipLabel: tx("Skip — no bonus", "跳过——没有奖励")
+        skip: "hotspot-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不给分")
       })}
   </div>`;
 }
@@ -632,7 +654,7 @@ function hotspotsHtml(ui) {
       ? `<div class="hotspot-done"><div class="result-icon">✦</div><h3>${tx("Well done!", "做得好！")}</h3><p class="small muted">${tx("Bonus earned", "获得奖励")} · +${cfg.xp || 8} ${tx("XP", "经验")} · ${tx("Found", "已找到")} ${h.found.length}/${cfg.count}</p>
          <button class="btn btn-primary hotspot-done-btn" data-action="hotspot-done">${tx("Keep going", "继续")} ${icon("forward", 16)}</button></div>`
       : `<div class="hotspot-foot"><p class="tiny muted">${tx("Drag the lantern to reveal · avoid the pale decoys · 3 mistakes ends the search", "拖动提灯照亮 · 避开浅色的假物 · 失误 3 次搜寻结束")}</p>
-         <button class="btn btn-ghost btn-sm hotspot-skip" data-action="hotspot-skip">${tx("Skip — no bonus", "跳过——没有奖励")}</button></div>`}
+         <button class="btn btn-ghost btn-sm hotspot-skip" data-action="hotspot-skip">${tx("Skip — no bonus", "跳过 · 不给分")}</button></div>`}
   </div>`;
 }
 
@@ -845,11 +867,11 @@ function miniHtml(ui) {
         eyebrow: tx("A moment to focus", "凝神一刻"),
         title: cfg.title,
         prompt: cfg.prompt,
-        how: [tx("A light will start moving along the track.", "一个光点会沿着轨道移动。"),
-              tx("Tap when it reaches the golden mark.", "它到达金色标记时轻点。"),
-              tx("Nothing moves until you press Start.", "按下「开始」之前，什么都不会动。")],
+        how: [tx("Your hand: a light runs back and forth along the track.", "手怎么动：光点会沿着轨道来回走。"),
+              tx("Tap once, when it is inside the gold mark.", "光点走进金色那一段时，点一下。")],
+        note: tx("Nothing moves until you press the button.", "现在还没有开始，按了按钮光点才动。"),
         start: "mini-start", startLabel: tx("Start", "开始"),
-        skip: "mini-skip", skipLabel: tx("Skip — no bonus", "跳过——没有奖励")
+        skip: "mini-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不给分")
       })}
     </div>`;
   }
@@ -865,7 +887,7 @@ function miniHtml(ui) {
     <div class="mg-rounds">${dots}</div>
     <div class="mg-feedback" id="mg-feedback">${esc(m.feedback)}</div>
     <button class="btn btn-primary" data-action="mini-tap" style="max-width:300px">${tx("Tap when the light reaches the mark", "当光点到达标记时点击")}</button>
-    <button class="btn btn-ghost btn-sm" data-action="mini-skip" style="max-width:300px">${tx("Skip — no bonus", "跳过——没有奖励")}</button>
+    <button class="btn btn-ghost btn-sm" data-action="mini-skip" style="max-width:300px">${tx("Skip — no bonus", "跳过 · 不给分")}</button>
   </div>`;
 }
 
@@ -893,36 +915,50 @@ function briefHtml(ui, o) {
 /** The one line that says what the hand does, for each kind of story moment. */
 function momentHow(kind) {
   switch (kind) {
-    case "hold": return tx("Press and keep your finger down until the ring fills.", "按住不放，直到圆环填满。");
-    case "tap": return tx("Tap each glowing mark once it appears.", "每处光点出现时轻点一下。");
-    case "trace": return tx("Drag along the dotted line, from the bottom to the top.", "沿着虚线拖动，从下往上。");
-    case "balance": return tx("Drag left and right to bring the bubble into the notch and hold it there.", "左右拖动，让气泡停在凹槽里并保持住。");
-    case "rhythm": return tx("Tap when the moving mark reaches the golden band.", "移动的光点进入金色区域时轻点。");
-    default: return tx("Touch the picture and follow the movement.", "触摸画面，跟着动作走。");
+    case "hold": return tx("Press the screen and keep your finger there until the ring fills.", "按住屏幕别松手，等圆圈填满。");
+    case "tap": return tx("Every time a mark lights up, tap it once.", "光点亮起来，就点它一下。");
+    case "trace": return tx("Start at the bottom and drag up along the dotted line.", "从下往上，沿虚线一路拖。");
+    case "balance": return tx("Drag left and right until the bubble sits in the notch, then hold it there.", "左右拖，把气泡送进缺口，停稳别让它滑出去。");
+    case "rhythm": return tx("When the moving mark reaches the gold band, tap once.", "标记走到金色那一段时，点一下。");
+    default: return tx("Slide your finger across the picture and follow what moves.", "手指在画面上滑动，跟着动的地方走。");
   }
+}
+
+/* One card per act. The first act is announced before the canvas exists; every
+   later act is announced the same way, and nothing in it moves until the player
+   presses the button. */
+function actBriefHtml(ui, info, { first }) {
+  const ch = chapter(ui);
+  const of = info.acts > 1 ? tx(`Act ${info.act} of ${info.acts}`, `第 ${info.act} 幕，共 ${info.acts} 幕`) : "";
+  return `${first ? `<div class="action-art" style="background-image:url('${ch.art}')"></div>` : ""}
+      ${briefHtml(ui, {
+        className: "brief-full" + (first ? "" : " brief-act"),
+        eyebrow: [tx("ACTION SCENE", "互动关卡"), of].filter(Boolean).join(" · ") + ` · ${ch.title}`,
+        title: info.title,
+        prompt: info.prompt,
+        how: [
+          info.hint ? tx(`Your hand: ${info.hint}`, `手怎么动：${info.hint}`) : "",
+          tx("No clock is running. Taking your time only lowers the score.", "没有倒计时。慢一点，只是得分少一点，不会输。")
+        ].filter(Boolean),
+        note: first
+          ? tx("Nothing has started yet — press the button when you are ready.", "现在还没有开始，准备好再按下面的按钮。")
+          : tx("This act is held until you press the button. Your score carries over.", "这一幕先停着，按了按钮才动。分数接着算。"),
+        start: first ? "game-start" : "game-act-start",
+        startLabel: first ? tx("Start this scene", "开始这一关") : tx("Start this act", "开始这一幕"),
+        skip: "game-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不给分")
+      })}`;
 }
 
 function actionHtml(ui) {
   const s = st(ui);
   const key = s.game?.key || "sling";
-  const info = gameInfo(key);
   const ch = chapter(ui);
   if (!s.game?.ready) {
-    return `<div class="screen action-screen action-brief">
-      <div class="action-art" style="background-image:url('${ch.art}')"></div>
-      ${briefHtml(ui, {
-        className: "brief-full",
-        eyebrow: `${tx("ACTION SCENE", "互动关卡")} · ${ch.title}`,
-        title: info.title,
-        prompt: info.prompt,
-        how: [tx("Read this card first — nothing has started yet.", "先读完这张卡——现在还没有开始。"),
-              tx("When you press Start, your finger becomes your hand.", "按下「开始」之后，手指就是你的手。"),
-              tx("There is no time limit. Finishing late only lowers the score.", "没有时间限制。慢一点完成，只是得分少一点。")],
-        start: "game-start", startLabel: tx("Start the scene", "开始本关"),
-        skip: "game-skip", skipLabel: tx("Skip — no bonus", "跳过——没有奖励")
-      })}
-    </div>`;
+    const first = gameInfo(key, 0);
+    return `<div class="screen action-screen action-brief">${actBriefHtml(ui, first, { first: true })}</div>`;
   }
+  const gate = s.game.actGate;
+  const info = gameInfo(key, gate ? gate.index : (s.game.controller?.actIndex?.() || 0));
   return `<div class="screen action-screen">
     <div class="action-art" style="background-image:url('${ch.art}')"></div>
     <canvas id="action-canvas" class="action-canvas" aria-label="${esc(info.title)}"></canvas>
@@ -934,14 +970,15 @@ function actionHtml(ui) {
       <h2>${esc(info.title)}</h2>
       <p class="small">${esc(info.hint)}</p>
     </div>
+    ${gate ? `<div class="act-gate">${actBriefHtml(ui, info, { first: false })}</div>` : ""}
     <div class="action-paused ${s.game?.paused ? "on" : ""}" data-action="game-resume">
       <div class="action-paused-card">
         <div class="action-paused-glyph">❚❚</div>
-        <div class="eyebrow">${tx("Paused", "已暂停")}</div>
-        <h3>${tx("The story waits for you", "故事在等你")}</h3>
-        <p class="small muted">${tx("Nothing moves while you are away — no timers, no lost stones.", "你不在时一切静止——计时暂停，石子不会消失。")}</p>
-        <button class="btn btn-primary btn-sm" data-action="game-resume">${icon("play", 15)} ${tx("Resume", "继续")}</button>
-        <button class="btn btn-ghost btn-sm" data-action="game-skip">${tx("Leave this scene", "离开这个关卡")}</button>
+        <div class="eyebrow">${tx("Paused", "暂停中")}</div>
+        <h3>${tx("The story waits for you", "先歇一会儿")}</h3>
+        <p class="small muted">${tx("Nothing moves while you are away — no timers, no lost stones.", "这里不会自己往下走。没有倒计时，你回来时画面还停在原处。")}</p>
+        <button class="btn btn-primary btn-sm" data-action="game-resume">${icon("play", 15)} ${tx("Resume", "接着玩")}</button>
+        <button class="btn btn-ghost btn-sm" data-action="game-skip">${tx("Leave this scene", "不玩了，离开")}</button>
       </div>
     </div>
   </div>`;
@@ -960,7 +997,7 @@ function actionResultHtml(ui) {
       <h2>${esc(ok ? tx("Well done!", "做得好！") : tx("The story continues.", "故事继续。"))}</h2>
       <div class="result-stars">${[0, 1, 2].map((i) => `<span class="${i < stars ? "on" : ""}">★</span>`).join("")}</div>
       <div class="result-score">${tx("SCORE", "得分")} <strong>${r.score || 0}</strong></div>
-      ${r.late ? `<div class="tiny muted">${tx("You took your time, so it scored less. Nothing was lost.", "你花的时间长了些，所以得分少一点。什么也没有失去。")}</div>` : ""}
+      ${r.late ? `<div class="tiny muted">${tx("You took your time, so it scored less. Nothing was lost.", "你花的时间长了一点，所以分数少一些。别的没有任何损失。")}</div>` : ""}
       <div class="card-quiet small">${esc(ok ? tx("Bonus earned", "获得奖励") + " · +14 " + tx("XP", "经验") + " · +1 " + tx("Courage", "勇气") + " · +1 " + tx("Faith", "信心") : tx("No bonus", "没有奖励"))}</div>
       <button class="btn btn-primary" data-action="action-done">${tx("Keep going", "继续")} ${icon("forward", 16)}</button>
     </div>
@@ -1130,9 +1167,10 @@ function momentHtml(ui) {
         <div class="moment-meter-track"><i id="moment-meter"></i></div>
         <div class="moment-feedback" id="moment-feedback"></div>`
           : `<div class="brief-inline">
-              <ol class="brief-how"><li><span class="n">1</span><span>${esc(momentHow(m.kind))}</span></li>
-                <li><span class="n">2</span><span>${tx("Nothing moves until you press Start.", "按下「开始」之前，什么都不会动。")}</span></li></ol>
-              <p class="brief-note">${tx("No clock is running. Taking your time only lowers the score.", "这里没有倒计时。慢慢来，只是得分少一点。")}</p>
+              <ol class="brief-how">
+                <li><span class="n">1</span><span>${tx("Your hand: ", "手怎么动：")}${esc(momentHow(m.kind))}</span></li>
+                <li><span class="n">2</span><span>${tx("No clock is running. Taking your time only lowers the score.", "没有倒计时。慢一点，只是得分少一点，不会输。")}</span></li></ol>
+              <p class="brief-note">${tx("Nothing moves until you press Start.", "现在还没有开始，按了按钮才动。")}</p>
               <button class="btn btn-primary brief-start" data-action="moment-start">${icon("play", 16)} ${tx("Start this moment", "开始这一刻")}</button>
             </div>`}
         <button class="btn btn-ghost btn-sm" data-action="moment-skip">${tx("Skip this moment", "跳过这一刻")}</button>

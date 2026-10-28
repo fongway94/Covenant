@@ -318,12 +318,12 @@ export function startMoment(host, spec, onDone) {
       else S.good = Math.max(0, S.good - dt * 0.8);
       setProgress(S.good / 3.0);
       if (S.good >= 3.0) return finish(true);
-      /* One sentence of instruction, then a countdown — never a bar to decode. */
+      /* One sentence of instruction, then how much steadiness is still owed —
+         a goal being filled, never a clock running down. */
       const left = Math.max(0, 3 - S.good).toFixed(1);
-      const over = S.late ? tx(` · over ${Math.round(S.t - S.limit)}s`, ` · 超时 ${Math.round(S.t - S.limit)} 秒`) : "";
-      const line = (!S.touched
+      const line = !S.touched
         ? tx("Press and drag until the bubble sits in the notch", "按住左右拖动，让气泡停在凹槽里")
-        : tx(`Bubble in the notch — ${left}s`, `气泡稳住——还剩 ${left} 秒`)) + over;
+        : tx(`Bubble in the notch — hold ${left}s more`, `气泡稳住了 · 再稳 ${left} 秒`);
       if (line !== S.sayAt) { S.sayAt = line; say(line); }
     } else if (S.kind === "rhythm") {
       S.marker += S.dir * S.speed * dt;

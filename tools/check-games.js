@@ -271,6 +271,7 @@ for (const [key, game] of [...Object.entries(GAMES), ...Object.entries(SCENES).m
       if (c.actIndex < c.actCount - 1) preludeInput(c, frame, seen);
       else climaxInput(key.replace("/raw", ""), c, frame);
     } catch (e) { errors.push(`${key} input f${frame} act${c.actIndex}: ${e.stack}`); break; }
+    if (c.actWaiting) c.beginAct?.();
     try { game.step(c, 0.05); } catch (e) { errors.push(`${key} step f${frame} act${c.actIndex}: ${e.stack}`); break; }
     if (frame % 3 === 0) {
       try { game.draw(c, ctx); } catch (e) { errors.push(`${key} draw f${frame} act${c.actIndex}: ${e.stack}`); break; }

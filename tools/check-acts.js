@@ -59,22 +59,11 @@ const tap = (c, act, x, y) => {
 };
 
 /* Drive one preparation act to completion using its own state as an oracle. */
-function driveAct(kind, cfg) {
-  const build = ACT_BUILDERS[kind];
-  const c = makeC();
-  const ctx = mockCtx();
-  const act = build(cfg);
-  const errors = [];
-  let jumpChecked = false, maxUp = Infinity, landed = false, frames = 0;
-  const groundY = c.h * 0.78;
-  act.init?.(c);
-
-  const maxFrames = Math.ceil((cfg.seconds + 4) * 60);
-  while (!c.ended && frames < maxFrames) {
-    frames++; c.t = frames / 60;
-    const s = c.state, p = c.pointer;
-
-    try {
+/* The hand movements each act kind expects. Shared by the act oracle (which
+   drives one stage on its own) and the climax oracle (which has to clear the
+   preparation acts of a wrapped scene before the climax is even reachable). */
+function feed(kind, c, act, frames, ex) {
+  const s = c.state, p = c.pointer;
       if (kind === "sift") {
         const left = s.items?.find((it) => !it.got && it.good);
         if (left) {
@@ -131,11 +120,30 @@ function driveAct(kind, cfg) {
         p.x = centre(c, y); p.y = y; p.down = true;
       } else if (kind === "dodge") {
         // Jump once early, then verify gravity brings the pilgrim back down.
-        if (frames > 20) maxUp = Math.min(maxUp, s.y);
-        if (frames > 20 && !s.jump && Math.abs(s.y - groundY) < 0.01) landed = true;
+        if (frames > 20) ex.maxUp = Math.min(ex.maxUp, s.y);
+        if (frames > 20 && !s.jump && Math.abs(s.y - ex.groundY) < 0.01) ex.landed = true;
         const incoming = s.hazards?.some((hz) => !hz.hit && hz.x - s.x > 34 && hz.x - s.x < 74);
         if (incoming && !s.jump) tap(c, act, s.x, s.y);
       }
+}
+
+function driveAct(kind, cfg) {
+  const build = ACT_BUILDERS[kind];
+  const c = makeC();
+  const ctx = mockCtx();
+  const act = build(cfg);
+  const errors = [];
+  let jumpChecked = false, frames = 0;
+  const ex = { maxUp: Infinity, landed: false, groundY: c.h * 0.78 };
+  act.init?.(c);
+
+  const maxFrames = Math.ceil((cfg.seconds + 4) * 60);
+  while (!c.ended && frames < maxFrames) {
+    frames++; c.t = frames / 60;
+    const s = c.state, p = c.pointer;
+
+    try {
+      feed(kind, c, act, frames, ex);
       act.step?.(c, 1 / 60);
       if (frames % 4 === 0) act.draw?.(c, ctx);
       const bad = badNumbers(c.state);
@@ -149,11 +157,11 @@ function driveAct(kind, cfg) {
 
   if (kind === "dodge") {
     if (frames < 40) errors.push("dodge ended before the jump test could run");
-    if (!landed) errors.push(`jump never landed (minY=${maxUp.toFixed(1)}, groundY=${groundY.toFixed(1)})`);
-    if (maxUp < c.h * 0.05) errors.push(`pilgrim flew off the top of the screen (minY=${maxUp.toFixed(1)})`);
+    if (!ex.landed) errors.push(`jump never landed (minY=${ex.maxUp.toFixed(1)}, groundY=${ex.groundY.toFixed(1)})`);
+    if (ex.maxUp < c.h * 0.05) errors.push(`pilgrim flew off the top of the screen (minY=${ex.maxUp.toFixed(1)})`);
     jumpChecked = true;
   }
-  return { errors, frames, score: c.score, jumpChecked, landed };
+  return { errors, frames, score: c.score, jumpChecked, landed: ex.landed };
 }
 
 /* Drive a climax game with its normal input and check it terminates cleanly. */
@@ -163,15 +171,22 @@ function driveClimax(key, game) {
   const errors = [];
   let frames = 0;
   try { game.init?.(c); } catch (e) { return [`init: ${e.message}`]; }
-  /* A whole wrapped scene is its preparation acts plus the climax, and the
-     oracles here only drive the climax — the acts are given their full clocks
-     and then hand over. Budget for both. */
+  /* A wrapped scene is its preparation acts plus the climax. Nothing closes an
+     act on its own any more (no clock, no auto-skip), so the oracle has to play
+     each preparation act with the hand movement that act kind expects, and only
+     then hand over to the climax. */
+  const pre = PRELUDES[key];
+  const preList = Array.isArray(pre) ? pre : (pre ? [pre] : []);
+  const ex = { maxUp: Infinity, landed: false, groundY: c.h * 0.78 };
+  const onClimax = () => !c.actCount || (c.actIndex ?? 0) >= c.actCount - 1;
   const maxFrames = 60 * 150;
   while (!c.ended && frames < maxFrames) {
     frames++; c.t = frames / 60;
     const p = c.pointer, s = c.state;
     try {
-      if (key === "sling") {
+      if (!onClimax() && preList[c.actIndex]) {
+        feed(preList[c.actIndex].kind, c, game, frames, ex);
+      } else if (key === "sling") {
         if (frames % 70 === 1) { p.startX = 60; p.startY = 500; game.onDown?.(c, p); }
         if (frames % 70 === 2) { p.x = 300; p.y = 250; game.onMove?.(c, p); game.onUp?.(c, p); }
       } else if (key === "lions") {
@@ -269,6 +284,9 @@ function driveClimax(key, game) {
         p.x = c.w * (0.08 + 0.68 * t2);
         p.y = c.h * (0.72 - 0.26 * t2);
       }
+      /* A held act waits for the player. The oracle presses the button, which
+         is exactly what the briefing card does in the app. */
+      if (c.actWaiting) c.beginAct?.();
       game.step?.(c, 1 / 60);
       if (frames % 5 === 0) game.draw?.(c, ctx);
       const bad = badNumbers(c.state);

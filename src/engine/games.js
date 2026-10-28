@@ -89,7 +89,7 @@ function slingHand(c) {
 const sling = {
   titleEn: "The Sling", titleZh: "甩石迎敌",
   promptEn: "Drag away from David to wind the sling, release to fire. Strike Goliath's forehead twice — mind the wind and his raised shield.",
-  promptZh: "从大卫身后拖动蓄力，松手投石。命中歌利亚的额头两次——留意风和他举起的盾牌。",
+  promptZh: "从大卫身后往外拖，蓄住力再松手投石。要打中歌利亚的额头两次。小心风，也小心他抬起来的盾牌。",
   hintEn: "Drag to aim · Release to fire", hintZh: "拖动瞄准 · 松手投出",
   hint(c) { return tx(this.hintEn, this.hintZh); },
   init(c) {
@@ -330,8 +330,8 @@ const sling = {
 const lions = {
   titleEn: "Through the Den", titleZh: "潜行狮子坑",
   promptEn: "Drag to move your pilgrim. Release to stand still and hide. Stay out of the lions' gaze and reach the light.",
-  promptZh: "拖动让朝圣者移动，松手站定隐藏。避开狮子的目光，走到右边的光里。",
-  hintEn: "Drag to move · Release to hide", hintZh: "拖动移动 · 松手躲藏",
+  promptZh: "拖动让朝圣者往前走，松手就站住、藏住身影。避开狮子的目光，走进右边那道亮光里。",
+  hintEn: "Drag to move · Release to hide", hintZh: "拖动往前走 · 松手就藏住",
   hint(c) { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
@@ -482,21 +482,16 @@ function paintBundled(ctx, x, y, ang, sc, strip = 1) {
 }
 
 /* ------------------------------------------------------------------ the clock
-   No scene is failed by its clock any more. Past zero the scene simply keeps
-   running — the HUD shows "+Ns", the payout shrinks (scene.js pays it out) —
-   and the player finishes when they actually do the thing. This helper is the
-   only remaining use of the clock: a phone put down for three times the
-   scene's own budget gets a kind close, never a failure. */
-function clockSpent(s) {
-  const budget = Math.max(12, s.t + s.left);
-  return s.left <= -budget * 3;
-}
+   No scene is failed by its clock, and none is closed by it either. Past zero
+   the scene simply keeps running — the payout shrinks (scene.js pays it out) —
+   and the player finishes when they actually do the thing, or leaves with the
+   skip button. Nothing here may end a scene on the player's behalf. */
 
 const jericho = {
   titleEn: "Carry him to the inn", titleZh: "把他抬到客店",
   promptEn: "Lift him onto the donkey — he cannot help you, so use your whole hand — then keep your palm on him while the animal walks. Let go and he slides.",
-  promptZh: "把他抬上驴背——他一点力气都出不上，得用整只手。然后一路把手按在他身上，驴走的时候别松手，一松他就会滑下来。",
-  hintEn: "Lift him onto the donkey", hintZh: "把他抬上驴背",
+  promptZh: "把他抬上驴背。他一点力气都使不上，得用整只手托住。上路以后手也别松，一松他就会滑下去。",
+  hintEn: "Lift him onto the donkey", hintZh: "用整只手把他托上去",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
@@ -564,7 +559,6 @@ const jericho = {
     s.last = { x: q.x, y: q.y };
     for (const d of s.dust) { d.life -= dt; d.y -= d.v * dt; d.r += dt * 6; }
     s.dust = s.dust.filter((d) => d.life > 0);
-    if (clockSpent(s)) c.end(s.steady > 0.55, c.score);
   },
   onDown() {},
   onUp() {},
@@ -930,7 +924,7 @@ const tend = {
   titleEn: "Tend the wound", titleZh: "为他包扎伤口",
   promptEn: "Pour oil and wine over the wound, then wind the linen round it. Drag slowly — a wound is not a thing to be hurried.",
   promptZh: "把油和酒倒在伤口上，再用麻布一圈圈缠好。慢慢拖——伤口不是赶时间的事。",
-  hintEn: "Drag over the wound", hintZh: "在伤口上拖动",
+  hintEn: "Drag over the wound", hintZh: "在伤口上来回拖",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
@@ -1212,8 +1206,8 @@ function plateVignette(c, ctx, strength = 0.7) {
 const stones = {
   titleEn: "Five smooth stones", titleZh: "五块光滑的石子",
   promptEn: "Wade in and drag your hand slowly through the water. A hurried hand clouds the brook; only a still one can feel the difference between a smooth stone and a jagged one.",
-  promptZh: "走进溪水，把手慢慢在水中拖动。手一急，水就浑了；只有静下来的手，才摸得出光滑的石子和有棱角的石子。",
-  hintEn: "Drag slowly through the water", hintZh: "在水中慢慢拖动",
+  promptZh: "走进溪水，让手在水里慢慢移动。手一急，水就浑了；只有手静下来，才分得出光滑的石子和带棱角的石子。",
+  hintEn: "Drag slowly through the water", hintZh: "手在水里慢慢移",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 0; c.hearts = 0;
@@ -1279,7 +1273,6 @@ const stones = {
     if (s.got >= 5 && !s.ended) {
       s.ended = true; c.hit("unlock"); c.end(true, c.score + 60); return;
     }
-    if (clockSpent(s)) c.end(s.got > 0, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -1366,8 +1359,8 @@ const WIN_SPLIT = 0.494;                 // the seam between the two shutters
 const windowScene = {
   titleEn: "A window toward heaven", titleZh: "朝向天堂的窗",
   promptEn: "His windows were open toward Jerusalem. Lift the iron latch, then push each shutter wide — three times a day he did this, and a decree will not change it.",
-  promptZh: "他的窗户朝着耶路撒冷开着。抬起铁闩，再把两扇窗推开——他每日三次这样做，一道禁令改变不了这件事。",
-  hintEn: "Lift the latch", hintZh: "抬起铁闩",
+  promptZh: "他的窗朝着耶路撒冷开着。先抬起铁闩，再把两扇窗推开。他一天三次这样做，一道禁令改变不了这件事。",
+  hintEn: "Lift the latch", hintZh: "按住铁闩往上抬",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 0; c.hearts = 0;
@@ -1515,8 +1508,8 @@ const windowScene = {
 const flame = {
   titleEn: "Do not come too close", titleZh: "不要近前",
   promptEn: "The flame does not consume the branches. Draw near to it slowly — a hurried approach makes it flare, and you will have to begin again. Three times it steadies before it speaks.",
-  promptZh: "火焰烧不着枝子。慢慢靠近——走得急，火就窜起来，你得从头再来。它安定三次之后，才开口说话。",
-  hintEn: "Drag upward, slowly", hintZh: "慢慢往上拖",
+  promptZh: "火烧着枝子却不烧掉。慢慢靠近——一急，火就窜起来，你得从头再来。它稳下来三次，才会开口。",
+  hintEn: "Drag upward, slowly", hintZh: "手指慢慢往上拖",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 0; c.hearts = 0;
@@ -1572,7 +1565,6 @@ const flame = {
     c.progress = done / 3;
     c.setHint(`${tx("Drag upward, slowly", "慢慢往上拖")}   ${done}/3`);
     if (done >= 3) { c.hit("unlock"); c.end(true, c.score + 60); return; }
-    if (clockSpent(s)) c.end(done > 0, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -1637,8 +1629,8 @@ const flame = {
 const cry = {
   titleEn: "Yet forty days", titleZh: "再等四十日",
   promptEn: "Nineveh is three days wide and the message is one sentence. Walk the street — drag to move — and stop where people are listening long enough to cry it out.",
-  promptZh: "尼尼微宽得要走三天，而信息只有一句话。沿街走——拖动前进——在有人愿意听的地方停下来，把话喊出去。",
-  hintEn: "Drag to walk · stop and tap to cry", hintZh: "拖动行走 · 停下点击呼喊",
+  promptZh: "尼尼微大得三天也走不完，可要说的话只有一句。顺着街往前走，在有人肯听的地方停下，把话喊出去。",
+  hintEn: "Drag to walk · stop and tap to cry", hintZh: "拖动往前走 · 停下喊话",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 0; c.hearts = 0;
@@ -1684,7 +1676,6 @@ const cry = {
       ? tx("Tap to cry out: “Yet forty days!”", "点击呼喊：「再等四十日！」")
       : `${tx("Drag to walk · stop and tap to cry", "拖动行走 · 停下点击呼喊")}   ${s.calls}/3`);
     if (s.calls >= 3) { c.hit("unlock"); c.end(true, c.score + 60); return; }
-    if (clockSpent(s)) c.end(s.calls > 0, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -1788,8 +1779,8 @@ const cry = {
 const storm = {
   titleEn: "Hold the Tiller", titleZh: "掌舵迎浪",
   promptEn: "Drag to counter-steer the boat against the waves. Tap BAIL to throw water out. Survive until the storm breaks.",
-  promptZh: "拖动船舵对抗风浪，点击「舀水」把水泼出去。撑到风浪过去。",
-  hintEn: "Drag to steer · Tap to bail", hintZh: "拖动掌舵 · 点击舀水",
+  promptZh: "拖动船舵顶住风浪，点击「舀水」把舱里的水泼出去。撑到风浪过去。",
+  hintEn: "Drag to steer · Tap to bail", hintZh: "拖动掌舵 · 点「舀水」",
   hint(c) { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
@@ -1956,7 +1947,7 @@ function paintRobeCloth(ctx, x, y, s, lift) {
 const prodigal = {
   titleEn: "Bring forth the best robe", titleZh: "把上好的袍子拿来",
   promptEn: "He is on his knees and has nothing left to put on himself. Drag the robe to his shoulders, the ring to his hand, the shoes to his feet.",
-  promptZh: "他跪在地上，已经什么都没有了。把袍子披到他肩上，把戒指套到他手上，把鞋穿到他脚上。",
+  promptZh: "他跪在地上，身上什么都没有了。把袍子披到他肩上，把戒指套到他手上，把鞋穿到他脚上。",
   hintEn: "Drag each gift onto him", hintZh: "把每一件礼物拖到他身上",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
@@ -2007,7 +1998,6 @@ const prodigal = {
     const n = Object.keys(s.placed).length;
     c.progress = n / 3;
     c.setHint(`${tx("Drag each gift onto him", "把每一件礼物拖到他身上")}   ${n}/3`);
-    if (clockSpent(s)) c.end(n >= 3, c.score);
     void scale;
   },
   draw(c, ctx) {
@@ -2069,8 +2059,8 @@ const STEPS = 3;
 const esther = {
   titleEn: "If I perish, I perish", titleZh: "我若死就死吧",
   promptEn: "Cross the hall a step at a time, and let each step finish before you take the next. Then kneel at the edge of the carpet and wait: the sceptre is his to extend, not yours to take.",
-  promptZh: "一步一步穿过大厅，每一步都走完再走下一步。然后在毯边跪下等候：金杖由他伸出，不是你去拿。",
-  hintEn: "Drag up to step · then kneel", hintZh: "向上拖动走一步 · 然后跪下",
+  promptZh: "一步一步穿过大厅，一步走稳了再走下一步。走到毯边跪下，然后等——金杖是他伸出来的，不能你自己去拿。",
+  hintEn: "Drag up to step · then kneel", hintZh: "往上拖一步 · 再跪下",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 0; c.hearts = 0;
@@ -2123,7 +2113,6 @@ const esther = {
         }
       }
     }
-    if (clockSpent(s) && !c.ended) c.end(true, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -2215,8 +2204,8 @@ const desert = {
   art: "assets/art/bush.jpg", weather: "sand",
   titleEn: "Follow the flock", titleZh: "跟随羊群",
   promptEn: "Three sheep have wandered into the wadi. Gather them, then lead the flock to the burning bush before the sandstorm closes in.",
-  promptZh: "三只羊走散在旱谷里。先找齐它们，再在沙暴合拢前把羊群带到燃烧的荆棘前。",
-  hintEn: "Drag to walk · collect all 3 sheep · reach the bush", hintZh: "拖动行走 · 找齐 3 只羊 · 走到荆棘前",
+  promptZh: "三只羊走散在旱谷里。先把它们找齐，再赶在沙暴合拢之前，把羊群带到那丛燃烧的荆棘前。",
+  hintEn: "Drag to walk · collect all 3 sheep · reach the bush", hintZh: "拖动行走 · 找齐 3 只羊 · 赶到荆棘前",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
@@ -2342,8 +2331,8 @@ const glean = {
   art: "assets/art/ruth.jpg", weather: "petals",
   titleEn: "Glean the field", titleZh: "拾取麦穗",
   promptEn: "Gather 12 sheaves of barley before the sun sets. Keep clear of the swinging sickles — Boaz has told his men to leave extra for you.",
-  promptZh: "日落前拾取 12 捆麦子。避开挥动的镰刀——波阿斯已吩咐仆人特意留下麦穗给你。",
-  hintEn: "Drag to move · dodge the sickles · 12 sheaves", hintZh: "拖动移动 · 躲开镰刀 · 拾取 12 捆麦子",
+  promptZh: "天黑之前拾满 12 捆麦穗。躲开挥过来的镰刀。波阿斯已经吩咐过仆人，特意给你留了麦子。",
+  hintEn: "Drag to move · dodge the sickles · 12 sheaves", hintZh: "拖动走动 · 躲开镰刀 · 拾满 12 捆",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
@@ -2474,8 +2463,8 @@ const glean = {
 const deep = {
   titleEn: "Three days in the deep", titleZh: "在深处三日",
   promptEn: "The belly breathes, and when it presses in you must be perfectly still. Between the swells, pull the kelp off your arms before it wraps you.",
-  promptZh: "鱼腹在呼吸，它收紧的时候你必须完全不动。两次收紧之间，把缠上手臂的海草扯下来。",
-  hintEn: "Clear the kelp · hold still when the belly presses", hintZh: "扯下海草 · 鱼腹收紧时保持不动",
+  promptZh: "鱼腹在呼吸。它一收紧，你就得完全不动；松开的空档里，把缠在手臂上的海草扯下来。",
+  hintEn: "Clear the kelp · hold still when the belly presses", hintZh: "扯掉海草 · 鱼腹一紧就别动",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
@@ -2545,7 +2534,6 @@ const deep = {
     s.splash = s.splash.filter((w) => w.life > 0);
     for (const p of s.prayers) p.life -= dt;
     s.prayers = s.prayers.filter((p) => p.life > 0);
-    if (clockSpent(s) && !c.ended) c.end(true, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -2662,8 +2650,8 @@ function roundPrayer(n) {
 const climb = {
   titleEn: "Climb the sycamore", titleZh: "爬上桑树",
   promptEn: "Hand over hand: pull up on the side the light is on, then the other. Eight holds and you are above the crowd — pull on the wrong branch and you lose your grip.",
-  promptZh: "双手交替：在哪一侧有光，就从那一侧往上拉。抓住八次，你就高过人群——拉错了枝子会脱手。",
-  hintEn: "Drag up on the lit side", hintZh: "在有光的一侧向上拖",
+  promptZh: "两只手换着来：哪一侧有光，就从哪一侧往上拉。拉够八次，你就高过人群；拉错了枝子会脱手。",
+  hintEn: "Drag up on the lit side", hintZh: "从有光的一侧往上拖",
   hint() { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
@@ -2700,7 +2688,6 @@ const climb = {
       c.float(c.w / 2, c.h * 0.36, tx("He is passing below", "他从下面经过"), "#ffe6ac");
       c.end(true, c.score + 70);
     }
-    if (clockSpent(s) && !c.ended) c.end(s.holds >= 8, c.score);
   },
   draw(c, ctx) {
     const s = c.state;
@@ -2794,15 +2781,15 @@ export const PRELUDES = {
       title: ["Wind the sling", "把机弦转起来"],
       prompt: ["The stones from the brook sit in your bag. Turn the sling round your fist — a full circle — and let go while it is still singing. Three clean throws before you step onto the field.",
         "从溪边捡来的石子就在袋里。绕着拳头把机弦转满一圈，趁它还带着风声时松手。上阵前先甩出三次干净的。"],
-      hint: ["Drag in a circle · release when it sings", "绕圈拖动 · 转起来后松手"],
+      hint: ["Drag in a circle · release when it sings", "绕圈拖 · 转起来就松手"],
       rounds: 3, seconds: 30, reward: 40
     },
     {
       kind: "dodge", hero: "david", villain: "goliath", ...P("elah-field", "leaves"),
       title: ["Cross the valley", "穿过山谷"],
       prompt: ["Goliath hurls spears as David walks toward the line. Tap to leap over them. Four hits and you are knocked back — but the story goes on.",
-        "大卫走向阵前时，歌利亚不断投出长枪。点击跳过。被击中四次会被逼退——但故事仍会继续。"],
-      hint: ["Tap to leap · reach the battle line", "点击跃起 · 走到阵前"],
+        "大卫走向阵前时，歌利亚一枝接一枝投出长枪。看见枪飞过来就点一下，跳过去。被击中四次会被逼退——故事还是继续。"],
+      hint: ["Tap to leap · reach the battle line", "点一下跳起来 · 走到阵前"],
       seconds: 17, reward: 30
     }
   ],
@@ -2813,7 +2800,7 @@ export const PRELUDES = {
     title: ["Shelter the lamps", "遮住灯焰"],
     prompt: ["A guard walks his round with a torch. Cup your hand over each prayer lamp as his light passes, or the flame flares and he sees it. Three lamps before the den is sealed.",
       "守卫举着火把巡行。他的光经过时，用手遮住每一盏祷告的灯，否则火焰会窜起来被他看见。封坑之前，三盏都要守住。"],
-    hint: ["Hold your hand over a lamp as the light passes", "光经过时把手按在灯上"],
+    hint: ["Hold your hand over a lamp as the light passes", "光过来时，手指按在灯上"],
     rounds: 3, seconds: 30, reward: 30, robe: "#4a4260"
   }],
 
@@ -2822,8 +2809,8 @@ export const PRELUDES = {
     kind: "trace", hero: "traveller", ...P("jericho", "sand"),
     title: ["The narrow road", "狭窄的山路"],
     prompt: ["Lead the donkey along the winding path without stepping off the edge. Keep your finger on the road all the way to the top.",
-      "沿着弯曲的山路牵驴前行，别踩出路边。手指始终留在路上，一直走到顶端。"],
-    hint: ["Drag along the road to the top", "沿路拖到顶端"],
+      "牵着驴沿弯弯的山路往上走，别踩出路边。手指别离开路，一直拖到顶上。"],
+    hint: ["Drag along the road to the top", "手指别离开路，拖到顶"],
     seconds: 26, reward: 30
   }],
 
@@ -2832,8 +2819,8 @@ export const PRELUDES = {
     kind: "charge", mode: "rope", hero: "fisherman", ...P("storm", "rain"),
     title: ["Haul the rope", "拉紧缆绳"],
     prompt: ["A wet rope, hand over hand. Drag it down the length of your reach, then let go and take the next hold. Three good hauls and the yard is up before the squall.",
-      "湿透的缆绳，一手一手往上拉。顺着手臂往下拖满一把，松手，再抓住下一把。拉上三把，横桁就能在风起前升起来。"],
-    hint: ["Drag down and release · three hauls", "向下拖动再松手 · 共三把"],
+      "缆绳全湿了，得一把一把往上拉：手指往下拖到底算一把，松手，再抓下一把。拉满三把，帆才能赶在风起来之前升上去。"],
+    hint: ["Drag down and release · three hauls", "往下拖到底再松手 · 拉三把"],
     rounds: 3, seconds: 30, reward: 30
   }],
 
@@ -2842,7 +2829,7 @@ export const PRELUDES = {
     kind: "trace", hero: "prodigal", ...P("prodigal", "petals"),
     title: ["The long road home", "漫长的回家路"],
     prompt: ["One step, then another. Stay on the path through the pig fields and the empty cups. The Father is waiting at the top of the road.",
-      "一步，再一步。穿过猪群与空酒杯，始终留在路上。父亲在路的尽头等候。"],
+      "一步，再一步。绕过猪群，绕过空酒杯，脚别离开这条路。父亲就在路那头等你。"],
     hint: ["Drag along the road to the top", "沿路拖到顶端"],
     seconds: 26, reward: 30
   }],
@@ -2852,8 +2839,8 @@ export const PRELUDES = {
     kind: "order", mode: "seal", ...P("esther", "embers"),
     title: ["Seal the decree", "在谕旨上用印"],
     prompt: ["The herald reads the decree and the royal seals are pressed in order. Stamp them back into the wax in the same order — two readings, the second longer.",
-      "传令官宣读谕旨，王室印记按顺序盖上。照同样的顺序把印压回蜡里——宣读两遍，第二遍更长。"],
-    hint: ["Press the seals in the order read", "按宣读的顺序用印"],
+      "传令官念一遍谕旨，王印就跟着一个接一个盖下去。你照同样的顺序把印按回蜡里。会念两遍，第二遍更长。"],
+    hint: ["Press the seals in the order read", "按念到的顺序按印"],
     rounds: 2, seconds: 34, reward: 30
   }],
 
@@ -2862,8 +2849,8 @@ export const PRELUDES = {
     kind: "sift", ...P("bush", "sand"),
     title: ["Search the wadi", "在旱谷中搜寻"],
     prompt: ["Three sheep have scattered into the ravine. Sweep the sand to uncover them before the light fails — avoid the empty shadows.",
-      "三只羊走散在旱谷里。拂开沙土找出它们，趁天色未暗——避开那些空空的影子。"],
-    hint: ["Drag to sweep · tap a sheep", "拖动拂开沙土 · 点击羊"],
+      "三只羊走散在旱谷里。拂开沙土把它们找出来，趁天还没黑；那些空空的影子别去碰。"],
+    hint: ["Drag to sweep · tap a sheep", "拖动扫开沙土 · 点住羊"],
     goal: 3, decoys: 4, seconds: 24, reward: 25,
     good: "#efe2c4", siltRgb: "108,80,50"
   }],
@@ -2873,8 +2860,8 @@ export const PRELUDES = {
     kind: "rhythm", mode: "catch", hero: "ruth", ...P("ruth", "petals"),
     title: ["Take what the reapers drop", "接住收割人落下的麦穗"],
     prompt: ["Gleaning means moving with the harvesters, not ahead of them. Put your hand under each sheaf as it falls from their arms — three before the light goes.",
-      "拾穗要跟着收割人的节奏，不能抢在前头。麦穗从他们臂弯里掉下来时，把手伸到下面接住——在天黑之前接三次。"],
-    hint: ["Catch each falling sheaf", "接住落下的麦穗"],
+      "拾穗得跟着收割的人，不能抢到他们前面。麦穗从他们臂弯里掉下来时，把手伸到下面接住。天黑之前接住三次。"],
+    hint: ["Catch each falling sheaf", "麦穗落下时伸手接"],
     rounds: 3, seconds: 30, reward: 30, robe: "#5c6042"
   }],
 
@@ -2883,8 +2870,8 @@ export const PRELUDES = {
     kind: "charge", mode: "breath", ...P("jonah", "rain"),
     title: ["Hold your breath", "屏住呼吸"],
     prompt: ["Fill your lungs and go under. Hold while the water climbs and your sight narrows, then surface before the dark closes. Three good dives before the fish arrives.",
-      "吸满一口气，沉下去。水往上涨、视野一点点收窄的时候屏住，在黑暗合拢之前浮上来。大鱼到来前，三次干净的下潜。"],
-    hint: ["Hold to dive · surface before the dark closes", "按住下潜 · 在黑暗合拢前浮上来"],
+      "吸满一口气，沉下去。水面往上压、眼前越来越窄的时候屏住，趁黑暗合起来之前浮上来。大鱼来之前，要三次干净的下潜。"],
+    hint: ["Hold to dive · surface before the dark closes", "按住往下潜 · 变黑之前浮上来"],
     rounds: 3, seconds: 30, reward: 30
   }],
 
@@ -2894,7 +2881,7 @@ export const PRELUDES = {
     title: ["Take the boughs they point to", "顺着人群指的枝子"],
     prompt: ["The crowd points you up the tree, one bough at a time. Watch which they choose, then take the same ones in the same order. Two climbs before Jesus passes.",
       "人群一根一根地指你往树上去。看清他们指的是哪几根，再照同样的顺序爬上去。耶稣经过前要爬两趟。"],
-    hint: ["Take the boughs in the order pointed", "按指引的顺序爬枝子"],
+    hint: ["Take the boughs in the order pointed", "按他们指的顺序爬"],
     rounds: 2, seconds: 34, reward: 30
   }]
 };

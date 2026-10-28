@@ -119,14 +119,6 @@ export const CHAPTERS = [
           ["", "David runs toward the line. He reaches into his bag. The whole valley seems to hold its breath — and Elias grips your sleeve."],
           ["elias", "Do not look away. Whatever you do, do not look away."]
         ],
-        mini: {
-          key: "sling", glyph: "◍", title: "Hold your nerve",
-          prompt: "Keep your eyes steady as David runs. Tap when the light reaches the golden mark.",
-          targets: [50], zone: 13, speed: 0.105,
-          hitText: "You did not look away.",
-          missText: "Your eyes flickered. David did not.",
-          win: { stat: { faith: 2, courage: 1 }, xp: 12, flag: "slingWon" }
-        },
         next: "end"
       },
       end: {
@@ -505,14 +497,6 @@ export const CHAPTERS = [
           ["elias", "Hold the tiller. Three waves are coming — keep her steady through all three. Breathe between them."],
           ["", "Elias puts a hand on your shoulder. “Do the next thing in front of you. That is how trust actually looks in a storm.”"]
         ],
-        mini: {
-          key: "tiller", glyph: "⌇", title: "Hold the tiller",
-          prompt: "Three waves. Tap as each swell reaches the golden mark to keep the bow into the wind.",
-          targets: [38, 62, 50], zone: 12, speed: 0.125,
-          hitText: "Steady. She holds.",
-          missText: "She slips sideways — brace!",
-          win: { stat: { courage: 2, faith: 1 }, xp: 14, flag: "tillerWon" }
-        },
         next: "asleep"
       },
       asleep: {

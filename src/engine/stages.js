@@ -56,22 +56,6 @@ function stageChrome(c, ctx, cfg, s) {
   ctx.fillStyle = "rgba(244,231,203,.78)"; ctx.font = `${Math.round(11 * U)}px ${c.font}`;
   wrapText(ctx, T(cfg.prompt), 26, y + Math.round(44 + 9 * U), w - 52, Math.round(12 * U), 3);
 
-  /* The bar is time left, then time spent: past the line it fills with amber
-     instead of stopping, so the cost of the delay is visible rather than a
-     countdown to failure. */
-  const ratio = clamp((s.left ?? cfg.seconds) / cfg.seconds, 0, 1);
-  ctx.fillStyle = "rgba(255,255,255,.1)"; roundRect(ctx, 26, y + hh - 12, w - 52, 5, 2.5); ctx.fill();
-  if (s.left >= 0) {
-    ctx.fillStyle = ratio > 0.3 ? "#d6b46c" : "#d65c42";
-    roundRect(ctx, 26, y + hh - 12, (w - 52) * ratio, 5, 2.5); ctx.fill();
-  } else {
-    const over = clamp(-s.left / (cfg.seconds * 1.6), 0, 1);
-    ctx.fillStyle = "#c08a4a";
-    roundRect(ctx, 26, y + hh - 12, (w - 52) * over, 5, 2.5); ctx.fill();
-    ctx.textAlign = "right"; ctx.fillStyle = "#e8b877"; ctx.font = `700 ${Math.round(10 * U)}px ${c.font}`;
-    ctx.fillText(`+${Math.ceil(-s.left)}s`, w - 26, y + hh - 16);
-  }
-
   // goal pips on the right of the title
   if (s.goalText) {
     ctx.textAlign = "right"; ctx.fillStyle = "#f2dba6"; ctx.font = `700 ${Math.round(13 * U)}px ${c.font}`;
@@ -104,28 +88,14 @@ function wrapText(ctx, text, x, y, maxW, lh, maxLines) {
   for (let i = 0; i < Math.min(maxLines, lines.length); i++) ctx.fillText(lines[i], x, y + i * lh);
 }
 
-/* The clock is a score clock, not a trap. Nothing is lost because it ran out:
-   the act stays open, the bar turns amber, and every second past the line
-   costs part of what the act is worth. Only a very long silence closes it —
-   kindly, with the story moving on and a low score — so nobody is ever stuck
-   inside a preparation act. */
-function clockLabel(s) {
-  return s.left >= 0 ? `${Math.ceil(s.left)}s` : `+${Math.ceil(-s.left)}s`;
-}
+/* Time is scored, never enforced. There is no clock on screen and no countdown:
+   `left` only decides how much the act is worth at the end, and an act that is
+   never finished is never closed by the game — the player is always the one who
+   moves the story on. */
 function tick(c, s, cfg, dt) {
   s.t += dt;
   s.left -= dt;
   s.flash = Math.max(0, (s.flash || 0) - dt * 2.2);
-  if (s.finished) return;
-  const limit = cfg.seconds || 30;
-  if (s.left <= -limit * 3) {
-    s.finished = true;
-    s.autoClosed = true;
-    c.autoClosed = true;
-    if (cfg.carry) c.shared[cfg.carry] = Math.max(1, s.found || 0);
-    c.float(c.w / 2, c.h * 0.62, tx("The story goes on.", "故事继续。"), "#d6b46c");
-    c.end(true, c.score);
-  }
 }
 function win(c, s, cfg, bonus) {
   if (s.finished) return;
@@ -193,7 +163,7 @@ function siftStage(cfg) {
       s.lens.x = p.x || s.lens.x; s.lens.y = p.y || s.lens.y;
       if (p.down || c.keys.has("arrowleft") || c.keys.has("arrowright")) reveal(c, s, s.lens.x, s.lens.y, s.lens.r);
       c.progress = s.found / cfg.goal;
-      c.setHint(`${T(cfg.hint)}   ${tx("FOUND", "已找到")} ${s.found}/${cfg.goal}   ${clockLabel(s)}`);
+      c.setHint(`${T(cfg.hint)}   ${tx("FOUND", "已找到")} ${s.found}/${cfg.goal}`);
       if (s.found >= cfg.goal) win(c, s, cfg, cfg.reward || 30);
     },
     draw(c, ctx) {
@@ -460,7 +430,7 @@ function rhythmStage(cfg) {
       c.progress = s.round / cfg.rounds;
     }
 
-    c.setHint(`${T(cfg.hint)}   ${s.round}/${cfg.rounds}   ${clockLabel(s)}`);
+    c.setHint(`${T(cfg.hint)}   ${s.round}/${cfg.rounds}`);
   }
 
   function draw(c, ctx) {
@@ -762,7 +732,7 @@ function traceStage(cfg) {
       s.dust = s.dust.filter((d) => d.life > 0);
       s.wobble = Math.max(0, s.wobble - dt * 2);
       c.progress = s.progress;
-      c.setHint(`${T(cfg.hint)}   ${Math.round(s.progress * 100)}%   ${clockLabel(s)}`);
+      c.setHint(`${T(cfg.hint)}   ${Math.round(s.progress * 100)}%`);
       // A finger rarely reaches the exact top pixel on a phone. Once the last
       // stretch of road is walked, treat it as arrived instead of stalling.
       if (s.progress >= 0.94) { s.progress = 1; win(c, s, cfg, cfg.reward || 30); }
@@ -1055,7 +1025,7 @@ function chargeStage(cfg) {
       c.progress = s.round / cfg.rounds;
     }
 
-    c.setHint(`${T(cfg.hint)}   ${s.round}/${cfg.rounds}   ${clockLabel(s)}`);
+    c.setHint(`${T(cfg.hint)}   ${s.round}/${cfg.rounds}`);
   }
 
   function draw(c, ctx) {
@@ -1780,39 +1750,68 @@ export function withStages(game, preludes) {
   const list = (Array.isArray(preludes) ? preludes : [preludes]).filter(Boolean);
   if (!list.length) return game;
   const acts = [...list.map((cfg) => builderFor(cfg.kind)(cfg)), game];
+  /* One line of instruction per act. Every act also gets its own briefing card,
+     so the hand is told what to do before it is asked to do it — act two is not
+     a surprise that starts while the player is still reading act one. */
+  const meta = [
+    ...list.map((cfg) => ({
+      title: cfg.title, prompt: cfg.prompt, hint: cfg.hint
+    })),
+    { title: [game.titleEn, game.titleZh], prompt: [game.promptEn, game.promptZh], hint: [game.hintEn, game.hintZh] }
+  ];
+  const applyHint = (c, i) => {
+    const m = meta[i];
+    c.hint = m?.hint ? tx(m.hint[0], m.hint[1]) : "";
+  };
   const wrapped = {
     ...game,
     acts,
     actCount: acts.length,
+    /** Raw (bilingual) copy for act `i`, for the briefing card. */
+    actBrief(i) { return meta[i] || meta[0]; },
     hint(c) { return tx(this.hintEn, this.hintZh); },
     init(c) {
       c.shared = { ...(c.shared || {}) };
       c.actIndex = 0; c.actCount = acts.length;
-      c.actBanner = 1.8; c.actFlash = 0.55;
+      c.actBanner = 0; c.actFlash = 0;
+      c.actWaiting = false;
       let finished = false;
       const rawEnd = c.end.bind(c);
       c.end = (success, score) => {
         if (finished) return;
         c.score = Math.max(0, Math.round(score ?? c.score));
         if (success && c.actIndex < acts.length - 1) {
-          // act cleared → brief cinematic beat, then the next act begins
+          /* Act cleared: hold everything and wait for the player. The next act
+             is not initialised and no clock runs until beginAct() is called. */
           c.actIndex++;
-          c.actBanner = 1.9; c.actFlash = 0.6;
+          c.actWaiting = true;
+          c.actBanner = 0; c.actFlash = 0;
           c.hearts = c.maxHearts;         // each act is a fresh challenge
+          c.progress = 0;
           c.hit("unlock");
           c.spark(c.w / 2, c.h * 0.45, "#f4d79b", 22, 170);
-          acts[c.actIndex].init?.(c);
-          c.progress = 0;
+          try { c.onActGate?.({ index: c.actIndex, count: acts.length, ...meta[c.actIndex] }); } catch { /* noop */ }
           return;
         }
         finished = true;
         rawEnd(success, c.score);
       };
+      c.beginAct = () => {
+        if (!c.actWaiting) return;
+        c.actWaiting = false;
+        c.actBanner = 1.9; c.actFlash = 0.6;
+        c.progress = 0;
+        acts[c.actIndex].init?.(c);
+        applyHint(c, c.actIndex);
+        c.hit("choose");
+      };
       acts[0].init?.(c);
+      applyHint(c, 0);
     },
     step(c, dt) {
       c.actBanner = Math.max(0, (c.actBanner || 0) - dt);
       c.actFlash = Math.max(0, (c.actFlash || 0) - dt);
+      if (c.actWaiting) return;           // waiting on the player, not on a clock
       if (c.actBanner > 1.25) return;     // hold the "ACT CLEAR" beat briefly
       c.progress = 0;
       acts[c.actIndex].step?.(c, dt);
@@ -1821,7 +1820,10 @@ export function withStages(game, preludes) {
       c.progress = (c.actIndex + stageP) / c.actCount;
     },
     draw(c, ctx) {
-      acts[c.actIndex].draw?.(c, ctx);
+      /* While the card is up, keep the last act's frame on screen behind it —
+         the world is holding its breath, not blank. */
+      const di = c.actWaiting ? Math.max(0, c.actIndex - 1) : c.actIndex;
+      acts[di].draw?.(c, ctx);
       drawForeground(c, ctx, c.game.fg || "rocks", 0.85);
       drawCinematic(c, ctx, { flash: c.actFlash || 0 });
       drawStageBadge(c, ctx, currentLabel(c), c.actIndex, c.actCount);
@@ -1830,7 +1832,7 @@ export function withStages(game, preludes) {
         ctx.save(); ctx.globalAlpha = a;
         ctx.fillStyle = "rgba(6,13,19,.72)"; ctx.fillRect(0, c.h * 0.38, c.w, c.h * 0.2);
         ctx.fillStyle = "#f2dba6"; ctx.font = `700 13px ${c.font}`; ctx.textAlign = "center";
-        ctx.fillText(tx("ACT CLEAR", "本幕完成"), c.w / 2, c.h * 0.47);
+        ctx.fillText(tx("ACT CLEAR", "这一幕结束"), c.w / 2, c.h * 0.47);
         ctx.font = `600 16px ${c.font}`;
         ctx.fillText(currentLabel(c), c.w / 2, c.h * 0.5);
         ctx.restore();

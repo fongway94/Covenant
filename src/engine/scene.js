@@ -399,10 +399,10 @@ export function scepter(ctx, x, y, up, t) {
 /* ------------------------------------------------------------- scene loop */
 
 /* ------------------------------------------------------------------ the clock
-   Time is a score clock, never a wall. Every scene keeps its own `state.left`,
-   but when it passes zero nothing ends: the picture stays live and playable,
-   the HUD says how far over the line it is, and the payout shrinks with the
-   delay. A slow player loses points, never the act. */
+   Time is a score clock, never a wall, and never a countdown. Every scene keeps
+   its own `state.left`, but when it passes zero nothing ends and nothing is
+   shown: the picture stays live and playable, and only the payout shrinks with
+   the delay. A slow player loses points, never the act. */
 /** The player's text-size setting, for text drawn on a canvas. Every number
     that reaches ctx.font is multiplied by this, so a scene's instructions grow
     with the rest of the app instead of staying 13px forever. */
@@ -421,7 +421,7 @@ function overInfo(c) {
   return { over, keep: clamp(1 - over / (budget * 0.9), 0.3, 1) };
 }
 
-export function startScene(canvas, key, onResult, seed = {}) {
+export function startScene(canvas, key, onResult, seed = {}, hooks = {}) {
   const game = GAMES[key] || GAMES.sling;
   let ctx = null;
   try { ctx = canvas.getContext && canvas.getContext("2d"); } catch { /* jsdom */ }
@@ -759,13 +759,9 @@ export function startScene(canvas, key, onResult, seed = {}) {
     // score
     ctx.textAlign = "right"; ctx.fillStyle = "rgba(244,231,203,.85)"; ctx.font = `600 ${Math.round(12 * U)}px ${c.font}`;
     ctx.fillText(`${tx("SCORE", "得分")} ${c.score}`, w - 16, top + 22);
-    /* Past the line the scene is still live; this is the whole cost of being
-       late, and it has to be readable at a glance. */
-    const oi = overInfo(c);
-    if (oi.over > 0) {
-      ctx.font = `700 ${Math.round(11 * U)}px ${c.font}`; ctx.fillStyle = "#e8b877";
-      ctx.fillText(`${tx("OVER", "超时")} +${Math.ceil(oi.over)}s`, w - 16, top + 22 + 16 * U);
-    }
+    /* No clock is ever shown. Being slow only shrinks the payout (overInfo),
+       and the briefing card already says so in words — a ticking "OVER +Ns"
+       read-out was the one thing that still felt like a time limit. */
     if (c.combo >= 2) {
       ctx.font = `700 ${Math.round(11 * U)}px ${c.font}`;
       ctx.fillStyle = "#e7b75b";
@@ -844,13 +840,21 @@ export function startScene(canvas, key, onResult, seed = {}) {
   // Every climax may stage painted actors; one warm-up covers all of them.
   try { preloadSprites(); } catch { /* art is always optional */ }
   game.init(c);
-  c.hint = game.hint(c);
+  /* The act wrapper already set the instruction for the act that is running;
+     only a single-act scene needs the fallback. */
+  if (!c.hint) c.hint = game.hint(c);
+  c.onActGate = typeof hooks.onActGate === "function" ? hooks.onActGate : null;
   if (typeof requestAnimationFrame === "function") raf = requestAnimationFrame(frame);
 
   return {
     scene: c,   // read-only-ish handle for debugging and automated visual checks
     canvas,     // identity of the live canvas, so a re-render can be detected
     pause() { if (!alive) return; c.paused = true; pointer.down = false; if (game.onUp) { try { game.onUp(c, pointer); } catch { /* noop */ } } },
+    /** Release the held act and start the one the player just read about. */
+    beginAct() { if (!alive) return; try { c.beginAct?.(); } catch (err) { if (typeof console !== "undefined") console.warn("[scene] beginAct:", err); } },
+    actWaiting() { return !!c.actWaiting; },
+    actIndex() { return c.actIndex || 0; },
+    actCount() { return c.actCount || 1; },
     resume() { if (!alive) return; c.paused = false; last = 0; },
     isPaused() { return c.paused; },
     alive() { return alive; },
@@ -859,7 +863,20 @@ export function startScene(canvas, key, onResult, seed = {}) {
   };
 }
 
-export function gameInfo(key) {
+/** What the scene asks of the player. `act` is 0-based; a staged scene answers
+    for the act that is about to run, not for its climax. */
+export function gameInfo(key, act = 0) {
   const g = GAMES[key] || GAMES.sling;
-  return { title: tx(g.titleEn, g.titleZh), prompt: tx(g.promptEn, g.promptZh), hint: tx(g.hintEn, g.hintZh) };
+  const m = (typeof g.actBrief === "function" && g.actBrief(act)) || null;
+  const title = m?.title || [g.titleEn, g.titleZh];
+  const prompt = m?.prompt || [g.promptEn, g.promptZh];
+  const hint = m?.hint || [g.hintEn, g.hintZh];
+  return {
+    title: tx(title[0], title[1]),
+    prompt: tx(prompt[0], prompt[1]),
+    hint: tx(hint[0], hint[1]),
+    titlePair: title, promptPair: prompt, hintPair: hint,
+    act: act + 1,
+    acts: g.actCount || 1
+  };
 }
