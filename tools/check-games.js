@@ -32,7 +32,7 @@ function makeC(key) {
     shake: 0, flash: 0, hint: "", label: "", state: {}, shared: {},
     actIndex: 0, actCount: 1, actBanner: 0, actFlash: 0, ended: null,
     rnd, clamp, dist,
-    spark() {}, float() {}, bump() {}, hit() {},
+    spark() {}, float() {}, bump() {}, hit() {}, ring() {},
     hurt(n = 1) { c.hearts = Math.max(0, c.hearts - n); if (!c.hearts) c.end(false, c.score); },
     addScore(n) { c.score += n; },
     setHint(s) { c.hint = s; },

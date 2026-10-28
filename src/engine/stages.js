@@ -8,7 +8,7 @@
 
 import { tx } from "../core/i18n.js";
 import { clamp, rnd, dist, drawBackdrop, drawWeather, shadow, star, roundRect,
-  pilgrim, giant, npc } from "./scene.js";
+  pilgrim, giant, npc, actor, actorShadow, preloadSprites } from "./scene.js";
 import { drawForeground, drawCinematic, drawStageBadge, goldenHour } from "./visual.js";
 
 const TAU = Math.PI * 2;
@@ -370,6 +370,7 @@ function chargeStage(cfg) {
   return {
     label: () => T(cfg.title),
     init(c) {
+      if (cfg.hero) preloadSprites();
       c.state = { t: 0, left: cfg.seconds, power: 0, holding: false, band: 0.6,
         bandW: 0.16, round: 0, flash: 0, finished: false, glow: 0 };
       c.setHint(T(cfg.hint));
@@ -389,7 +390,26 @@ function chargeStage(cfg) {
     },
     draw(c, ctx) {
       const s = c.state; stageBg(c, ctx, cfg);
-      const x = c.w * 0.14, y = c.h * 0.6, ww = c.w * 0.72, hh = 34;
+      /* A named hero performs the action, standing in the lower third so the
+         metering bar sits above him instead of across his chest. */
+      const heroY = c.h * 0.86, heroH = clamp(c.h * 0.27, 110, 210);
+      if (cfg.hero) {
+        actorShadow(ctx, c.w * 0.5, heroY + 2, heroH * 0.2, 0.3);
+        const lean = -0.02 - s.power * 0.13;
+        const drew = actor(ctx, cfg.hero, c.w * 0.5, heroY, heroH, { rot: lean, squash: 1 - s.power * 0.02 });
+        if (!drew) pilgrim(ctx, c.w * 0.5, heroY, 1.1, c.t * 2, 1, 1, true);
+        // the whirl of the sling, spinning up as the hold builds
+        const hx = c.w * 0.5 - heroH * 0.16, hy = heroY - heroH * 0.4;
+        const rad = 9 + s.power * 19;
+        const a = -c.t * (5 + s.power * 16);
+        ctx.save();
+        ctx.strokeStyle = `rgba(244,215,155,${0.3 + s.power * 0.5})`; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.arc(hx, hy, rad, a, a + 4.6); ctx.stroke();
+        ctx.fillStyle = "#e7d3a6";
+        ctx.beginPath(); ctx.arc(hx + Math.cos(a) * rad, hy + Math.sin(a) * rad, 3.4, 0, TAU); ctx.fill();
+        ctx.restore();
+      }
+      const x = c.w * 0.14, y = c.h * (cfg.hero ? 0.52 : 0.6), ww = c.w * 0.72, hh = 34;
       ctx.fillStyle = "rgba(7,15,21,.8)"; roundRect(ctx, x - 6, y - 6, ww + 12, hh + 12, 12); ctx.fill();
       ctx.strokeStyle = "rgba(231,183,91,.24)"; ctx.lineWidth = 1; ctx.stroke();
       // target band
@@ -401,13 +421,15 @@ function chargeStage(cfg) {
       const pg = ctx.createLinearGradient(x, 0, x + Math.max(1, fw), 0);
       pg.addColorStop(0, "rgba(79,184,168,.55)"); pg.addColorStop(1, "rgba(247,221,165,.9)");
       ctx.fillStyle = pg; roundRect(ctx, x, y, Math.max(2, fw), hh, 6); ctx.fill();
-      // rope / crank illustration
+      // rope / crank illustration (only when no painted hero is on stage)
+      if (!cfg.hero) {
       ctx.save(); ctx.translate(c.w * 0.5, c.h * 0.5);
       ctx.strokeStyle = "rgba(231,183,91,.5)"; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(0, 0, 26, 0, TAU); ctx.stroke();
       ctx.rotate(s.power * 8);
       for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(i * Math.PI / 2) * 26, Math.sin(i * Math.PI / 2) * 26); ctx.stroke(); }
       ctx.restore();
+      }
       glowDot(ctx, x + fw, y + hh / 2, 16 + s.glow * 12, "#f4d79b");
       for (let i = 0; i < cfg.rounds; i++) {
         const xx = c.w / 2 + (i - (cfg.rounds - 1) / 2) * 24;
@@ -509,6 +531,7 @@ function dodgeStage(cfg) {
   return {
     label: () => T(cfg.title),
     init(c) {
+      preloadSprites();
       c.state = { t: 0, left: cfg.seconds, x: c.w * 0.12, y: c.h * 0.78,
         vy: 0, jump: false, hazards: [], spawn: 0, hits: 0, flash: 0, finished: false };
       c.setHint(T(cfg.hint));
@@ -546,7 +569,13 @@ function dodgeStage(cfg) {
       const s = c.state; stageBg(c, ctx, cfg);
       // distant giant
       glowDot(ctx, c.w * 0.88, c.h * 0.56, 84, "rgba(224,139,120,.5)");
-      giant(ctx, c.w * 0.88, c.h * 0.68, 1.45, c.t);
+      const gH = clamp(c.h * 0.44, 160, 300);
+      const gx = c.w * 0.94;
+      actorShadow(ctx, gx, c.h * 0.79, gH * 0.22, 0.32);
+      // part haze, so he reads as standing at the far end of the valley
+      const giantDrawn = actor(ctx, "goliath", gx, c.h * 0.79, gH,
+        { rot: Math.sin(c.t * 0.6) * 0.01, squash: 1 + Math.sin(c.t * 1.5) * 0.006, alpha: 0.92 });
+      if (!giantDrawn) giant(ctx, c.w * 0.88, c.h * 0.68, 1.45, c.t);
       // ground
       ctx.fillStyle = "rgba(38,45,36,.55)"; ctx.fillRect(0, c.h * 0.8, c.w, c.h * 0.2);
       ctx.strokeStyle = "rgba(240,196,106,.2)"; ctx.beginPath(); ctx.moveTo(0, c.h * 0.8); ctx.lineTo(c.w, c.h * 0.8); ctx.stroke();
@@ -559,7 +588,13 @@ function dodgeStage(cfg) {
         ctx.beginPath(); ctx.moveTo(hz.r + 7, 0); ctx.lineTo(hz.r - 2, -4); ctx.lineTo(hz.r - 2, 4); ctx.closePath(); ctx.fill();
         ctx.restore();
       }
-      pilgrim(ctx, s.x, s.y, 1.15, c.t * 3, 1, 1, true);
+      const dH = clamp(c.h * 0.30, 110, 200);
+      actorShadow(ctx, s.x, c.h * 0.79 + 2, dH * 0.2, 0.42);
+      const runDrawn = actor(ctx, "david", s.x, s.y, dH, {
+        rot: s.jump ? -0.05 : 0.05 + Math.sin(c.t * 9) * 0.012,
+        squash: s.jump ? 1.02 : 1 + Math.sin(c.t * 9) * 0.015
+      });
+      if (!runDrawn) pilgrim(ctx, s.x, s.y, 1.15, c.t * 3, 1, 1, true);
       ctx.fillStyle = "rgba(247,221,165,.6)"; ctx.font = `10px ${c.font}`; ctx.textAlign = "center";
       ctx.fillText(tx("THE LINE", "阵前"), c.w * 0.88, c.h * 0.72);
       stageChrome(c, ctx, cfg, { ...s, goalText: `${s.hits}/4` });

@@ -11,7 +11,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const R = (p) => path.join(ROOT, p);
 
 const MIME = {
-  ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
+  ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp",
   ".svg": "image/svg+xml", ".woff2": "font/woff2", ".webmanifest": "application/manifest+json"
 };
 

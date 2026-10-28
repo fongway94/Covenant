@@ -149,6 +149,62 @@ export function star(ctx, x, y, r, color, alpha = 1) {
   ctx.closePath(); ctx.fill(); ctx.restore();
 }
 
+/* ------------------------------------------------- painted actor sprites */
+/* The action scenes were all vector-drawn so they could never fail to load.
+   The David chapter now stages painted actors instead, but every call site
+   stays optional: if an image is missing (or still decoding) `actor()` draws
+   nothing and the caller falls back to the old vector figure. That keeps the
+   offline build, jsdom checks and the first animation frame all safe. */
+export const SPRITES = {
+  david: "assets/art/sprites/david.webp",
+  davidThrow: "assets/art/sprites/david-throw.webp",
+  goliath: "assets/art/sprites/goliath.webp",
+  goliathGuard: "assets/art/sprites/goliath-guard.webp",
+  goliathFall: "assets/art/sprites/goliath-stagger.webp"
+};
+
+/** Warm every sprite up front so the first swinging frame is not a stickman. */
+export function preloadSprites() {
+  for (const src of Object.values(SPRITES)) loadArt(src);
+}
+
+export function spriteReady(key) {
+  const img = loadArt(SPRITES[key]);
+  return !!(img && img.complete && img.naturalWidth > 0);
+}
+
+/** Draw a sprite with its FEET on (x, y).
+    `height` is the on-screen figure height in px; width follows the artwork.
+    o.flip   -1 mirrors (facing left), default 1
+    o.rot    rad of lean, pivoting on the feet (negative leans back)
+    o.squash >1 stretches up, <1 crouches, keeping the feet planted
+    o.alpha  0..1
+    o.pivotX horizontal anchor, 0.5 = centred on x */
+export function actor(ctx, key, x, y, height, o = {}) {
+  const img = loadArt(SPRITES[key]);
+  if (!img || !img.complete || !img.naturalWidth) return false;
+  const dw = height * (img.naturalWidth / img.naturalHeight);
+  ctx.save();
+  ctx.translate(x, y);
+  if (o.rot) ctx.rotate(o.rot);
+  ctx.scale(o.flip === -1 ? -1 : 1, 1);
+  if (o.squash && o.squash !== 1) ctx.scale(1 / o.squash, o.squash);
+  ctx.globalAlpha = o.alpha ?? 1;
+  try { ctx.drawImage(img, -dw * (o.pivotX ?? 0.5), -height, dw, height); }
+  catch { ctx.restore(); return false; }
+  ctx.restore();
+  return true;
+}
+
+/** A soft contact shadow that keeps a painted actor stitched to the ground. */
+export function actorShadow(ctx, x, y, w, alpha = 0.34) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = "#05090c";
+  ctx.beginPath(); ctx.ellipse(x, y, w, Math.max(3, w * 0.16), 0, 0, TAU); ctx.fill();
+  ctx.restore();
+}
+
 /** A small pilgrim: robe, hood, staff, animated walking legs. */
 export function pilgrim(ctx, x, y, s = 1, phase = 0, dir = 1, alpha = 1, glow = false) {
   ctx.save();
@@ -308,7 +364,7 @@ export function startScene(canvas, key, onResult, seed = {}) {
 
   const c = {
     w: 0, h: 0, t: 0, dt: 0.016, game, pointer, keys, particles, floats,
-    ripples, trail, font, hudTop: 112,
+    ripples, trail, font, hudTop: 112, paused: false,
     hearts: 3, maxHearts: 3, score: 0, progress: 0, shake: 0, flash: 0,
     hint: "", label: "", state: {}, shared: { ...seed },
     combo: 0, comboAt: -10, hitStop: 0,
@@ -544,16 +600,23 @@ export function startScene(canvas, key, onResult, seed = {}) {
   function frame(ts) {
     if (!alive) return;
     const dt = Math.min(0.05, last ? (ts - last) / 1000 : 0.016);
-    last = ts; c.t += dt; c.dt = dt;
+    last = ts;
     resizeIfNeeded();
     ctx.save();
     if (c.shake > 0) ctx.translate(rnd(-c.shake, c.shake), rnd(-c.shake, c.shake));
-    // A few frames of hit-stop on impact makes hits land without changing any
-    // game logic — physics still advances with the same dt afterwards.
-    if (c.hitStop <= 0) {
-      try { game.step(c, dt); } catch (err) { if (typeof console !== "undefined") console.warn("[scene] step:", err); }
+    /* PAUSE: the world holds still. We keep drawing the current frame (so the
+       canvas never goes blank or stale-looking) but advance nothing: no timers,
+       no physics, no act countdown. Resuming resets `last` so the first frame
+       after a resume cannot jump. */
+    if (!c.paused) {
+      c.t += dt; c.dt = dt;
+      // A few frames of hit-stop on impact makes hits land without changing any
+      // game logic — physics still advances with the same dt afterwards.
+      if (c.hitStop <= 0) {
+        try { game.step(c, dt); } catch (err) { if (typeof console !== "undefined") console.warn("[scene] step:", err); }
+      }
+      updateFx(dt);
     }
-    updateFx(dt);
     ctx.clearRect(-40, -40, c.w + 80, c.h + 80);
     try { game.draw(c, ctx); } catch (err) { if (typeof console !== "undefined") console.warn("[scene] draw:", err); }
     drawFx();
@@ -578,6 +641,10 @@ export function startScene(canvas, key, onResult, seed = {}) {
 
   return {
     scene: c,   // read-only-ish handle for debugging and automated visual checks
+    canvas,     // identity of the live canvas, so a re-render can be detected
+    pause() { if (!alive) return; c.paused = true; pointer.down = false; if (game.onUp) { try { game.onUp(c, pointer); } catch { /* noop */ } } },
+    resume() { if (!alive) return; c.paused = false; last = 0; },
+    isPaused() { return c.paused; },
     stop() { if (!alive) return; alive = false; ended = true; if (raf) cancelAnimationFrame(raf); detach(); },
     skip() { if (!alive) return; alive = false; ended = true; if (raf) cancelAnimationFrame(raf); detach(); onResult({ score: 0, success: false, skipped: true }); }
   };

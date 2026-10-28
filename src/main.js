@@ -15,7 +15,7 @@ import {
   continueStory, prayNow, openScroll, miniTap, miniSkip, reflectAnswer,
   goToReflection, leaveStory, finishStory,
   skipAction, actionDone, hotspotTap, hotspotDone, hotspotSkip,
-  revealHints, guidedChoose, skipMoment
+  revealHints, guidedChoose, skipMoment, pauseGame, resumeGame
 } from "./screens/story.js";
 import { mountAtmosphere } from "./engine/atmosphere.js";
 
@@ -104,7 +104,19 @@ function render() {
     case "story": html = ui.story ? storyHtml(ui) : mapHtml(ui); break;
     default: html = titleHtml(ui); break;
   }
+  /* The running action scene owns its canvas and its animation loop. Replacing
+     root.innerHTML destroys that canvas, so preserve the live node and splice it
+     into the freshly rendered layout. Without this, pausing (or any dialog, or
+     returning from an app switch) left a frozen, unresponsive scene. */
+  const liveCanvas = ui.view === "story" && ui.story?.phase === "action"
+    ? document.getElementById("action-canvas") : null;
   root.innerHTML = html + (ui.modal ? modalHtml(ui) : "");
+  if (liveCanvas) {
+    const placeholder = root.querySelector("#action-canvas");
+    if (placeholder && placeholder !== liveCanvas && placeholder.parentNode) {
+      placeholder.parentNode.replaceChild(liveCanvas, placeholder);
+    }
+  }
   root.dataset.render = String(++renderCount);
   const art = root.querySelector(".story-art, .action-screen, .title-art, .camp-hero, .finale-art");
   if (art) {
@@ -224,6 +236,8 @@ root.addEventListener("click", (e) => {
     case "mini-skip": miniSkip(ui); break;
     case "moment-skip": skipMoment(ui); break;
 
+    case "game-pause": pauseGame(ui); break;
+    case "game-resume": resumeGame(ui); break;
     case "game-skip": skipAction(ui); break;
     case "action-done": actionDone(ui); break;
     case "hotspot-tap": hotspotTap(ui, Number(el.dataset.index)); break;
@@ -406,7 +420,17 @@ document.addEventListener("keydown", (e) => {
 const kickAudio = () => { audioUnlocked = true; resumeAudio(); syncAmbience(); };
 document.addEventListener("pointerdown", kickAudio, { once: true });
 document.addEventListener("keydown", kickAudio, { once: true });
-document.addEventListener("visibilitychange", () => duckAmbience(document.hidden));
+document.addEventListener("visibilitychange", () => {
+  duckAmbience(document.hidden);
+  /* Leaving the app mid-scene must not cost the player stones or time: freeze
+     the world and show the resume card. They resume deliberately. */
+  if (document.hidden) {
+    if (ui.story?.phase === "action" && !ui.story.game?.paused) pauseGame(ui);
+  }
+  /* Also freeze decorative CSS timers (the lantern countdown fill, dust, etc.)
+     so switching apps never burns a player's time. */
+  document.body.classList.toggle("app-paused", document.hidden);
+});
 
 /* ------------------------------------------------------------ offline cache */
 

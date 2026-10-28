@@ -33,7 +33,7 @@ function makeC(w = 390, h = 720) {
     shake: 0, flash: 0, hint: "", label: "", state: {}, shared: {},
     actIndex: 0, actCount: 1, actBanner: 0, actFlash: 0, ended: null,
     rnd, clamp, dist,
-    spark() {}, float() {}, bump() {}, hit() {}, addScore(n) { c.score += n; },
+    spark() {}, float() {}, bump() {}, hit() {}, ring() {}, addScore(n) { c.score += n; },
     hurt(n = 1) { c.hearts = Math.max(0, c.hearts - n); if (!c.hearts) c.end(false, c.score); },
     setHint(s) { c.hint = s; },
     end(success, score) { if (!c.ended) c.ended = { success: !!success, score: Math.round(score ?? c.score) }; }

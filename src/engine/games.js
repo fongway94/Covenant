@@ -4,7 +4,7 @@
 
 import { tx, isZh } from "../core/i18n.js";
 import { clamp, rnd, dist, pilgrim, lion, pig, coin, giant, boat, scepter, star, roundRect,
-  drawBackdrop, drawWeather, shadow, npc } from "./scene.js";
+  drawBackdrop, drawWeather, shadow, npc, actor, actorShadow, preloadSprites } from "./scene.js";
 import { goldenHour, lightRays, softVignette } from "./visual.js";
 import { withStages } from "./stages.js";
 
@@ -55,97 +55,260 @@ function glow(ctx, x, y, r, color, alpha = 0.5) {
 
 /* ---------------------------------------------------------------- 1. SLING */
 
+/* Staging for the Elah valley. Painted sprites carry the performance; the
+   layout lives in one place so the drawing, the aim and the hit test can never
+   drift apart. */
+function slingStage(c) {
+  const groundY = c.h * 0.86;
+  const dH = clamp(c.h * 0.33, 118, 250);   // David, in px of figure height
+  // He is huge, but his helmet crest has to stay clear of the briefing card at
+  // the top of the screen or the one target that matters is hidden behind it.
+  const topSafe = Math.max(186, c.h * 0.23);
+  const gH = clamp(Math.min(c.h * 0.60, groundY - topSafe), 200, 440);
+  return {
+    groundY, dH, gH,
+    dx: c.w * 0.2,
+    gx: c.w * 0.715,
+    headY: groundY - gH * 0.9,              // where the stone has to land
+    headR: clamp(gH * 0.07, 16, 26)
+  };
+}
+
+/** Where the stone leaves David's hand. Reads off david-throw.png's pose. */
+function slingHand(c) {
+  const L = slingStage(c);
+  return { x: L.dx + L.dH * 0.16, y: L.groundY - L.dH * 0.72, L };
+}
+
 const sling = {
   titleEn: "The Sling", titleZh: "甩石迎敌",
-  promptEn: "Drag back from David, release to fire. Hit Goliath's forehead twice — mind the wind and his shield.",
+  promptEn: "Drag away from David to wind the sling, release to fire. Strike Goliath's forehead twice — mind the wind and his raised shield.",
   promptZh: "从大卫身后拖动蓄力，松手投石。命中歌利亚的额头两次——留意风和他举起的盾牌。",
   hintEn: "Drag to aim · Release to fire", hintZh: "拖动瞄准 · 松手投出",
   hint(c) { return tx(this.hintEn, this.hintZh); },
   init(c) {
     c.maxHearts = 3; c.hearts = 3;
+    preloadSprites();
     c.state = {
-      sling: { x: c.w * 0.19, y: c.h * 0.74 },
-      stones: clamp(c.shared?.stones ?? 5, 2, 5), hits: 0, shots: [], drag: null, wind: rnd(-42, 42), t: 0,
-      g: { x: c.w * 0.79, y: c.h * 0.62, dir: 1, shield: false, flash: 0 },
-      blocked: 0
+      stones: clamp(c.shared?.stones ?? 5, 2, 5), hits: 0, shots: [], drag: null,
+      wind: rnd(-42, 42), blocked: 0, dust: [],
+      d: { throwT: 0, windup: 0, cheer: 0 },
+      g: { shieldT: 0, shield: false, flash: 0, jolt: 0, pound: 0, fall: 0, fallen: false, t: 0 }
     };
     c.setHint(this.hint());
   },
-  onDown(c, p) { c.state.drag = { ox: p.startX, oy: p.startY, x: p.x, y: p.y }; },
+  onDown(c, p) { if (c.state.g.fall <= 0) c.state.drag = { ox: p.startX, oy: p.startY, x: p.x, y: p.y }; },
   onMove(c, p) { if (c.state.drag) { c.state.drag.x = p.x; c.state.drag.y = p.y; } },
   onUp(c, p) {
     const s = c.state, d = s.drag;
     s.drag = null;
-    if (!d || s.stones <= 0) return;
-    const vx = (d.ox - p.x) * 3.7, vy = (d.oy - p.y) * 3.7;
+    if (!d || s.stones <= 0 || s.g.fall > 0) return;
+    const vx = (d.ox - p.x) * 4.4, vy = (d.oy - p.y) * 4.4;
     if (Math.hypot(vx, vy) < 70) return;
-    s.shots.push({ x: s.sling.x, y: s.sling.y - 8, vx, vy, life: 2.4 });
-    s.stones--; c.hit("throw"); c.spark(s.sling.x, s.sling.y - 8, "#e7b75b", 7, 70);
+    const hand = slingHand(c);
+    s.shots.push({ x: hand.x, y: hand.y, vx, vy, life: 2.4, spin: 0 });
+    s.stones--; s.d.throwT = 0.42;
+    c.hit("throw"); c.spark(hand.x, hand.y, "#f4d79b", 7, 70);
+    c.ring(hand.x, hand.y, "rgba(247,221,165,.35)", 26);
+    // a puff of dust as he plants his feet
+    for (let i = 0; i < 6; i++) s.dust.push({ x: hand.L.dx + rnd(-12, 12), y: hand.L.groundY, life: 0.5, r: rnd(3, 7) });
   },
   step(c, dt) {
-    const s = c.state; s.t += dt;
-    s.g.y += s.g.dir * 42 * dt;
-    if (s.g.y > c.h * 0.74) { s.g.y = c.h * 0.74; s.g.dir = -1; }
-    if (s.g.y < c.h * 0.48) { s.g.y = c.h * 0.48; s.g.dir = 1; }
-    s.g.shield = Math.sin(s.t * 1.25) > 0.55;
-    s.g.flash = Math.max(0, s.g.flash - dt * 2.5);
+    const s = c.state, g = s.g, L = slingStage(c);
+    g.t += dt;
+    /* ---------------------------------------------------- Goliath's turn */
+    if (g.fall > 0) {
+      // The giant topples. Nothing else moves until he is down.
+      g.fall = Math.max(0, g.fall - dt);
+      c.progress = 1;
+      if (g.fall === 0) { c.end(true, c.score + 60); return; }
+    } else {
+      const want = Math.sin(g.t * 1.15) > 0.34;
+      if (want !== g.shield) { g.shield = want; c.hit(want ? "tap" : "tap"); }
+      g.shieldT += ((want ? 1 : 0) - g.shieldT) * Math.min(1, dt * 7);
+      g.pound = Math.max(0, g.pound - dt);
+      if (Math.floor((g.t - dt) / 3.6) !== Math.floor(g.t / 3.6)) {
+        // he drives the spear butt into the dust — menace, not damage
+        g.pound = 0.42;
+        c.shake = Math.max(c.shake, 2.5);
+        c.ring(L.gx - L.gH * 0.2, L.groundY, "rgba(214,196,158,.45)", 34);
+        for (let i = 0; i < 5; i++) c.spark(L.gx - L.gH * 0.2 + rnd(-8, 8), L.groundY - 2, "#cbbd9c", 1, 40);
+      }
+      g.flash = Math.max(0, g.flash - dt * 2.5);
+      g.jolt = Math.max(0, g.jolt - dt * 4);
+      s.d.cheer = Math.max(0, s.d.cheer - dt * 1.5);
+    }
+    s.d.throwT = Math.max(0, s.d.throwT - dt);
+    s.d.windup = s.drag
+      ? Math.min(1, Math.hypot(s.drag.ox - s.drag.x, s.drag.oy - s.drag.y) / (c.w * 0.62))
+      : Math.max(0, s.d.windup - dt * 3);
+
     for (let i = s.shots.length - 1; i >= 0; i--) {
       const b = s.shots[i];
-      b.vx += s.wind * dt; b.vy += 300 * dt;
-      b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
-      const hx = s.g.x, hy = s.g.y - 70;
-      if (dist(b.x, b.y, hx, hy) < 13) {
+      b.vx += s.wind * dt; b.vy += 260 * dt;
+      b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt; b.spin += dt * 9;
+      const hx = L.gx + Math.sin(g.t * 0.8) * 4, hy = L.headY;
+      if (dist(b.x, b.y, hx, hy) < L.headR && g.fall <= 0) {
         s.shots.splice(i, 1);
-        if (s.g.shield) {
-          s.blocked++; c.spark(hx + 22, s.g.y - 35, "#cdd6e0", 12, 110);
-          c.float(hx, hy - 24, tx("BLOCKED!", "被盾挡住！"), "#cdd6e0"); c.hit("miss");
+        if (g.shieldT > 0.55) {
+          s.blocked++;
+          c.spark(hx + 18, hy + L.gH * 0.06, "#cdd6e0", 14, 130);
+          c.ring(hx + 18, hy + L.gH * 0.06, "rgba(205,214,224,.6)", 34);
+          c.float(hx, hy - 26, tx("BLOCKED!", "被盾挡住！"), "#cdd6e0"); c.hit("miss");
+          g.shieldT = 0.9;
         } else {
           s.hits++; c.addScore(40); c.bump(12); c.hit("hit");
-          c.spark(hx, hy, "#f4d79b", 26, 190); s.g.flash = 1;
+          c.spark(hx, hy, "#f4d79b", 26, 190);
+          c.ring(hx, hy, "rgba(247,221,165,.8)", 60);
+          g.flash = 1; g.jolt = 1;
           c.float(hx, hy - 26, tx("HIT!", "命中！"), "#f4d79b");
+          if (s.hits >= 2) {
+            // he does not simply vanish: he staggers, drops, and the ground shakes
+            g.fall = 1.35; g.fallen = true;
+            c.bump(16); c.hit("complete");
+            c.ring(hx, hy, "rgba(224,139,120,.75)", 96);
+            c.float(c.w / 2, c.h * 0.4, tx("THE GIANT FALLS", "巨人倒下"), "#f4d79b");
+            for (let k = 0; k < 22; k++) c.spark(L.gx + rnd(-30, 30), L.groundY - rnd(0, 40), "#cbbd9c", 1, 120);
+          }
         }
       } else if (b.life <= 0 || b.y > c.h + 20 || b.x > c.w + 30 || b.x < -30) s.shots.splice(i, 1);
     }
+    for (let i = s.dust.length - 1; i >= 0; i--) {
+      const d = s.dust[i]; d.life -= dt; d.r += dt * 26;
+      if (d.life <= 0) s.dust.splice(i, 1);
+    }
+
     c.progress = clamp(s.hits / 2, 0, 1);
     c.setHint(`${tx("Drag to aim · Release to fire", "拖动瞄准 · 松手投出")}   ${tx("Stones", "石子")} ${"●".repeat(s.stones)}`);
-    if (s.hits >= 2) { c.end(true, c.score + 60); return; }
-    if (s.stones <= 0 && s.shots.length === 0) c.end(false, c.score);
+    if (g.fall <= 0 && s.stones <= 0 && s.shots.length === 0) c.end(false, c.score);
   },
   draw(c, ctx) {
-    const s = c.state;
+    const s = c.state, g = s.g, L = slingStage(c), t = c.t;
     bg(c, ctx, "#1a2c3a", "#33413c", 34);
-    star(ctx, c.w * 0.82, 42, 13, "#f4d79b", 0.5 + Math.sin(c.t * 2) * 0.12);
+    star(ctx, c.w * 0.82, 42, 13, "#f4d79b", 0.5 + Math.sin(t * 2) * 0.12);
     hills(ctx, c, c.h * 0.58, "#2a3a3c", 40);
     hills(ctx, c, c.h * 0.7, "#263338", 120);
-    ground(ctx, c, c.h * 0.8, "#2b322c");
+    const gg = ctx.createLinearGradient(0, L.groundY, 0, c.h);
+    gg.addColorStop(0, "rgba(38,45,37,.82)"); gg.addColorStop(1, "rgba(17,23,22,.97)");
+    ctx.fillStyle = gg; ctx.fillRect(0, L.groundY, c.w, c.h - L.groundY);
     ctx.strokeStyle = "rgba(240,196,106,.22)"; ctx.lineWidth = 1;
-    for (let i = 0; i < 7; i++) { ctx.beginPath(); ctx.moveTo(0, c.h * 0.84 + i * 9); ctx.lineTo(c.w, c.h * 0.84 + i * 9); ctx.stroke(); }
-    // Goliath + shield
-    glow(ctx, s.g.x, s.g.y - 40, 70, "rgba(224,139,120,ALPHA)", s.g.flash * 0.4);
-    giant(ctx, s.g.x, s.g.y, 1.25, c.t);
-    if (s.g.shield) {
-      ctx.fillStyle = "rgba(190,200,214,.85)";
-      ctx.beginPath(); ctx.ellipse(s.g.x + 32, s.g.y - 40, 9, 32, 0, 0, TAU); ctx.fill();
-      ctx.strokeStyle = "#f0c46a"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, L.groundY); ctx.lineTo(c.w, L.groundY); ctx.stroke();
+    // dry grass on the valley floor
+    ctx.strokeStyle = "rgba(214,196,158,.18)"; ctx.lineWidth = 1;
+    for (let i = 0; i < 26; i++) {
+      const x = (i * 63) % c.w, y = L.groundY + 6 + (i % 4) * 11;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 4, y - 6); ctx.stroke();
     }
-    // David
-    pilgrim(ctx, s.sling.x, s.sling.y, 1.05, c.t, 1, 1, true);
-    ctx.strokeStyle = "rgba(244,215,155,.7)"; ctx.lineWidth = 1.6;
-    if (s.drag) {
-      const vx = (s.drag.ox - s.drag.x) * 3.7, vy = (s.drag.oy - s.drag.y) * 3.7;
-      ctx.beginPath(); ctx.moveTo(s.sling.x, s.sling.y - 12); ctx.lineTo(s.sling.x + vx * 0.05, s.sling.y - 12 + vy * 0.05); ctx.stroke();
-      ctx.fillStyle = "rgba(244,215,155,.55)";
-      for (let i = 1; i <= 9; i++) {
-        const tt = i * 0.085;
-        const px = s.sling.x + vx * tt + s.wind * tt * tt * 0.5;
-        const py = s.sling.y - 8 + vy * tt + 150 * tt * tt;
-        ctx.beginPath(); ctx.arc(px, py, Math.max(1, 3 - i * 0.22), 0, TAU); ctx.fill();
+
+    /* --------------------------------------------------- Goliath of Gath */
+    const fall = g.fall > 0 ? 1 - g.fall / 1.35 : 0;              // 0 → 1
+    const sway = Math.sin(g.t * 0.8) * 4;
+    const breathe = 1 + Math.sin(g.t * 1.6) * 0.006;
+    const poundDip = g.pound > 0 ? Math.sin((1 - g.pound / 0.42) * Math.PI) * 0.02 : 0;
+    const gx = L.gx + sway - g.jolt * 12 - fall * 26;
+    const gy = L.groundY + fall * 10 + g.pound * 6;
+    glow(ctx, gx, L.headY, 86, "rgba(224,139,120,ALPHA)", g.flash * 0.42);
+    actorShadow(ctx, gx, L.groundY + 2, L.gH * 0.24, 0.4);
+    const rot = Math.sin(g.t * 0.55) * 0.008 + g.jolt * 0.05 - fall * 0.16;
+    let drewG = false;
+    const pose = { rot, squash: breathe };
+    if (g.fall > 0) {
+      // cross-fade into the stagger pose over the first quarter-second
+      const k = Math.min(1, fall * 4);
+      if (k < 1) drewG = actor(ctx, "goliath", gx, gy, L.gH * (1 + poundDip), { ...pose, alpha: 1 - k }) || drewG;
+      drewG = actor(ctx, "goliathFall", gx - 6, gy, L.gH, { rot, alpha: k }) || drewG;
+    } else {
+      /* He does not glow behind a fake plate: he physically steps behind his
+         shield. Two painted poses cross-fade in ~0.15s, so the guard reads as
+         motion and the head target is genuinely covered. */
+      const k = clamp(g.shieldT, 0, 1);
+      if (k < 1) drewG = actor(ctx, "goliath", gx, gy, L.gH * (1 + poundDip), { ...pose, alpha: 1 - k }) || drewG;
+      if (k > 0.01) drewG = actor(ctx, "goliathGuard", gx, gy, L.gH * (1 + poundDip), { ...pose, alpha: k }) || drewG;
+    }
+    if (!drewG) giant(ctx, gx, L.groundY, L.gH / 62, t);      // vector fallback
+
+    // Aim reticle on the head — the one place a stone must land. Dimmed when
+    // the shield covers it, so a shot into the guard is never a mystery.
+    const openK = 1 - g.shieldT;
+    if (g.fall <= 0) {
+      const hx = gx + Math.sin(g.t * 0.8) * 4;
+      ctx.save();
+      ctx.globalAlpha = 0.22 + openK * 0.4;
+      ctx.strokeStyle = openK > 0.5 ? "#f7dda5" : "#a9b6c4";
+      ctx.lineWidth = 1.2;
+      const r = L.headR * 1.75;
+      for (let i = 0; i < 4; i++) {
+        const a = i * (TAU / 4) + c.t * 0.35;
+        ctx.beginPath(); ctx.arc(hx, L.headY, r, a, a + 0.5); ctx.stroke();
       }
+      ctx.beginPath(); ctx.arc(hx, L.headY, 2, 0, TAU);
+      ctx.fillStyle = openK > 0.5 ? "#ffe6a8" : "#a9b6c4"; ctx.fill();
+      ctx.restore();
     }
+
+    /* -------------------------------------------------------- David */
+    const dH = L.dH * (1 + Math.sin(t * 1.7) * 0.006);
+    const windup = s.d.windup;
+    const dRot = -0.02 + Math.sin(t * 0.9) * 0.008 - windup * 0.14;
+    const throwK = s.d.throwT / 0.42;                          // 1 → 0
+    const dx = L.dx - windup * 5 + (throwK > 0 ? L.dH * 0.16 : 0);
+    actorShadow(ctx, L.dx, L.groundY + 2, dH * 0.22, 0.3);
+    let drewD;
+    if (throwK > 0.35) {
+      drewD = actor(ctx, "davidThrow", dx, L.groundY, dH * 0.95, { rot: -0.05 + (1 - throwK) * 0.05 });
+    } else {
+      drewD = actor(ctx, "david", dx, L.groundY, dH, { rot: dRot, squash: 1 - windup * 0.015 });
+    }
+    if (!drewD) pilgrim(ctx, L.dx, L.groundY, 1.05, t, 1, 1, true);
+
+    // Sling whirl: the rope spins faster as the drag gets longer.
+    if (windup > 0.04 && throwK <= 0) {
+      const dw = dH * 0.408;
+      const hx = L.dx - dw * 0.31, hy = L.groundY - dH * 0.38;
+      const rad = 8 + windup * 16;
+      ctx.save();
+      ctx.strokeStyle = `rgba(244,215,155,${0.25 + windup * 0.45})`; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(hx, hy, rad, t * (6 + windup * 12), t * (6 + windup * 12) + 4.4); ctx.stroke();
+      const a = -t * (6 + windup * 12);
+      ctx.fillStyle = "#e7d3a6";
+      ctx.beginPath(); ctx.arc(hx + Math.cos(a) * rad, hy + Math.sin(a) * rad, 3, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
+
+    // Aim preview, drawn only while the player is actually dragging.
+    if (s.drag) {
+      const hand = slingHand(c);
+      const vx = (s.drag.ox - s.drag.x) * 4.4, vy = (s.drag.oy - s.drag.y) * 4.4;
+      ctx.save();
+      ctx.strokeStyle = "rgba(244,215,155,.55)"; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(hand.x, hand.y);
+      ctx.lineTo(hand.x + vx * 0.05, hand.y + vy * 0.05); ctx.stroke();
+      ctx.fillStyle = "rgba(244,215,155,.5)";
+      for (let i = 1; i <= 7; i++) {
+        const tt = i * 0.075;
+        const px = hand.x + vx * tt + s.wind * tt * tt * 0.5;
+        const py = hand.y + vy * tt + 130 * tt * tt;
+        ctx.beginPath(); ctx.arc(px, py, Math.max(1, 3 - i * 0.28), 0, TAU); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // Stones in flight, with a short trail and a spinning glint.
     for (const b of s.shots) {
-      glow(ctx, b.x, b.y, 12, "rgba(244,215,155,ALPHA)", 0.5);
-      ctx.fillStyle = "#e7d3a6"; ctx.beginPath(); ctx.arc(b.x, b.y, 5, 0, TAU); ctx.fill();
+      ctx.save();
+      ctx.strokeStyle = "rgba(247,221,165,.5)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(b.x, b.y); ctx.lineTo(b.x - b.vx * 0.03, b.y - b.vy * 0.03); ctx.stroke();
+      ctx.restore();
+      glow(ctx, b.x, b.y, 13, "rgba(244,215,155,ALPHA)", 0.5);
+      ctx.fillStyle = "#e7d3a6"; ctx.beginPath(); ctx.arc(b.x, b.y, 4.5, 0, TAU); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,.7)"; ctx.beginPath();
+      ctx.arc(b.x - Math.cos(b.spin) * 1.4, b.y - Math.sin(b.spin) * 1.4, 1.3, 0, TAU); ctx.fill();
     }
+    for (const d of s.dust) {
+      ctx.fillStyle = `rgba(203,189,156,${Math.max(0, d.life) * 0.5})`;
+      ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, TAU); ctx.fill();
+    }
+
     // wind readout
     ctx.fillStyle = "rgba(244,231,203,.8)"; ctx.font = `600 11px ${c.font}`; ctx.textAlign = "center";
     const arrow = s.wind > 0 ? "→" : "←";
@@ -916,7 +1079,10 @@ Object.assign(GAMES, { desert, glean, deep, climb });
 
 /* Give every existing game its painterly chapter backdrop and weather. */
 const GAME_ART = {
-  sling: ["assets/art/elah.jpg", "leaves"], lions: ["assets/art/lions.jpg", "embers"],
+  // The Elah action acts are staged on an EMPTY valley plate: the chapter art
+  // already paints David and Goliath, and doubling them behind live actors read
+  // as a ghost. The empty plate gives the painted sprites the stage.
+  sling: ["assets/art/elah-field.jpg", "leaves"], lions: ["assets/art/lions.jpg", "embers"],
   jericho: ["assets/art/jericho.jpg", "sand"], storm: ["assets/art/storm.jpg", "rain"],
   prodigal: ["assets/art/prodigal.jpg", "petals"], esther: ["assets/art/esther.jpg", "embers"]
 };
@@ -941,7 +1107,7 @@ export const PRELUDES = {
   /* ---------------------------------------------------- 1. David (3 acts) */
   sling: [
     {
-      kind: "charge", ...P("elah", "leaves"),
+      kind: "charge", hero: "david", ...P("elah-field", "leaves"),
       title: ["Practise the sling", "练习甩石"],
       prompt: ["The stones from the brook sit in your bag. Hold to wind the sling, then release inside the moving gold band — three clean swings before you step onto the field.",
         "从溪边捡来的石子就在袋里。按住转动机弦，在移动的金色区间里松手——上阵前先练成三次干净的挥甩。"],
@@ -949,7 +1115,7 @@ export const PRELUDES = {
       rounds: 3, seconds: 24, reward: 40
     },
     {
-      kind: "dodge", ...P("elah", "leaves"),
+      kind: "dodge", hero: "david", villain: "goliath", ...P("elah-field", "leaves"),
       title: ["Cross the valley", "穿过山谷"],
       prompt: ["Goliath hurls spears as David walks toward the line. Tap to leap over them. Four hits and you are knocked back — but the story goes on.",
         "大卫走向阵前时，歌利亚不断投出长枪。点击跳过。被击中四次会被逼退——但故事仍会继续。"],

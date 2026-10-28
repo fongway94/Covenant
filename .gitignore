@@ -16,3 +16,4 @@ _fonts/
 _shots/
 _check*.png
 _art_*/
+__pycache__/

@@ -303,9 +303,23 @@ function startAction(ui, gameKey) {
 
 function mountActionScene(ui) {
   const s = st(ui);
-  if (!s?.game || s.game.controller) return;
+  if (!s?.game) return;
   const canvas = document.getElementById("action-canvas");
   if (!canvas) return;
+
+  // v0.7.2: a re-render (dialog, app switch, language toggle) used to swap in a
+  // brand-new <canvas>, leaving the running loop attached to a detached node —
+  // the scene froze and no longer accepted input. main.js now preserves the live
+  // canvas; if one still gets replaced, stop the orphan and start cleanly.
+  if (s.game.controller) {
+    if (s.game.controller.canvas === canvas) {
+      if (s.game.paused) s.game.controller.pause();
+      return;
+    }
+    try { s.game.controller.stop(); } catch { /* noop */ }
+    s.game.controller = null;
+  }
+
   // The lantern search at the brook decides how many stones David actually
   // carries into the Goliath fight.
   const seed = {};
@@ -314,6 +328,7 @@ function mountActionScene(ui) {
     if (found.length) seed.stones = found[found.length - 1];
   }
   s.game.controller = startScene(canvas, s.game.key, (res) => finishAction(ui, res), seed);
+  if (s.game.paused) s.game.controller.pause();
 }
 
 function finishAction(ui, result) {
@@ -331,6 +346,27 @@ function finishAction(ui, result) {
   s.game.result = { ...result, success };
   s.phase = "action-result";
   bus.render();
+}
+
+/** Freeze the action scene. Used by the pause button and by app-switch. */
+export function pauseGame(ui) {
+  const s = st(ui);
+  if (!s?.game || s.phase !== "action") return false;
+  s.game.paused = true;
+  try { s.game.controller?.pause(); } catch { /* noop */ }
+  bus.render();
+  return true;
+}
+
+/** Resume exactly where the player left off. */
+export function resumeGame(ui) {
+  const s = st(ui);
+  if (!s?.game || s.phase !== "action") return false;
+  s.game.paused = false;
+  try { s.game.controller?.resume(); } catch { /* noop */ }
+  sfx("tap");
+  bus.render();
+  return true;
 }
 
 export function skipAction(ui) {
@@ -730,10 +766,22 @@ function actionHtml(ui) {
     <div class="action-art" style="background-image:url('${ch.art}')"></div>
     <canvas id="action-canvas" class="action-canvas" aria-label="${esc(info.title)}"></canvas>
     <div class="action-head">
-      <button class="action-skip" data-action="game-skip">${tx("Skip", "跳过")} →</button>
+      <div class="action-tools">
+        <button class="action-pause" data-action="game-pause" aria-label="${tx("Pause", "暂停")}">❚❚</button>
+        <button class="action-skip" data-action="game-skip">${tx("Skip", "跳过")} →</button>
+      </div>
       <div class="eyebrow">${tx("ACTION SCENE", "互动关卡")} · ${esc(ch.title)}</div>
       <h2>${esc(info.title)}</h2>
       <p class="small">${esc(info.prompt)}</p>
+    </div>
+    <div class="action-paused ${s.game?.paused ? "on" : ""}" data-action="game-resume">
+      <div class="action-paused-card">
+        <div class="action-paused-glyph">❚❚</div>
+        <div class="eyebrow">${tx("Paused", "已暂停")}</div>
+        <h3>${tx("The story waits for you", "故事在等你")}</h3>
+        <p class="small muted">${tx("Nothing moves while you are away — no timers, no lost stones.", "你不在时一切静止——计时暂停，石子不会消失。")}</p>
+        <button class="btn btn-primary btn-sm" data-action="game-resume">${icon("play", 15)} ${tx("Resume", "继续")}</button>
+      </div>
     </div>
   </div>`;
 }

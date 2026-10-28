@@ -172,9 +172,14 @@ p { margin: 0 0 .85em; }
 .title-mark { text-align: center; margin-bottom: 26px; animation: rise .7s .1s both; }
 .title-mark .cross { font-size: 1.5rem; color: var(--gold); opacity: .85; }
 .title-mark h1 {
-  font-size: 3rem; letter-spacing: .18em; text-indent: .18em;
+  /* Fluid so the final "T" can never be clipped on a narrow phone.
+     9.2vw keeps 8 letters + tracking inside the 24px side padding. */
+  font-size: clamp(1.7rem, 9.2vw, 3rem);
+  letter-spacing: .12em; text-indent: .12em;
   color: var(--paper); text-shadow: 0 3px 24px rgba(0,0,0,.6);
   margin: 6px 0 8px;
+  max-width: 100%;
+  white-space: nowrap;
 }
 .title-mark .sub { font-size: .74rem; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); }
 .title-mark .tagline { margin-top: 14px; font-family: var(--serif); font-style: italic; color: #d5cbb4; font-size: .96rem; }
@@ -628,7 +633,12 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 @keyframes glowPulse { 0%,100% { opacity: .6; transform: translateX(-50%) scale(1); } 50% { opacity: 1; transform: translateX(-50%) scale(1.12); } }
 @keyframes cloudDrift { from { transform: translateX(-8%); } to { transform: translateX(18%); } }
 @keyframes floatUp { 0% { opacity: 0; transform: translateY(0) translateX(0); } 15% { opacity: .8; } 100% { opacity: 0; transform: translateY(-220px) translateX(26px); } }
-@keyframes titleBreathe { 0%,100% { letter-spacing: .22em; } 50% { letter-spacing: .25em; } }
+/* Never animate letter-spacing here: widening tracking pushes the last glyph
+   past the viewport edge on narrow phones. Animate glow instead. */
+@keyframes titleBreathe {
+  0%,100% { text-shadow: 0 3px 24px rgba(0,0,0,.6), 0 0 18px rgba(247,221,165,.05); }
+  50%     { text-shadow: 0 3px 24px rgba(0,0,0,.6), 0 0 26px rgba(247,221,165,.22); }
+}
 
 /* ---------- Draggable pilgrim on the map ---------- */
 .map-token {
@@ -1576,4 +1586,47 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 }
 @media (prefers-reduced-motion: reduce) {
   .moment-card, .moment-node, .moment-spark, .moment-stage.miss { animation: none !important; }
+}
+
+/* v0.7.2 — narrow-phone safety for the wordmark */
+@media (max-width: 360px) {
+  .title-mark h1 { font-size: 8.4vw; letter-spacing: .10em; text-indent: .10em; }
+  .title-content { padding-left: 16px; padding-right: 16px; }
+}
+
+/* ==================================================================
+   v0.7.2 — pause / resume, and narrow-phone safety
+   ================================================================== */
+
+.action-tools { display: flex; align-items: center; gap: 8px; }
+.action-pause {
+  display: grid; place-items: center; width: 34px; height: 30px;
+  border-radius: 9px; border: 1px solid rgba(255,255,255,.16);
+  background: rgba(8,18,25,.55); color: var(--paper);
+  font-size: .6rem; letter-spacing: .06em; line-height: 1; cursor: pointer;
+  touch-action: manipulation;
+}
+.action-pause:active { transform: scale(.94); background: rgba(231,183,91,.16); }
+
+.action-paused {
+  position: absolute; inset: 0; z-index: 8;
+  display: none; place-items: center; padding: 22px;
+  background: rgba(4,10,15,.72); backdrop-filter: blur(5px) saturate(.9);
+}
+.action-paused.on { display: grid; animation: fade-in .22s ease both; }
+.action-paused-card {
+  max-width: 320px; width: 100%; text-align: center; display: grid; gap: 8px;
+  padding: 22px 20px; border-radius: 18px;
+  background: linear-gradient(180deg, rgba(16,32,43,.98), rgba(8,17,23,.99));
+  border: 1px solid rgba(231,183,91,.4);
+  box-shadow: 0 22px 60px rgba(0,0,0,.6);
+}
+.action-paused-glyph { font-size: 1.1rem; color: var(--gold); letter-spacing: .2em; }
+.action-paused-card h3 { font-family: var(--serif); font-size: 1.2rem; margin: 0; color: var(--gold-light); }
+.action-paused-card p { margin: 0; line-height: 1.5; }
+.action-paused-card .btn { margin-top: 6px; width: 100%; }
+
+/* Leaving the app freezes every decorative CSS timer too. */
+body.app-paused *, body.app-paused *::before, body.app-paused *::after {
+  animation-play-state: paused !important;
 }

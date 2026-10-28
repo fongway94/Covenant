@@ -1,5 +1,5 @@
 /* Covenant offline cache. Bump CACHE on every content release. */
-const CACHE = 'covenant-v10';
+const CACHE = 'covenant-v11';
 const ASSETS = [
   './',
   './index.html',
@@ -40,6 +40,12 @@ const ASSETS = [
   './assets/art/title.jpg',
   './assets/art/map.jpg',
   './assets/art/elah.jpg',
+  './assets/art/elah-field.jpg',
+  './assets/art/sprites/david.webp',
+  './assets/art/sprites/david-throw.webp',
+  './assets/art/sprites/goliath.webp',
+  './assets/art/sprites/goliath-guard.webp',
+  './assets/art/sprites/goliath-stagger.webp',
   './assets/art/lions.jpg',
   './assets/art/jericho.jpg',
   './assets/art/storm.jpg',
