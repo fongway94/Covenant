@@ -324,7 +324,11 @@ export const CHAPTERS = [
         ]
       },
       help: {
-        hotspots: { count: 3, glyph: "✚", title: "Bind his wounds", titleZh: "为他包扎伤口", prompt: "Search the road with your lantern. Only three marks are real wounds — the others are dust.", promptZh: "用提灯搜寻路边。只有三处是真正的伤口——其余只是尘土。", xp: 8, stat: { compassion: 1 }, decoyGlyph: "◇" },
+        /* This used to be a lantern hunt for three glowing marks on the chapter
+           artwork, which is a strange thing to do to a man bleeding in a ditch.
+           It is now the act the text actually describes: pour in oil and wine,
+           bind up the wound. See GAMES.tend. */
+        game: "tend",
         lines: [
           ["", "You are kneeling in the dust with blood on your hands when you hear sandals on the stone."],
           ["", "A priest comes down the road. He sees the man — clearly sees him — and passes by on the other side."],

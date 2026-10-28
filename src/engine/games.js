@@ -3,7 +3,7 @@
    Every scene ends with c.end(success, score) and feeds back into the story. */
 
 import { tx, isZh } from "../core/i18n.js";
-import { clamp, rnd, dist, pilgrim, lion, pig, coin, giant, boat, scepter, star, roundRect,
+import { clamp, rnd, dist, loadArt, pilgrim, lion, pig, coin, giant, boat, scepter, star, roundRect,
   drawBackdrop, drawWeather, shadow, npc, actor, actorShadow, preloadSprites } from "./scene.js";
 import { goldenHour, lightRays, softVignette } from "./visual.js";
 import { withStages } from "./stages.js";
@@ -522,6 +522,551 @@ const jericho = {
   }
 };
 
+/* ══════════════════ 3b. THE WOUND — oil, wine and linen ══════════════════
+   The Samaritan's mercy is the most physical beat in the whole parable, and it
+   used to be a lantern hunt for three glowing marks on the chapter artwork.
+   This is what the text says he actually did: he went to him, bound up his
+   wounds, pouring in oil and wine. So the scene is painted at arm's length —
+   the forearm, the gash, the oil flask, the wineskin, the linen — and the
+   player does the pouring and the binding with their own finger.
+
+   The plate `assets/art/tend.jpg` is a painted close-up of the wounded man's
+   arm on his cloak. The wound, the linen and the props are drawn on top of it
+   along the arm's own measured centreline, so the bandage wraps the painted
+   limb instead of floating near it. If the plate is not loaded yet, the same
+   geometry is painted procedurally underneath, so the scene never shows a hole
+   where the arm should be. */
+
+const TEND_IMG = { w: 760, h: 1017, src: "assets/art/tend.jpg" };
+
+/* The painted arm, measured off the plate in image-normalised coordinates.
+   f = fraction along the arm, y = centreline, hw = half thickness. */
+const ARM_IMG = [
+  [0.00, 0.714, 0.034], [0.08, 0.697, 0.052], [0.16, 0.685, 0.063],
+  [0.24, 0.666, 0.065], [0.32, 0.645, 0.065], [0.40, 0.610, 0.065],
+  [0.48, 0.567, 0.058], [0.56, 0.534, 0.055], [0.64, 0.477, 0.059],
+  [0.72, 0.458, 0.062]
+];
+
+/* Cover-fit, exactly as the backdrop is drawn, so geometry and plate agree. */
+function tendFit(c) {
+  const s = Math.max(c.w / TEND_IMG.w, c.h / TEND_IMG.h);
+  return { s, dx: (c.w - TEND_IMG.w * s) / 2, dy: (c.h - TEND_IMG.h * s) / 2 };
+}
+
+/* The arm as canvas-space points with their own half-width in pixels. */
+function armPoints(c) {
+  const f0 = tendFit(c), pts = [];
+  const N = 21;
+  for (let i = 0; i < N; i++) {
+    const f = i / (N - 1);
+    if (!pts.length) {
+      const [,, hw] = ARM_IMG[0];
+      pts.push({ f, x: 0 * TEND_IMG.w * f0.s + f0.dx, y: ARM_IMG[0][1] * TEND_IMG.h * f0.s + f0.dy, hw: hw * TEND_IMG.h * f0.s });
+      continue;
+    }
+    // linear interpolation along the measured table
+    const pos = f * (ARM_IMG.length - 1);
+    const k = Math.min(ARM_IMG.length - 2, Math.floor(pos));
+    const t = pos - k;
+    const a = ARM_IMG[k], b = ARM_IMG[k + 1];
+    const ix = a[0] + (b[0] - a[0]) * t;
+    const iy = a[1] + (b[1] - a[1]) * t;
+    const ih = a[2] + (b[2] - a[2]) * t;
+    pts.push({ f, x: ix * TEND_IMG.w * f0.s + f0.dx, y: iy * TEND_IMG.h * f0.s + f0.dy, hw: ih * TEND_IMG.h * f0.s });
+  }
+  return pts;
+}
+
+/* The wound runs along the middle of the forearm, where a robber's blade would
+   land and where a bandage can actually be wound. Indices into armPoints(c). */
+const WOUND_I0 = 8, WOUND_I1 = 12;
+/* The same span as a fraction of the arm, for placing linen along it. */
+const WOUND_U0 = WOUND_I0 / 20, WOUND_U1 = WOUND_I1 / 20;
+const woundSeg = (pts) => pts.slice(WOUND_I0, WOUND_I1 + 1);
+
+function armPath(ctx, pts, grow = 0) {
+  ctx.beginPath();
+  for (const p of pts) ctx.lineTo(p.x, p.y - p.hw - grow);
+  for (let i = pts.length - 1; i >= 0; i--) ctx.lineTo(pts[i].x, pts[i].y + pts[i].hw + grow);
+  ctx.closePath();
+}
+
+/* One hand: a palm with four fingers and a thumb, lit from the upper right.
+   Hands carry the whole performance here — they hold the flask, they wind the
+   linen — so they get shading rather than a single flat silhouette. */
+function paintHand(ctx, x, y, rot, sc) {
+  ctx.save();
+  ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sc, sc);
+  const g = ctx.createLinearGradient(0, -14, 0, 16);
+  g.addColorStop(0, "#e2b184"); g.addColorStop(0.5, "#b9815a"); g.addColorStop(1, "#6a432c");
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.ellipse(0, 0, 17, 12, 0, 0, TAU); ctx.fill();
+  for (let i = 0; i < 4; i++) {
+    const a = -0.58 + i * 0.32;
+    ctx.save(); ctx.rotate(a);
+    ctx.fillStyle = i % 2 ? "#c08a60" : "#d3a077";
+    ctx.beginPath(); ctx.ellipse(17, -1.5, 10, 4.2, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = "rgba(96,60,38,.4)";
+    ctx.beginPath(); ctx.ellipse(23, -1.5, 3.6, 3, 0, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+  ctx.fillStyle = "#bc855c";
+  ctx.beginPath(); ctx.ellipse(-3, -11, 8, 4.4, -0.65, 0, TAU); ctx.fill();
+  ctx.fillStyle = "rgba(70,42,26,.3)";
+  ctx.beginPath(); ctx.ellipse(-8, 3, 8, 6, 0.3, 0, TAU); ctx.fill();
+  ctx.restore();
+}
+
+/* A clay flask: thrown, not moulded. Highlight on the belly, dark under the
+   spout, a cord round the neck. */
+function paintFlask(ctx, x, y, tilt, sc) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(sc, sc);
+  const g = ctx.createLinearGradient(-12, -20, 12, 20);
+  g.addColorStop(0, "#c08050"); g.addColorStop(0.45, "#8e5133"); g.addColorStop(1, "#3d1d12");
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(-4, -22); ctx.lineTo(4, -22);
+  ctx.quadraticCurveTo(14, -9, 15, 2);
+  ctx.quadraticCurveTo(16, 18, 0, 19);
+  ctx.quadraticCurveTo(-16, 18, -15, 2);
+  ctx.quadraticCurveTo(-14, -9, -4, -22);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "rgba(255,226,180,.45)";
+  ctx.beginPath(); ctx.ellipse(-5, 1, 3.2, 8, 0.2, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#2f1a0c";
+  ctx.beginPath(); ctx.ellipse(0, -22, 5, 2.6, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = "rgba(240,214,168,.5)"; ctx.lineWidth = 1.8;
+  ctx.beginPath(); ctx.moveTo(-9, -8); ctx.quadraticCurveTo(0, -4.5, 9, -8); ctx.stroke();
+  ctx.restore();
+}
+
+/* A wound is not a red dot. It is a parted gash with a lip of torn skin, a dark
+   centre, and blood that has already run and dried at the edges. `clean` moves
+   it from crusted to washed without ever making it look trivial. */
+function paintWound(ctx, pts, clean, t) {
+  /* Painted skin is unforgiving: a saturated red shape on it reads as a decal
+     no matter how well it is drawn. So the wound is built out of the things
+     light actually does on broken skin — a dark parted line, a soft bruise
+     halo, a dull wet sheen — and laid down in multiply so it stains the arm
+     instead of sitting on top of it. */
+  const seg = woundSeg(pts);
+  if (seg.length < 3) return;
+  const last = seg.length - 1;
+  const cen = (i) => Math.sin((i / last) * Math.PI);
+
+  // bruise: a wide, low-contrast shadow under and around the cut
+  ctx.save();
+  ctx.globalCompositeOperation = "multiply";
+  const mid = seg[Math.floor(seg.length / 2)];
+  const bruise = ctx.createRadialGradient(mid.x, mid.y, 2, mid.x, mid.y, mid.hw * 2.1);
+  bruise.addColorStop(0, `rgba(${150 + clean * 40},${86 + clean * 40},${80 + clean * 40},.55)`);
+  bruise.addColorStop(0.55, `rgba(${176 + clean * 40},${128 + clean * 40},${118 + clean * 40},.3)`);
+  bruise.addColorStop(1, "rgba(200,170,160,0)");
+  ctx.fillStyle = bruise;
+  ctx.beginPath();
+  ctx.ellipse(mid.x, mid.y, mid.hw * 2.2, mid.hw * 1.5, -0.16, 0, TAU);
+  ctx.fill();
+  ctx.restore();
+
+  // dried blood: thin, dark, and running only a short way
+  ctx.save();
+  ctx.globalCompositeOperation = "multiply";
+  ctx.globalAlpha = 0.5 * (1 - clean * 0.6);
+  for (let i = 1; i < seg.length - 1; i++) {
+    const p = seg[i];
+    const len = p.hw * (0.16 + hash(i * 3.1) * 0.22);
+    const wob = (hash(i * 7.3) - 0.5) * 2.4;
+    ctx.fillStyle = "rgba(120,52,44,.85)";
+    ctx.beginPath();
+    ctx.moveTo(p.x - 0.9, p.y + 1);
+    ctx.quadraticCurveTo(p.x + wob, p.y + 1 + len * 0.6, p.x + wob * 0.6, p.y + 1 + len);
+    ctx.quadraticCurveTo(p.x + wob + 1.1, p.y + 1 + len * 0.6, p.x + 1.1, p.y + 1);
+    ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+
+  // the cut itself: a ragged dark line with an uneven width, laid in multiply
+  const wid = (i) => (0.55 + hash(i * 4.7) * 0.75) * Math.min(1, cen(i) * 2.2) * seg[i].hw * 0.075 + 0.7;
+  ctx.save();
+  ctx.globalCompositeOperation = "multiply";
+  /* A painted arm has pores and hair; a vector wound laid straight on top of
+     them reads as a sticker. A little blur puts the cut into the same optical
+     plane as the skin, and the crisp highlight below re-cuts its edge. */
+  if (typeof ctx.filter === "string") ctx.filter = "blur(1.1px)";
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  ctx.fillStyle = `rgba(${92 + clean * 30},${44 + clean * 18},${38 + clean * 14},.9)`;
+  ctx.beginPath();
+  for (let i = 0; i <= last; i++) {
+    const p = seg[i], w = wid(i);
+    const jitterY = hash(i * 11.3) * 1.6 - 0.8;
+    if (i === 0) ctx.moveTo(p.x, p.y - w + jitterY); else ctx.lineTo(p.x, p.y - w + jitterY);
+  }
+  for (let i = last; i >= 0; i--) {
+    const p = seg[i], w = wid(i);
+    ctx.lineTo(p.x + 0.6, p.y + w * 0.8 + (hash(i * 5.1) - 0.5));
+  }
+  ctx.closePath(); ctx.fill();
+  // a hairline of lantern light on the upper lip of the parted skin
+  ctx.strokeStyle = `rgba(${214 + clean * 26},${132 + clean * 30},${112 + clean * 24},.5)`;
+  ctx.lineWidth = 0.9;
+  ctx.beginPath();
+  for (let i = 0; i <= last; i++) {
+    const p = seg[i], y = p.y - wid(i) - 1.1;
+    if (i === 0) ctx.moveTo(p.x, y); else ctx.lineTo(p.x, y);
+  }
+  ctx.stroke();
+  ctx.restore();
+
+  // scab and grit, gone once the wound is washed
+  if (clean < 0.98) {
+    ctx.save();
+    ctx.globalCompositeOperation = "multiply";
+    for (let i = 0; i < 20; i++) {
+      const p = seg[Math.floor(hash(i * 5.7) * seg.length)] || seg[0];
+      const dx = (hash(i * 2.3) - 0.5) * p.hw * 0.14, dy = (hash(i * 9.1) - 0.5) * 2.8;
+      ctx.fillStyle = i % 3 ? `rgba(96,58,44,${(1 - clean) * 0.5})` : `rgba(210,192,164,${(1 - clean) * 0.4})`;
+      ctx.beginPath(); ctx.arc(p.x + dx, p.y + dy, 0.6 + hash(i * 4.4) * 0.9, 0, TAU); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // what the washing leaves behind: a wine stain, and oil catching the lantern
+  if (clean > 0.04) {
+    ctx.save();
+    ctx.globalAlpha = clean * 0.3;
+    const ws = ctx.createRadialGradient(mid.x, mid.y, 2, mid.x, mid.y, mid.hw * 1.6);
+    ws.addColorStop(0, "rgba(96,26,52,.75)");
+    ws.addColorStop(1, "rgba(70,16,38,0)");
+    ctx.fillStyle = ws;
+    ctx.beginPath(); ctx.ellipse(mid.x, mid.y + 2, mid.hw * 1.3, mid.hw * 0.9, -0.12, 0, TAU); ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = `rgba(255,244,208,${clean * (0.3 + Math.sin(t * 2.4) * 0.08)})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i <= last; i++) {
+      const p = seg[i], y = p.y - wid(i) - 1.2;
+      if (i === 0) ctx.moveTo(p.x, y); else ctx.lineTo(p.x, y);
+    }
+    ctx.stroke();
+  }
+}
+
+/* Linen wound round a real arm reads as cloth only if it is shaded like cloth
+   round a cylinder: brightest along the crest of the limb and darkening
+   towards both ends, which thin out as the turn disappears behind the arm.
+   Each turn is clipped to the arm, so it can never stick out past the
+   silhouette, and carries the same warm lantern light as the skin beneath. */
+/* A point part-way between two samples of the arm, for placing a turn of
+   linen exactly where the bandage has been wound to. */
+function armAt(pts, u) {
+  const a = Math.max(0, Math.min(pts.length - 1, u * (pts.length - 1)));
+  const k = Math.min(pts.length - 2, Math.floor(a));
+  const t = a - k;
+  const p = pts[k], q = pts[k + 1];
+  return { x: p.x + (q.x - p.x) * t, y: p.y + (q.y - p.y) * t, hw: p.hw + (q.hw - p.hw) * t };
+}
+
+function paintWrap(ctx, pts, u, opacity = 1, seed = 0) {
+  const u0 = WOUND_U0 - 0.025, u1 = WOUND_U1 + 0.025;   // the cuff laps past the cut
+  const pt = armAt(pts, u0 + (u1 - u0) * u);
+  const ahead = armAt(pts, u0 + (u1 - u0) * Math.min(1, u + 0.04));
+  /* A wound bandage is wound on a spiral, so each turn sits at a slightly
+     different angle instead of squaring up to the arm like a paper band. */
+  const ang = Math.atan2(ahead.y - pt.y, ahead.x - pt.x) + Math.PI / 2 + (u - 0.5) * 0.22;
+  ctx.save();
+  armPath(ctx, pts, 2);
+  ctx.clip();
+  ctx.translate(pt.x, pt.y); ctx.rotate(ang);
+  ctx.globalAlpha = opacity;
+  /* Each turn is a little different: a hand-wound bandage is never even, and
+     the slight variation in length and lean is what stops the cuff reading as
+     a moulded sleeve. */
+  const L = pt.hw * (1.02 + hash(seed * 3.7) * 0.12);
+  const bw = pt.hw * 0.17 + 2.6;
+
+  // the shadow this turn presses into the arm, and the crease of the one below
+  ctx.fillStyle = "rgba(34,20,10,.4)";
+  ctx.beginPath();
+  ctx.ellipse(2.5, bw * 1.05, L * 0.9, bw * 1.3, 0, 0, TAU);
+  ctx.fill();
+
+  // the cloth: a lens shape, thinning to a point at either end
+  const g = ctx.createLinearGradient(-L, 0, L, 0);
+  g.addColorStop(0, "#8d7c62");
+  g.addColorStop(0.14, "#cbb995");
+  g.addColorStop(0.4, "#e8d8b8");
+  g.addColorStop(0.55, "#f6ecd4");
+  g.addColorStop(0.72, "#e2d1ae");
+  g.addColorStop(0.9, "#bfae8b");
+  g.addColorStop(1, "#8a7a60");
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(-L, 0);
+  ctx.quadraticCurveTo(-L * 0.55, -bw * 1.15, -L * 0.12, -bw);
+  ctx.quadraticCurveTo(L * 0.4, -bw * 1.1, L, bw * 0.1);
+  ctx.quadraticCurveTo(L * 0.4, bw * 1.15, -L * 0.12, bw);
+  ctx.quadraticCurveTo(-L * 0.55, bw * 1.1, -L, 0);
+  ctx.closePath(); ctx.fill();
+
+  // threads running the length of the cloth, bowed by the limb underneath
+  ctx.strokeStyle = "rgba(134,116,86,.22)"; ctx.lineWidth = 0.9;
+  for (let x = -L * 0.9; x < L * 0.9; x += 3.6) {
+    const bow = (1 - Math.pow(Math.abs(x) / L, 1.8)) * bw * 0.86;
+    ctx.beginPath();
+    ctx.moveTo(x, -bow);
+    ctx.quadraticCurveTo(x + 2.2, 0, x, bow);
+    ctx.stroke();
+  }
+  // the crest catching the lantern, and the crease at the lower edge
+  ctx.strokeStyle = "rgba(255,250,236,.42)"; ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.moveTo(-L * 0.8, -bw * 0.5); ctx.quadraticCurveTo(0, -bw * 1.02, L * 0.8, -bw * 0.34);
+  ctx.stroke();
+  ctx.strokeStyle = "rgba(80,58,34,.3)"; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(-L * 0.8, bw * 0.62); ctx.quadraticCurveTo(0, bw * 1.1, L * 0.8, bw * 0.5);
+  ctx.stroke();
+  ctx.restore();
+}
+
+const tend = {
+  titleEn: "Tend the wound", titleZh: "为他包扎伤口",
+  promptEn: "Pour oil and wine over the wound, then wind the linen round it. Drag slowly — a wound is not a thing to be hurried.",
+  promptZh: "把油和酒倒在伤口上，再用麻布一圈圈缠好。慢慢拖——伤口不是赶时间的事。",
+  hintEn: "Drag over the wound", hintZh: "在伤口上拖动",
+  hint() { return tx(this.hintEn, this.hintZh); },
+  init(c) {
+    c.maxHearts = 3; c.hearts = 3;
+    c.state = {
+      t: 0, phase: "wash", clean: 0, wrap: 0, done: false,
+      washed: {}, drips: [], glints: [], tilt: 0, lastX: null
+    };
+    c.setHint(tx("Drag over the wound to pour oil and wine", "在伤口上拖动，倒下油和酒"));
+  },
+  step(c, dt) {
+    const s = c.state;
+    s.t += dt;
+    const pts = armPoints(c);
+    const seg = woundSeg(pts);
+    const q = c.pointer;
+
+    if (s.phase === "wash") {
+      if (q.down) {
+        s.tilt += (0.9 - s.tilt) * dt * 9;
+        /* Only the stretch of wound under the finger is washed, so the player
+           has to move along it instead of holding still in one spot. */
+        for (let i = 0; i < seg.length; i++) {
+          const p = seg[i];
+          const d = dist(q.x, q.y, p.x, p.y);
+          if (d < 52) {
+            s.washed[i] = clamp((s.washed[i] || 0) + dt * (2.1 - d / 60), 0, 1);
+            if (Math.random() < dt * 9) {
+              s.drips.push({ x: p.x + rnd(-6, 6), y: p.y + rnd(-3, 5), life: 0.7, vy: rnd(22, 54), wine: Math.random() < 0.55 });
+            }
+          }
+        }
+      } else s.tilt += (0 - s.tilt) * dt * 7;
+      let sum = 0;
+      for (let i = 0; i < seg.length; i++) sum += s.washed[i] || 0;
+      s.clean = sum / seg.length;
+      c.progress = s.clean * 0.5;
+      c.setHint(`${tx("Pour oil and wine over the wound", "把油和酒倒在伤口上")}   ${Math.round(s.clean * 100)}%`);
+      if (s.clean >= 0.92) {
+        s.phase = "bind"; s.clean = 1;
+        c.hit("unlock");
+        const mid = seg[Math.floor(seg.length / 2)];
+        c.spark(mid.x, mid.y, "#f4d79b", 26, 170);
+        c.float(mid.x, mid.y - 40, tx("Cleaned", "已洗净"), "#f4d79b");
+        c.setHint(tx("Now wind the linen round the wound", "现在用麻布把伤口缠好"));
+      }
+    } else if (s.phase === "bind") {
+      const near = seg.some((p) => dist(q.x, q.y, p.x, p.y) < 66);
+      if (q.down && near) {
+        const dx = s.lastX === null ? 0 : Math.abs(q.x - s.lastX);
+        s.wrap = clamp(s.wrap + dx / (c.w * 1.5), 0, 1);
+        if (Math.random() < dt * 6) s.glints.push({ x: q.x + rnd(-14, 14), y: q.y + rnd(-10, 10), life: 0.6 });
+      }
+      s.lastX = q.x;
+      c.progress = 0.5 + s.wrap * 0.5;
+      c.setHint(`${tx("Wind the linen round the wound", "用麻布把伤口缠好")}   ${Math.round(s.wrap * 100)}%`);
+      if (s.wrap >= 0.98) {
+        s.wrap = 1; s.done = true;
+        const mid = seg[Math.floor(seg.length / 2)];
+        c.hit("complete"); c.spark(mid.x, mid.y, "#fff0c8", 34, 190);
+        c.end(true, c.score + 70);
+      }
+    }
+
+    for (const d of s.drips) { d.life -= dt; d.y += d.vy * dt; }
+    s.drips = s.drips.filter((d) => d.life > 0);
+    for (const g of s.glints) g.life -= dt;
+    s.glints = s.glints.filter((g) => g.life > 0);
+  },
+  onDown(c) { c.state.lastX = null; },
+  onUp() {},
+  draw(c, ctx) {
+    const s = c.state;
+    const pts = armPoints(c);
+    const seg = woundSeg(pts);
+    const plate = loadArt(TEND_IMG.src);
+    const gotPlate = !!(plate && plate.complete && plate.naturalWidth > 0);
+
+    if (gotPlate) {
+      /* The painted close-up: arm, cloak, cobbles, lantern. Cover-fit, then
+         graded so the canvas UI stays readable over it. */
+      const f = tendFit(c);
+      try {
+        ctx.drawImage(plate, f.dx, f.dy, TEND_IMG.w * f.s, TEND_IMG.h * f.s);
+      } catch { /* not decodable yet */ }
+      ctx.fillStyle = "rgba(6,10,14,.28)"; ctx.fillRect(0, 0, c.w, c.h);
+      // warm pool from the lantern in the top right
+      const lamp = ctx.createRadialGradient(c.w * 0.86, c.h * 0.1, 16, c.w * 0.86, c.h * 0.1, c.w * 1.05);
+      lamp.addColorStop(0, "rgba(255,196,110,.2)");
+      lamp.addColorStop(1, "rgba(30,26,20,0)");
+      ctx.fillStyle = lamp; ctx.fillRect(0, 0, c.w, c.h);
+    } else {
+      /* Same geometry, painted by hand, so a slow first load never leaves a
+         hole where the arm should be. */
+      const sky = ctx.createLinearGradient(0, 0, 0, c.h);
+      sky.addColorStop(0, "#0b1620"); sky.addColorStop(0.42, "#1b2a30"); sky.addColorStop(1, "#241b14");
+      ctx.fillStyle = sky; ctx.fillRect(0, 0, c.w, c.h);
+      ctx.fillStyle = "rgba(46,52,50,.6)";
+      ctx.beginPath();
+      ctx.moveTo(0, c.h * 0.44);
+      for (let x = 0; x <= c.w; x += 26) ctx.lineTo(x, c.h * 0.44 - Math.sin(x * 0.014 + 1.1) * 20 - hash(x) * 12);
+      ctx.lineTo(c.w, c.h); ctx.lineTo(0, c.h); ctx.fill();
+      const cloak = ctx.createLinearGradient(0, c.h * 0.5, 0, c.h);
+      cloak.addColorStop(0, "#2e3a56"); cloak.addColorStop(0.55, "#1d2438"); cloak.addColorStop(1, "#10131c");
+      ctx.fillStyle = cloak;
+      ctx.beginPath();
+      ctx.moveTo(-10, c.h * 0.86);
+      ctx.quadraticCurveTo(c.w * 0.3, c.h * 0.7, c.w * 0.64, c.h * 0.78);
+      ctx.quadraticCurveTo(c.w * 0.9, c.h * 0.84, c.w + 10, c.h * 0.78);
+      ctx.lineTo(c.w + 10, c.h + 10); ctx.lineTo(-10, c.h + 10); ctx.closePath(); ctx.fill();
+      const lamp = ctx.createRadialGradient(c.w * 0.86, c.h * 0.14, 20, c.w * 0.86, c.h * 0.14, c.w * 1.05);
+      lamp.addColorStop(0, "rgba(255,196,110,.3)");
+      lamp.addColorStop(1, "rgba(30,26,20,0)");
+      ctx.fillStyle = lamp; ctx.fillRect(0, 0, c.w, c.h);
+      ctx.save(); armPath(ctx, pts, 5);
+      ctx.fillStyle = "rgba(10,8,6,.5)"; ctx.fill(); ctx.restore();
+      armPath(ctx, pts);
+      const skin = ctx.createLinearGradient(0, c.h * 0.5, 0, c.h * 0.8);
+      skin.addColorStop(0, "#d7a276"); skin.addColorStop(0.4, "#bb8558");
+      skin.addColorStop(0.75, "#8d5b3a"); skin.addColorStop(1, "#4a2d1e");
+      ctx.fillStyle = skin; ctx.fill();
+    }
+
+    /* ---------------- the wound, and what we have done to it ------------ */
+    paintWound(ctx, pts, s.clean, s.t);
+
+    /* ---------------- linen --------------------------------------------- */
+    /* Turns overlap: a bandage is a continuous cuff of cloth, so the number of
+       visible turns is driven by how far the player has wound, and each new
+       turn lands just past the last. */
+    const TURNS = 40;
+    const shownTurns = s.phase === "bind" ? Math.floor(s.wrap * TURNS) : 0;
+    for (let k = 0; k <= shownTurns; k++) {
+      paintWrap(ctx, pts, Math.min(1, k / (TURNS - 1)), 0.94, k);
+    }
+    if (shownTurns > 0) {
+      /* the cuff sits in the same lantern light as the arm beneath it */
+      const cuff = armAt(pts, (WOUND_U0 + WOUND_U1) / 2);
+      ctx.save();
+      ctx.globalCompositeOperation = "multiply";
+      const warm = ctx.createRadialGradient(cuff.x - cuff.hw * 0.3, cuff.y - cuff.hw * 0.9, 4,
+        cuff.x, cuff.y, cuff.hw * 2.6);
+      warm.addColorStop(0, "rgba(255,238,206,.25)");
+      warm.addColorStop(1, "rgba(196,176,146,.55)");
+      ctx.fillStyle = warm;
+      ctx.beginPath(); ctx.ellipse(cuff.x, cuff.y, cuff.hw * 1.9, cuff.hw * 1.5, -0.2, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
+    if (s.wrap >= 1) {
+      const p = pts[clamp(WOUND_I1 + 2, 0, pts.length - 1)];
+      ctx.save(); ctx.translate(p.x, p.y - 4);
+      ctx.fillStyle = "#efe3cb";
+      ctx.beginPath(); ctx.ellipse(0, 0, 9, 6.5, -0.3, 0, TAU); ctx.fill();
+      ctx.strokeStyle = "#e6d8bd"; ctx.lineWidth = 3; ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(4, 2); ctx.quadraticCurveTo(16, 6, 19, 15);
+      ctx.moveTo(2, 4); ctx.quadraticCurveTo(9, 15, 5, 22); ctx.stroke();
+      ctx.restore();
+    }
+
+    /* ---------------- what has run down the arm -------------------------- */
+    for (const d of s.drips) {
+      ctx.fillStyle = d.wine ? `rgba(120,26,52,${d.life * 0.7})` : `rgba(255,226,160,${d.life * 0.55})`;
+      ctx.beginPath(); ctx.ellipse(d.x, d.y, 1.7, 3, 0, 0, TAU); ctx.fill();
+    }
+
+    /* ---------------- props, set down on the cloak ------------------------ */
+    /* The painted plate already places a flask and a roll of linen on the
+       stone, so nothing is duplicated while it is on screen. Only the linen
+       the player is actually using gets drawn, and only while binding. */
+    if (!gotPlate) {
+      paintFlask(ctx, c.w * 0.87, c.h * 0.8, -0.42, 1.15);
+      ctx.save();
+      ctx.translate(c.w * 0.12, c.h * 0.52); ctx.rotate(-0.24);
+      const linen = ctx.createLinearGradient(-16, -16, 16, 16);
+      linen.addColorStop(0, "#efe2c6"); linen.addColorStop(1, "#b3a385");
+      ctx.fillStyle = linen; ctx.beginPath(); ctx.ellipse(0, 0, 17, 13.5, 0, 0, TAU); ctx.fill();
+      ctx.strokeStyle = "rgba(140,124,98,.45)"; ctx.lineWidth = 1;
+      for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.ellipse(0, 0, 17 - i * 3.6, 13.5 - i * 2.9, 0, 0, TAU); ctx.stroke(); }
+      ctx.restore();
+    }
+
+    /* ---------------- the Samaritan's hands ------------------------------ */
+    const q = c.pointer;
+    const mid = seg[Math.floor(seg.length / 2)];
+    /* The player's finger stands in for the Samaritan's hand: the flask follows
+       the touch, and is put away the moment the finger lifts. A hand drawn at a
+       fixed resting position looked like a third person in the scene. */
+    if (s.phase === "wash" && (q.down || s.tilt > 0.02)) {
+      const hx = (q.down ? q.x : mid.x + 40) + 24;
+      const hy = (q.down ? q.y : mid.y - 84) - 58;
+      paintFlask(ctx, hx, hy, s.tilt * 0.55, 1.1);
+      paintHand(ctx, hx + 3, hy + 20, 0.55, 1.0);
+      if (s.tilt > 0.15 && q.down) {
+        // the pour: oil and wine, from the spout to the finger
+        const sx = hx - Math.sin(s.tilt * 0.55) * 22, sy = hy - 22;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "rgba(255,226,160,.7)"; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(sx, sy);
+        ctx.quadraticCurveTo(sx + 4, (sy + q.y) / 2, q.x, q.y); ctx.stroke();
+        ctx.strokeStyle = "rgba(150,40,70,.5)"; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(sx + 2, sy);
+        ctx.quadraticCurveTo(sx + 6, (sy + q.y) / 2, q.x + 1.5, q.y); ctx.stroke();
+        ctx.fillStyle = "rgba(255,240,200,.85)";
+        ctx.beginPath(); ctx.arc(q.x, q.y, 2.5 + Math.sin(s.t * 12) * 0.6, 0, TAU); ctx.fill();
+      }
+    } else if (q.down) {
+      const p = seg[Math.floor(s.wrap * (seg.length - 1))] || mid;
+      const hx = q.x, hy = q.y;
+      paintHand(ctx, hx - 15, hy, -0.5, 0.95);
+      paintHand(ctx, hx + 19, hy + 5, 0.7, 0.9);
+      if (s.wrap < 1) {
+        ctx.strokeStyle = "rgba(240,230,208,.9)"; ctx.lineWidth = 4.5; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(hx - 15, hy); ctx.lineTo(hx + 19, hy + 5); ctx.stroke();
+      }
+      void p;
+    }
+    for (const g of s.glints) {
+      ctx.fillStyle = `rgba(255,246,214,${g.life})`;
+      ctx.beginPath(); ctx.arc(g.x, g.y, 1.6, 0, TAU); ctx.fill();
+    }
+
+    /* ---------------- light and vignette -------------------------------- */
+    const vign = ctx.createRadialGradient(c.w * 0.5, c.h * 0.55, c.h * 0.2, c.w * 0.5, c.h * 0.58, c.h * 0.78);
+    vign.addColorStop(0, "rgba(0,0,0,0)");
+    vign.addColorStop(1, "rgba(4,6,9,.7)");
+    ctx.fillStyle = vign; ctx.fillRect(0, 0, c.w, c.h);
+    if (s.phase === "bind" && s.wrap >= 0.98) {
+      ctx.fillStyle = "rgba(255,240,205,.12)"; ctx.fillRect(0, 0, c.w, c.h);
+    }
+  }
+};
+
 /* ---------------------------------------------------------------- 4. STORM */
 
 const storm = {
@@ -900,7 +1445,7 @@ const esther = {
   }
 };
 
-export const GAMES = { sling, lions, jericho, storm, prodigal, esther };
+export const GAMES = { sling, lions, jericho, tend, storm, prodigal, esther };
 
 /* ══════════════════════ 7a. BURNING BUSH — follow the flock ══════════════════════ */
 const desert = {

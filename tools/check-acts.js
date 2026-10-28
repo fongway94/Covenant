@@ -151,6 +151,14 @@ function driveClimax(key, game) {
         p.down = true; p.x = g.x; p.y = g.y;
       } else if (key === "deep") {
         p.down = true; p.x = c.w * 0.26; p.y = s.orbs?.[0]?.y ?? c.h * 0.5;
+      } else if (key === "tend") {
+        /* Sweep along the arm: first to wash the length of the wound, then to
+           wind the linen round it. A real finger traces the same diagonal. */
+        const tri = (frames % 140) / 140;
+        const t2 = tri < 0.5 ? tri * 2 : 2 - tri * 2;
+        p.down = true;
+        p.x = c.w * (0.08 + 0.68 * t2);
+        p.y = c.h * (0.72 - 0.26 * t2);
       } else if (key === "climb" && frames % 7 === 0 && s.seq) {
         p.x = s.seq[s.step] === 0 ? c.w * 0.25 : c.w * 0.75; p.y = c.h * 0.6;
         game.onDown?.(c, p);

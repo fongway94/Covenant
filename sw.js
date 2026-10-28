@@ -1,5 +1,5 @@
 /* Covenant offline cache. Bump CACHE on every content release. */
-const CACHE = 'covenant-v16';
+const CACHE = 'covenant-v17';
 const ASSETS = [
   './',
   './index.html',
@@ -57,6 +57,7 @@ const ASSETS = [
   './assets/art/sprites/lion.webp',
   './assets/art/lions.jpg',
   './assets/art/jericho.jpg',
+  './assets/art/tend.jpg',
   './assets/art/storm.jpg',
   './assets/art/prodigal.jpg',
   './assets/art/esther.jpg',

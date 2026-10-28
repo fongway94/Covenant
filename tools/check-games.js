@@ -121,6 +121,15 @@ function climaxInput(key, c, frame) {
       p.down = true; p.x = c.w * 0.26; p.y = orb?.y ?? c.h * 0.5;
       break;
     }
+    case "tend": {
+      // sweep the finger along the painted forearm: wash, then bind
+      const tri = (frame % 140) / 140;
+      const t2 = tri < 0.5 ? tri * 2 : 2 - tri * 2;
+      p.down = true;
+      p.x = c.w * (0.08 + 0.68 * t2);
+      p.y = c.h * (0.72 - 0.26 * t2);
+      break;
+    }
     case "climb":
       if (frame % 7 === 0 && g.onDown && s.seq) {
         p.x = s.seq[s.step] === 0 ? c.w * 0.25 : c.w * 0.75;
