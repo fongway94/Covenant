@@ -420,6 +420,12 @@ export function startScene(canvas, key, onResult, seed = {}) {
     hearts: 3, maxHearts: 3, score: 0, progress: 0, shake: 0, flash: 0,
     hint: "", label: "", state: {}, shared: { ...seed },
     combo: 0, comboAt: -10, hitStop: 0,
+    /* Readout for the lifted touch marker: 0..1 while a hold is in progress,
+       null when there is nothing to show. Cleared every frame. */
+    touchHold: null, touchFade: 0, touchAt: { x: 0, y: 0 },
+    /* Set to false by a scene that already draws its own instrument above the
+       finger (a pouring flask, a sling pouch) so the two do not collide. */
+    touchUi: true,
     rnd, clamp, dist,
     spark(x, y, color = "#f4d79b", n = 12, speed = 130) {
       for (let i = 0; i < n; i++) {
@@ -582,6 +588,80 @@ export function startScene(canvas, key, onResult, seed = {}) {
     if (c.t - c.comboAt > 1.8) c.combo = 0;
   }
 
+  /* ------------------------------------------------- lifted touch marker
+     A thumb covers roughly a 40 px disc, which is bigger than the ring most
+     games used to draw under it — so the feedback for "you are pressing this"
+     was hidden by the very finger pressing it. Everything a scene reports
+     through c.touchHold is now drawn *above* the contact point instead: a ring
+     you can see past your own thumb, a stem back to the exact spot, and a small
+     dot left on the spot itself. Scenes that draw their own progress ring stop
+     doing so and set c.touchHold instead. */
+  function drawTouch() {
+    const on = pointer.down;
+    if (on) { c.touchAt = { x: pointer.x, y: pointer.y }; c.touchFade = 1; }
+    else c.touchFade = Math.max(0, c.touchFade - 0.08);
+    if (c.touchFade <= 0.01) return;
+    const lift = clamp(c.h * 0.085, 46, 76);
+    const r = 25;
+    const x = clamp(c.touchAt.x, r + 6, c.w - r - 6);
+    const y = clamp(c.touchAt.y - lift, r + 8, c.h - r - 8);
+    const a = c.touchFade;
+    const hold = typeof c.touchHold === "number" ? clamp(c.touchHold, 0, 1) : null;
+    ctx.save();
+    // the exact point, so nothing is lost to the offset
+    ctx.fillStyle = `rgba(255,240,206,${0.75 * a})`;
+    ctx.beginPath(); ctx.arc(c.touchAt.x, c.touchAt.y, 3.2, 0, TAU); ctx.fill();
+    ctx.strokeStyle = `rgba(10,10,12,${0.22 * a})`; ctx.lineWidth = 3.4;
+    ctx.beginPath(); ctx.arc(c.touchAt.x, c.touchAt.y, 11, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = `rgba(255,240,204,${0.5 * a})`; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(c.touchAt.x, c.touchAt.y, 11, 0, TAU); ctx.stroke();
+    // the stem: it should look like a plumb line, not a UI connector
+    const grad = ctx.createLinearGradient(c.touchAt.x, c.touchAt.y, x, y + r);
+    grad.addColorStop(0, `rgba(247,221,165,${0.28 * a})`);
+    grad.addColorStop(1, `rgba(247,221,165,${0.06 * a})`);
+    ctx.strokeStyle = grad; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(c.touchAt.x, c.touchAt.y - 10); ctx.lineTo(x, y + r - 2); ctx.stroke();
+    // the ring above the thumb — skipped when the scene has its own instrument there
+    if (c.touchUi === false) {
+      ctx.restore();
+      return;
+    }
+    ctx.globalCompositeOperation = "lighter";
+    const halo = ctx.createRadialGradient(x, y, r * 0.2, x, y, r * 1.9);
+    halo.addColorStop(0, `rgba(255,222,170,${0.14 * a})`);
+    halo.addColorStop(1, "rgba(255,222,170,0)");
+    ctx.fillStyle = halo;
+    ctx.beginPath(); ctx.arc(x, y, r * 1.9, 0, TAU); ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
+    const rr = hold === null ? r * 0.76 : r;
+    // a dark backing under the bright ring, so it holds against sunlit water
+    ctx.strokeStyle = `rgba(8,8,10,${(hold === null ? 0.16 : 0.26) * a})`; ctx.lineWidth = hold === null ? 4.6 : 5.4;
+    ctx.beginPath(); ctx.arc(x, y, rr, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = `rgba(255,240,204,${(hold === null ? 0.62 : 0.8) * a})`; ctx.lineWidth = hold === null ? 1.8 : 2.2;
+    ctx.beginPath(); ctx.arc(x, y, rr, 0, TAU); ctx.stroke();
+    // a pupil, so the ring reads as an eye looking at the spot
+    ctx.fillStyle = `rgba(255,236,200,${(hold === null ? 0.5 : 0.8) * a})`;
+    ctx.beginPath(); ctx.arc(x, y, 3.4, 0, TAU); ctx.fill();
+    if (hold !== null) {
+      // progress, clockwise from the top, thick enough to see past a thumb
+      ctx.strokeStyle = `rgba(10,10,12,${0.3 * a})`; ctx.lineWidth = 6.4;
+      ctx.beginPath(); ctx.arc(x, y, rr, -Math.PI / 2, -Math.PI / 2 + hold * TAU); ctx.stroke();
+      ctx.strokeStyle = `rgba(255,226,160,${0.98 * a})`; ctx.lineWidth = 3.8;
+      ctx.beginPath(); ctx.arc(x, y, rr, -Math.PI / 2, -Math.PI / 2 + hold * TAU); ctx.stroke();
+      ctx.strokeStyle = `rgba(255,246,220,${0.5 * a})`; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(x, y, rr - 5, -Math.PI / 2, -Math.PI / 2 + hold * TAU); ctx.stroke();
+      if (hold > 0.99) {
+        ctx.globalCompositeOperation = "lighter";
+        const bloom = ctx.createRadialGradient(x, y, 0, x, y, r * 2.4);
+        bloom.addColorStop(0, `rgba(255,232,186,${0.35 * a})`);
+        bloom.addColorStop(1, "rgba(255,232,186,0)");
+        ctx.fillStyle = bloom;
+        ctx.beginPath(); ctx.arc(x, y, r * 2.4, 0, TAU); ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
   function drawFx() {
     // A ribbon following the finger — makes dragging feel physical.
     if (trail.length > 1) {
@@ -674,6 +754,7 @@ export function startScene(canvas, key, onResult, seed = {}) {
        after a resume cannot jump. */
     if (!c.paused) {
       c.t += dt; c.dt = dt;
+      c.touchHold = null; c.touchUi = true;
       // A few frames of hit-stop on impact makes hits land without changing any
       // game logic — physics still advances with the same dt afterwards.
       if (c.hitStop <= 0) {
@@ -684,6 +765,7 @@ export function startScene(canvas, key, onResult, seed = {}) {
     ctx.clearRect(-40, -40, c.w + 80, c.h + 80);
     try { game.draw(c, ctx); } catch (err) { if (typeof console !== "undefined") console.warn("[scene] draw:", err); }
     drawFx();
+    drawTouch();
     hud();
     ctx.restore();
     if (c.flash > 0) { ctx.fillStyle = `rgba(255,240,200,${c.flash * 0.16})`; ctx.fillRect(0, 0, c.w, c.h); }

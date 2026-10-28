@@ -968,6 +968,8 @@ function chargeStage(cfg) {
          with the stone circling above it. Drawing the hand itself here was what
          made this read as a sticker; a hand-shaped shadow behind the pouch is
          all the information the eye needs. */
+      // the pouch and its swing own the space above the finger
+      if (c.pointer.down) c.touchUi = false;
       handShadow(ctx, pv.x + 6, pv.y + 8, -0.5, 0.85);
       ctx.save();
       ctx.translate(pv.x, pv.y); ctx.rotate(-0.35);

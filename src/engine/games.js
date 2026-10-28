@@ -1108,10 +1108,11 @@ const tend = {
        the touch, and is put away the moment the finger lifts. A hand drawn at a
        fixed resting position looked like a third person in the scene. */
     if (s.phase === "wash" && (q.down || s.tilt > 0.02)) {
-      const hx = (q.down ? q.x : mid.x + 40) + 24;
-      const hy = (q.down ? q.y : mid.y - 84) - 58;
-      paintFlask(ctx, hx, hy, s.tilt * 0.55, 1.1);
-      paintHand(ctx, hx + 3, hy + 20, 0.55, 1.0);
+      if (q.down) c.touchUi = false;   // the flask is the marker here
+      const hx = (q.down ? q.x : mid.x + 40) + 30;
+      const hy = (q.down ? q.y : mid.y - 84) - 70;
+      paintFlask(ctx, hx, hy, s.tilt * 0.55, 1.35);
+      paintHand(ctx, hx + 4, hy + 26, 0.55, 1.25);
       if (s.tilt > 0.15 && q.down) {
         // the pour: oil and wine, from the spout to the finger
         const sx = hx - Math.sin(s.tilt * 0.55) * 22, sy = hy - 22;
@@ -1318,12 +1319,9 @@ const stones = {
     // rings from the water, and the grip holding
     ctx.strokeStyle = "rgba(226,246,250,.34)"; ctx.lineWidth = 1.4;
     for (const r of s.rings) { ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, TAU); ctx.stroke(); }
-    if (s.grip > 0.02) {
-      ctx.strokeStyle = "rgba(247,221,165,.22)"; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(c.pointer.x, c.pointer.y, 20, 0, TAU); ctx.stroke();
-      ctx.strokeStyle = "rgba(247,221,165,.9)"; ctx.lineWidth = 2.6;
-      ctx.beginPath(); ctx.arc(c.pointer.x, c.pointer.y, 20, -Math.PI / 2, -Math.PI / 2 + Math.min(1, s.grip / 0.5) * TAU); ctx.stroke();
-    }
+    /* The grip is reported to the shared lifted marker rather than drawn here:
+       a 20 px ring under the thumb was invisible exactly when it mattered. */
+    if (c.pointer.down && s.grip > 0.02) c.touchHold = clamp(s.grip / 0.5, 0, 1);
     if (c.pointer.down) {
       ctx.fillStyle = "rgba(226,246,250,.1)";
       ctx.beginPath(); ctx.arc(c.pointer.x, c.pointer.y, 15, 0, TAU); ctx.fill();
@@ -1606,10 +1604,8 @@ const flame = {
 
     // how far you have dared to come, and how still you are being about it
     if (c.pointer.down) {
-      ctx.strokeStyle = "rgba(247,221,165,.75)"; ctx.lineWidth = 3;
       const next = s.steady[0] ? (s.steady[1] ? 2 : 1) : 0;
-      const t = s.steadyT[next] / 0.85;
-      ctx.beginPath(); ctx.arc(c.pointer.x, c.pointer.y, 30, -Math.PI / 2, -Math.PI / 2 + clamp(t, 0, 1) * TAU); ctx.stroke();
+      c.touchHold = clamp(s.steadyT[next] / 0.85, 0, 1);
     }
     // the sandals left on the rock, warming
     const sd = pp(c, 0.36, 0.78);
@@ -1681,13 +1677,18 @@ const cry = {
   },
   draw(c, ctx) {
     const s = c.state;
-    const pan = -(s.p - 0.5) * c.w * 0.55;
+    /* The street pans with the walk, so the plate has to be drawn overscanned
+       and the pan clamped to the overhang — otherwise walking left slides the
+       painting off the canvas and the page shows through the gap. */
     const t = plateT(c);
+    const s2 = t.s * 1.22;
+    const over = Math.max(0, (PLATE.w * s2 - c.w) / 2);
+    const pan = clamp(-(s.p - 0.5) * c.w * 0.55, -over, over);
     const img = loadArt("assets/art/cry.jpg");
     let drawn = false;
     if (img && img.complete && img.naturalWidth > 0) {
       try {
-        ctx.drawImage(img, t.dx + pan, t.dy, PLATE.w * t.s, PLATE.h * t.s);
+        ctx.drawImage(img, (c.w - PLATE.w * s2) / 2 + pan, (c.h - PLATE.h * s2) / 2, PLATE.w * s2, PLATE.h * s2);
         drawn = true;
       } catch { drawn = false; }
     }
