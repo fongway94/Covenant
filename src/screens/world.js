@@ -196,11 +196,11 @@ export function characterHtml(ui) {
           <button class="toggle ${isMusicEnabled() ? "on" : ""}" data-action="toggle-music" aria-label="${tx("Toggle ambient music", "切换环境音乐")}"><i></i></button>
         </div>
         <div class="setting-row">
-          <div class="lbl">${tx("Text size", "字号")}<small>${tx("For reading comfort", "让阅读更舒适")}</small></div>
+          <div class="lbl">${tx("Text size", "字号")}<small>${tx("Standard · comfortable · large — this also enlarges the instructions inside a scene", "标准 · 舒适 · 大——游戏里的操作说明也会一起变大")}</small></div>
           <div class="seg">
-            <button class="${s.settings.textSize === "small" ? "active" : ""}" data-action="set-text" data-size="small" style="font-size:.82em" aria-label="${tx("Small", "小")}">A</button>
-            <button class="${s.settings.textSize === "normal" ? "active" : ""}" data-action="set-text" data-size="normal" style="font-size:1em" aria-label="${tx("Normal", "中")}">A</button>
-            <button class="${s.settings.textSize === "large" ? "active" : ""}" data-action="set-text" data-size="large" style="font-size:1.28em" aria-label="${tx("Large", "大")}">A</button>
+            <button class="${s.settings.textSize === "small" ? "active" : ""}" data-action="set-text" data-size="small" style="font-size:.9em" aria-label="${tx("Standard", "标准")}">A</button>
+            <button class="${s.settings.textSize === "normal" ? "active" : ""}" data-action="set-text" data-size="normal" style="font-size:1.05em" aria-label="${tx("Comfortable", "舒适")}">A</button>
+            <button class="${s.settings.textSize === "large" ? "active" : ""}" data-action="set-text" data-size="large" style="font-size:1.42em" aria-label="${tx("Large", "大")}">A</button>
           </div>
         </div>
         <p class="tiny muted" style="margin:-2px 0 10px;font-family:var(--serif)">${tx("“The LORD is my shepherd; I shall not want.” — Psalm 23:1", "「耶和华是我的牧者，我必不至缺乏。」——诗篇 23:1")}</p>

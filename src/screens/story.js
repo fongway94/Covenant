@@ -129,7 +129,7 @@ export function mountStory(ui) {
   const p = ui.story.phase;
   if (p === "lines" || p === "reply") renderLineDOM(ui);
   else if (p === "mini") startMiniLoop(ui);
-  else if (p === "action") mountActionScene(ui);
+  else if (p === "action") { if (ui.story.game?.ready) mountActionScene(ui); }
   else if (p === "hotspots") mountHotspots(ui);
   else if (p === "reward") burstReward(ui);
   else if (p === "moment") mountMoment(ui);
@@ -295,9 +295,19 @@ export function openScroll(ui) {
 
 function startAction(ui, gameKey) {
   const s = st(ui);
-  s.game = { key: gameKey, controller: null, result: null };
+  /* `ready` stays false until the player has read the briefing and pressed
+     Start — the scene does not mount, tick or draw before that. */
+  s.game = { key: gameKey, controller: null, result: null, ready: false };
   s.phase = "action";
   sfx("unlock");
+  bus.render();
+}
+
+export function startActionNow(ui) {
+  const s = st(ui);
+  if (s?.phase !== "action" || !s.game || s.game.ready) return;
+  s.game.ready = true;
+  sfx("tap");
   bus.render();
 }
 
@@ -444,15 +454,24 @@ function startHotspots(ui, cfg) {
   s.hotspots = {
     cfg, found: [], pos,
     real: new Set(Array.from({ length: cfg.count }, (_, i) => i)),
-    focus: 3, seed
+    focus: 3, seed, ready: false
   };
   s.phase = "hotspots";
   sfx("tap");
   bus.render();
 }
 
+export function startHotspotsNow(ui) {
+  const s = st(ui);
+  if (s?.phase !== "hotspots" || !s.hotspots || s.hotspots.ready) return;
+  s.hotspots.ready = true;
+  sfx("tap");
+  bus.render();
+}
+
 /** Attach the lantern listeners after the DOM has been rendered. */
 function mountHotspots(ui) {
+  if (!st(ui).hotspots?.ready) return;
   const field = document.getElementById("hotspot-field");
   const lens = document.getElementById("hotspot-lens");
   if (!field || !lens) return;
@@ -548,6 +567,21 @@ export function hotspotSkip(ui) {
   afterLines(ui);
 }
 
+function hotspotsBrief(ui, cfg) {
+  return `<div class="screen hotspot-screen hotspot-brief" style="background-image:url('${chapter(ui).art}')">
+      ${briefHtml(ui, {
+        eyebrow: tx("LANTERN SEARCH", "提灯搜寻"),
+        title: tx(cfg.title, cfg.titleZh),
+        prompt: tx(cfg.prompt, cfg.promptZh),
+        how: [tx("Drag your finger across the picture to move the lantern.", "用手指在画面上拖动，移动提灯。"),
+              tx("Only what the lantern touches can be seen.", "只有被提灯照到的地方才看得见。"),
+              tx("Pale shapes are decoys. Three wrong ones end the search.", "浅色的形状是假的。错三次搜寻就结束。")],
+        start: "hotspot-start", startLabel: tx("Light the lantern", "点亮提灯"),
+        skip: "hotspot-skip", skipLabel: tx("Skip — no bonus", "跳过——没有奖励")
+      })}
+  </div>`;
+}
+
 function hotspotsHtml(ui) {
   const s = st(ui);
   const h = s.hotspots;
@@ -557,6 +591,7 @@ function hotspotsHtml(ui) {
   const title = tx(cfg.title, cfg.titleZh);
   const prompt = tx(cfg.prompt, cfg.promptZh);
   const decoy = cfg.decoyGlyph || "◇";
+  if (!h.ready) return hotspotsBrief(ui, cfg);
   const dots = h.pos.map((p, i) => {
     const isReal = h.real.has(i);
     const found = h.found.includes(i);
@@ -587,13 +622,21 @@ function hotspotsHtml(ui) {
 /* ------------------------------------------------------------------ minigame */
 
 function initMini(cfg) {
-  return { cfg, round: 0, pos: 0, dir: 1, results: [], done: false, feedback: cfg.prompt, last: 0 };
+  return { cfg, round: 0, pos: 0, dir: 1, results: [], done: false, feedback: cfg.prompt, last: 0, ready: false };
+}
+
+export function miniStart(ui) {
+  const m = st(ui).mini;
+  if (!m || m.ready || m.done || st(ui).phase !== "mini") return;
+  m.ready = true;
+  sfx("tap");
+  bus.render();
 }
 
 function miniLoop(ui, ts) {
   if (!ui.story || !ui.story.mini) return;
   const m = st(ui).mini;
-  if (!m || m.done || st(ui).phase !== "mini") return;
+  if (!m || m.done || !m.ready || st(ui).phase !== "mini") return;
   const dt = Math.min(48, ts - (m.last || ts));
   m.last = ts;
   m.pos += m.dir * m.cfg.speed * dt;
@@ -606,7 +649,7 @@ function miniLoop(ui, ts) {
 
 function startMiniLoop(ui) {
   const m = st(ui).mini;
-  if (!m || m.done) return;
+  if (!m || m.done || !m.ready) return;
   m.last = 0;
   if (typeof requestAnimationFrame === "function") st(ui).miniRaf = requestAnimationFrame((t) => miniLoop(ui, t));
 }
@@ -625,7 +668,7 @@ function updateMiniDOM(ui) {
 
 export function miniTap(ui) {
   const m = st(ui).mini;
-  if (!m || m.done || st(ui).phase !== "mini") return;
+  if (!m || m.done || !m.ready || st(ui).phase !== "mini") return;
   const target = m.cfg.targets[m.round];
   const hit = Math.abs(m.pos - target) <= m.cfg.zone / 2;
   m.results.push(hit);
@@ -769,6 +812,20 @@ function miniHtml(ui) {
   const cfg = m.cfg;
   const target = cfg.targets[Math.min(m.round, cfg.targets.length - 1)];
   const dots = cfg.targets.map((_, i) => `<span class="mg-dot ${i < m.results.length ? (m.results[i] ? "hit" : "miss") : ""}"></span>`).join("");
+  if (!m.ready) {
+    return `<div class="minigame minigame-brief">
+      ${briefHtml(ui, {
+        eyebrow: tx("A moment to focus", "凝神一刻"),
+        title: cfg.title,
+        prompt: cfg.prompt,
+        how: [tx("A light will start moving along the track.", "一个光点会沿着轨道移动。"),
+              tx("Tap when it reaches the golden mark.", "它到达金色标记时轻点。"),
+              tx("Nothing moves until you press Start.", "按下「开始」之前，什么都不会动。")],
+        start: "mini-start", startLabel: tx("Start", "开始"),
+        skip: "mini-skip", skipLabel: tx("Skip — no bonus", "跳过——没有奖励")
+      })}
+    </div>`;
+  }
   return `<div class="minigame">
     <div class="glyph">${cfg.glyph}</div>
     <div class="eyebrow">${tx("A moment to focus", "凝神一刻")}</div>
@@ -785,22 +842,70 @@ function miniHtml(ui) {
   </div>`;
 }
 
+/* ------------------------------------------------------------ the briefing
+   Every interaction is now announced before it can be touched. A player who
+   opens a scene sees what it is, what is asked of them, and one big button.
+   Nothing moves until that button is pressed: no clock, no canvas loop, no
+   marker sliding down a track. `ready` is the flag the mount code checks, so
+   the gate cannot be bypassed by a re-render either. */
+function briefHtml(ui, o) {
+  const rows = (o.how || []).map((h, i) => `<li><span class="n">${i + 1}</span><span>${esc(h)}</span></li>`).join("");
+  return `<div class="brief ${o.className || ""}">
+    <div class="brief-inner">
+      <div class="eyebrow">${esc(o.eyebrow)}</div>
+      <h2>${esc(o.title)}</h2>
+      ${o.prompt ? `<p class="brief-prompt">${esc(o.prompt)}</p>` : ""}
+      ${rows ? `<ol class="brief-how">${rows}</ol>` : ""}
+      ${o.note ? `<p class="brief-note">${esc(o.note)}</p>` : ""}
+      <button class="btn btn-primary brief-start" data-action="${o.start}">${icon("play", 16)} ${esc(o.startLabel || tx("Start", "开始"))}</button>
+      <button class="btn btn-ghost btn-sm brief-leave" data-action="${o.skip}">${esc(o.skipLabel)}</button>
+    </div>
+  </div>`;
+}
+
+/** The one line that says what the hand does, for each kind of story moment. */
+function momentHow(kind) {
+  switch (kind) {
+    case "hold": return tx("Press and keep your finger down until the ring fills.", "按住不放，直到圆环填满。");
+    case "tap": return tx("Tap each glowing mark once it appears.", "每处光点出现时轻点一下。");
+    case "trace": return tx("Drag along the dotted line, from the bottom to the top.", "沿着虚线拖动，从下往上。");
+    case "balance": return tx("Drag left and right to bring the bubble into the notch and hold it there.", "左右拖动，让气泡停在凹槽里并保持住。");
+    case "rhythm": return tx("Tap when the moving mark reaches the golden band.", "移动的光点进入金色区域时轻点。");
+    default: return tx("Touch the picture and follow the movement.", "触摸画面，跟着动作走。");
+  }
+}
+
 function actionHtml(ui) {
   const s = st(ui);
   const key = s.game?.key || "sling";
   const info = gameInfo(key);
   const ch = chapter(ui);
+  if (!s.game?.ready) {
+    return `<div class="screen action-screen action-brief">
+      <div class="action-art" style="background-image:url('${ch.art}')"></div>
+      ${briefHtml(ui, {
+        className: "brief-full",
+        eyebrow: `${tx("ACTION SCENE", "互动关卡")} · ${ch.title}`,
+        title: info.title,
+        prompt: info.prompt,
+        how: [tx("Read this card first — nothing has started yet.", "先读完这张卡——现在还没有开始。"),
+              tx("When you press Start, your finger becomes your hand.", "按下「开始」之后，手指就是你的手。"),
+              tx("There is no time limit. Finishing late only lowers the score.", "没有时间限制。慢一点完成，只是得分少一点。")],
+        start: "game-start", startLabel: tx("Start the scene", "开始本关"),
+        skip: "game-skip", skipLabel: tx("Skip — no bonus", "跳过——没有奖励")
+      })}
+    </div>`;
+  }
   return `<div class="screen action-screen">
     <div class="action-art" style="background-image:url('${ch.art}')"></div>
     <canvas id="action-canvas" class="action-canvas" aria-label="${esc(info.title)}"></canvas>
-    <div class="action-head">
+    <div class="action-head compact">
       <div class="action-tools">
         <button class="action-pause" data-action="game-pause" aria-label="${tx("Pause", "暂停")}">❚❚</button>
         <button class="action-skip" data-action="game-skip">${tx("Skip", "跳过")} →</button>
       </div>
-      <div class="eyebrow">${tx("ACTION SCENE", "互动关卡")} · ${esc(ch.title)}</div>
       <h2>${esc(info.title)}</h2>
-      <p class="small">${esc(info.prompt)}</p>
+      <p class="small">${esc(info.hint)}</p>
     </div>
     <div class="action-paused ${s.game?.paused ? "on" : ""}" data-action="game-resume">
       <div class="action-paused-card">
@@ -912,14 +1017,24 @@ function outcomeHtml(ui) {
 function startMomentPhase(ui, m) {
   const s = st(ui);
   s.moment = m;
+  s.momentReady = false;
   s.phase = "moment";
   sfx("unlock");
+  bus.render();
+}
+
+export function startMomentNow(ui) {
+  const s = st(ui);
+  if (s?.phase !== "moment" || !s.moment || s.momentReady) return;
+  s.momentReady = true;
+  sfx("tap");
   bus.render();
 }
 
 function mountMoment(ui) {
   const s = st(ui);
   const host = document.getElementById("moment-stage");
+  if (!s.momentReady) return;
   if (!host || !s.moment || s.momentController) return;
   s.momentController = startMoment(host, s.moment, (res) => finishMoment(ui, res));
 }
@@ -983,9 +1098,16 @@ function momentHtml(ui) {
         <div class="eyebrow">${tx("A moment in the story", "故事里的一刻")} · ${esc(momentKindLabel(m.kind, zh))}</div>
         <h2>${esc(m.title)}</h2>
         <p class="small muted">${esc(m.prompt)}</p>
-        <div class="moment-stage" id="moment-stage" data-kind="${esc(m.kind)}"></div>
+        ${s.momentReady
+          ? `<div class="moment-stage" id="moment-stage" data-kind="${esc(m.kind)}"></div>
         <div class="moment-meter-track"><i id="moment-meter"></i></div>
-        <div class="moment-feedback" id="moment-feedback"></div>
+        <div class="moment-feedback" id="moment-feedback"></div>`
+          : `<div class="brief-inline">
+              <ol class="brief-how"><li><span class="n">1</span><span>${esc(momentHow(m.kind))}</span></li>
+                <li><span class="n">2</span><span>${tx("Nothing moves until you press Start.", "按下「开始」之前，什么都不会动。")}</span></li></ol>
+              <p class="brief-note">${tx("No clock is running. Taking your time only lowers the score.", "这里没有倒计时。慢慢来，只是得分少一点。")}</p>
+              <button class="btn btn-primary brief-start" data-action="moment-start">${icon("play", 16)} ${tx("Start this moment", "开始这一刻")}</button>
+            </div>`}
         <button class="btn btn-ghost btn-sm" data-action="moment-skip">${tx("Skip this moment", "跳过这一刻")}</button>
       </div>
     </div>

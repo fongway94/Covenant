@@ -28,22 +28,33 @@ function stageBg(c, ctx, cfg) {
   if (!night) goldenHour(c, ctx);
 }
 
+/** The player's text-size setting, for text drawn on a canvas. */
+function uiScale() {
+  try {
+    const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--scale"));
+    return Number.isFinite(v) && v > 0 ? Math.max(1, Math.min(1.35, v)) : 1;
+  } catch { return 1; }
+}
+
 /** Parchment-style briefing card + timer bar + goal pips shared by all acts. */
 function stageChrome(c, ctx, cfg, s) {
   const { w, h } = c;
-  const y = 176, hh = 102;
+  const U = uiScale();
+  const hh = Math.round(102 * (0.82 + U * 0.18));
+  /* Under the scene's own HUD, wherever the (scalable) header has put it. */
+  const y = Math.max(150, Math.round((c.hudTop || 112) + 46));
   ctx.save();
   ctx.fillStyle = "rgba(7,15,21,.78)";
   roundRect(ctx, 14, y, w - 28, hh, 12); ctx.fill();
   ctx.strokeStyle = "rgba(231,183,91,.2)"; ctx.lineWidth = 1; ctx.stroke();
 
   ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
-  ctx.fillStyle = "#e7b75b"; ctx.font = `700 9px ${c.font}`;
+  ctx.fillStyle = "#e7b75b"; ctx.font = `700 ${Math.round(9 * U)}px ${c.font}`;
   ctx.fillText(tx("PREPARE", "准备"), 26, y + 18);
-  ctx.fillStyle = "#f4e7cb"; ctx.font = `600 15px ${c.font}`;
-  ctx.fillText(T(cfg.title), 26, y + 37);
-  ctx.fillStyle = "rgba(244,231,203,.62)"; ctx.font = `11px ${c.font}`;
-  wrapText(ctx, T(cfg.prompt), 26, y + 53, w - 52, 12, 3);
+  ctx.fillStyle = "#f4e7cb"; ctx.font = `600 ${Math.round(15 * U)}px ${c.font}`;
+  ctx.fillText(T(cfg.title), 26, y + Math.round(28 + 9 * U));
+  ctx.fillStyle = "rgba(244,231,203,.78)"; ctx.font = `${Math.round(11 * U)}px ${c.font}`;
+  wrapText(ctx, T(cfg.prompt), 26, y + Math.round(44 + 9 * U), w - 52, Math.round(12 * U), 3);
 
   /* The bar is time left, then time spent: past the line it fills with amber
      instead of stopping, so the cost of the delay is visible rather than a
@@ -57,18 +68,18 @@ function stageChrome(c, ctx, cfg, s) {
     const over = clamp(-s.left / (cfg.seconds * 1.6), 0, 1);
     ctx.fillStyle = "#c08a4a";
     roundRect(ctx, 26, y + hh - 12, (w - 52) * over, 5, 2.5); ctx.fill();
-    ctx.textAlign = "right"; ctx.fillStyle = "#e8b877"; ctx.font = `700 10px ${c.font}`;
+    ctx.textAlign = "right"; ctx.fillStyle = "#e8b877"; ctx.font = `700 ${Math.round(10 * U)}px ${c.font}`;
     ctx.fillText(`+${Math.ceil(-s.left)}s`, w - 26, y + hh - 16);
   }
 
   // goal pips on the right of the title
   if (s.goalText) {
-    ctx.textAlign = "right"; ctx.fillStyle = "#f2dba6"; ctx.font = `700 13px ${c.font}`;
-    ctx.fillText(s.goalText, w - 26, y + 37);
+    ctx.textAlign = "right"; ctx.fillStyle = "#f2dba6"; ctx.font = `700 ${Math.round(13 * U)}px ${c.font}`;
+    ctx.fillText(s.goalText, w - 26, y + Math.round(28 + 9 * U));
   }
   // hint line below the card
-  ctx.textAlign = "center"; ctx.fillStyle = "rgba(244,231,203,.5)"; ctx.font = `10px ${c.font}`;
-  ctx.fillText(T(cfg.hint), w / 2, y + hh + 16);
+  ctx.textAlign = "center"; ctx.fillStyle = "rgba(244,231,203,.72)"; ctx.font = `600 ${Math.round(11 * U)}px ${c.font}`;
+  ctx.fillText(T(cfg.hint), w / 2, y + hh + 18);
 
   if (s.flash > 0) {
     ctx.fillStyle = `rgba(214,92,66,${s.flash * 0.18})`;

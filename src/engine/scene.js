@@ -403,6 +403,16 @@ export function scepter(ctx, x, y, up, t) {
    but when it passes zero nothing ends: the picture stays live and playable,
    the HUD says how far over the line it is, and the payout shrinks with the
    delay. A slow player loses points, never the act. */
+/** The player's text-size setting, for text drawn on a canvas. Every number
+    that reaches ctx.font is multiplied by this, so a scene's instructions grow
+    with the rest of the app instead of staying 13px forever. */
+function uiScale() {
+  try {
+    const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--scale"));
+    return Number.isFinite(v) && v > 0 ? Math.max(1, Math.min(1.5, v)) : 1;
+  } catch { return 1; }
+}
+
 function overInfo(c) {
   const s = c.state || {};
   if (typeof s.left !== "number" || typeof s.t !== "number") return { over: 0, keep: 1 };
@@ -734,38 +744,51 @@ export function startScene(canvas, key, onResult, seed = {}) {
 
   function hud() {
     const { w, h } = c;
+    const U = uiScale();
     ctx.save();
     // progress rail
     const top = c.hudTop || 14;
     ctx.fillStyle = "rgba(255,255,255,.13)"; roundRect(ctx, 14, top, w - 28, 5, 3); ctx.fill();
     ctx.fillStyle = "#f0c46a"; roundRect(ctx, 14, top, Math.max(4, (w - 28) * clamp(c.progress, 0, 1)), 5, 3); ctx.fill();
     // hearts
-    ctx.font = `15px ${c.font}`; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.font = `${Math.round(15 * U)}px ${c.font}`; ctx.textAlign = "left"; ctx.textBaseline = "middle";
     for (let i = 0; i < c.maxHearts; i++) {
       ctx.fillStyle = i < c.hearts ? "#e08b78" : "rgba(255,255,255,.2)";
-      ctx.fillText("♥", 16 + i * 19, top + 22);
+      ctx.fillText("♥", 16 + i * 19 * U, top + 22);
     }
     // score
-    ctx.textAlign = "right"; ctx.fillStyle = "rgba(244,231,203,.85)"; ctx.font = `600 12px ${c.font}`;
+    ctx.textAlign = "right"; ctx.fillStyle = "rgba(244,231,203,.85)"; ctx.font = `600 ${Math.round(12 * U)}px ${c.font}`;
     ctx.fillText(`${tx("SCORE", "得分")} ${c.score}`, w - 16, top + 22);
     /* Past the line the scene is still live; this is the whole cost of being
        late, and it has to be readable at a glance. */
     const oi = overInfo(c);
     if (oi.over > 0) {
-      ctx.font = `700 11px ${c.font}`; ctx.fillStyle = "#e8b877";
-      ctx.fillText(`${tx("OVER", "超时")} +${Math.ceil(oi.over)}s`, w - 16, top + 38);
+      ctx.font = `700 ${Math.round(11 * U)}px ${c.font}`; ctx.fillStyle = "#e8b877";
+      ctx.fillText(`${tx("OVER", "超时")} +${Math.ceil(oi.over)}s`, w - 16, top + 22 + 16 * U);
     }
     if (c.combo >= 2) {
-      ctx.font = `700 11px ${c.font}`;
+      ctx.font = `700 ${Math.round(11 * U)}px ${c.font}`;
       ctx.fillStyle = "#e7b75b";
-      ctx.fillText(`×${c.combo}`, 104, top + 22);
+      ctx.fillText(`×${c.combo}`, 16 + 3 * 19 * U, top + 22);
     }
     // hint banner
     if (c.hint) {
-      ctx.font = `500 13px ${c.font}`; ctx.textAlign = "center";
-      const tw = ctx.measureText(c.hint).width;
-      ctx.fillStyle = "rgba(11,20,28,.72)"; roundRect(ctx, w / 2 - tw / 2 - 14, h - 42, tw + 28, 28, 14); ctx.fill();
-      ctx.fillStyle = "#f4e7cb"; ctx.fillText(c.hint, w / 2, h - 28);
+      /* The instruction line is the single most-read text in a scene, so it is
+         scaled with the reader's setting and its band grows with the font. */
+      let fs = Math.round(14 * U);
+      ctx.font = `600 ${fs}px ${c.font}`; ctx.textAlign = "center";
+      let tw = ctx.measureText(c.hint).width;
+      const maxW = w - 28;
+      if (tw > maxW) {
+        /* shrink only as a last resort, then keep it on one readable line */
+        fs = Math.max(11, Math.round(fs * (maxW / tw)));
+        ctx.font = `600 ${fs}px ${c.font}`;
+        tw = ctx.measureText(c.hint).width;
+      }
+      const bh = Math.round(fs + 16);
+      ctx.fillStyle = "rgba(11,20,28,.8)";
+      roundRect(ctx, w / 2 - tw / 2 - 16, h - bh - 12, tw + 32, bh, bh / 2); ctx.fill();
+      ctx.fillStyle = "#f6ecd4"; ctx.fillText(c.hint, w / 2, h - 12 - bh / 2 + fs * 0.36);
     }
     ctx.restore();
   }
@@ -809,6 +832,14 @@ export function startScene(canvas, key, onResult, seed = {}) {
   }
 
   resize();
+  /* The briefing card above the canvas is absolutely positioned and grows with
+     the reader's text size, so the scene's own HUD is told where it starts
+     instead of assuming a fixed 112px. */
+  try {
+    const head = typeof document !== "undefined" && document.querySelector(".action-head");
+    const hb = head && head.getBoundingClientRect();
+    if (hb && hb.height > 0) c.hudTop = Math.round(hb.bottom + 16);
+  } catch { /* keep the default */ }
   attach();
   // Every climax may stage painted actors; one warm-up covers all of them.
   try { preloadSprites(); } catch { /* art is always optional */ }

@@ -15,7 +15,8 @@ import {
   continueStory, prayNow, openScroll, miniTap, miniSkip, reflectAnswer,
   goToReflection, leaveStory, finishStory,
   skipAction, actionDone, hotspotTap, hotspotDone, hotspotSkip,
-  revealHints, guidedChoose, skipMoment, pauseGame, resumeGame
+  revealHints, guidedChoose, skipMoment, pauseGame, resumeGame,
+  startActionNow, startMomentNow, startHotspotsNow, miniStart
 } from "./screens/story.js";
 import { mountAtmosphere } from "./engine/atmosphere.js";
 
@@ -44,7 +45,11 @@ bus.ui = ui;
 bus.render = render;
 initI18n();
 
-const SCALE = { small: 0.92, normal: 1, large: 1.14 };
+/* Reading comfort, not a decoration. The old range topped out at 1.14, which
+   nobody could see; large is now a third bigger than normal, and the smallest
+   step is still comfortable. Canvas HUD text reads the same variable, so the
+   instructions inside a scene grow with the setting too. */
+const SCALE = { small: 0.98, normal: 1.1, large: 1.42 };
 
 function applySettings() {
   const settings = ui.state?.settings;
@@ -216,7 +221,7 @@ root.addEventListener("click", (e) => {
     case "set-text": {
       ui.state.settings.textSize = el.dataset.size;
       saveGame(ui.state); sfx("tap"); render();
-      const label = { small: tx("Small text", "小字号"), normal: tx("Normal text", "中字号"), large: tx("Large text", "大字号") }[el.dataset.size];
+      const label = { small: tx("Standard text", "标准字号"), normal: tx("Comfortable text", "舒适字号"), large: tx("Large text", "大字号") }[el.dataset.size];
       if (label) toast(label, "A");
       break;
     }
@@ -241,14 +246,18 @@ root.addEventListener("click", (e) => {
       : tx("This path needs a higher virtue. Pray or keep walking.", "这条路需要更高的品格。祷告或继续前行。"), "✟"); break;
     case "story-continue": continueStory(ui); break;
     case "pray-now": if (!prayHeld) prayNow(ui); break;
+    case "mini-start": miniStart(ui); break;
     case "mini-tap": miniTap(ui); break;
     case "mini-skip": miniSkip(ui); break;
+    case "moment-start": startMomentNow(ui); break;
     case "moment-skip": skipMoment(ui); break;
 
+    case "game-start": startActionNow(ui); break;
     case "game-pause": pauseGame(ui, { by: "user" }); break;
     case "game-resume": resumeGame(ui); break;
     case "game-skip": skipAction(ui); break;
     case "action-done": actionDone(ui); break;
+    case "hotspot-start": startHotspotsNow(ui); break;
     case "hotspot-tap": hotspotTap(ui, Number(el.dataset.index)); break;
     case "hotspot-done": hotspotDone(ui); break;
     case "hotspot-skip": hotspotSkip(ui); break;

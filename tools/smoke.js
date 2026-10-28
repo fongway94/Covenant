@@ -60,12 +60,37 @@ function playChapter(id) {
     }
     if (p === "next") { click('[data-action="story-continue"]'); continue; }
     if (p === "mini") {
+      /* v0.9.5: nothing starts until the player has read the briefing. */
+      if (bus.ui.story.mini && !bus.ui.story.mini.ready) {
+        assert(!!$('[data-action="mini-start"]'), "mini game opened without a Start gate");
+        click('[data-action="mini-start"]');
+        assert(bus.ui.story.mini.ready === true, "mini Start did not arm the game");
+        continue;
+      }
       let spins = 0;
       while (phase() === "mini" && spins++ < 30) click('[data-action="mini-tap"]');
       continue;
     }
-    if (p === "moment") { click('[data-action="moment-skip"]'); continue; }
+    if (p === "moment") {
+      if (!bus.ui.story.momentReady) {
+        assert(!!$('[data-action="moment-start"]'), "moment opened without a Start gate");
+        assert(!$("#moment-stage canvas"), "a moment must not be live before Start");
+        click('[data-action="moment-start"]');
+        assert(bus.ui.story.momentReady === true, "moment Start did not arm the act");
+        continue;
+      }
+      click('[data-action="moment-skip"]'); continue;
+    }
     if (p === "action") {
+      /* Read first, then start: the canvas is not mounted until Start. */
+      if (bus.ui.story.game && !bus.ui.story.game.ready) {
+        assert(!!$('[data-action="game-start"]'), "action scene opened without a Start gate");
+        assert(!$("#action-canvas"), "the scene must not be live before Start");
+        click('[data-action="game-start"]');
+        assert(bus.ui.story.game.ready === true, "Start did not arm the scene");
+        assert(!!$("#action-canvas"), "Start must mount the scene canvas");
+        continue;
+      }
       /* Pause/resume regression: coming back from a locked phone left a card
          that could not be dismissed. Both directions must work from state
          alone, and must survive a scene whose animation loop died in sleep. */
@@ -90,6 +115,12 @@ function playChapter(id) {
     }
     if (p === "action-result") { click('[data-action="action-done"]'); continue; }
     if (p === "hotspots") {
+      if (!bus.ui.story.hotspots?.ready) {
+        assert(!!$('[data-action="hotspot-start"]'), "lantern search opened without a Start gate");
+        click('[data-action="hotspot-start"]');
+        assert(bus.ui.story.hotspots.ready === true, "lantern Start did not arm the search");
+        continue;
+      }
       let taps = 0;
       while (phase() === "hotspots" && taps++ < 20) {
         const b = $('[data-action="hotspot-tap"]:not(.decoy):not(.found)');
