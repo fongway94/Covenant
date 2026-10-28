@@ -1193,11 +1193,13 @@ export function drawMomentArt(ctx, w, h, spec, S, dpr = 1) {
      you are holding on to. One warm ring says where the finger goes, and it is
      gone the moment the player presses: an affordance, not a widget. */
   if (spec?.kind === "hold" && !S.touched) {
-    const hx = w * 0.5, hy = h * 0.5;
-    const hr = Math.min(w, h) * (0.15 + Math.sin(S.t * 2.1) * 0.012);
+    /* small, and low on the ground — a place for the thumb, not a seal over
+       the actor's face */
+    const hx = w * 0.5, hy = h * 0.76;
+    const hr = Math.min(w, h) * (0.105 + Math.sin(S.t * 2.1) * 0.01);
     ctx.save();
     ctx.beginPath(); ctx.arc(hx, hy, hr, 0, TAU);
-    ctx.strokeStyle = "rgba(8,8,8,.5)"; ctx.lineWidth = 7; ctx.stroke();
+    ctx.strokeStyle = "rgba(8,8,8,.45)"; ctx.lineWidth = 6; ctx.stroke();
     ctx.strokeStyle = `rgba(255,234,190,${0.46 + Math.sin(S.t * 2.1) * 0.12})`; ctx.lineWidth = 2; ctx.stroke();
     ctx.beginPath(); ctx.arc(hx, hy, hr * 0.17, 0, TAU);
     ctx.fillStyle = "rgba(255,240,206,.9)"; ctx.fill();

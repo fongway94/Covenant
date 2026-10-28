@@ -30,12 +30,12 @@ export const MOMENTS = {
       "elah", 0.46, 0.68,
       B("Hold your ground", "站稳"),
       B("The giant's shout rolls over the valley. Press and hold until your breathing steadies.", "巨人的喊声滚过山谷。按住不放，直到你的呼吸稳下来。"),
-      B("You did not run. That is what courage looked like from the inside.", "你没有跑。从里面看，勇敢就是这个样子。"), "wait", { span: 0.56 }),
+      B("You did not run. That is what courage looked like from the inside.", "你没有跑。从里面看，勇敢就是这个样子。"), "wait", { span: 0.40 }),
     M("arrival", "balance", "provision",
       "elah-field", 0.44, 0.68,
       B("Carry the provisions", "稳住供给"),
       B("A pole across your shoulders, bread on one end and cheese on the other. Drag left and right to keep the bubble in its notch while the ridge tips underfoot.", "扁担压在肩上，一头是饼，一头是奶饼。山脊在脚下倾斜——左右拖动，让气泡一直停在凹槽里。"),
-      B("You reach the top without dropping anything. Nobody noticed you arrive.", "你一样东西也没掉地爬到了山顶。没有人注意到你来了。"), "stay", { span: 0.56 })
+      B("You reach the top without dropping anything. Nobody noticed you arrive.", "你一样东西也没掉地爬到了山顶。没有人注意到你来了。"), "stay", { span: 0.46 })
   ],
   lions: [
     M("decree", "tap", "lines",
