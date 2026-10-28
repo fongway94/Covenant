@@ -9,6 +9,9 @@ import { goldenHour, lightRays, softVignette } from "./visual.js";
 import { withStages } from "./stages.js";
 
 const TAU = Math.PI * 2;
+/* stable pseudo-noise: the same index always gives the same stone or stem, so
+   scenery does not shimmer between frames. */
+const hash = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 
 function bg(c, ctx, top, bottom, dust = 28) {
   if (c.game?.art) {
@@ -45,6 +48,9 @@ function hills(ctx, c, y, color, off = 0) {
   }
   ctx.lineTo(c.w, c.h); ctx.closePath(); ctx.fill();
 }
+
+/** Body height that reads correctly whatever the phone, in CSS px. */
+function bodyH(c, frac, lo, hi) { return clamp(c.h * frac, lo, hi); }
 
 function glow(ctx, x, y, r, color, alpha = 0.5) {
   const g = ctx.createRadialGradient(x, y, 1, x, y, r);
@@ -184,12 +190,14 @@ const sling = {
   },
   draw(c, ctx) {
     const s = c.state, g = s.g, L = slingStage(c), t = c.t;
-    bg(c, ctx, "#1a2c3a", "#33413c", 34);
+    /* Warm earth, not cold slate: the valley artwork is golden-hour dust and a
+       blue-green floor under it made the drawn ground look like water. */
+    bg(c, ctx, "#1a2c3a", "#4a3a26", 34);
     star(ctx, c.w * 0.82, 42, 13, "#f4d79b", 0.5 + Math.sin(t * 2) * 0.12);
-    hills(ctx, c, c.h * 0.58, "#2a3a3c", 40);
-    hills(ctx, c, c.h * 0.7, "#263338", 120);
+    hills(ctx, c, c.h * 0.58, "#3a3327", 40);
+    hills(ctx, c, c.h * 0.7, "#312a20", 120);
     const gg = ctx.createLinearGradient(0, L.groundY, 0, c.h);
-    gg.addColorStop(0, "rgba(38,45,37,.82)"); gg.addColorStop(1, "rgba(17,23,22,.97)");
+    gg.addColorStop(0, "rgba(64,50,32,.86)"); gg.addColorStop(1, "rgba(24,18,12,.97)");
     ctx.fillStyle = gg; ctx.fillRect(0, L.groundY, c.w, c.h - L.groundY);
     ctx.strokeStyle = "rgba(240,196,106,.22)"; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, L.groundY); ctx.lineTo(c.w, L.groundY); ctx.stroke();
@@ -331,8 +339,10 @@ const lions = {
     c.state = {
       p: { x: c.w * 0.1, y, r: 12, walk: 0, moving: false },
       startX: c.w * 0.1, goalX: c.w * 0.91,
-      lions: [0.26, 0.43, 0.6, 0.77].map((f, i) => ({
-        x: c.w * f, y: c.h * (i % 2 ? 0.36 : 0.72), a: i % 2 ? 1.2 : -1.2, sp: 0.55 + i * 0.12, r: 108, face: i % 2 ? 1 : -1
+      // Two on the upper ledge, two on the lower, each with its own beat.
+      lions: [[0.3, 0.34], [0.7, 0.34], [0.3, 0.72], [0.7, 0.72]].map(([fx, fy], i) => ({
+        x: c.w * fx, y: c.h * fy, a: i % 2 ? 1.2 : -1.2,
+        sp: 0.55 + i * 0.12, r: c.w * 0.26, face: i % 2 ? 1 : -1
       })),
       frags: [0.32, 0.52, 0.72].map((f, i) => ({ x: c.w * f, y: c.h * (0.5 + (i - 1) * 0.19), got: false })),
       cooldown: 0
@@ -353,7 +363,7 @@ const lions = {
       if (d > 3) { const k = Math.min(1, (135 * dt) / d); p.x += (target.x - p.x) * k; p.y += (target.y - p.y) * k; p.walk += dt * 2.4; }
     }
     p.x = clamp(p.x, 16, s.goalX + 10); p.y = clamp(p.y, c.h * 0.24, c.h * 0.85);
-    for (const l of s.lions) { l.a += l.sp * dt * (Math.sin(c.t * 0.5 + l.x) > 0 ? 1 : -1); l.face = Math.cos(l.a) >= 0 ? 1 : -1; }
+    s.lions.forEach((l) => { l.a += l.sp * dt * (Math.sin(c.t * 0.5 + l.x) > 0 ? 1 : -1); l.face = Math.cos(l.a) >= 0 ? 1 : -1; });
     for (const f of s.frags) {
       if (!f.got && dist(p.x, p.y, f.x, f.y) < 24) {
         f.got = true; c.addScore(25); c.hit("good"); c.spark(f.x, f.y, "#7fd4c8", 16, 120);
@@ -388,19 +398,39 @@ const lions = {
     glow(ctx, s.goalX, c.h * 0.55, 62, "rgba(244,215,155,ALPHA)", 0.5 + Math.sin(c.t * 2) * 0.12);
     ctx.fillStyle = "rgba(244,215,155,.8)"; ctx.font = "20px serif"; ctx.textAlign = "center";
     ctx.fillText("✟", s.goalX, c.h * 0.55 + 7);
-    for (const l of s.lions) {
+    s.lions.forEach((l) => {
       const cone = ctx.createRadialGradient(l.x, l.y, 4, l.x, l.y, l.r);
       cone.addColorStop(0, "rgba(255,196,90,.24)"); cone.addColorStop(1, "rgba(255,196,90,0)");
       ctx.save(); ctx.beginPath(); ctx.moveTo(l.x, l.y);
       ctx.arc(l.x, l.y, l.r, l.a - 0.52, l.a + 0.52); ctx.closePath();
       ctx.fillStyle = cone; ctx.fill(); ctx.restore();
-      lion(ctx, l.x, l.y, 0.85, l.face, 1, true);
-    }
+      /* The painted lion prowls on the ground line, not in the air: feet land
+         where the cave floor is, and only this one lion carries the full body. */
+      // Size by WIDTH: the sprite is 2.15:1, so a lion about a third of the
+      // screen wide stays inside its own patch of floor.
+      const lh = clamp((c.w * 0.34) / 2.15, 40, 120);
+      const groundL = l.y + lh * 0.5;
+      actorShadow(ctx, l.x, groundL + 2, lh * 0.42, 0.34);
+      const breathe = 1 + Math.sin(c.t * 1.4 + l.x) * 0.012;
+      const prowl = Math.sin(c.t * 2.2 + l.x * 0.01) * 0.012;
+      const drewLion = actor(ctx, "lion", l.x, groundL, lh, {
+        flip: l.face, rot: prowl, squash: breathe,
+        alpha: 0.94 + Math.sin(c.t * 3 + l.y) * 0.04
+      });
+      if (!drewLion) lion(ctx, l.x, l.y, 0.85, l.face, 1, true);
+    });
     for (const f of s.frags) if (!f.got) {
       glow(ctx, f.x, f.y, 18, "rgba(127,212,200,ALPHA)", 0.55);
       star(ctx, f.x, f.y + Math.sin(c.t * 3 + f.x) * 3, 8, "#9fe6d8", 0.95);
     }
-    pilgrim(ctx, s.p.x, s.p.y, 0.9, s.p.walk, 1, s.p.moving ? 1 : 0.45, true);
+    const dh = bodyH(c, 0.20, 84, 176);
+    actorShadow(ctx, s.p.x, s.p.y + 2, dh * 0.2, s.p.moving ? 0.34 : 0.22);
+    const drewDaniel = actor(ctx, "daniel", s.p.x, s.p.y, dh, {
+      rot: s.p.moving ? 0.04 + Math.sin(c.t * 8) * 0.02 : 0,
+      squash: 1 + Math.sin(c.t * 1.6) * 0.006,
+      alpha: s.p.moving ? 1 : 0.55
+    });
+    if (!drewDaniel) pilgrim(ctx, s.p.x, s.p.y, 0.9, s.p.walk, 1, s.p.moving ? 1 : 0.45, true);
     if (!s.p.moving) { ctx.fillStyle = "rgba(244,231,203,.55)"; ctx.font = `11px ${c.font}`; ctx.textAlign = "center"; ctx.fillText(tx("hidden", "隐藏中"), s.p.x, s.p.y - 52); }
   }
 };
@@ -478,7 +508,16 @@ const jericho = {
       ctx.fillStyle = "#f4d79b"; ctx.font = "20px serif"; ctx.textAlign = "center"; ctx.fillText("⌂", c.w * 0.5, y + 7);
     }
     ctx.globalAlpha = s.inv > 0 ? 0.5 + Math.sin(c.t * 30) * 0.3 : 1;
-    pilgrim(ctx, s.p.x, s.p.y, 1.05, c.t * 2.2, 1, 1, false);
+    /* The road widens with perspective, so the traveller grows as he comes
+       down the hill. Height follows the road, not the screen. */
+    const near = clamp((s.p.y - c.h * 0.45) / (c.h * 0.55), 0, 1);
+    const th = clamp(c.h * (0.10 + near * 0.14), 62, 210);
+    actorShadow(ctx, s.p.x, s.p.y + 2, th * 0.2, 0.3);
+    const drewTrav = actor(ctx, "traveller", s.p.x, s.p.y, th, {
+      flip: -1,
+      rot: 0.05 + Math.sin(c.t * 9) * 0.015, squash: 1 + Math.sin(c.t * 9) * 0.012
+    });
+    if (!drewTrav) pilgrim(ctx, s.p.x, s.p.y, 1.05, c.t * 2.2, 1, 1, false);
     ctx.globalAlpha = 1;
   }
 };
@@ -543,7 +582,48 @@ const storm = {
       }
       ctx.lineTo(c.w, c.h); ctx.closePath(); ctx.fill();
     }
-    boat(ctx, c.w / 2, c.h * 0.7, 1.05, s.roll, c.t);
+    /* The whole crew rides one deck. Drawing the hull AFTER the fisherman lets
+       the gunwale cover his shins, so he stands *in* the boat rather than on
+       top of a floating triangle. His body lags the deck roll by a beat. */
+    const fh = bodyH(c, 0.23, 96, 210);
+    const lag = Math.sin(c.t * 1.6 - 0.7) * 0.05;
+    const deckY = c.h * 0.745 + fh * 0.12;
+    const boatY = c.h * 0.745;
+    ctx.save();
+    ctx.translate(c.w / 2, deckY);
+    ctx.rotate(s.roll * 0.8 + lag);
+    ctx.translate(-c.w / 2, -deckY);
+    const drewFish = actor(ctx, "fisherman", c.w / 2, deckY, fh, {
+      rot: s.steer * 0.05, squash: 1 + Math.sin(c.t * 2.2) * 0.01
+    });
+    ctx.restore();
+    // the deck he stands on: no sail (the chapter art already has one)
+    boat(ctx, c.w / 2, boatY, Math.max(1.1, c.w / 300), s.roll, c.t, { sail: false });
+    if (!drewFish) pilgrim(ctx, c.w / 2, boatY - 8, 0.9, c.t * 2, 1, 1, true);
+    /* Sink the hull into the sea: a crest of the near wave runs over the
+       gunwale, so the boat sits *in* the water instead of floating over it. */
+    ctx.save();
+    const crest = boatY + 14;
+    const wg = ctx.createLinearGradient(0, crest - 10, 0, c.h);
+    wg.addColorStop(0, "rgba(14,36,50,.0)");
+    wg.addColorStop(0.25, "rgba(14,36,50,.86)");
+    wg.addColorStop(1, "rgba(9,24,34,.96)");
+    ctx.fillStyle = wg;
+    ctx.beginPath();
+    ctx.moveTo(0, c.h);
+    for (let x = 0; x <= c.w; x += 8) {
+      ctx.lineTo(x, crest + Math.sin(x * 0.03 + c.t * 2.2) * 5 + Math.sin(x * 0.07 - c.t) * 2);
+    }
+    ctx.lineTo(c.w, c.h);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "rgba(214,235,240,.28)"; ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    for (let x = 0; x <= c.w; x += 8) {
+      const y = crest + Math.sin(x * 0.03 + c.t * 2.2) * 5 + Math.sin(x * 0.07 - c.t) * 2;
+      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.restore();
     // water meter
     ctx.fillStyle = "rgba(255,255,255,.15)"; roundRect(ctx, 16, c.h - 46, 110, 8, 4); ctx.fill();
     ctx.fillStyle = s.water > 0.75 ? "#e08b78" : "#7fd4c8"; roundRect(ctx, 16, c.h - 46, 110 * s.water, 8, 4); ctx.fill();
@@ -611,17 +691,70 @@ const prodigal = {
     const s = c.state;
     bg(c, ctx, "#22384a", "#c99a61", 18);
     star(ctx, c.w * 0.82, 46, 10, "#f4d79b", 0.35);
-    // father's house, growing closer
-    const hx = c.w * (0.86 - (1 - c.progress) * 0.18), hy = s.gy - 58 * (0.5 + c.progress * 0.5);
-    glow(ctx, hx, hy, 46, "rgba(244,215,155,ALPHA)", 0.35 + c.progress * 0.3);
-    ctx.fillStyle = "#3b3226"; ctx.fillRect(hx - 26, hy - 22, 52, 42);
-    ctx.beginPath(); ctx.moveTo(hx - 32, hy - 22); ctx.lineTo(hx, hy - 46); ctx.lineTo(hx + 32, hy - 22); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = "#f4d79b"; ctx.fillRect(hx - 6, hy - 8, 12, 16);
-    ctx.fillStyle = "#6b5130"; ctx.fillRect(0, s.gy, c.w, c.h - s.gy);
-    ctx.strokeStyle = "rgba(240,196,106,.22)"; ctx.lineWidth = 2;
-    for (let i = 0; i < 8; i++) {
-      const x = ((i * 68 - c.t * 190) % (c.w + 70) + c.w + 70) % (c.w + 70) - 35;
-      ctx.beginPath(); ctx.moveTo(x, s.gy + 8 + i * 9); ctx.lineTo(x + 34, s.gy + 8 + i * 9); ctx.stroke();
+    /* The father's house, still far off at the start and close at the end. It is
+       the goal, so it has to read as a lit home from the first frame: warm
+       halo, mud-brick wall, a doorway with light spilling out of it. */
+    /* Home is a lamp on the ground at the far end of the road, not a building
+       floating in the sky. At this size a lit doorway and its halo are all the
+       eye needs, and because it stands ON the road line it never reads as an
+       object pasted over the painting. It swells as the runner closes. */
+    const near = 0.55 + c.progress * 0.45;
+    const hx = c.w * (0.9 - c.progress * 0.06), hy = s.gy + 4;
+    const hw = 30 * near, hh = 22 * near;
+    glow(ctx, hx, hy - hh * 0.5, 46 * near, "rgba(255,214,150,ALPHA)", 0.26 + c.progress * 0.28);
+    ctx.fillStyle = "rgba(28,22,15,.92)";
+    ctx.fillRect(hx - hw / 2, hy - hh, hw, hh);
+    ctx.beginPath();
+    ctx.moveTo(hx - hw * 0.62, hy - hh);
+    ctx.lineTo(hx, hy - hh - hh * 0.42);
+    ctx.lineTo(hx + hw * 0.62, hy - hh);
+    ctx.closePath(); ctx.fill();
+    const dg = ctx.createRadialGradient(hx, hy - hh * 0.45, 0.5, hx, hy - hh * 0.45, hh * 0.7);
+    dg.addColorStop(0, "rgba(255,236,186,.98)"); dg.addColorStop(1, "rgba(255,198,120,0)");
+    ctx.fillStyle = dg;
+    ctx.beginPath(); ctx.ellipse(hx, hy - hh * 0.42, hw * 0.3, hh * 0.5, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = "#ffeec2";
+    ctx.fillRect(hx - hw * 0.1, hy - hh * 0.62, hw * 0.2, hh * 0.42);
+    /* The road. It used to be one flat brown rectangle butted against the
+       artwork, which read as a masking error. Now the artwork's own dust melts
+       into the drawn ground through a soft horizon band, the dirt carries the
+       ruts of a cart track running away from the player, and the grit scrolls
+       so the running always has ground speed under it. */
+    const road = ctx.createLinearGradient(0, s.gy - 26, 0, c.h);
+    road.addColorStop(0, "rgba(150,116,72,0)");
+    road.addColorStop(0.18, "rgba(122,95,60,.92)");
+    road.addColorStop(1, "rgba(58,44,29,1)");
+    ctx.fillStyle = road; ctx.fillRect(0, s.gy - 26, c.w, c.h - s.gy + 26);
+    // cart ruts: soft, low-contrast, and only in the near half of the road, so
+    // they read as worn track and never as dark shapes standing on it
+    for (const [rx, rw] of [[0.46, 0.05], [0.74, 0.045]]) {
+      const top = s.gy + (c.h - s.gy) * 0.34;
+      const g4 = ctx.createLinearGradient(0, top, 0, c.h);
+      g4.addColorStop(0, "rgba(26,19,12,0)");
+      g4.addColorStop(1, "rgba(26,19,12,.26)");
+      ctx.fillStyle = g4;
+      ctx.beginPath();
+      ctx.moveTo(c.w * (rx - rw * 0.4), top);
+      ctx.lineTo(c.w * (rx + rw * 0.4), top);
+      ctx.quadraticCurveTo(c.w * (rx + rw * 1.5), c.h * 0.94, c.w * (rx + rw * 2.2), c.h);
+      ctx.lineTo(c.w * (rx - rw * 2.0), c.h);
+      ctx.quadraticCurveTo(c.w * (rx - rw * 1.2), c.h * 0.94, c.w * (rx - rw * 0.4), top);
+      ctx.closePath(); ctx.fill();
+    }
+    // dust kicked up at the horizon, where the painting meets the drawn road
+    const haze = ctx.createLinearGradient(0, s.gy - 30, 0, s.gy + 54);
+    haze.addColorStop(0, "rgba(196,164,116,0)");
+    haze.addColorStop(0.5, "rgba(196,164,116,.18)");
+    haze.addColorStop(1, "rgba(150,116,72,0)");
+    ctx.fillStyle = haze; ctx.fillRect(0, s.gy - 30, c.w, 84);
+    // grit and small stones streaming past
+    for (let i = 0; i < 34; i++) {
+      const sp = 40 + hash(i) * 90;
+      const x = ((hash(i * 3.1) * (c.w + 80) - c.t * sp) % (c.w + 80) + c.w + 80) % (c.w + 80) - 40;
+      const y = s.gy + 4 + hash(i * 7.7) * (c.h - s.gy);
+      const r = 1.1 + hash(i * 11) * 2.4;
+      ctx.fillStyle = i % 4 ? "rgba(28,21,13,.42)" : "rgba(196,160,104,.22)";
+      ctx.beginPath(); ctx.ellipse(x, y, r * 2.1, r, 0, 0, TAU); ctx.fill();
     }
     for (const o of s.objs) {
       if (o.kind === "mem") { glow(ctx, o.x, o.y, 20, "rgba(244,215,155,ALPHA)", 0.5); star(ctx, o.x, o.y + Math.sin(c.t * 3 + o.spin) * 3, 9, "#f4d79b", 0.95); }
@@ -633,7 +766,12 @@ const prodigal = {
       }
     }
     ctx.globalAlpha = s.inv > 0 ? 0.5 + Math.sin(c.t * 30) * 0.3 : 1;
-    pilgrim(ctx, c.w * 0.24, s.p.y, 1.05, c.t * 3.4, 1, 1, true);
+    const ph = bodyH(c, 0.21, 88, 180);
+    actorShadow(ctx, c.w * 0.24, s.p.y + 2, ph * 0.2, 0.3);
+    const drewProd = actor(ctx, "prodigal", c.w * 0.24, s.p.y, ph, {
+      rot: 0.06 + Math.sin(c.t * 10) * 0.02, squash: 1 + Math.sin(c.t * 10) * 0.015
+    });
+    if (!drewProd) pilgrim(ctx, c.w * 0.24, s.p.y, 1.05, c.t * 3.4, 1, 1, true);
     ctx.globalAlpha = 1;
   }
 };
@@ -682,16 +820,43 @@ const esther = {
   draw(c, ctx) {
     const s = c.state;
     bg(c, ctx, "#1b2438", "#3a2b3f", 22);
-    // pillars + throne
-    ctx.fillStyle = "#2c3c60";
-    for (let i = 0; i < 4; i++) { const x = 30 + i * (c.w - 60) / 3; ctx.fillRect(x - 7, c.h * 0.18, 14, c.h * 0.5); ctx.fillStyle = "#46629a"; ctx.fillRect(x - 11, c.h * 0.18, 22, 8); ctx.fillStyle = "#2c3c60"; }
-    ctx.fillStyle = "#4a3a2c"; ctx.fillRect(c.w * 0.84, c.h * 0.42, c.w * 0.16, c.h * 0.3);
+    /* The chapter artwork already paints the hall, the throne and the king, so
+       the scene no longer draws a second set of pillars and a second king on
+       top of them. What the *player* needs to read is the sceptre and the
+       floor they must cross. */
+    ctx.save();
+    ctx.fillStyle = "rgba(9,14,26,.42)"; ctx.fillRect(0, 0, c.w, c.h);
+    ctx.restore();
+    // the aisle: a faint gold path from the door to the throne
+    const aisle = ctx.createLinearGradient(0, c.h * 0.7, 0, c.h);
+    aisle.addColorStop(0, "rgba(240,196,106,.14)");
+    aisle.addColorStop(1, "rgba(240,196,106,0)");
+    ctx.fillStyle = aisle; ctx.fillRect(c.w * 0.08, c.h * 0.7, c.w * 0.6, c.h * 0.3);
     glow(ctx, c.w * 0.9, c.h * 0.55, 70, "rgba(240,196,106,ALPHA)", s.up ? 0.5 : 0.16);
-    // king
-    ctx.fillStyle = "#7a4a3a"; ctx.beginPath(); ctx.ellipse(c.w * 0.9, c.h * 0.5, 20, 26, 0, 0, TAU); ctx.fill();
-    ctx.fillStyle = "#e8c79a"; ctx.beginPath(); ctx.arc(c.w * 0.9, c.h * 0.44, 11, 0, TAU); ctx.fill();
-    ctx.fillStyle = "#f0c46a"; ctx.beginPath(); ctx.moveTo(c.w * 0.9 - 14, c.h * 0.41); ctx.lineTo(c.w * 0.9, c.h * 0.31); ctx.lineTo(c.w * 0.9 + 14, c.h * 0.41); ctx.closePath(); ctx.fill();
-    scepter(ctx, c.w * 0.78, c.h * 0.6, s.up, c.t);
+    /* The artwork already has a sceptre in the king's hand, pointing down. The
+       mechanic is "is it raised?", so the raised state is drawn as a gold light
+       travelling up the painted shaft, and the fallen state as that light going
+       out. No second sceptre, no invented anatomy. */
+    const sx = c.w * 0.545, sy = c.h * 0.665;      // the painted staff's butt
+    const tipY = c.h * 0.42;
+    ctx.save();
+    if (s.up) {
+      const g3 = ctx.createLinearGradient(sx, sy, sx, tipY);
+      g3.addColorStop(0, "rgba(255,228,150,0)");
+      g3.addColorStop(0.55, `rgba(255,228,150,${0.5 + Math.sin(c.t * 3) * 0.08})`);
+      g3.addColorStop(1, "rgba(255,246,214,.95)");
+      ctx.strokeStyle = g3; ctx.lineWidth = 4; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx, tipY); ctx.stroke();
+      glow(ctx, sx, tipY, 26, "rgba(255,236,170,ALPHA)", 0.7 + Math.sin(c.t * 3) * 0.1);
+      ctx.fillStyle = "#fff6d6";
+      ctx.beginPath(); ctx.arc(sx, tipY, 4.5, 0, TAU); ctx.fill();
+    } else {
+      ctx.globalAlpha = 0.28;
+      ctx.strokeStyle = "#8a7440"; ctx.lineWidth = 2.4; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx, sy - 60); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+    ctx.restore();
     // floor
     ctx.fillStyle = "#5a4a3c"; ctx.fillRect(0, c.h * 0.72, c.w, c.h * 0.28);
     ctx.strokeStyle = "rgba(240,196,106,.18)"; ctx.lineWidth = 1;
@@ -702,15 +867,32 @@ const esther = {
     ctx.fillStyle = "#f4e7cb"; ctx.font = `600 12px ${c.font}`; ctx.textAlign = "center";
     ctx.fillText(s.up ? tx("GO", "前进") : tx("FREEZE", "静止"), c.w * 0.5, 58);
     // guards
-    for (const gx of [c.w * 0.3, c.w * 0.62]) {
-      ctx.fillStyle = "#26313f"; ctx.fillRect(gx - 8, c.h * 0.6, 16, c.h * 0.14);
-      ctx.fillStyle = "#c9a45c"; ctx.beginPath(); ctx.arc(gx, c.h * 0.58, 7, 0, TAU); ctx.fill();
-      ctx.fillStyle = s.moving && !s.up ? "#ff8a6a" : "#4a4a3a";
-      ctx.beginPath(); ctx.arc(gx - 2.5, c.h * 0.575, 1.6, 0, TAU); ctx.arc(gx + 2.5, c.h * 0.575, 1.6, 0, TAU); ctx.fill();
+    for (const gx of [c.w * 0.235, c.w * 0.655]) {
+      const gy = c.h * 0.735;
+      // spear, body, helmet — reads as a guard at a glance, costs six shapes
+      ctx.strokeStyle = "rgba(198,170,110,.5)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(gx + 12, gy - 62); ctx.lineTo(gx + 12, gy + 6); ctx.stroke();
+      ctx.fillStyle = "rgba(24,32,44,.85)";
+      ctx.beginPath(); ctx.moveTo(gx - 9, gy); ctx.lineTo(gx - 7, gy - 44); ctx.lineTo(gx + 7, gy - 44);
+      ctx.lineTo(gx + 9, gy); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "rgba(58,70,88,.95)";
+      ctx.beginPath(); ctx.arc(gx, gy - 52, 8, Math.PI, TAU); ctx.fill();
+      ctx.fillStyle = "rgba(198,170,110,.55)";
+      ctx.beginPath(); ctx.moveTo(gx - 9, gy - 54); ctx.lineTo(gx, gy - 64); ctx.lineTo(gx + 9, gy - 54); ctx.closePath(); ctx.fill();
+      if (s.moving && !s.up) {
+        ctx.fillStyle = "rgba(255,138,106,.9)";
+        ctx.beginPath(); ctx.arc(gx, gy - 52, 2.2, 0, TAU); ctx.fill();
+      }
     }
     // player
     const px = c.w * (0.16 + s.progress * 0.66), py = c.h * 0.75;
-    pilgrim(ctx, px, py, 1.05, s.moving ? c.t * 3 : 0, 1, 1, true);
+    const eh = bodyH(c, 0.23, 96, 200);
+    actorShadow(ctx, px, py + 2, eh * 0.22, 0.32);
+    const drewEsther = actor(ctx, "esther", px, py, eh, {
+      rot: s.moving ? 0.035 + Math.sin(c.t * 8) * 0.015 : Math.sin(c.t * 0.9) * 0.006,
+      squash: 1 + Math.sin(c.t * 1.5) * 0.005
+    });
+    if (!drewEsther) pilgrim(ctx, px, py, 1.05, s.moving ? c.t * 3 : 0, 1, 1, true);
     for (const tk of s.tokens) if (!tk.got) {
       const x = c.w * (0.16 + tk.p * 0.66);
       star(ctx, x, py - 58 + Math.sin(c.t * 3 + tk.p * 9) * 4, 7, "#f0c46a", 0.75);
@@ -800,14 +982,47 @@ const desert = {
     }
     for (const sh of s.sheep) if (!sh.got) {
       const bob = Math.sin(s.t * 3 + sh.x) * 2;
-      shadow(ctx, sh.x, sh.y + 10, 15, 3.5, 0.4);
-      ctx.fillStyle = "#f1e5cd"; ctx.beginPath(); ctx.ellipse(sh.x, sh.y + bob, 13, 9, 0, 0, TAU); ctx.fill();
-      ctx.fillStyle = "#3b3027"; ctx.beginPath(); ctx.arc(sh.x + 11, sh.y - 3 + bob, 5.5, 0, TAU); ctx.fill();
-      ctx.strokeStyle = "#3b3027"; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(sh.x - 8, sh.y + 7); ctx.lineTo(sh.x - 8, sh.y + 13);
-      ctx.moveTo(sh.x + 6, sh.y + 7); ctx.lineTo(sh.x + 6, sh.y + 13); ctx.stroke();
+      const y0 = sh.y + bob;
+      shadow(ctx, sh.x, sh.y + 12, 15, 3.5, 0.4);
+      // legs, then fleece: a cluster of lobes beats one flat ellipse
+      ctx.strokeStyle = "#2f2620"; ctx.lineWidth = 2.2; ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(sh.x - 7, y0 + 6); ctx.lineTo(sh.x - 7, y0 + 14);
+      ctx.moveTo(sh.x + 6, y0 + 6); ctx.lineTo(sh.x + 6, y0 + 14); ctx.stroke();
+      ctx.fillStyle = "#2f2620";
+      ctx.beginPath(); ctx.ellipse(sh.x - 6.5, y0 + 14.5, 2.6, 1.6, 0, 0, TAU);
+      ctx.ellipse(sh.x + 6.5, y0 + 14.5, 2.6, 1.6, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = "#d9cdb4";
+      for (const [dx, dy, r] of [[-9, -2, 6.4], [-3, -5, 7], [3, -4, 6.6], [8, -1, 5.8], [-5, 2, 6.4], [4, 2, 6.2], [0, -8, 5.4]]) {
+        ctx.beginPath(); ctx.arc(sh.x + dx, y0 + dy, r, 0, TAU); ctx.fill();
+      }
+      ctx.fillStyle = "#f6efdd";
+      for (const [dx, dy, r] of [[-7, -6, 4], [2, -8, 4.2], [6, -4, 3.6], [-2, -2, 4.4], [-8, 1, 3.4]]) {
+        ctx.beginPath(); ctx.arc(sh.x + dx, y0 + dy, r, 0, TAU); ctx.fill();
+      }
+      // dark face, ear, and a curled horn
+      ctx.fillStyle = "#31302b";
+      ctx.beginPath(); ctx.ellipse(sh.x + 11, y0 - 5, 4.6, 4.2, 0.35, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(sh.x + 8, y0 - 8, 2.6, 1.6, -0.7, 0, TAU); ctx.fill();
+      ctx.strokeStyle = "#8d7f63"; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.arc(sh.x + 10, y0 - 9, 3, 3.4, 5.4); ctx.stroke();
+      ctx.fillStyle = "#0f0d0a";
+      ctx.beginPath(); ctx.arc(sh.x + 12.4, y0 - 5.6, 0.9, 0, TAU); ctx.fill();
     }
-    pilgrim(ctx, s.p.x, s.p.y, 1.05, s.t, 1, 1, true);
+    /* The shepherd sprite is framed to the shins, so he is staged so that his
+       hem lands inside the wadi's near bank — he reads as standing behind the
+       rise, not floating over it. He is nudged in from the edge so the staff
+       never clips. */
+    const sh2 = bodyH(c, 0.24, 100, 200);
+    const mx = Math.max(s.p.x, sh2 * 0.42);
+    const feet = c.h * 0.80;
+    const drewMoses = actor(ctx, "shepherd", mx, feet, sh2, {
+      rot: Math.sin(s.t * 0.8) * 0.008, squash: 1 + Math.sin(s.t * 1.4) * 0.006
+    });
+    if (!drewMoses) {
+      actorShadow(ctx, s.p.x, s.p.y + 2, sh2 * 0.2, 0.3);
+      pilgrim(ctx, s.p.x, s.p.y, 1.05, s.t, 1, 1, true);
+    }
     ctx.fillStyle = "rgba(255,240,200,.75)"; ctx.font = `11px ${c.font}`; ctx.textAlign = "center";
     ctx.fillText(tx("THE BUSH", "荆棘"), bx, by + 54);
   },
@@ -858,36 +1073,90 @@ const glean = {
   },
   draw(c, ctx) {
     const s = c.state; bg(c, ctx, "#4b3e2c", "#a5763c", 12);
+    /* This artwork is a bright, dusty golden field and the light rays add more
+       glare on top of it. Without a grade the field, the reapers and the sheaves
+       all sink into the same cream haze; a warm shadow layer puts the depth back
+       so Ruth is the brightest thing in the frame. */
+    const grade = ctx.createLinearGradient(0, c.h * 0.3, 0, c.h);
+    grade.addColorStop(0, "rgba(42,28,14,.20)");
+    grade.addColorStop(1, "rgba(28,18,9,.42)");
+    ctx.fillStyle = grade; ctx.fillRect(0, 0, c.w, c.h);
     const sy = c.h * (0.12 + s.sky * 0.56);
     const sg = ctx.createRadialGradient(c.w * 0.78, sy, 4, c.w * 0.78, sy, 60);
     sg.addColorStop(0, "rgba(255,246,205,.95)"); sg.addColorStop(0.35, "rgba(255,202,110,.5)"); sg.addColorStop(1, "rgba(255,180,90,0)");
     ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(c.w * 0.78, sy, 60, 0, TAU); ctx.fill();
     ctx.fillStyle = "#f6dfa0"; ctx.beginPath(); ctx.arc(c.w * 0.78, sy, 15, 0, TAU); ctx.fill();
-    ctx.fillStyle = "rgba(180,134,62,.38)"; ctx.fillRect(0, c.h * 0.35, c.w, c.h * 0.62);
-    ctx.strokeStyle = "rgba(255,226,158,.18)"; ctx.lineWidth = 1;
-    for (let y = c.h * 0.38; y < c.h * 0.97; y += 17) {
-      ctx.beginPath(); ctx.moveTo(0, y + Math.sin(y) * 3); ctx.lineTo(c.w, y - Math.sin(y) * 3); ctx.stroke();
+    /* Furrows of cut barley: soft bands that widen toward the viewer. The old
+       version was evenly spaced hairlines, which read as a scanline overlay. */
+    for (let i = 0; i < 9; i++) {
+      const f = i / 9;
+      const y = c.h * (0.38 + f * 0.6);
+      const band = ctx.createLinearGradient(0, y - 6 - f * 8, 0, y + 6 + f * 8);
+      band.addColorStop(0, "rgba(120,86,40,0)");
+      band.addColorStop(0.5, `rgba(${i % 2 ? "86,60,28" : "214,176,110"},${0.14 + f * 0.1})`);
+      band.addColorStop(1, "rgba(120,86,40,0)");
+      ctx.fillStyle = band;
+      ctx.beginPath();
+      ctx.moveTo(-10, y - 6 - f * 8);
+      ctx.quadraticCurveTo(c.w * 0.5, y - 14 - f * 10, c.w + 10, y - 6 - f * 8);
+      ctx.lineTo(c.w + 10, y + 6 + f * 8);
+      ctx.quadraticCurveTo(c.w * 0.5, y + 2 + f * 6, -10, y + 6 + f * 8);
+      ctx.closePath(); ctx.fill();
     }
     for (const g of s.grain) if (!g.got) {
-      shadow(ctx, g.x, g.y + 9, 9, 2.5, 0.4);
-      ctx.strokeStyle = "#e7c477"; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(g.x, g.y + 7); ctx.lineTo(g.x, g.y - 9); ctx.stroke();
-      ctx.fillStyle = "#f8e3a8";
-      for (let j = 0; j < 4; j++) {
-        ctx.beginPath(); ctx.ellipse(g.x + (j % 2 ? 3 : -3), g.y - 7 + j * 3, 2.3, 3.6, j % 2 ? 0.5 : -0.5, 0, TAU); ctx.fill();
+      const bob = Math.sin(c.t * 2.2 + g.x * 0.1) * 1.6;
+      const y0 = g.y + bob;
+      shadow(ctx, g.x, g.y + 12, 10, 2.6, 0.4);
+      glow(ctx, g.x, y0 - 4, 22, "rgba(255,226,150,ALPHA)", 0.3);
+      // five stalks leaning out of a tied waist
+      ctx.strokeStyle = "#d8b46a"; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+      for (let j = -2; j <= 2; j++) {
+        ctx.beginPath();
+        ctx.moveTo(g.x + j * 0.6, y0 + 10);
+        ctx.quadraticCurveTo(g.x + j * 4, y0 + 2, g.x + j * 5.4, y0 - 12);
+        ctx.stroke();
+        ctx.fillStyle = "#f6e0a2";
+        ctx.beginPath(); ctx.ellipse(g.x + j * 5.4, y0 - 13.5, 1.7, 3.4, j * 0.16, 0, TAU); ctx.fill();
       }
+      // the binding
+      ctx.strokeStyle = "rgba(150,104,48,.9)"; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.moveTo(g.x - 4, y0 - 1); ctx.lineTo(g.x + 4, y0 - 1.6); ctx.stroke();
     }
     for (const k of s.sickles) {
       shadow(ctx, k.x, k.y + 6, 16, 3, 0.45);
       npc(ctx, k.x, k.y + 12, { s: 0.62, phase: s.t * 2, robe: "#4c5a4a", cloth: "#26312a" });
       ctx.save(); ctx.translate(k.x, k.y); ctx.rotate(k.a);
-      ctx.strokeStyle = "#d9dbe0"; ctx.lineWidth = 3.2; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.arc(0, 0, 17, -0.3, 1.5); ctx.stroke();
-      ctx.strokeStyle = "#8a6238"; ctx.lineWidth = 4;
-      ctx.beginPath(); ctx.moveTo(15, 11); ctx.lineTo(22, 19); ctx.stroke();
+      /* A stroked arc reads as a hoop. A crescent — outer edge sweeping wide,
+         inner edge tapering back to the heel — reads as a blade, which is what
+         the player has to dodge. */
+      const a0 = -0.34, a1 = 1.62;
+      const bl = ctx.createLinearGradient(-14, -14, 16, 16);
+      bl.addColorStop(0, "#e9eef1"); bl.addColorStop(0.55, "#a8b2b8"); bl.addColorStop(1, "#6b747a");
+      ctx.fillStyle = bl;
+      ctx.beginPath();
+      ctx.arc(0, 0, 20, a0, a1);
+      ctx.arc(0, 0, 12.5, a1 - 0.06, a0 + 0.16, true);
+      ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,.85)"; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(0, 0, 19.6, a0 + 0.05, a1 - 0.08); ctx.stroke();
+      // heel of the blade, then the wooden grip running back from it
+      ctx.fillStyle = "#4d5257";
+      ctx.beginPath(); ctx.ellipse(Math.cos(a1) * 16, Math.sin(a1) * 16, 4, 3.4, a1, 0, TAU); ctx.fill();
+      ctx.strokeStyle = "#7a5228"; ctx.lineWidth = 4; ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a1) * 15, Math.sin(a1) * 15);
+      ctx.lineTo(Math.cos(a1) * 15 + 6, Math.sin(a1) * 15 + 11);
+      ctx.stroke();
+      ctx.fillStyle = "#5c3d1d";
+      ctx.beginPath(); ctx.arc(Math.cos(a1) * 15 + 6, Math.sin(a1) * 15 + 11, 2.6, 0, TAU); ctx.fill();
       ctx.restore();
     }
-    pilgrim(ctx, s.p.x, s.p.y, 1.05, s.t, 1, 1, true);
+    const rh = bodyH(c, 0.21, 88, 180);
+    actorShadow(ctx, s.p.x, s.p.y + 2, rh * 0.2, 0.3);
+    const drewRuth = actor(ctx, "ruth", s.p.x, s.p.y, rh, {
+      rot: 0.03 + Math.sin(s.t * 7) * 0.02, squash: 1 + Math.sin(s.t * 7) * 0.012
+    });
+    if (!drewRuth) pilgrim(ctx, s.p.x, s.p.y, 1.05, s.t, 1, 1, true);
     if (s.hurt > 0) { ctx.fillStyle = `rgba(214,92,66,${s.hurt * 0.22})`; ctx.fillRect(0, 0, c.w, c.h); }
   },
   onDown(c, q) { return q.y > c.h * 0.16; }, onMove() { return true; }
@@ -1022,11 +1291,17 @@ const climb = {
   draw(c, ctx) {
     const s = c.state; bg(c, ctx, "#2b3340", "#5d6b52", 12);
     const scroll = s.step * 9;
-    ctx.fillStyle = "#3d3327";
-    ctx.beginPath(); ctx.moveTo(c.w * 0.46, c.h); ctx.lineTo(c.w * 0.47, c.h * 0.1);
-    ctx.lineTo(c.w * 0.53, c.h * 0.1); ctx.lineTo(c.w * 0.54, c.h); ctx.fill();
-    ctx.strokeStyle = "rgba(240,216,170,.12)"; ctx.lineWidth = 2;
-    for (let y = c.h * 0.15; y < c.h; y += 26) { ctx.beginPath(); ctx.moveTo(c.w * 0.47, y); ctx.lineTo(c.w * 0.53, y + 6); ctx.stroke(); }
+    /* The chapter art already paints a sycamore, so the trunk is a soft shadow
+       behind the handholds instead of a second tree drawn in flat brown. */
+    const trunk = ctx.createLinearGradient(c.w * 0.4, 0, c.w * 0.6, 0);
+    trunk.addColorStop(0, "rgba(18,22,18,0)");
+    trunk.addColorStop(0.5, "rgba(24,26,20,.5)");
+    trunk.addColorStop(1, "rgba(18,22,18,0)");
+    ctx.fillStyle = trunk;
+    ctx.beginPath(); ctx.moveTo(c.w * 0.4, c.h); ctx.lineTo(c.w * 0.455, c.h * 0.1);
+    ctx.lineTo(c.w * 0.545, c.h * 0.1); ctx.lineTo(c.w * 0.6, c.h); ctx.fill();
+    ctx.strokeStyle = "rgba(240,216,170,.10)"; ctx.lineWidth = 2;
+    for (let y = c.h * 0.15; y < c.h; y += 30) { ctx.beginPath(); ctx.moveTo(c.w * 0.46, y); ctx.lineTo(c.w * 0.54, y + 7); ctx.stroke(); }
     for (let i = 0; i < 11; i++) {
       const y = c.h * 0.84 - i * 38 + scroll, dir = i % 2 ? 1 : -1;
       if (y < -20 || y > c.h + 20) continue;
@@ -1043,14 +1318,25 @@ const climb = {
         ctx.fillText(tx(dir < 0 ? "LEFT" : "RIGHT", dir < 0 ? "左" : "右"), gx, gy - 20);
       }
     }
-    for (let i = 0; i < 9; i++) {
-      const x = c.w * (0.2 + (i * 0.137) % 0.65), y = c.h * 0.14 + Math.sin(i * 2.1) * 16 + scroll * 0.3;
-      ctx.fillStyle = i % 2 ? "rgba(42,74,54,.85)" : "rgba(56,90,62,.8)";
-      ctx.beginPath(); ctx.ellipse(x, y, 32, 18, i, 0, TAU); ctx.fill();
+    for (let i = 0; i < 14; i++) {
+      const x = c.w * (0.06 + ((i * 0.237) % 0.88));
+      const y = c.h * (0.1 + ((i * 0.19) % 0.5)) + Math.sin(i * 2.1) * 18;
+      const r = 26 + (i % 4) * 9;
+      const g2 = ctx.createRadialGradient(x, y, 2, x, y, r);
+      g2.addColorStop(0, "rgba(38,66,44,.62)");
+      g2.addColorStop(1, "rgba(24,44,30,0)");
+      ctx.fillStyle = g2;
+      ctx.beginPath(); ctx.ellipse(x, y, r, r * 0.62, i * 0.6, 0, TAU); ctx.fill();
     }
     const zy = c.h * 0.84 - s.step * 38 + scroll;
     const zx = c.w * (0.5 + (s.seq[Math.min(s.step, 9)] ? 0.18 : -0.18));
-    npc(ctx, zx, zy - 2, { s: 0.9, phase: s.t, robe: "#7c5a34", cloth: "#2c241b" });
+    const zh = bodyH(c, 0.17, 74, 150);
+    const drewZac = actor(ctx, "zacchaeus", zx, zy + zh * 0.42, zh, {
+      flip: s.seq[Math.min(s.step, 9)] ? 1 : -1,
+      rot: Math.sin(s.t * 2.4) * 0.02,
+      squash: 1 + (s.cheer > 0 ? Math.sin(s.cheer * 20) * 0.02 : 0)
+    });
+    if (!drewZac) npc(ctx, zx, zy - 2, { s: 0.9, phase: s.t, robe: "#7c5a34", cloth: "#2c241b" });
     const crowd = 1 - s.step / 14;
     for (let i = 0; i < 6; i++) {
       const x = c.w * (0.1 + i * 0.16), y = c.h * 0.93;
@@ -1126,7 +1412,7 @@ export const PRELUDES = {
 
   /* --------------------------------------------------------- 2. Daniel */
   lions: [{
-    kind: "rhythm", ...P("lions", "embers"),
+    kind: "rhythm", hero: "daniel", ...P("lions", "embers"),
     title: ["Keep the night watch", "守住夜里的祷告"],
     prompt: ["The guards pass in a rhythm. Tap as the light crosses the golden mark — three steady prayers before the den is sealed.",
       "守卫按节奏巡行。当光点穿过金色标记时点击——在坑口被封住前，守住三次祷告。"],
@@ -1136,7 +1422,7 @@ export const PRELUDES = {
 
   /* --------------------------------------------------------- 3. Jericho */
   jericho: [{
-    kind: "trace", ...P("jericho", "sand"),
+    kind: "trace", hero: "traveller", ...P("jericho", "sand"),
     title: ["The narrow road", "狭窄的山路"],
     prompt: ["Lead the donkey along the winding path without stepping off the edge. Keep your finger on the road all the way to the top.",
       "沿着弯曲的山路牵驴前行，别踩出路边。手指始终留在路上，一直走到顶端。"],
@@ -1146,7 +1432,7 @@ export const PRELUDES = {
 
   /* --------------------------------------------------------- 4. Storm */
   storm: [{
-    kind: "charge", ...P("storm", "rain"),
+    kind: "charge", hero: "fisherman", ...P("storm", "rain"),
     title: ["Haul the rope", "拉紧缆绳"],
     prompt: ["Hold to haul the rope, then release exactly inside the moving gold band. Three clean pulls and the boat is ready for the waves.",
       "按住拉绳，在移动的金色区间里松手。三次成功，船就能迎向风浪。"],
@@ -1156,7 +1442,7 @@ export const PRELUDES = {
 
   /* --------------------------------------------------------- 5. Prodigal */
   prodigal: [{
-    kind: "trace", ...P("prodigal", "petals"),
+    kind: "trace", hero: "prodigal", ...P("prodigal", "petals"),
     title: ["The long road home", "漫长的回家路"],
     prompt: ["One step, then another. Stay on the path through the pig fields and the empty cups. The Father is waiting at the top of the road.",
       "一步，再一步。穿过猪群与空酒杯，始终留在路上。父亲在路的尽头等候。"],
@@ -1187,7 +1473,7 @@ export const PRELUDES = {
 
   /* --------------------------------------------------------- 8. Ruth */
   glean: [{
-    kind: "rhythm", ...P("ruth", "petals"),
+    kind: "rhythm", hero: "ruth", ...P("ruth", "petals"),
     title: ["Keep pace with the reapers", "跟上收割人的节奏"],
     prompt: ["Gleaning means moving with the harvesters, not ahead of them. Tap when the sheaf-light crosses the golden mark — three times.",
       "拾穗要跟着收割人的节奏，不能抢在前头。麦捆之光穿过金色标记时点击——共三次。"],

@@ -156,6 +156,15 @@ export function star(ctx, x, y, r, color, alpha = 1) {
    nothing and the caller falls back to the old vector figure. That keeps the
    offline build, jsdom checks and the first animation frame all safe. */
 export const SPRITES = {
+  daniel: "assets/art/sprites/daniel.webp",
+  traveller: "assets/art/sprites/traveller.webp",
+  fisherman: "assets/art/sprites/fisherman.webp",
+  prodigal: "assets/art/sprites/prodigal.webp",
+  esther: "assets/art/sprites/esther.webp",
+  shepherd: "assets/art/sprites/shepherd.webp",
+  ruth: "assets/art/sprites/ruth.webp",
+  zacchaeus: "assets/art/sprites/zacchaeus.webp",
+  lion: "assets/art/sprites/lion.webp",
   david: "assets/art/sprites/david.webp",
   davidThrow: "assets/art/sprites/david-throw.webp",
   goliath: "assets/art/sprites/goliath.webp",
@@ -287,15 +296,50 @@ export function lion(ctx, x, y, s = 1, face = 1, alpha = 1, awake = true) {
 
 export function pig(ctx, x, y, s = 1, phase = 0) {
   ctx.save(); ctx.translate(x, y + Math.sin(phase * 8) * 1.5); ctx.scale(s, s);
-  ctx.fillStyle = "#a9726b";
+  const bob = Math.sin(phase * 8) * 0.6;
+  // contact shadow keeps the animal on the road instead of floating over it
+  ctx.fillStyle = "rgba(20,14,10,.35)";
+  ctx.beginPath(); ctx.ellipse(0, 12, 18, 4, 0, 0, TAU); ctx.fill();
+  // legs first, so the body overlaps their tops
+  ctx.strokeStyle = "#5f3e3b"; ctx.lineWidth = 3.4; ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(-8, 5); ctx.lineTo(-8, 11 + bob);
+  ctx.moveTo(6, 5); ctx.lineTo(6, 11 - bob);
+  ctx.moveTo(-2, 6); ctx.lineTo(-2, 11 + bob * 0.6);
+  ctx.stroke();
+  // body: a lit top and a shadowed belly read as volume, not as a pink disc
+  const body = ctx.createLinearGradient(0, -12, 0, 12);
+  body.addColorStop(0, "#c89186"); body.addColorStop(0.5, "#a9726b"); body.addColorStop(1, "#6d4a47");
+  ctx.fillStyle = body;
   ctx.beginPath(); ctx.ellipse(0, 0, 17, 11, 0, 0, TAU); ctx.fill();
-  ctx.beginPath(); ctx.arc(14, -3, 8, 0, TAU); ctx.fill();
-  ctx.fillStyle = "#7d5350";
-  ctx.beginPath(); ctx.ellipse(18, -1, 4, 3, 0, 0, TAU); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(9, -9); ctx.lineTo(12, -15); ctx.lineTo(15, -9); ctx.fill();
-  ctx.fillStyle = "#2a1a1a"; ctx.beginPath(); ctx.arc(15, -5, 1.5, 0, TAU); ctx.fill();
-  ctx.strokeStyle = "#6f4744"; ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.moveTo(-5, 8); ctx.lineTo(-5, 13); ctx.moveTo(7, 8); ctx.lineTo(7, 13); ctx.stroke();
+  // bristles along the spine
+  ctx.strokeStyle = "rgba(60,38,34,.5)"; ctx.lineWidth = 1.2;
+  for (let i = -3; i <= 3; i++) {
+    ctx.beginPath(); ctx.moveTo(i * 4, -10); ctx.lineTo(i * 4 + 1.5, -14 - Math.abs(i)); ctx.stroke();
+  }
+  // curly tail
+  ctx.strokeStyle = "#8a5c57"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(-16, -3);
+  ctx.bezierCurveTo(-23, -6, -22, 1, -17, 0); ctx.stroke();
+  // head
+  const head = ctx.createRadialGradient(10, -6, 1, 14, -2, 10);
+  head.addColorStop(0, "#d2a094"); head.addColorStop(1, "#9d6a63");
+  ctx.fillStyle = head;
+  ctx.beginPath(); ctx.ellipse(14, -2, 8.5, 7.5, 0.18, 0, TAU); ctx.fill();
+  // ears
+  ctx.fillStyle = "#8d5f59";
+  ctx.beginPath(); ctx.moveTo(9, -8); ctx.lineTo(11, -15); ctx.lineTo(16, -9); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(17, -8); ctx.lineTo(20, -14); ctx.lineTo(22, -7); ctx.closePath(); ctx.fill();
+  // snout + nostrils
+  ctx.fillStyle = "#b27b72";
+  ctx.beginPath(); ctx.ellipse(20.5, 1, 4.2, 3.4, 0.15, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#5c3a37";
+  ctx.beginPath(); ctx.arc(19.4, 0.6, 0.9, 0, TAU); ctx.arc(22, 1.2, 0.9, 0, TAU); ctx.fill();
+  // eye
+  ctx.fillStyle = "#1d1210";
+  ctx.beginPath(); ctx.arc(14.5, -4.5, 1.4, 0, TAU); ctx.fill();
+  ctx.fillStyle = "rgba(255,235,220,.6)";
+  ctx.beginPath(); ctx.arc(15, -5, 0.5, 0, TAU); ctx.fill();
   ctx.restore();
 }
 
@@ -323,14 +367,22 @@ export function giant(ctx, x, y, s = 1, t = 0) {
   ctx.restore();
 }
 
-export function boat(ctx, x, y, s, roll, t) {
+export function boat(ctx, x, y, s, roll, t, opts = {}) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(roll); ctx.scale(s, s);
+  // deeper, banded hull so the crew's legs sit inside the boat, not on it
+  ctx.fillStyle = "#3f2a1a";
+  ctx.beginPath(); ctx.moveTo(-60, -10); ctx.lineTo(60, -10); ctx.lineTo(46, 34); ctx.lineTo(-46, 34); ctx.closePath(); ctx.fill();
   ctx.fillStyle = "#5a3d24";
-  ctx.beginPath(); ctx.moveTo(-58, -6); ctx.lineTo(58, -6); ctx.lineTo(42, 20); ctx.lineTo(-42, 20); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "#c9a45c"; ctx.lineWidth = 2; ctx.stroke();
-  ctx.fillStyle = "#eee0c1";
-  ctx.beginPath(); ctx.moveTo(0, -8); ctx.lineTo(0, -64); ctx.lineTo(38 + Math.sin(t * 4) * 3, -14); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "#8d6b3f"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(0, -64); ctx.lineTo(0, 12); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-60, -10); ctx.lineTo(60, -10); ctx.lineTo(52, 6); ctx.lineTo(-52, 6); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "rgba(201,164,92,.7)"; ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(-56, 0); ctx.lineTo(56, 0); ctx.moveTo(-50, 16); ctx.lineTo(50, 16); ctx.stroke();
+  ctx.strokeStyle = "#c9a45c"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(-60, -10); ctx.lineTo(60, -10); ctx.stroke();
+  if (opts.sail !== false) {
+    ctx.fillStyle = "#eee0c1";
+    ctx.beginPath(); ctx.moveTo(0, -8); ctx.lineTo(0, -64); ctx.lineTo(38 + Math.sin(t * 4) * 3, -14); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "#8d6b3f"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(0, -64); ctx.lineTo(0, 12); ctx.stroke();
+  }
   ctx.fillStyle = "#1b2a33"; ctx.beginPath(); ctx.ellipse(-34, -14, 8, 6, 0, 0, TAU); ctx.fill();
   ctx.restore();
 }
@@ -635,6 +687,8 @@ export function startScene(canvas, key, onResult, seed = {}) {
 
   resize();
   attach();
+  // Every climax may stage painted actors; one warm-up covers all of them.
+  try { preloadSprites(); } catch { /* art is always optional */ }
   game.init(c);
   c.hint = game.hint(c);
   if (typeof requestAnimationFrame === "function") raf = requestAnimationFrame(frame);

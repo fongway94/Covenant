@@ -106,6 +106,16 @@ function penalty(c, s, seconds = 3, msg = "MISS") {
 
 const FIELD = (c) => ({ top: c.h * 0.47, bottom: c.h * 0.9 });
 
+/** Draw the act's painted hero with its contact shadow; falls back to the
+    vector pilgrim when the artwork is missing, so nothing can break. */
+function stageHero(c, ctx, cfg, x, y, h, o = {}) {
+  if (!cfg.hero) return false;
+  actorShadow(ctx, x, y + 2, h * 0.2, o.shadow ?? 0.28);
+  const drew = actor(ctx, cfg.hero, x, y, h, o);
+  if (!drew) pilgrim(ctx, x, y, o.fallbackScale ?? 1.05, c.t * 2, 1, 1, true);
+  return drew;
+}
+
 /* ══════════════════════════════════ ACT TYPE 1 · SIFT (scratch & search) ══ */
 /* Drag a lens over silt to uncover hidden items. Decoys cost time.
    This replaces the old "five glowing dots" with a genuine search. */
@@ -243,6 +253,7 @@ function rhythmStage(cfg) {
   return {
     label: () => T(cfg.title),
     init(c) {
+      if (cfg.hero) preloadSprites();
       c.state = { t: 0, left: cfg.seconds, pos: 0.05, dir: 1, speed: 0.78,
         band: rnd(0.28, 0.7), bandW: 0.13, round: 0, flash: 0, finished: false, pulse: 0 };
       c.setHint(T(cfg.hint));
@@ -279,8 +290,12 @@ function rhythmStage(cfg) {
         ctx.beginPath(); ctx.arc(xx, y + 42, i < s.round ? 6 : 4.5, 0, TAU);
         ctx.fillStyle = i < s.round ? "#4fb8a8" : "rgba(255,255,255,.16)"; ctx.fill();
       }
-      // figure praying in the background
-      npc(ctx, c.w * 0.5, c.h * 0.5, { s: 1.25, phase: s.t, robe: cfg.robe || "#3c6070", cloth: "#14202a", glow: "rgba(247,221,165,.18)" });
+      // figure praying in the background — painted when the act names a hero
+      const heroH = clamp(c.h * 0.19, 82, 168);
+      const drewHero = stageHero(c, ctx, cfg, c.w * 0.5, c.h * 0.545, heroH, {
+        rot: Math.sin(s.t * 0.8) * 0.007, squash: 1 + Math.sin(s.t * 1.5) * 0.006, shadow: 0.2
+      });
+      if (!drewHero) npc(ctx, c.w * 0.5, c.h * 0.5, { s: 1.25, phase: s.t, robe: cfg.robe || "#3c6070", cloth: "#14202a", glow: "rgba(247,221,165,.18)" });
       stageChrome(c, ctx, cfg, { ...s, goalText: `${s.round}/${cfg.rounds}` });
     },
     onDown(c) {
@@ -303,6 +318,7 @@ function traceStage(cfg) {
   return {
     label: () => T(cfg.title),
     init(c) {
+      if (cfg.hero) preloadSprites();
       c.state = { t: 0, left: cfg.seconds, progress: 0, flash: 0, finished: false, wobble: 0 };
       c.setHint(T(cfg.hint));
     },
@@ -354,7 +370,11 @@ function traceStage(cfg) {
       // traveller
       const py = f.bottom - s.progress * (f.bottom - f.top);
       const px = centre(c, py) + (s.wobble ? Math.sin(c.t * 30) * 5 : 0);
-      pilgrim(ctx, px, py, 1.05, c.t * 2, 1, 1, true);
+      const walkH = clamp(c.h * 0.13, 56, 118);
+      const drewWalker = stageHero(c, ctx, cfg, px, py, walkH, {
+        rot: 0.05 + Math.sin(c.t * 8) * 0.015, squash: 1 + Math.sin(c.t * 8) * 0.012, shadow: 0.26
+      });
+      if (!drewWalker) pilgrim(ctx, px, py, 1.05, c.t * 2, 1, 1, true);
       if (s.progress > 0.02) {
         ctx.fillStyle = "rgba(247,221,165,.7)"; ctx.font = `10px ${c.font}`; ctx.textAlign = "center";
         ctx.fillText(`${Math.round(s.progress * 100)}%`, px, py - 52);

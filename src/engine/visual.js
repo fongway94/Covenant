@@ -47,16 +47,31 @@ export function drawForeground(c, ctx, kind = "rocks", alpha = 1) {
   } else if (kind === "reeds" || kind === "stalks") {
     const n = 26;
     const barley = kind === "stalks";
+    /* A dark band under the stems first: reeds drawn straight onto a mid-tone
+       road read as scratches, because there is no ground shadow beneath them. */
+    const bed = ctx.createLinearGradient(0, h * 0.78, 0, h);
+    bed.addColorStop(0, "rgba(6,12,16,0)");
+    bed.addColorStop(1, "rgba(6,12,16,.55)");
+    ctx.fillStyle = bed; ctx.fillRect(0, h * 0.78, w, h * 0.22);
     for (let i = 0; i < n; i++) {
       const x = (i / n) * w + hash(i) * 16;
       const hgt = (barley ? 52 : 66) + hash(i * 3.3) * 44;
       const lean = (hash(i * 7.1) - 0.5) * 22 + sway * (0.6 + hash(i));
       const base = h + 4;
-      ctx.strokeStyle = i % 3 ? "#0a151b" : "#0d1d24";
-      ctx.lineWidth = 2 + hash(i * 5) * 2;
-      ctx.beginPath(); ctx.moveTo(x, base);
-      ctx.quadraticCurveTo(x + lean * 0.4, base - hgt * 0.6, x + lean, base - hgt);
-      ctx.stroke();
+      // taper: a stem is a filled ribbon, not a constant-width line
+      const bw = 2.4 + hash(i * 5) * 2.2;
+      ctx.fillStyle = i % 3 ? "#08121a" : "#0b1a21";
+      ctx.beginPath();
+      ctx.moveTo(x - bw * 0.5, base);
+      ctx.quadraticCurveTo(x + lean * 0.35 - bw * 0.35, base - hgt * 0.6, x + lean - 0.6, base - hgt);
+      ctx.quadraticCurveTo(x + lean * 0.35 + bw * 0.35, base - hgt * 0.6, x + bw * 0.5, base);
+      ctx.closePath(); ctx.fill();
+      // one long blade per stem, so the clump has leaves and not just spikes
+      ctx.beginPath();
+      ctx.moveTo(x, base - hgt * 0.45);
+      ctx.quadraticCurveTo(x - 10 + lean * 0.3, base - hgt * 0.62, x - 16 + lean * 0.5, base - hgt * 0.85);
+      ctx.quadraticCurveTo(x - 8 + lean * 0.3, base - hgt * 0.6, x + 1, base - hgt * 0.45);
+      ctx.closePath(); ctx.fill();
       if (barley) {
         ctx.fillStyle = "rgba(200,166,96,.22)";
         for (let j = 0; j < 4; j++) {
