@@ -1808,6 +1808,9 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
 .prelude-head { flex: 0 0 auto; text-align: center; }
 .prelude-head h2 { font-size: 1.5rem; margin: 6px 0 4px; }
 .prelude-head .small { margin: 0; }
+/* The kicker is one short line by design: at the largest text size it used to
+   break after "第 I" and leave a lone 「章」 on its own row. */
+.prelude-head .eyebrow { white-space: nowrap; font-size: clamp(.5rem, 2.4vw, .62rem); letter-spacing: .16em; }
 .prelude-body {
   flex: 0 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
   display: grid; gap: 9px; align-content: start;
@@ -1844,8 +1847,18 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
 .prelude-more { display: none; margin: 0 0 2px; letter-spacing: .04em; }
 .prelude.has-more .prelude-more { display: block; }
 .prelude.has-more .prelude-body {
-  mask-image: linear-gradient(180deg, #000 calc(100% - 22px), transparent 100%);
-  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 22px), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 46px), transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 46px), transparent 100%);
+}
+
+/* Short phones at the largest text size: give the background the room it needs
+   by trimming the title block, never the reading area. */
+@media (max-height: 700px) {
+  .prelude { gap: 8px; padding-top: max(12px, env(safe-area-inset-top)); }
+  .prelude-head h2 { font-size: 1.24rem; margin: 3px 0 2px; }
+  .prelude-head .small { font-size: .74rem; }
+  .prelude-row b { font-size: .62rem; letter-spacing: .1em; }
+  .prelude-row p { font-size: .82rem; line-height: 1.5; }
 }
 
 /* ---------- per-act briefing inside a running action scene ---------- */
