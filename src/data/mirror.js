@@ -85,7 +85,7 @@ export const PROFILES = [
       "又使这众人知道耶和华使人得胜，不是用刀用枪，因为争战的胜败全在乎耶和华。"),
     verseRef: B("1 Samuel 17:47", "撒母耳记上 17:47"),
     why: B("You kept choosing the front of the line. Like David, your instinct was to move toward the noise rather than away from it — and the game gave you Courage for it.",
-      "你一次又一次选择走向最前面。像大卫一样，你的本能是朝巨响走过去，而不是后退——游戏因此给了你勇气。"),
+      "你一次又一次选择走向最前面。像大卫一样，你的本能是朝巨响走过去，而不是后退——因此记你一份勇气。"),
     shadow: B("David also wrote Psalm 51 after committing adultery and arranging Uriah’s death (2 Samuel 11). The brave man became a broken man. Scripture does not hide it.",
       "大卫在犯奸淫、设计杀害乌利亚之后，写了诗篇 51 篇（撒母耳记下 11 章）。勇敢的人后来成了破碎的人。圣经没有把这段藏起来。"),
     grace: B("God did not discard him. “A broken and a contrite heart, O God, thou wilt not despise” (Psalm 51:17). Courage is not the same as never falling.",
@@ -276,7 +276,7 @@ export const MIRROR_COPY = {
     "你在场的每一个故事，在圣经里都有真实的地址。这是你的阅读清单——从任何一处开始都可以。"),
   notFortune: B("A mirror, not a label", "一面镜子，不是一个标签"),
   hintsClean: B("You walked with the hints hidden. This mirror reflects choices you made without being told what they meant.",
-    "你是在提示隐藏的情况下走完的。这面镜子反映的，是没有人先告诉你含义时，你自己做出的选择。"),
+    "你是在关掉提示的情况下走完的。这面镜子反映的，是没有人先告诉你含义时，你自己做出的选择。"),
   hintsSeen: B("You asked for help with hints {n} time(s). Those moments are counted separately — they are not scored as observation.",
     "你曾 {n} 次请求提示帮助。这些时刻被单独记录——不会被算作「观察」。")
 };

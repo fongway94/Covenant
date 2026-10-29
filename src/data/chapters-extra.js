@@ -103,7 +103,7 @@ export const EXTRA_CHAPTERS = [
         ),
         choices: [
           C(["Take off your sandals", "把鞋脱下来"], "bush", { stat: { faith: 2 }, xp: 9, faith: true, tag: ["Faith", "信心"], reply: ["Your bare feet feel the hot stone. It is the most honest thing you have done all day.", "赤脚踩在滚烫的石头上。这是你今天做过最诚实的一件事。"], replyBy: "" }),
-          C(["Ask Moses to cover his face", "叫摩西蒙住脸"], "bush", { stat: { wisdom: 2 }, xp: 8, reply: ["He does — and then he looks anyway, because he cannot help it. Awe and curiosity are not enemies.", "他蒙住脸——又忍不住从指缝里看。敬畏和好奇，本来就不打架。"], replyBy: "" }),
+          C(["Ask Moses to cover his face", "叫摩西蒙住脸"], "bush", { stat: { wisdom: 2 }, xp: 8, reply: ["He does — and then he looks anyway, because he cannot help it. Awe and curiosity are not enemies.", "他蒙住脸——又忍不住从指缝里看。敬畏和好奇，本来就不冲突。"], replyBy: "" }),
           C(["Stand back and watch the flame", "退后，静静看着那团火焰"], "bush", { stat: { courage: 1, compassion: 1 }, xp: 8, reply: ["You count your breaths. The fire does not flicker. It has all the time in the world.", "你数着自己的呼吸。火焰一动不动，好像有的是时间。"], replyBy: "" })
         ]
       },
@@ -115,11 +115,11 @@ export const EXTRA_CHAPTERS = [
         lines: L(
           ["voice", "I am the God of thy father, the God of Abraham, the God of Isaac, and the God of Jacob.", "我是你父亲的神，是亚伯拉罕的神、以撒的神、雅各的神。"],
           ["", "Moses hides his face. The bush keeps burning. No smoke, no ash, no hurry.", "摩西蒙住脸。荆棘继续烧着。没有烟，没有灰，一点也不着急。"],
-          ["elias", "Listen. He does not begin with a task. He begins with a relationship — I am the God your father knew.", "听。祂不是从任务开始，而是从关系开始——我是你父亲所认识的神。"]
+          ["elias", "Listen. He does not begin with a task. He begins with a relationship — I am the God your father knew.", "听。祂先说的是关系，不是任务——我是你父亲的神。"]
         ),
         choices: [
           C(["Whisper: “Here am I”", "轻声说：「我在这里」"], "call", { stat: { faith: 2 }, xp: 9, reply: ["It is the same answer Abraham gave. Some sentences are handed down like a family trade.", "这也是亚伯拉罕当年的回答。有些话，就这么一代一代传下来了。"], replyBy: "elias" }),
-          C(["Ask what His name is", "问祂的名字是什么"], "call", { stat: { wisdom: 2 }, xp: 9, reply: ["The answer comes slowly: “I AM THAT I AM” (Exodus 3:14). Not a label to hold — a presence that simply is.", "答案慢慢来：「我是我所是」（出埃及记 3:14）。这不是一个能攥在手里的名号，而是一位一直都在的神。"], replyBy: "" }),
+          C(["Ask what His name is", "问祂的名字是什么"], "call", { stat: { wisdom: 2 }, xp: 9, reply: ["The answer comes slowly: “I AM THAT I AM” (Exodus 3:14). Not a label to hold — a presence that simply is.", "答案慢慢浮出来：「我是我所是」（出埃及记 3:14）。这不是一个能攥在手里的名号，而是一位一直都在的神。"], replyBy: "" }),
           C(["Say nothing, and stay on your knees", "什么也不说，只是跪着"], "call", { stat: { compassion: 2, faith: 1 }, xp: 9, reply: ["Silence is also an answer. The flame waits for you.", "沉默也是一种回答。火焰等着你。"], replyBy: "" })
         ]
       },
@@ -139,7 +139,7 @@ export const EXTRA_CHAPTERS = [
       end: {
         end: true,
         lines: L(
-          ["elias", "The call did not make Moses fearless. It made him accompanied. That is the whole difference.", "呼召并没有让摩西不再惧怕，而是让他不再孤单。这就是全部的区别。"],
+          ["elias", "The call did not make Moses fearless. It made him accompanied. That is the whole difference.", "呼召并没有让摩西不再惧怕，而是让他不再孤单。区别就在这里。"],
           ["", "You look back once. The bush is still burning — quietly, patiently, with no audience at all.", "你回头看了一眼。荆棘仍在燃烧——安静、耐心，完全没有观众。"],
           ["", "The scroll turns. Egypt is a long way off.", "书卷翻页。埃及还很远。"]
         )
@@ -169,12 +169,12 @@ export const EXTRA_CHAPTERS = [
     brief: {
       place: ["c. 1100 BC, in Bethlehem at the start of the barley harvest. A famine has just broken; the fields are full and the town is full of talk.", "约公元前 1100 年，伯利恒，大麦刚开镰。饥荒刚过去，田里满是庄稼，城里满是闲话。"],
       who: ["Naomi came back from Moab with nothing — no husband, no sons, and a foreign daughter-in-law, Ruth, who refused to stay behind. Ruth is a Moabite, and Moabites are not welcome here.", "拿俄米从摩押回来时一无所有：丈夫没了，两个儿子也没了，只剩下一个外族媳妇路得，怎么劝都不肯走。路得是摩押人，而摩押人在伯利恒不受欢迎。"],
-      stake: ["Both women have no income and no protector. The Law allowed the poor to follow the harvesters and pick up what fell — that is where Ruth goes to find food, and where the owner of the field first sees her.", "两个寡妇没有收入，也没有男人可以依靠。律法允许穷人在收割的人后面捡拾掉落的麦穗——路得就是去那里找吃的，而田主第一次看见她，也在那里。"]
+      stake: ["Both women have no income and no protector. The Law allowed the poor to follow the harvesters and pick up what fell — that is where Ruth goes to find food, and where the owner of the field first sees her.", "两个寡妇没有收入，也没有男人可以依靠。律法允许穷人在收割的人后面捡拾掉落的麦穗——路得就是去那里找吃的，田主第一次看见她，也是在那里。"]
     },
     scroll: {
       verse: ["And Ruth said, Intreat me not to leave thee … for whither thou goest, I will go; and where thou lodgest, I will lodge: thy people shall be my people, and my God my God.", "路得说：「不要催我回去不跟随你。你往哪里去，我也往那里去；你在哪里住宿，我也在那里住宿；你的国就是我的国，你的神就是我的神。」"],
       ref: ["Ruth 1:16 (KJV)", "路得记 1:16（和合本）"],
-      note: ["Ruth was a Moabite — an outsider with no status in Bethlehem. Gleaning was the ancient safety net: the poor could follow the reapers and pick up what was dropped. Boaz's generosity turns a survival mechanism into a love story.", "路得是摩押人——在伯利恒抬不起头的外乡人。拾穗是古时给穷人的活路：跟在收割的人后面，捡掉在地上的麦穗。波阿斯的慷慨，把一条活路写成了一段爱情。"],
+      note: ["Ruth was a Moabite — an outsider with no status in Bethlehem. Gleaning was the ancient safety net: the poor could follow the reapers and pick up what was dropped. Boaz's generosity turns a survival mechanism into a love story.", "路得是摩押人——在伯利恒抬不起头的外乡人。拾穗是古时给穷人的活路：跟在收割的人后面，捡掉在地上的麦穗。波阿斯的慷慨，让一条活路变成了爱情。"],
       timeline: ["c. 1100 BC · Bethlehem, harvest season", "约公元前 1100 年 · 伯利恒，收割季节"]
     },
     cast: {
@@ -216,7 +216,7 @@ export const EXTRA_CHAPTERS = [
       kindness: {
         lines: L(
           ["boaz", "Let her glean even among the sheaves, and reproach her not. And let fall also some of the handfuls of purpose for her.", "容她在捆中拾取麦穗，不可羞辱她。并要从捆里抽出些来，留在地下任她拾取。"],
-          ["", "Boaz does not make a speech about kindness. He gives an instruction to the men with sickles. That is what makes it real.", "波阿斯没有讲一篇关于仁慈的大道理，只是吩咐拿镰刀的人一句话。真正的仁慈，就是这样落地的。"],
+          ["", "Boaz does not make a speech about kindness. He gives an instruction to the men with sickles. That is what makes it real.", "波阿斯没有讲一篇关于仁慈的大道理，只是吩咐拿镰刀的人一句话。真正的仁慈，就是这样实实在在的。"],
           ["elias", "Notice the pattern: a foreign widow, a field owner, a handful of dropped grain. Nobody calls it a miracle. It is the family line of David — and later, of Jesus.", "留意这条线：一个外邦寡妇，一块田，几把故意落下的麦穗。没有人称它为神迹，可这就是大卫的家谱——后来也是耶稣的家谱。"]
         ),
         choices: [
@@ -258,7 +258,7 @@ export const EXTRA_CHAPTERS = [
     brief: {
       place: ["c. 780 BC. Nineveh is the capital of Assyria, the most feared empire of the age — a city so large the Bible says it takes three days to walk across.", "约公元前 780 年。尼尼微是亚述的京城，当时最令人生畏的帝国——大到圣经说走遍全城要三天。"],
       who: ["God tells the prophet Jonah to go to Nineveh and call it to repent. Instead Jonah buys a ticket on a ship sailing the opposite way, to Tarshish.", "神叫先知约拿到尼尼微去，向那座城宣告审判，好让他们回转。约拿却买了船票，往相反方向的他施去。"],
-      stake: ["A storm hits the ship. The sailors will do anything to stay alive. And the reason for the storm is asleep down in the hold — a prophet running from the one errand he cannot avoid.", "海上起了风暴。水手们为了活命什么都肯做，而这场风暴的起因，正睡在船舱里——一个想逃掉唯一躲不掉的差事的先知。"]
+      stake: ["A storm hits the ship. The sailors will do anything to stay alive. And the reason for the storm is asleep down in the hold — a prophet running from the one errand he cannot avoid.", "海上起了风暴。水手们为了活命什么都肯做，而这场风暴的起因，正睡在船舱里——一个想逃掉那唯一躲不掉的一件事的先知。"]
     },
     scroll: {
       verse: ["And Jonah was in the belly of the fish three days and three nights. Then Jonah prayed unto the LORD his God out of the fish’s belly.", "约拿在鱼腹中三日三夜。约拿在鱼腹中祷告耶和华他的神。"],
@@ -299,7 +299,7 @@ export const EXTRA_CHAPTERS = [
         choices: [
           C(["Pray with him in the dark", "在黑暗中和他一同祷告"], "nineveh", { stat: { faith: 2 }, xp: 9, reply: ["The prayer is mostly silence. That is enough. The fish keeps swimming.", "祷告大半是沉默。那也够了。大鱼继续往前游。"], replyBy: "" }),
           C(["Ask him what he is most afraid of", "问他最害怕的是什么"], "nineveh", { stat: { wisdom: 2 }, xp: 9, reply: ["“That they will change,” he says at last. “And that God will be glad.”", "「怕他们真的会改，」他终于开口，「也怕神会为这个高兴。」"], replyBy: "jonah" }),
-          C(["Count the days and wait", "数着日子等候"], "nineveh", { stat: { compassion: 1, faith: 1 }, xp: 9, reply: ["On the third day, the fish is sick of him. Mercy sometimes arrives as being spat out.", "第三天，大鱼把他吐出来，他摔在沙滩上。有些路，得先被吐出来，才走得回去。"], replyBy: "" })
+          C(["Count the days and wait", "数着日子等候"], "nineveh", { stat: { compassion: 1, faith: 1 }, xp: 9, reply: ["On the third day, the fish is sick of him. Mercy sometimes arrives as being spat out.", "第三天，大鱼把他吐出来，他摔在沙滩上。有些路，得先从那里面出来，才走得回去。"], replyBy: "" })
         ]
       },
       nineveh: {
@@ -316,7 +316,7 @@ export const EXTRA_CHAPTERS = [
         choices: [
           C(["Sit with Jonah outside the city", "陪约拿坐在城外"], "end", { stat: { compassion: 2 }, xp: 11, reply: ["He is sitting in the dust, furious that mercy won. You sit down too. It is an honest place to sit.", "他坐在尘土里生闷气——气的是神居然饶了他们。你也在旁边坐下。这个位置不体面，但诚实。"], replyBy: "" }),
           C(["Remind him of the fish", "提醒他关于那条大鱼的事"], "end", { stat: { wisdom: 2 }, xp: 10, reply: ["“You were given mercy when you deserved none,” you say. He has no answer for that.", "「你自己得怜悯的时候，也不比他们配。」你说。他没有话可答。"], replyBy: "" }),
-          C(["Ask God why He cares about Nineveh", "问神为何在乎尼尼微"], "end", { stat: { faith: 2 }, xp: 11, faith: true, tag: ["Faith", "信心"], reply: ["The answer is a question about a plant, a worm, and a hundred and twenty thousand people who do not know their right hand from their left.", "答案不是一个说法，是一个问题——关于一棵一夜长起来的植物、一条虫，和十二万个连左右手都分不清的人。"], replyBy: "elias" })
+          C(["Ask God why He cares about Nineveh", "问神为何在乎尼尼微"], "end", { stat: { faith: 2 }, xp: 11, faith: true, tag: ["Faith", "信心"], reply: ["The answer is a question about a plant, a worm, and a hundred and twenty thousand people who do not know their right hand from their left.", "答案不是一句话，是一个问题——关于一棵一夜长起来的植物、一条虫，和十二万个连左右手都分不清的人。"], replyBy: "elias" })
         ]
       },
       end: {
@@ -324,7 +324,7 @@ export const EXTRA_CHAPTERS = [
         lines: L(
           ["elias", "The book ends with God’s question hanging in the air. He does not answer it. He wants Jonah — and us — to answer it.", "这卷书停在一个悬在半空的问题上。神没有回答，祂要约拿——也要我们——自己回答。"],
           ["", "Should I not spare Nineveh? The wind moves over the fields. Somewhere a worm eats a plant.", "我岂能不爱惜尼尼微呢？风吹过田野。不知哪里，一条虫正在啃一棵植物。"],
-          ["", "The scroll closes on the question, not the answer.", "书卷合上了，合在一个问题上，不是答案上。"]
+          ["", "The scroll closes on the question, not the answer.", "书卷合上了，合在一个问题上，而不是一个答案上。"]
         )
       }
     },
@@ -348,7 +348,7 @@ export const EXTRA_CHAPTERS = [
     id: "zacchaeus", num: 10, roman: "X", art: "assets/art/zacchaeus.jpg", pos: [74, 78],
     title: ["Up A Sycamore Tree", "爬上桑树"], subtitle: ["Zacchaeus of Jericho", "耶利哥的撒该"],
     ref: ["Luke 19:1–10", "路加福音 19:1–10"], theme: ["Change", "改变"], length: ["10–12 min", "10–12 分钟"],
-    intro: ["A short, rich, lonely man climbs a tree just to see — and comes down carrying a different life.", "一个矮小、富有、孤独的人为了看一眼而爬上树——下来时，带着一个不一样的人生。"],
+    intro: ["A short, rich, lonely man climbs a tree just to see — and comes down carrying a different life.", "一个矮小、富有、孤独的人为了看一眼而爬上树——下来的时候，人生已经不一样了。"],
     brief: {
       place: ["c. AD 30, in Jericho — a rich trade town on the main road east, with a customs post and a Roman garrison.", "约公元 30 年，耶利哥。这是大道上的富庶商镇，有关卡，也驻着罗马兵。"],
       who: ["Zacchaeus is the chief tax collector: he has bought the right to collect Rome's taxes and takes extra for himself. He is rich, hated, and short enough that he cannot see over the crowd.", "撒该是税吏长：他买下了替罗马收税的权利，还从中多收。他有钱，被人恨，个子又矮，站在人群后面什么也看不见。"],
@@ -357,7 +357,7 @@ export const EXTRA_CHAPTERS = [
     scroll: {
       verse: ["And Jesus said unto him, This day is salvation come to this house, forsomuch as he also is a son of Abraham. For the Son of man is come to seek and to save that which was lost.", "耶稣说：「今天救恩到了这家，因为他也是亚伯拉罕的子孙。人子来，为要寻找拯救失丧的人。」"],
       ref: ["Luke 19:9–10 (KJV)", "路加福音 19:9–10（和合本）"],
-      note: ["Zacchaeus was a chief tax collector — wealthy, collaborating with Rome, and despised by his own town. His offer to repay fourfold goes beyond what the Law required. Jesus does not demand it first; He simply invites Himself to dinner. Grace comes before reformation.", "撒该是税吏长——富有、与罗马合作、被本城人藐视。他愿意四倍偿还，远超律法的要求。但耶稣并没有先要求他这样做，祂只是邀请自己到他家吃饭。恩典在改变之前。"],
+      note: ["Zacchaeus was a chief tax collector — wealthy, collaborating with Rome, and despised by his own town. His offer to repay fourfold goes beyond what the Law required. Jesus does not demand it first; He simply invites Himself to dinner. Grace comes before reformation.", "撒该是税吏长——富有、与罗马合作、被本城人藐视。他愿意四倍偿还，远超律法的要求。但耶稣并没有先要求他这样做，祂只是邀请自己到他家吃饭。恩典先到，改变在后。"],
       timeline: ["c. AD 30 · Jericho", "约公元 30 年 · 耶利哥"]
     },
     cast: {
@@ -420,14 +420,14 @@ export const EXTRA_CHAPTERS = [
     },
     ending: {
       seal: "◎", title: ["Today Salvation Has Come", "今天救恩到了这家"],
-      text: ["Grace arrived first. Change followed it out of the door.", "恩典先到，改变是跟着它出门的。"],
+      text: ["Grace arrived first. Change followed it out of the door.", "恩典先到，改变随后就来。"],
       takeaway: ["Zacchaeus was not asked to clean up before Jesus came to dinner. Being welcomed made him generous. The story insists that real change is a fruit of grace, not a price paid to earn it.", "耶稣去吃饭之前，并没有要求撒该先把自己收拾干净。被接纳，反倒让他慷慨起来。这个故事要说的正是：真正的改变是恩典结的果子，不是用来换恩典的价钱。"]
     },
     reflection: {
       q: ["What would “restoring fourfold” look like in your own life?", "在你自己的生命里，「四倍偿还」会是什么样子？"],
       options: [
         { t: ["Returning something I took wrongly", "归还我不该拿的东西"], stat: { courage: 2 }, insight: ["Zacchaeus did not just feel sorry, he counted it out. Luke 19:8", "撒该不只是觉得抱歉，他真把钱一笔一笔数了出来。路加福音 19:8"] },
-        { t: ["Giving more than is expected of me", "给出超过别人期望的"], stat: { compassion: 2 }, insight: ["Fourfold was beyond the Law. Grace makes people unreasonable in the best way. Luke 19:8", "四倍远超过律法的要求。恩典让人「不合常理」——而且是最好看的那种不合常理。路加福音 19:8"] },
+        { t: ["Giving more than is expected of me", "给出超过别人期望的"], stat: { compassion: 2 }, insight: ["Fourfold was beyond the Law. Grace makes people unreasonable in the best way. Luke 19:8", "四倍远超过律法的要求。恩典让人「不合常理」——而且是最漂亮的那种不合常理。路加福音 19:8"] },
         { t: ["Welcoming someone nobody else welcomes", "接纳一个没有人接纳的人"], stat: { faith: 2 }, insight: ["Jesus ate in the wrong house on purpose. Who is at your table? Luke 19:5", "耶稣故意进错了家门。今天谁在你的桌旁？路加福音 19:5"] }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "name": "covenant",
-  "version": "0.9.22",
+  "version": "0.9.23",
   "private": true,
   "description": "Covenant — an interactive Bible story RPG for iOS, Android and the web.",
   "type": "module",

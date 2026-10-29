@@ -30,7 +30,7 @@ export const MOMENTS = {
       "elah", 0.46, 0.68,
       B("Hold your ground", "站稳"),
       B("The giant's shout rolls over the valley. Press and hold until your breathing steadies.", "按住不放，等圆圈填满。巨人的喊声正从山谷滚过来。"),
-      B("You did not run. That is what courage looked like from the inside.", "你没有跑。勇敢是什么滋味，大概就是这样。"), "wait", { span: 0.40 }),
+      B("You did not run. That is what courage looked like from the inside.", "你没有跑。勇敢大概就是这种滋味。"), "wait", { span: 0.40 }),
     M("arrival", "balance", "provision",
       "elah-field", 0.44, 0.68,
       B("Carry the provisions", "稳住供给"),

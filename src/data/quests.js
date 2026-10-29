@@ -8,7 +8,7 @@ export const QUESTS = [
     id: "fire", glyph: "✟",
     titleEn: "Keep the fire lit", titleZh: "守住篝火",
     descEn: "Pause to pray in three different chapters. The fire is fed by stopping, not by running.",
-    descZh: "在三个不同的章节里停下来祷告。篝火是靠停歇喂养的，不是靠奔跑。",
+    descZh: "在三个不同的章节里停下来祷告。篝火靠的是坐下来歇一歇，不是一路跑。",
     goal: 3,
     progress: (s) => (s.prayedIn || []).length,
     reward: { guidance: 2, faith: 1 }
@@ -58,7 +58,7 @@ export const CAMP_NPCS = [
       "If you finish all three, I will carve your name into the camp post."
     ],
     linesZh: [
-      "每个人到这里时都两手空空。待一会儿，手就会慢慢装满。",
+      "每个人到这里时都两手空空。待一会儿，慢慢就会有东西攒下来。",
       "任务板不是考试。它只是让你留意自己已经做过的事。",
       "若三件事都完成，我就把你的名字刻在营地的木桩上。"
     ]
