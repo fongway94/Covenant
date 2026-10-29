@@ -71,7 +71,7 @@ const KEEP = [
   "停下来把眼前这一处看清楚",
   "你的勇气不是喊出来的",
   "浪再响，也不用赶，慢慢来",
-  "不是有人来劝他，是有人留下来陪他",
+  "而是有人愿意陪着他，等他慢慢走出来",
 ];
 
 /* Punctuation is never a matter of taste — these apply even to kept lines. */
