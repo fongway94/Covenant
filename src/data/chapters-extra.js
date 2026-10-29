@@ -131,7 +131,7 @@ export const EXTRA_CHAPTERS = [
           ["", "The mountain is very quiet. The sandstorm has moved on. Somewhere below, a lamb bleats.", "山上非常安静。沙暴已经过去。山下某处，一只小羊在叫。"]
         ),
         choices: [
-          C(["Go with him toward Egypt", "陪他往埃及去"], "end", { stat: { courage: 2 }, xp: 12, require: { courage: 5 }, tag: ["Courage 5", "勇气 5"], reply: ["You do not feel brave. You go anyway. That is usually what brave looks like from the inside.", "你并不觉得自己勇敢，可你还是去了。走上去的时候，没有人会觉得自己勇敢。"], replyBy: "" }),
+          C(["Go with him toward Egypt", "陪他往埃及去"], "end", { stat: { courage: 2 }, xp: 12, require: { courage: 5 }, tag: ["Courage 5", "勇气 5"], reply: ["You do not feel brave. You go anyway. That is usually what brave looks like from the inside.", "你并不觉得自己勇敢，可你还是去了。真正往前走的时候，人往往都不觉得自己勇敢——怕归怕，路还是要走。"], replyBy: "" }),
           C(["Give him your staff for the road", "把你的手杖送给他上路"], "end", { stat: { compassion: 2 }, xp: 10, reply: ["He takes it, testing its weight. A stick is not much — but it is something to hold.", "他接过去，掂了掂分量。一根杖算不了什么——可上路的人手里总得有点什么。"], replyBy: "" }),
           C(["Ask him to remember this mountain", "请他记住这座山"], "end", { stat: { wisdom: 2, faith: 1 }, xp: 10, reply: ["“I will,” he says. “Especially on the days I would rather forget.”", "「我会的，」他说，「特别是在那些我宁愿忘掉的日子里。」"], replyBy: "moses" })
         ]
@@ -139,7 +139,7 @@ export const EXTRA_CHAPTERS = [
       end: {
         end: true,
         lines: L(
-          ["elias", "The call did not make Moses fearless. It made him accompanied. That is the whole difference.", "呼召并没有让摩西不再惧怕，而是让他不再孤单。区别就在这里。"],
+          ["elias", "The call did not make Moses fearless. It made him accompanied. That is the whole difference.", "呼召并没有让摩西不再惧怕，只是让他不再一个人面对。"],
           ["", "You look back once. The bush is still burning — quietly, patiently, with no audience at all.", "你回头看了一眼。荆棘仍在燃烧——安静、耐心，完全没有观众。"],
           ["", "The scroll turns. Egypt is a long way off.", "书卷翻页。埃及还很远。"]
         )
@@ -216,13 +216,13 @@ export const EXTRA_CHAPTERS = [
       kindness: {
         lines: L(
           ["boaz", "Let her glean even among the sheaves, and reproach her not. And let fall also some of the handfuls of purpose for her.", "容她在捆中拾取麦穗，不可羞辱她。并要从捆里抽出些来，留在地下任她拾取。"],
-          ["", "Boaz does not make a speech about kindness. He gives an instruction to the men with sickles. That is what makes it real.", "波阿斯没有讲一篇关于仁慈的大道理，只是吩咐拿镰刀的人一句话。真正的仁慈，就是这样一点一点落到实处的。"],
+          ["", "Boaz does not make a speech about kindness. He gives an instruction to the men with sickles. That is what makes it real.", "波阿斯没有讲一篇关于仁慈的大道理，只吩咐了拿镰刀的人一句话。真正的仁慈就是这样：不喊口号，只让手下的人少割一点。"],
           ["elias", "Notice the pattern: a foreign widow, a field owner, a handful of dropped grain. Nobody calls it a miracle. It is the family line of David — and later, of Jesus.", "留意这条线：一个外邦寡妇，一块田，几把故意落下的麦穗。没有人称它为神迹，可这就是大卫的家谱——后来也是耶稣的家谱。"]
         ),
         choices: [
           C(["Thank Boaz on Ruth’s behalf", "替路得向波阿斯道谢"], "end", { stat: { compassion: 2 }, xp: 10, reply: ["He waves it away. “She did the hard part,” he says. “I only told my men to look the other way.”", "他摆摆手：「难的那部分是她自己做的。我只是叫工人别看得那么紧。」"], replyBy: "boaz" }),
           C(["Tell Naomi what happened in the field", "把田里发生的事告诉拿俄米"], "end", { stat: { wisdom: 2, faith: 1 }, xp: 10, reply: ["Her face changes. For the first time since Moab, she says the word “hope” out loud.", "她的脸色变了。从摩押回来以后，她第一次把「盼望」这两个字说出了口。"], replyBy: "" }),
-          C(["Stay silent. Some kindness is shy.", "什么也不说。有些善意不必说出口。"], "end", { stat: { faith: 2 }, xp: 10, reply: ["You say nothing. Ruth never learns your name. That is also a kind of love.", "你什么也没说。路得始终不知道你的名字。那也是一种爱。"], replyBy: "" })
+          C(["Stay silent. Some kindness is shy.", "什么也不说。有些善意不必说出口。"], "end", { stat: { faith: 2 }, xp: 10, reply: ["You say nothing. Ruth never learns your name. That is also a kind of love.", "你什么也没说。路得始终不知道你是谁。可有的话不必让她听见：肯替她背着，就够了。"], replyBy: "" })
         ]
       },
       end: {
@@ -284,7 +284,7 @@ export const EXTRA_CHAPTERS = [
           ["jonah", "Take me up, and cast me forth into the sea; so shall the sea be calm unto you.", "你们将我抬起来，抛在海中，海就平静了。"]
         ),
         choices: [
-          C(["Beg the sailors not to throw him over", "求水手不要把他抛下海"], "deep", { stat: { compassion: 2 }, xp: 8, reply: ["They hesitate — and the waves climb higher. Sometimes the kind thing is not the safe thing.", "他们犹豫了，浪又高一尺。善良和稳妥，有时候不是一回事。"], replyBy: "" }),
+          C(["Beg the sailors not to throw him over", "求水手不要把他抛下海"], "deep", { stat: { compassion: 2 }, xp: 8, reply: ["They hesitate — and the waves climb higher. Sometimes the kind thing is not the safe thing.", "他们犹豫了，浪又高一尺。想救人，又想保命，这两件事有时候只能挑一件。"], replyBy: "" }),
           C(["Stand with Jonah and pray", "和约拿站在一起祷告"], "deep", { stat: { faith: 2 }, xp: 8, faith: true, tag: ["Faith", "信心"], reply: ["He will not look at you. Shame makes people want to be alone.", "他不肯看你。羞愧会让人想一个人待着。"], replyBy: "" }),
           C(["Ask Corin why Jonah is running", "问柯林，约拿为何逃跑"], "deep", { stat: { wisdom: 2 }, xp: 8, reply: ["“Because he is afraid God will forgive them,” Corin says. “It is the strangest reason anyone has ever run.”", "「因为他怕神真的饶恕他们，」柯林说，「这大概是最奇怪的一个逃跑理由。」"], replyBy: "elias" })
         ]
@@ -330,7 +330,7 @@ export const EXTRA_CHAPTERS = [
     },
     ending: {
       seal: "✧", title: ["Should I Not Spare?", "我岂能不爱惜？"],
-      text: ["Mercy is hardest when it is given to people you dislike.", "怜悯落到你讨厌的人身上时，最难接受——可那才是怜悯。"],
+      text: ["Mercy is hardest when it is given to people you dislike.", "怜悯落到你讨厌的人身上时，最难接受。可要是只肯给喜欢的人，那就不叫怜悯了。"],
       takeaway: ["Jonah is the only prophet who succeeds spectacularly and resents it. God's final question is not about Nineveh's worthiness but about Jonah's heart — a mirror held up to every one of us who would rather see justice than grace.", "约拿是唯一一位大获成功却因此愤愤不平的先知。神最后问的，不是尼尼微配不配，而是约拿的心——它是一面镜子，照出我们这些宁愿看见公义、不愿看见恩典的人。"]
     },
     reflection: {
