@@ -1871,10 +1871,14 @@ export function withStages(game, preludes) {
      a surprise that starts while the player is still reading act one. */
   const meta = [
     ...list.map((cfg) => ({
-      title: cfg.title, prompt: cfg.prompt, hint: cfg.hint, demo: demoForAct(cfg.kind, cfg)
+      title: cfg.title, prompt: cfg.prompt, hint: cfg.hint, how: cfg.how || cfg.hint,
+      demo: demoForAct(cfg.kind, cfg)
     })),
     { title: [game.titleEn, game.titleZh], prompt: [game.promptEn, game.promptZh],
-      hint: [game.hintEn, game.hintZh], demo: game.demo || "tap" }
+      hint: [game.hintEn, game.hintZh], demo: game.demo || "tap",
+      /* `how` is the same instruction written as a sentence, for the briefing
+         card. `hint` stays short because it is also drawn inside the canvas. */
+      how: [game.howEn || game.hintEn, game.howZh || game.hintZh] }
   ];
   const applyHint = (c, i) => {
     const m = meta[i];

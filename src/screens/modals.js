@@ -67,7 +67,7 @@ function itemInner(ui) {
     const got = ui.state.relics.includes(id);
     return `<div class="center"><div style="font-size:2.6rem">${r.glyph}</div>
       <div class="eyebrow">${tx("Relic", "圣物")}</div><h2>${esc(r.name)}</h2></div>
-      <p class="small muted center">${tx("From", "来自")} ${esc(r.chapter)} · ${esc(r.ref)}</p>
+      <p class="small muted center">${isZh() ? "来自" : "From "}${esc(r.chapter)} · ${esc(r.ref)}</p>
       <div class="divider"></div>
       <p class="prose small">${got ? esc(r.desc) : tx("You have not found this relic yet. Finish its chapter to add it to your journal.", "你还没有找到这件圣物。完成对应章节，即可收入日志。")}</p>`;
   }
@@ -117,7 +117,7 @@ function howtoInner() {
       ` : `
       <p>你是一位<strong>手执书卷的朝圣者</strong>。书卷会带你进入圣经中十个真实的故事——你站在山谷里，坐在船上，在狮子坑外等候。</p>
       <h3>你的选择有什么用</h3>
-      <p>它们塑造的是<em>你</em>，不是经文。大卫仍然迎战歌利亚；风浪仍然止息。你的选择会增长四种品格——<span class="gold">勇气、智慧、怜悯、信心</span>——并解锁果子、圣物与印记。</p>
+      <p>它们塑造的是<em>你</em>，从来不是经文。大卫仍然迎战歌利亚；风浪仍然止息。你的选择会增长四种品格——<span class="gold">勇气、智慧、怜悯、信心</span>——并解锁果子、圣物与印记。</p>
       <h3>怎么玩</h3>
       <ul>
         <li><strong>点一下对白框</strong>，读下一句；要决定了，就<strong>滑动选项卡片</strong>。</li>
@@ -126,12 +126,12 @@ function howtoInner() {
         <li><strong>按住祷告键</strong>（每章一次）：＋1 信心、＋1 引导，还会给你一句诗篇。</li>
         <li><strong>在地图上拖动朝圣者</strong>，挑一章走进去。</li>
         <li><strong>在营地歇脚</strong>：和三位旅人说话，接下三件事，再到营火旁做一次呼吸祷告，能得「引导」。</li>
-        <li><strong>沉浸／无提示模式默认开启。</strong>提示圆圈、品格门槛、奖励预览一概不显示，故事就是故事。想找回提示，可在设置里关掉；也可以用「引导」，一次显明一处。</li>
+        <li><strong>沉浸／无提示模式默认开启。</strong>提示圆圈、品格门槛、奖励预览一概不显示，故事就是故事。想找回提示，把沉浸模式关掉就行；也可以用「引导」，一次显明一处。</li>
         <li><strong>打开书卷</strong>（右上角）随时查看真正的经文、历史注解与出处。</li>
         <li><strong>环境音乐</strong>是一套活的程序配乐——流动的和弦、竖琴乐句与轻柔鼓点——并随章节切换风声、水声或人群声。可用 ♪ 按钮或在设置中开关。</li>
       </ul>
       <h3>每章结束</h3>
-      <p>你会得到一件圣物、一颗圣灵的果子，还有一道要你诚实回答的问题。那题没有对错，只有各人的答案。</p>
+      <p>你会得到一件圣物、一颗圣灵的果子，还有一道要你诚实回答的问题。那题没有标准答案，只有你自己的答案。</p>
       <h3>再走一步：读真正的圣经</h3>
       <p>每章结束都有一张<strong>「再走一步」</strong>卡：准确的经文地址、一个值得留意的细节，以及一道诚实的问题。随时打开书卷，可阅读真正的经文、以利亚斯的历史注解与年代表。终章会把十段经文整理成一份可点击的阅读清单。</p>
       <h3>玩完全程，你会得到什么</h3>
@@ -149,7 +149,7 @@ function prayInner(ch) {
     <div class="eyebrow">${tx("You paused to pray", "你停下来祷告")}</div><h2>${tx("+1 Faith", "+1 信心")}</h2></div>
     <p class="verse center" style="margin-top:16px">“${esc(p.text)}”</p>
     <p class="small center gold">— ${esc(p.ref)}</p>
-    <p class="tiny muted center" style="margin-top:14px">${tx("Prayer is available once in each chapter. It grows Faith and stores 1 Guidance. Faith can open golden choices later; Guidance can reveal hidden hints in Clean Mode or open a door you have not yet earned.", "每章可以祷告一次。它会增长信心并储存 1 点「引导」。信心能开启后面的金色选项；「引导」能在沉浸模式中显明隐藏的提示，或打开一扇你尚未达到的门槛。")}</p>
+    <p class="tiny muted center" style="margin-top:14px">${tx("Prayer is available once in each chapter. It grows Faith and stores 1 Guidance. Faith can open golden choices later; Guidance can reveal hidden hints in Clean Mode or open a door you have not yet earned.", "每章可以祷告一次。它会增长信心并储存 1 点「引导」。信心能开启后面的金色选项；「引导」能在沉浸模式里显明隐藏的提示，或打开一扇你还没走到的门。")}</p>
     <button class="btn btn-primary" style="margin-top:8px" data-action="close-modal">${tx("Amen", "阿们")}</button>`;
 }
 
@@ -202,7 +202,7 @@ function breatheInner(ui) {
     <div class="breathe-dots">${[0, 1, 2].map((i) => `<i class="${i < b.cycle ? "on" : ""}"></i>`).join("")}</div>
     <p class="small serif center gold" style="margin:12px 0 0">${isZh() ? "「你们要休息，要知道我是神！」" : "“Be still, and know that I am God.”"}</p>
     <p class="tiny muted center" style="margin:4px 0 0">— ${tx("Psalm 46:10 (KJV)", "诗篇 46:10（和合本）")}</p>
-    <p class="tiny muted center" style="margin:12px 0 0">${tx("Finish the three breaths for +2 Guidance and +1 Faith, once each camp day.", "完成三次呼吸可得 +2 引导与 +1 信心，每个营地日一次。")}</p>
+    <p class="tiny muted center" style="margin:12px 0 0">${tx("Finish the three breaths for +2 Guidance and +1 Faith, once each camp day.", "做完三次呼吸，可得 +2 引导、+1 信心；每天在营地领一次。")}</p>
     <button class="btn btn-ghost btn-sm" style="margin-top:10px" data-action="close-modal">${tx("Not now", "暂不")}</button>`;
 }
 
@@ -224,13 +224,13 @@ function guidanceInner(ui) {
     <div class="eyebrow">${tx("Three questions", "三个问题")}</div><h2>${tx("What the game is showing you", "游戏想告诉你什么")}</h2></div>
     <div class="prose small" style="margin-top:12px">
       <h3>${tx("1 · What is the prayer button for?", "1 · 祷告按钮是做什么的？")}</h3>
-      <p>${tx("It is a pause, not a purchase. Holding it once per chapter grows Faith by 1, adds 4 XP and stores 1 Guidance. Breathing at the campfire adds 2 more Guidance once per day. Faith opens golden choices; Guidance lets you reveal hidden hints in Clean Mode or step through a virtue gate you have not reached yet.", "它是一次停顿，不是一次购买。每章按住一次，会增长 1 点信心、4 点经验，并储存 1 点「引导」。每天在营火旁呼吸祷告，可再得 2 点。信心用来开启金色选项；「引导」可以在沉浸模式中显明隐藏提示，或让你穿过尚未达到的品格门槛。")}</p>
-      <h3>${tx("2 · What are the circling tips around options?", "2 · 选项周围环绕的圆圈是什么？")}</h3>
+      <p>${tx("It is a pause, not a purchase. Holding it once per chapter grows Faith by 1, adds 4 XP and stores 1 Guidance. Breathing at the campfire adds 2 more Guidance once per day. Faith opens golden choices; Guidance lets you reveal hidden hints in Clean Mode or step through a virtue gate you have not reached yet.", "它是一次停顿，不是一次购买。每章按住一次，会增长 1 点信心、4 点经验，并储存 1 点「引导」。每天在营火旁呼吸祷告，可再得 2 点。信心用来开启金色选项；「引导」可以在沉浸模式中显明隐藏提示，或让你跨过还没走到的品格门槛。")}</p>
+      <h3>${tx("2 · What are the circling tips around options?", "2 · 选项旁边那些圆圈是什么？")}</h3>
       <p>${tx("They are hints: a numbered circle is simply the option order; a gold circle marks a faith-shaped choice; a teal tag previews the virtue or reward; a dashed circle with a lock shows a virtue gate you have not met yet. The animation on the prayer button is a hold-to-fill ring — it tells you to press and hold, not tap.", "它们是提示：数字圆圈只是选项序号；金色圆圈标示「信心」相关的选项；青色标签预览品格或奖励；带锁的虚线圆圈表示你尚未达到的品格门槛。祷告按钮上的动画是「按住填充」环——它在告诉你：请按住，而不是轻点。")}</p>
       <h3>${tx("3 · What happens if the tips are removed?", "3 · 如果去掉提示，会发生什么？")}</h3>
-      <p>${tx("Nothing breaks — and that is now the default. Immersive / no-tips mode is ON from the start: hints, tags, gates and the little advice card are all hidden. Locked choices still exist but say only “Some doors open later”. You can spend 1 Guidance to reveal one page of hints, or 2 to open a locked choice, and you can switch tips back on in Settings. Scripture's outcome is identical either way — David still faces Goliath, the storm still stops.", "什么都不会坏——而且这已经是默认设置。「沉浸／无提示模式」从一开始就开启：提示、标签、门槛和那张小建议卡都被隐藏。被锁的选项依然存在，但只写着「有些门要到后来才开」。你可以花 1 点引导显明一页提示，或花 2 点开启一个被锁的选项；也可以在设置里重新打开提示。两种模式下，经文的结局完全一样——大卫仍然迎战歌利亚，风浪仍然止息。")}</p>
+      <p>${tx("Nothing breaks — and that is now the default. Immersive / no-tips mode is ON from the start: hints, tags, gates and the little advice card are all hidden. Locked choices still exist but say only “Some doors open later”. You can spend 1 Guidance to reveal one page of hints, or 2 to open a locked choice, and you can switch tips back on in Settings. Scripture's outcome is identical either way — David still faces Goliath, the storm still stops.", "什么都不会坏——这已经是默认设置。「沉浸／无提示模式」从一开始就开启：提示、标签、门槛和那张小建议卡都被隐藏。被锁的选项依然存在，但只写着「有些门要到后来才开」。你可以花 1 点引导显明一页提示，或花 2 点开启一个被锁的选项；也可以在设置里重新打开提示。两种模式下，经文的结局完全一样——大卫仍然迎战歌利亚，风浪仍然止息。")}</p>
       <h3>${tx("And at the very end?", "那到了最后呢？")}</h3>
-      <p>${tx("After ten chapters you reach a finale with a completion seal. It gives no hints and no score: it lists what you completed — ten stories witnessed, four virtues grown, up to 9 fruits, 10 relics and 9 seals gathered, prayers and reflections — then gives one honest paragraph about the person your choices formed, and a verse. You finish as a witness, not a winner: the achievement is the character you carry out, and the road continues outside the game.", "走完十章后，你会带着一枚完成印记来到终章。它不给提示，也不给分数：它列出你完成的事——在场见证十段故事、培养四种品格、最多收集 9 个果子、10 件圣物、9 枚印记、以及你的祷告与反思——然后给出一段关于「你的选择塑造了怎样的人」的诚实文字，和一节经文。你是以见证者的身份完成，而不是以赢家的身份通关；成就就是你带走的品格，而这条路在游戏之外继续。")}</p>
+      <p>${tx("After ten chapters you reach a finale with a completion seal. It gives no hints and no score: it lists what you completed — ten stories witnessed, four virtues grown, up to 9 fruits, 10 relics and 9 seals gathered, prayers and reflections — then gives one honest paragraph about the person your choices formed, and a verse. You finish as a witness, not a winner: the achievement is the character you carry out, and the road continues outside the game.", "走完十章后，你会带着一枚完成印记来到终章。它不给提示，也不给分数：它列出你完成的事——在场见证十段故事、培养四种品格、最多收集 9 个果子、10 件圣物、9 枚印记、以及你的祷告与反思——然后给出一段关于「你的选择塑造了怎样的人」的诚实文字，和一节经文。走完的时候，你是个见证人，不是个赢家；真正的成就，是你带走的品格。这条路，在游戏之外继续。")}</p>
       <h3>${tx("4 · Is the ending a personality test?", "4 · 结局是人格测验吗？")}</h3>
       <p>${tx("No — and deliberately so. It is not MBTI, not a psychological assessment and not a prophecy. The “Journey Mirror” simply reports what you DID: the four virtues your choices grew, and four ways of walking recorded from your behaviour (stepping forward, noticing, staying, waiting). It then holds that beside a person God chose to write about — including their real failure — and sends you to the passage. Paul says these stories were “written for our learning” (Romans 15:4) and are “ensamples” for us (1 Corinthians 10:11); James compares the word to a mirror (James 1:23). Only the LORD looks on the heart (1 Samuel 16:7), so the game refuses to label you.", "不是——而且这是刻意的选择。它不是 MBTI，不是心理测评，也不是预言。「旅程之镜」只报告你做过的事：你的选择培养出哪四种品格，以及从你的行为记录下来的四种走路方式（迈步、观察、留下、等候）。然后把这些摆在神选择写下来的一个人旁边——包括他真实的失败——并送你去读那段经文。保罗说这些事「都是为教训我们写的」（罗马书 15:4），是「我们的鉴戒」（哥林多前书 10:11）；雅各把道比作镜子（雅各书 1:23）。唯有耶和华看内心（撒母耳记上 16:7），所以游戏拒绝给你贴标签。")}</p>
     </div>

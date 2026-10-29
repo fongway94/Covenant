@@ -190,7 +190,7 @@ export function chooseOption(ui, index, force = false) {
   if (!choice) return;
   if (!force && !meets(ui, choice.require)) {
     const need = Object.entries(choice.require || {}).map(([k, v]) => `${STATS[k].name} ${v}`).join(" & ");
-    toast(tx(`Not yet — this needs ${need}. Pray or keep walking.`, `还不行——这需要 ${need}。可以祷告，或继续成长。`), "✟");
+    toast(tx(`Not yet — this needs ${need}. Pray or keep walking.`, `还不行——这需要${need}。可以祷告，或继续成长。`), "✟");
     return;
   }
   sfx("choose");
@@ -636,12 +636,12 @@ function hotspotsBrief(ui, cfg) {
         eyebrow: tx("LANTERN SEARCH", "提灯搜寻"),
         title: tx(cfg.title, cfg.titleZh),
         prompt: tx(cfg.prompt, cfg.promptZh),
-        demo: "drag", demoLabel: tx("Watch the hand, then try it", "看着这只手，再自己来"),
-        how: [tx("Your hand: drag across the picture and the lantern follows your finger.", "手怎么动：手指在画面上拖动，提灯跟着手指走。"),
-              tx("Only what the lantern touches can be seen. Pale shapes are decoys — three wrong ones end the search.", "只有被提灯照到的地方才看得见。浅色的影子是假的，点错三次就结束。")],
-        note: tx("Nothing has started yet — the dark stays dark until you light the lantern.", "现在还没有开始，点亮提灯才开始。"),
+        demo: "drag", demoLabel: tx("Watch the hand, then try it", "看它怎么动，再自己试一次"),
+        how: [tx("Drag a finger across the picture and the lantern follows it.", "手指在画面上慢慢拖，提灯就跟着你的手走。"),
+              tx("Only what the lantern touches can be seen. Pale shapes are decoys — three wrong ones end the search.", "提灯照到哪里，哪里才看得见；浅色的影子都是假的。认错三次，这次搜寻就先到这里。")],
+        note: tx("The search starts when you light the lantern.", "点亮提灯，搜寻才开始。"),
         start: "hotspot-start", startLabel: tx("Light the lantern", "点亮提灯"),
-        skip: "hotspot-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不给分")
+        skip: "hotspot-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不拿奖励")
       })}
   </div>`;
 }
@@ -678,8 +678,8 @@ function hotspotsHtml(ui) {
     ${done
       ? `<div class="hotspot-done"><div class="result-icon">✦</div><h3>${tx("Well done!", "做得好！")}</h3><p class="small muted">${tx("Bonus earned", "获得奖励")} · +${cfg.xp || 8} ${tx("XP", "经验")} · ${tx("Found", "已找到")} ${h.found.length}/${cfg.count}</p>
          <button class="btn btn-primary hotspot-done-btn" data-action="hotspot-done">${tx("Keep going", "继续")} ${icon("forward", 16)}</button></div>`
-      : `<div class="hotspot-foot"><p class="tiny muted">${tx("Drag the lantern to reveal · avoid the pale decoys · 3 mistakes ends the search", "拖动提灯照亮 · 避开浅色的假物 · 失误 3 次搜寻结束")}</p>
-         <button class="btn btn-ghost btn-sm hotspot-skip" data-action="hotspot-skip">${tx("Skip — no bonus", "跳过 · 不给分")}</button></div>`}
+      : `<div class="hotspot-foot"><p class="tiny muted">${tx("Drag the lantern to reveal · avoid the pale decoys · 3 mistakes ends the search", "拖动提灯照一照 · 浅色的都是假的 · 认错三次就结束")}</p>
+         <button class="btn btn-ghost btn-sm hotspot-skip" data-action="hotspot-skip">${tx("Skip — no bonus", "跳过 · 不拿奖励")}</button></div>`}
   </div>`;
 }
 
@@ -854,7 +854,7 @@ function choicesHtml(ui) {
       const need = c.require ? Object.entries(c.require).map(([k, v]) => `${STATS[k].name} ${v}`).join(" & ") : "";
       const cls = ["choice", locked ? "locked" : "", c.faith && !locked ? "faith" : "", clean && !showHints ? "clean" : ""].filter(Boolean).join(" ");
       const hint = !showHints ? "" : locked
-        ? tx(`Requires ${need} — pray once this chapter, or keep growing.`, `需要 ${need}——可在本章祷告一次，或继续成长。`)
+        ? tx(`Requires ${need} — pray once this chapter, or keep growing.`, `需要${need}——可在本章祷告一次，或继续成长。`)
         : (c.hint || "");
       const guided = locked && clean && !showHints && guidance >= 2;
       const action = locked ? (guided ? "guided-choice" : "locked-choice") : "choose";
@@ -893,12 +893,12 @@ function miniHtml(ui) {
         title: cfg.title,
         prompt: cfg.prompt,
         demo: "taprow",
-        demoLabel: tx("Watch the hand, then try it", "看着这只手，再自己来"),
-        how: [tx("Your hand: a light runs back and forth along the track.", "手怎么动：光点会沿着轨道来回走。"),
+        demoLabel: tx("Watch the hand, then try it", "看它怎么动，再自己试一次"),
+        how: [tx("A light runs back and forth along the track.", "光点会沿着横线来回走。"),
               tx("Tap once, when it is inside the gold mark.", "光点走进金色那一段时，点一下。")],
-        note: tx("Nothing moves until you press the button.", "现在还没有开始，按了按钮光点才动。"),
+        note: tx("Press the button and the light starts moving.", "按下按钮，光点才开始走。"),
         start: "mini-start", startLabel: tx("Start", "开始"),
-        skip: "mini-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不给分")
+        skip: "mini-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不拿奖励")
       })}
     </div>`;
   }
@@ -913,8 +913,8 @@ function miniHtml(ui) {
     </div>
     <div class="mg-rounds">${dots}</div>
     <div class="mg-feedback" id="mg-feedback">${esc(m.feedback)}</div>
-    <button class="btn btn-primary" data-action="mini-tap" style="max-width:300px">${tx("Tap when the light reaches the mark", "当光点到达标记时点击")}</button>
-    <button class="btn btn-ghost btn-sm" data-action="mini-skip" style="max-width:300px">${tx("Skip — no bonus", "跳过 · 不给分")}</button>
+    <button class="btn btn-primary" data-action="mini-tap" style="max-width:300px">${tx("Tap when the light reaches the mark", "光点走到标记上时，点一下")}</button>
+    <button class="btn btn-ghost btn-sm" data-action="mini-skip" style="max-width:300px">${tx("Skip — no bonus", "跳过 · 不拿奖励")}</button>
   </div>`;
 }
 
@@ -925,14 +925,19 @@ function miniHtml(ui) {
    marker sliding down a track. `ready` is the flag the mount code checks, so
    the gate cannot be bypassed by a re-render either. */
 function briefHtml(ui, o) {
-  const rows = (o.how || []).map((h, i) => `<li><span class="n">${i + 1}</span><span>${esc(h)}</span></li>`).join("");
+  const steps = o.how || [];
+  const rows = steps.length === 1
+    ? `<p class="brief-one">${esc(steps[0])}</p>`
+    : steps.length
+      ? `<ol class="brief-how">${steps.map((h, i) => `<li><span class="n">${i + 1}</span><span>${esc(h)}</span></li>`).join("")}</ol>`
+      : "";
   return `<div class="brief ${o.className || ""}">
     <div class="brief-inner">
       <div class="eyebrow">${esc(o.eyebrow)}</div>
       <h2>${esc(o.title)}</h2>
       ${o.prompt ? `<p class="brief-prompt">${esc(o.prompt)}</p>` : ""}
-      ${o.demo ? `<div class="brief-demo"><canvas data-demo="${esc(o.demo)}" aria-hidden="true"></canvas><span><b>${esc(o.demoLabel || tx("Watch the hand", "照着这只手做"))}</b>${esc(o.demoNote || "")}</span></div>` : ""}
-      ${rows ? `<ol class="brief-how">${rows}</ol>` : ""}
+      ${o.demo ? `<div class="brief-demo"><canvas data-demo="${esc(o.demo)}" aria-hidden="true"></canvas><span><b>${esc(o.demoLabel || tx("Watch the hand", "看它怎么动"))}</b>${esc(o.demoNote || "")}</span></div>` : ""}
+      ${rows}
       ${o.note ? `<p class="brief-note">${esc(o.note)}</p>` : ""}
       <button class="btn btn-primary brief-start" data-action="${o.start}">${icon("play", 16)} ${esc(o.startLabel || tx("Start", "开始"))}</button>
       <button class="btn btn-ghost btn-sm brief-leave" data-action="${o.skip}">${esc(o.skipLabel)}</button>
@@ -976,21 +981,18 @@ function actBriefHtml(ui, info, { first, resuming = false }) {
         title: info.title,
         prompt: info.prompt,
         demo: info.demo,
-        demoLabel: tx("Watch the hand, then try it", "看着这只手，再自己来"),
-        how: [
-          info.hint ? tx(`Your hand: ${info.hint}`, `手怎么动：${info.hint}`) : "",
-          tx("No clock is running. Taking your time only lowers the score.", "没有倒计时。慢一点，只是得分少一点，不会输。")
-        ].filter(Boolean),
+        demoLabel: tx("Watch the hand, then try it", "看它怎么动，再自己试一次"),
+        how: [info.how || info.hint || ""].filter(Boolean),
         note: resuming
-          ? tx("The scene is held while you read. Nothing is lost.", "你读的时候，画面停着。什么都不会丢。")
+          ? tx("No rush — the scene waits here while you read.", "不着急，你读的时候，画面就停在这里等你。")
           : first
-            ? tx("Nothing has started yet — press the button when you are ready.", "现在还没有开始，准备好再按下面的按钮。")
-            : tx("This act is held until you press the button. Your score carries over.", "这一幕先停着，按了按钮才动。分数接着算。"),
+            ? tx("No rush. Press the button below when you are ready.", "不着急，准备好了就按下面的按钮开始。")
+            : tx("No rush. Press the button and this act begins; your score carries on.", "不着急。按下面的按钮，这一幕才接上；前面的得分会带过来。"),
         start: first ? "game-start" : "game-act-start",
         startLabel: resuming
           ? tx("Back to the scene", "接着玩")
           : first ? tx("Start this scene", "开始这一关") : tx("Start this act", "开始这一幕"),
-        skip: "game-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不给分")
+        skip: "game-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不拿奖励")
       })}`;
 }
 
@@ -1025,12 +1027,12 @@ function actionHtml(ui) {
         <div class="paused-how">
           <canvas data-demo="${esc(info.demo)}" aria-hidden="true"></canvas>
           <div>
-            <b>${tx("Your hand", "手怎么动")}</b>
-            <p class="small">${esc(info.hint)}</p>
-            <p class="tiny muted">${tx("No clock. Take as long as you like.", "没有倒计时，慢慢来。")}</p>
+            <b>${tx("How to play", "这样玩")}</b>
+            <p class="small">${esc(info.how || info.hint)}</p>
+            <p class="tiny muted">${tx("Whenever you are ready.", "想好了再接着玩。")}</p>
           </div>
         </div>
-        <p class="small muted">${tx("Nothing moves while you are away — no timers, no lost stones.", "这里不会自己往下走。没有倒计时，你回来时画面还停在原处。")}</p>
+        <p class="small muted">${tx("The scene waits right here, exactly as you left it.", "画面停在原处等你，什么时候回来都行。")}</p>
         <button class="btn btn-primary btn-sm" data-action="game-resume">${icon("play", 15)} ${tx("Resume", "接着玩")}</button>
         <button class="btn btn-ghost btn-sm" data-action="game-skip">${tx("Leave this scene", "不玩了，离开")}</button>
       </div>
@@ -1051,8 +1053,8 @@ function actionResultHtml(ui) {
       <h2>${esc(ok ? tx("Well done!", "做得好！") : tx("The story continues.", "故事继续。"))}</h2>
       <div class="result-stars">${[0, 1, 2].map((i) => `<span class="${i < stars ? "on" : ""}">★</span>`).join("")}</div>
       <div class="result-score">${tx("SCORE", "得分")} <strong>${r.score || 0}</strong></div>
-      ${r.late ? `<div class="tiny muted">${tx("You took your time, so it scored less. Nothing was lost.", "你花的时间长了一点，所以分数少一些。别的没有任何损失。")}</div>` : ""}
-      <div class="card-quiet small">${esc(ok ? tx("Bonus earned", "获得奖励") + " · +14 " + tx("XP", "经验") + " · +1 " + tx("Courage", "勇气") + " · +1 " + tx("Faith", "信心") : tx("No bonus", "没有奖励"))}</div>
+      ${r.late ? `<div class="tiny muted">${tx("You took it slowly — the scene is no less yours for it.", "你走得慢一点，可这一幕一样是你亲手走完的。")}</div>` : ""}
+      <div class="card-quiet small">${esc(ok ? tx("Bonus earned", "获得奖励") + " · +14 " + tx("XP", "经验") + " · +1 " + tx("Courage", "勇气") + " · +1 " + tx("Faith", "信心") : tx("No bonus", "这次没有额外奖励"))}</div>
       <button class="btn btn-primary" data-action="action-done">${tx("Keep going", "继续")} ${icon("forward", 16)}</button>
     </div>
   </div>`;
@@ -1185,9 +1187,11 @@ export function skipMoment(ui) {
   else finishMoment(ui, { success: false, skipped: true });
 }
 
+/* Short labels, but each one reads as something a hand does — "按住不放",
+   not the bare verb "按住" hanging off the end of an eyebrow. */
 const MOMENT_KIND = {
-  hold: B("HOLD", "按住"), tap: B("TAP", "轻点"), trace: B("TRACE", "描线"),
-  balance: B("BALANCE", "平衡"), rhythm: B("RHYTHM", "节奏")
+  hold: B("HOLD", "按住不放"), tap: B("TAP", "轻轻一点"), trace: B("TRACE", "沿着线拖"),
+  balance: B("BALANCE", "左右扶稳"), rhythm: B("RHYTHM", "跟着节奏")
 };
 function B(en, zh) { return { en, zh }; }
 function momentKindLabel(k, zh) { return (MOMENT_KIND[k] || B("INTERACT", "互动"))[zh ? "zh" : "en"]; }
@@ -1221,11 +1225,9 @@ function momentHtml(ui) {
         <div class="moment-meter-track"><i id="moment-meter"></i></div>
         <div class="moment-feedback" id="moment-feedback"></div>`
           : `<div class="brief-inline">
-              <div class="brief-demo" aria-hidden="true"><canvas data-demo="${esc(momentDemo(m.kind))}" aria-hidden="true"></canvas><span><b>${tx("Watch the hand, then try it", "看着这只手，再自己来")}</b></span></div>
-              <ol class="brief-how">
-                <li><span class="n">1</span><span>${tx("Your hand: ", "手怎么动：")}${esc(momentHow(m.kind))}</span></li>
-                <li><span class="n">2</span><span>${tx("No clock is running. Taking your time only lowers the score.", "没有倒计时。慢一点，只是得分少一点，不会输。")}</span></li></ol>
-              <p class="brief-note">${tx("Nothing moves until you press Start.", "现在还没有开始，按了按钮才动。")}</p>
+              <div class="brief-demo" aria-hidden="true"><canvas data-demo="${esc(momentDemo(m.kind))}" aria-hidden="true"></canvas><span><b>${tx("Watch the hand, then try it", "看它怎么动，再自己试一次")}</b></span></div>
+              <p class="brief-one">${esc(momentHow(m.kind))}</p>
+              <p class="brief-note">${tx("No rush. Press the button below when you are ready.", "不着急，准备好了就按下面的按钮开始。")}</p>
               <button class="btn btn-primary brief-start" data-action="moment-start">${icon("play", 16)} ${tx("Start this moment", "开始这一刻")}</button>
             </div>`}
         <button class="btn btn-ghost btn-sm" data-action="moment-skip">${tx("Skip this moment", "跳过这一刻")}</button>
@@ -1285,7 +1287,7 @@ export function storyHtml(ui) {
   const [who, text] = lines[Math.min(s.lineIndex, lines.length - 1)] || ["", ""];
   const typingPhase = s.phase === "lines" || s.phase === "reply";
   const shownText = typingPhase ? "" : esc(text);
-  return `<div class="screen story">
+  return `<div class="screen story${s.phase === "choices" ? " choosing" : ""}">
     <div class="story-art" style="background-image:url('${ch.art}')">
       <div class="story-parallax" style="background-image:url('${ch.art}')"></div>
       <div class="story-top">

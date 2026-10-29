@@ -107,7 +107,7 @@ function satchel(ui) {
     <div class="relic-strip">${relics.map(([id, r]) => `<span class="relic-chip ${s.relics.includes(id) ? "got" : ""}" title="${esc(r.name)}">${r.glyph}</span>`).join("")}</div>
     <div class="card-quiet" style="margin-top:12px">
       <div class="eyebrow" style="margin-bottom:5px">${tx("What is Guidance?", "什么是「引导」？")}</div>
-      <p class="tiny muted" style="margin:0">${tx("Guidance is stored by praying and by breathing at the campfire. Immersive / no-tips mode is on by default, so you can spend 1 Guidance to reveal the hidden hints around a choice, or 2 Guidance to open a golden choice your virtues have not yet reached. The story's outcome never changes — only how clearly you see the door.", "「引导」来自祷告和营火旁的呼吸祷告。沉浸／无提示模式默认开启，所以你可以花费 1 点引导来显明某个选项周围被隐藏的提示；或花费 2 点来开启一个品格尚未达到的金色选项。故事的结局永不改变——改变的只是你看那扇门的清晰程度。")}</p>
+      <p class="tiny muted" style="margin:0">${tx("Guidance is stored by praying and by breathing at the campfire. Immersive / no-tips mode is on by default, so you can spend 1 Guidance to reveal the hidden hints around a choice, or 2 Guidance to open a golden choice your virtues have not yet reached. The story's outcome never changes — only how clearly you see the door.", "「引导」来自祷告，也来自营火旁的呼吸祷告。沉浸／无提示模式默认开启，所以你可以花 1 点引导，让选项旁边那些被藏起来的提示显出来；也可以花 2 点，去开一个品格还没到位的金色选项。结局永远不会变——变的只是你看那扇门，看得清不清楚。")}</p>
     </div>
   </section>`;
 }
@@ -354,12 +354,12 @@ export function finaleHtml(ui) {
       <div class="card-quiet" style="margin-top:14px">
         <div class="eyebrow" style="margin-bottom:8px">${tx("Your completed journey", "你走完的旅程")}</div>
         <div class="completion-list">
-          <div><span>✓</span><p>${tx(`Witnessed ${done} of ${CHAPTERS.length} biblical stories — without changing their outcome`, `在 ${CHAPTERS.length} 段圣经故事中在场 ${done} 段——没有改变它们的结局`)}</p></div>
-          <div><span>✓</span><p>${tx(`Grew Courage, Wisdom, Compassion and Faith to level ${s.level}`, `把勇气、智慧、怜悯、信心培养到等级 ${s.level}`)}</p></div>
+          <div><span>✓</span><p>${tx(`Witnessed ${done} of ${CHAPTERS.length} biblical stories — without changing their outcome`, `十段圣经故事，你在场 ${done} 段——结局一点没改`)}</p></div>
+          <div><span>✓</span><p>${tx(`Grew Courage, Wisdom, Compassion and Faith to level ${s.level}`, `把勇气、智慧、怜悯、信心一路养大，现在是 ${s.level} 级`)}</p></div>
           <div><span>✓</span><p>${tx(`Gathered ${s.relics.length} relics, ${s.fruits.length} fruits and ${s.seals.length} seals`, `收集了 ${s.relics.length} 件圣物、${s.fruits.length} 个果子、${s.seals.length} 枚印记`)}</p></div>
           <div><span>✓</span><p>${tx(`Prayed ${s.prayedIn.length} times and answered ${reflections} honest reflections`, `祷告 ${s.prayedIn.length} 次，回答了 ${reflections} 道诚实的反思题`)}</p></div>
-          <div><span>✓</span><p>${tx(`Completed ${questsDone} of ${QUESTS.length} camp quests; ${s.adventure?.guidance || 0} Guidance still in hand`, `完成 ${QUESTS.length} 项营地任务中的 ${questsDone} 项；手中还存有 ${s.adventure?.guidance || 0} 点「引导」`)}</p></div>
-          <div><span>✓</span><p>${tx("Reached a hint-free ending — a mirror, not a scoreboard", `抵达一个没有提示的结局——一面镜子，不是计分板`)}</p></div>
+          <div><span>✓</span><p>${tx(`Completed ${questsDone} of ${QUESTS.length} camp quests; ${s.adventure?.guidance || 0} Guidance still in hand`, `营地任务完成 ${questsDone} / ${QUESTS.length}；手上还留着 ${s.adventure?.guidance || 0} 点「引导」`)}</p></div>
+          <div><span>✓</span><p>${tx("Reached a hint-free ending — a mirror, not a scoreboard", `走到一个没有提示的结局——一面镜子，不是计分板`)}</p></div>
         </div>
       </div>
 

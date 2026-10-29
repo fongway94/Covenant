@@ -871,10 +871,12 @@ export function gameInfo(key, act = 0) {
   const title = m?.title || [g.titleEn, g.titleZh];
   const prompt = m?.prompt || [g.promptEn, g.promptZh];
   const hint = m?.hint || [g.hintEn, g.hintZh];
+  const how = m?.how || [g.howEn || g.hintEn, g.howZh || g.hintZh];
   return {
     title: tx(title[0], title[1]),
     prompt: tx(prompt[0], prompt[1]),
     hint: tx(hint[0], hint[1]),
+    how: tx(how[0], how[1]),
     demo: m?.demo || g.demo || "tap",
     titlePair: title, promptPair: prompt, hintPair: hint,
     act: act + 1,

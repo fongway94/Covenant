@@ -120,7 +120,7 @@ export function journalHtml(ui) {
       }).join("")}</div>
       <div class="card-quiet" style="margin-top:14px"><p class="verse small" style="margin:0">${isZh() ? "「圣灵所结的果子，就是仁爱、喜乐、和平、忍耐、恩慈、良善、信实、温柔、节制；这样的事，没有律法禁止。」" : "“But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance: against such there is no law.”"}</p><p class="tiny gold" style="margin:6px 0 0">— ${tx("Galatians 5:22–23 (KJV)", "加拉太书 5:22–23（和合本）")}</p></div>`;
   } else {
-    body = `<p class="small muted" style="margin:0 0 12px">${tx("Seals are earned by the way you walk the road.", "印记，是你一路怎么走而赢得的。")} ${s.seals.length}/${SEALS.length} ${tx("earned.", "枚已获得。")}</p>
+    body = `<p class="small muted" style="margin:0 0 12px">${tx("Seals are earned by the way you walk the road.", "印记不是奖励，是你一路走出来的。")} ${s.seals.length}/${SEALS.length} ${tx("earned.", "枚已获得。")}</p>
       <div class="codex-list">${SEALS.map((seal) => {
         const got = s.seals.includes(seal.id);
         return `<button class="codex-item ${got ? "" : "locked"}" data-action="open-item" data-kind="seal" data-id="${seal.id}">
@@ -213,10 +213,10 @@ export function characterHtml(ui) {
           <button class="toggle ${s.settings.showAll ? "on" : ""}" data-action="toggle-demo" aria-label="${tx("Toggle all chapters", "切换全部章节")}"><i></i></button>
         </div>
         <div class="setting-row">
-          <div class="lbl">${tx("Immersive / no tips (default)", "沉浸／无提示（默认）")}<small>${tx("On by default: hides the circling hints, virtue gates and reward previews. Switch off to see tips again.", "默认开启：隐藏选项周围环绕的提示、品格门槛与奖励预览。关闭即可重新显示提示。")}</small></div>
+          <div class="lbl">${tx("Immersive / no tips (default)", "沉浸／无提示（默认）")}<small>${tx("On by default: hides the circling hints, virtue gates and reward previews. Switch off to see tips again.", "默认开启：隐藏选项周围的提示圈、品格门槛和奖励预览。关掉就能重新看到提示。")}</small></div>
           <button class="toggle ${s.settings.cleanMode ? "on" : ""}" data-action="toggle-clean" aria-label="${tx("Toggle clean mode", "切换沉浸模式")}"><i></i></button>
         </div>
-        <div class="card-quiet" style="margin-top:10px"><p class="tiny muted" style="margin:0">${tx("What prayer is for: pausing grows Faith and stores Guidance. What the circles mean: hints, virtue gates and reward previews. Immersive mode is ON by default, so those circles are hidden — the ending still comes, but it is a mirror rather than a checklist. Turn the toggle off if you want the tips back.", "祷告的用途：停下来会增长信心并储存「引导」。圆圈的含义：提示、品格门槛与奖励预览。沉浸模式默认开启，所以这些圆圈是隐藏的——结局依然会来，但更像一面镜子，而不是一张清单。如果你想重新看到提示，把这个开关关掉即可。")}</p></div>
+        <div class="card-quiet" style="margin-top:10px"><p class="tiny muted" style="margin:0">${tx("What prayer is for: pausing grows Faith and stores Guidance. What the circles mean: hints, virtue gates and reward previews. Immersive mode is ON by default, so those circles are hidden — the ending still comes, but it is a mirror rather than a checklist. Turn the toggle off if you want the tips back.", "祷告有什么用：停下来祷告，信心会增长，也会存下「引导」。那些圆圈是什么：提示、品格门槛和奖励预览。沉浸模式默认开启，所以它们都是隐藏的——结局照样会来，只是它更像一面镜子，不像一张待勾的清单。想重新看到提示，把这个开关关掉就好。")}</p></div>
         <div class="setting-row">
           <div class="lbl">${tx("How to play", "玩法说明")}<small>${tx("A two-minute guide", "两分钟看懂玩法")}</small></div>
           <button class="btn btn-ghost btn-sm" data-action="howto">${tx("Read", "阅读")}</button>
@@ -224,7 +224,7 @@ export function characterHtml(ui) {
       </div>
 
       <button class="btn btn-danger btn-sm" style="margin-top:14px" data-action="ask-reset">${icon("refresh", 15)} ${tx("Erase this journey", "清除这段旅程")}</button>
-      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.8.7 · Everything is saved only on this device.", "Covenant v0.8.7 · 所有进度仅保存在本机。")}</p>
+      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.8.7 · Everything is saved only on this device.", "Covenant v0.9.12 · 所有进度仅保存在本机。")}</p>
     </div>
     ${tabsHtml(ui, "character")}
   </div>`;
