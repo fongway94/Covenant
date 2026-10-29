@@ -6,6 +6,7 @@
 import { sfx } from "../core/audio.js";
 import { tx } from "../core/i18n.js";
 import { GAMES } from "./games.js";
+import { stepsFor } from "../data/game-steps.js";
 
 const TAU = Math.PI * 2;
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -868,6 +869,10 @@ export function startScene(canvas, key, onResult, seed = {}, hooks = {}) {
 export function gameInfo(key, act = 0) {
   const g = GAMES[key] || GAMES.sling;
   const m = (typeof g.actBrief === "function" && g.actBrief(act)) || null;
+  /* The card used to carry one sentence of instruction. The steps are the same
+     instruction written out: what to do with the hand, what the scene shows
+     when you are in the right place, and what finishes the act. */
+  const st = stepsFor(key, act);
   const title = m?.title || [g.titleEn, g.titleZh];
   const prompt = m?.prompt || [g.promptEn, g.promptZh];
   const hint = m?.hint || [g.hintEn, g.hintZh];
@@ -878,6 +883,7 @@ export function gameInfo(key, act = 0) {
     hint: tx(hint[0], hint[1]),
     how: tx(how[0], how[1]),
     demo: m?.demo || g.demo || "tap",
+    steps: st ? st.en.map((line, i) => tx(line, st.zh[i])) : null,
     titlePair: title, promptPair: prompt, hintPair: hint,
     act: act + 1,
     acts: g.actCount || 1

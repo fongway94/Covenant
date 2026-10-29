@@ -1019,7 +1019,7 @@ function briefHtml(ui, o) {
       <h2>${esc(o.title)}</h2>
       ${o.prompt ? `<p class="brief-prompt">${esc(o.prompt)}</p>` : ""}
       ${o.demo ? `<div class="brief-demo"><canvas data-demo="${esc(o.demo)}" aria-hidden="true"></canvas><span><b>${esc(o.demoLabel || tx("Watch the hand", "先看示范"))}</b>${esc(o.demoNote || "")}</span></div>` : ""}
-      ${rows}
+      ${rows ? `<div class="brief-steps">${rows}</div>` : ""}
       ${o.note ? `<p class="brief-note">${esc(o.note)}</p>` : ""}
       <button class="btn btn-primary brief-start" data-action="${o.start}">${icon("play", 16)} ${esc(o.startLabel || tx("Start", "开始"))}</button>
       <button class="btn btn-ghost btn-sm brief-leave" data-action="${o.skip}">${esc(o.skipLabel)}</button>
@@ -1064,7 +1064,7 @@ function actBriefHtml(ui, info, { first, resuming = false }) {
         prompt: info.prompt,
         demo: info.demo,
         demoLabel: tx("Watch the hand, then try it", "先看一遍示范，再自己来"),
-        how: [info.how || info.hint || ""].filter(Boolean),
+        how: (info.steps && info.steps.length ? info.steps : [info.how || info.hint || ""]).filter(Boolean),
         note: resuming
           ? tx("No rush — the scene waits here while you read.", "不着急。先读完，准备好了再点开始。")
           : first
@@ -1110,7 +1110,9 @@ function actionHtml(ui) {
           <canvas data-demo="${esc(info.demo)}" aria-hidden="true"></canvas>
           <div>
             <b>${tx("How to play", "怎么玩")}</b>
-            <p class="small">${esc(info.how || info.hint)}</p>
+            ${info.steps && info.steps.length > 1
+              ? `<ol class="paused-steps">${info.steps.map((line) => `<li>${esc(line)}</li>`).join("")}</ol>`
+              : `<p class="small">${esc(info.how || info.hint)}</p>`}
             <p class="tiny muted">${tx("Whenever you are ready.", "想好了再接着玩。")}</p>
           </div>
         </div>

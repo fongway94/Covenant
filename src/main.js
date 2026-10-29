@@ -167,7 +167,20 @@ root.addEventListener("click", (e) => {
   if (cardHandledAt && Date.now() - cardHandledAt < 900) { cardHandledAt = 0; return; }
   if (suppressClick) { suppressClick = false; return; }
   const el = e.target.closest("[data-action]");
-  if (!el) return;
+  if (!el) {
+    /* "Tap anywhere to continue" has to mean anywhere: the empty space under
+       the dialogue box is the biggest target on the page and a thumb lands
+       there more often than on the box itself. Anything that is a control of
+       its own (a button, a choice, the scroll) keeps its own behaviour. */
+    const st = ui.story;
+    /* Not the background page: that one is a wall of text with its own button,
+       and a stray tap while reading it would start the chapter early. */
+    if (st && (st.phase === "lines" || st.phase === "reply")
+        && !e.target.closest("button, a, input, .choice, .modal, .paused-how, #dialogue-text")) {
+      try { tapStory(ui); } catch { /* never let a stray tap break the app */ }
+    }
+    return;
+  }
   const a = el.dataset.action;
   switch (a) {
     case "noop": return;

@@ -1253,6 +1253,9 @@ const stones = {
       if (d < 42 && d < nd) { nd = d; near = st.i; }
     }
     const calm = s.speed < 210 && s.murk < 0.72;
+    /* The stone the hand is on, and whether the water is quiet enough to take
+       it. The drawing code reads this to light it up. */
+    s.near = calm ? near : -1;
     if (q.down && near >= 0 && calm) {
       if (s.gripI !== near) { s.gripI = near; s.grip = 0; }
       s.grip += dt;
@@ -1279,7 +1282,14 @@ const stones = {
     for (const st of s.spots) st.pop = Math.max(0, st.pop - dt * 1.6);
 
     c.progress = s.got / 5;
-    c.setHint(`${tx("Drag slowly through the water", "在水中慢慢拖动")}   ${s.got}/5${s.murk > 0.55 ? "   " + tx("the water is clouding", "水浑了") : ""}`);
+    /* The hint answers the question the hand is asking at that moment: are you
+       on a stone, is the water quiet, and what now. */
+    const line = s.near >= 0
+      ? tx("Hold still — it is lifting", "按住别动，正在捡起")
+      : s.murk > 0.55
+        ? tx("Let the water clear, then drag slowly", "等水静下来，再慢慢拖")
+        : tx("Drag slowly through the water", "在水中慢慢拖");
+    c.setHint(`${line}   ${s.got}/5`);
     if (s.got >= 5 && !s.ended) {
       s.ended = true; c.hit("unlock"); c.end(true, c.score + 60); return;
     }
@@ -1322,6 +1332,29 @@ const stones = {
       ctx.strokeStyle = `rgba(214,238,242,${0.22 * seen})`;
       ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.arc(p.x, p.y, r + 8, 0, TAU); ctx.stroke();
+
+      /* The stone the hand is actually on says so out loud: a slow gold pulse
+         round it, and — once the finger is holding — an arc that fills as the
+         stone comes away from the bed. Without this the water is pretty but
+         silent, and a player cannot tell "I am close" from "I have it". */
+      if (s.near === st.i) {
+        const pulse = 0.5 + 0.5 * Math.sin(s.t * 4.2);
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = `rgba(247,214,138,${0.4 + 0.35 * pulse})`;
+        ctx.lineWidth = 2 + pulse;
+        ctx.beginPath(); ctx.arc(p.x, p.y, r + 13 + pulse * 2, 0, TAU); ctx.stroke();
+        const hold = s.gripI === st.i ? clamp(s.grip / 0.5, 0, 1) : 0;
+        if (hold > 0.01) {
+          ctx.strokeStyle = "rgba(255,240,196,.96)";
+          ctx.lineWidth = 3.4;
+          ctx.beginPath(); ctx.arc(p.x, p.y, r + 16, -Math.PI / 2, -Math.PI / 2 + TAU * hold); ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        ctx.font = `600 ${Math.max(11, 12 * p.s)}px ${c.font}`;
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillStyle = hold > 0.01 ? "rgba(255,244,214,.98)" : "rgba(255,236,190,.9)";
+        ctx.fillText(hold > 0.01 ? tx("hold…", "按住…") : tx("hold to lift", "按住捡起"), p.x, p.y - r - 16);
+      }
       ctx.restore();
     }
 

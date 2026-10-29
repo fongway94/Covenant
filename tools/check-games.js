@@ -5,6 +5,7 @@
 
 import { GAMES, SCENES } from "../src/engine/games.js";
 import { clamp, rnd, dist } from "../src/engine/scene.js";
+import { stepsFor } from "../src/data/game-steps.js";
 
 const gradient = { addColorStop() {} };
 function mockCtx() {
@@ -290,6 +291,28 @@ for (const [key, game] of [...Object.entries(GAMES), ...Object.entries(SCENES).m
 }
 
 for (const r of results) console.log("  " + r);
+
+/* Every act of every scene must carry the three numbered steps a player reads
+   before it starts, in both languages. One sentence was not enough to know
+   what the hand is meant to do; this keeps it that way. */
+const copyProblems = [];
+for (const [key, game] of Object.entries(GAMES)) {
+  const acts = game.actCount || 1;
+  for (let act = 0; act < acts; act++) {
+    const pair = stepsFor(key, act);
+    if (!pair) { copyProblems.push(`${key} act ${act + 1}: no steps`); continue; }
+    for (const lang of [0, 1]) {
+      const list = lang ? pair.zh : pair.en;
+      if (!Array.isArray(list) || list.length < 3) copyProblems.push(`${key} act ${act + 1}: ${lang ? "zh" : "en"} needs three steps`);
+      else if (list.some((line) => !line || line.length < 12)) copyProblems.push(`${key} act ${act + 1}: ${lang ? "zh" : "en"} has an empty or stub step`);
+    }
+  }
+}
+if (copyProblems.length) {
+  console.error(`\n✗ ${copyProblems.length} briefing copy problem(s):`);
+  for (const p of copyProblems) console.error("  " + p);
+  process.exit(1);
+}
 if (errors.length) {
   console.error(`\n✗ ${errors.length} action-scene error(s):`);
   for (const e of errors) console.error("  " + e.split("\n").slice(0, 4).join("\n    "));

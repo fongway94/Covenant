@@ -351,11 +351,11 @@ body:not(.lang-zh) .chip { word-break: keep-all; }
    text size), so a face twice the old size costs the page nothing and the
    page can never be pushed off the phone. */
 .dialogue {
-  flex: 0 1 auto; min-height: 150px; max-height: 62vh; overflow: hidden;
+  flex: 0 1 auto; min-height: 170px; max-height: 62vh; overflow: hidden;
   display: flex; flex-direction: column;
   background: linear-gradient(180deg, rgba(20,38,49,.96), rgba(11,23,31,.97));
   border: 1px solid var(--line); border-radius: 16px;
-  padding: 14px 16px 12px; position: relative;
+  padding: 14px 16px 6px; position: relative;
   box-shadow: 0 10px 30px rgba(0,0,0,.35);
   cursor: pointer;
 }
@@ -375,12 +375,13 @@ body:not(.lang-zh) .chip { word-break: keep-all; }
    the bottom with a portrait big enough to know at a glance, and the line is
    read first, then attributed. */
 .speaker {
-  display: flex; align-items: center; gap: 12px;
-  font-family: var(--serif); font-size: 1.04rem; font-weight: 700; color: var(--gold);
+  display: flex; align-items: flex-end; gap: 13px;
+  font-family: var(--serif); font-size: 1.08rem; font-weight: 700; color: var(--gold);
   letter-spacing: .03em;
-  margin-top: 10px; padding-top: 10px;
+  margin-top: 10px; padding-top: 9px;
   border-top: 1px solid rgba(231,183,91,.16);
 }
+.speaker .who { padding-bottom: 4px; }
 .speaker .who { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .speaker .role { font-family: var(--sans); font-size: .7rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
 .speaker.narrator { color: var(--teal); }
@@ -398,13 +399,24 @@ body:not(.lang-zh) .chip { word-break: keep-all; }
    rounded frame. Every answer gets the height its words need; the column
    scrolls instead. */
 .choice-area { flex: 1 1 auto; max-height: 62%; overflow-y: auto; padding-top: 10px; display: grid; grid-auto-rows: max-content; gap: 8px; align-content: start; }
+/* While a line is being read the answer column is empty. An empty grid still
+   reserves its slice of the page, which is what pushed the "tap anywhere" note
+   up into the middle and left a dead zone under it. It goes away instead. */
+.choice-area:empty { display: none; }
+/* The continue hint owns all the space under the dialogue, fills it, and is
+   the target — so the note sits where the thumb naturally lands and says the
+   truth: the whole area continues the line. */
 .story-tapzone {
-  flex: 0 0 54px; min-height: 54px; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 6px; cursor: pointer;
-  color: rgba(231,183,91,.34);
+  flex: 1 1 auto; min-height: 64px; margin-top: 4px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+  color: rgba(231,183,91,.42);
+  border-radius: 16px;
+  transition: background .2s, color .2s;
 }
-.story-tapzone .ornament { font-size: 1.5rem; letter-spacing: .4em; }
-.story-tapzone small { font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; }
+.story-tapzone:active { background: rgba(231,183,91,.06); color: rgba(231,183,91,.7); }
+.story-tapzone .ornament { font-size: 1.15rem; letter-spacing: .4em; animation: tapNudge 2s ease-in-out infinite; }
+.story-tapzone small { font-size: .72rem; letter-spacing: .12em; }
+@keyframes tapNudge { 0%,100% { transform: translateY(0); opacity: .7; } 50% { transform: translateY(4px); opacity: 1; } }
 .choice-area::-webkit-scrollbar { width: 0; }
 .choice {
   width: 100%; text-align: left; padding: 12px 14px; border-radius: 13px;
@@ -738,7 +750,7 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 @keyframes portraitSpeak { 0%,100% { box-shadow: 0 0 0 0 rgba(231,183,91,.35); } 50% { box-shadow: 0 0 0 5px rgba(231,183,91,0); } }
 /* The typing dot lives in the corner of the box so it costs no line of text. */
 .dialogue-caret {
-  position: absolute; right: 16px; bottom: 34px;
+  position: absolute; right: 16px; bottom: 40px;
   width: 7px; height: 7px; border-radius: 50%; background: var(--gold);
   animation: blink 1.2s infinite;
 }
@@ -1192,7 +1204,7 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 
 /* The picture gives up a little of its 40% so the speaker can be twice the
    size it was without the answer or continue button moving off-screen. */
-.story-art { flex: 0 0 36%; min-height: 190px; max-height: 340px; background-position: center 32%; }
+.story-art { flex: 0 0 33%; min-height: 176px; max-height: 320px; background-position: center 32%; }
 
 /* While the answers are on screen the picture steps back to a band: the cards
    need the height far more than the art does. An answer that is only half
@@ -1223,7 +1235,7 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 /* On the answer page the face shrinks but does not disappear: the answers need
    the room, and the name beside it still says who is talking. */
 .story.choosing .speaker { margin-top: 6px; padding-top: 6px; gap: 8px; font-size: .92rem; }
-.story.choosing .speaker .portrait { width: 34px; height: 34px; font-size: .8rem; border-width: 1px; }
+.story.choosing .speaker .portrait { width: 44px; height: 44px; font-size: .95rem; border-width: 1px; }
 .story.choosing .speaker .role { display: none; }
 .story.choosing .dialogue-caret { display: none; }
 
@@ -1303,7 +1315,7 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 /* Speaker portrait in the dialogue box — the face is the label.
    Big enough to name the speaker from arm's length on a phone. */
 .speaker .portrait {
-  width: clamp(62px, 20vw, 82px); height: clamp(62px, 20vw, 82px); font-size: 1.5rem;
+  width: clamp(78px, 25vw, 100px); height: clamp(78px, 25vw, 100px); font-size: 1.9rem;
   background-size: cover; background-position: center 18%;
   border: 2px solid rgba(255,240,205,.78);
   box-shadow: 0 0 0 3px rgba(6,12,17,.75), 0 8px 22px rgba(0,0,0,.55), 0 0 26px rgba(231,183,91,.16);
@@ -1782,12 +1794,15 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 
 .action-paused {
   position: absolute; inset: 0; z-index: 8;
-  display: none; place-items: center; padding: 22px;
+  display: none; place-items: center; padding: 22px; overflow-y: auto;
   background: rgba(4,10,15,.72); backdrop-filter: blur(5px) saturate(.9);
 }
 .action-paused.on { display: grid; animation: fade-in .22s ease both; }
+/* The card now repeats the three steps, so it is capped to the screen and
+   scrolls its own middle rather than running off the bottom of a phone. */
 .action-paused-card {
-  max-width: 320px; width: 100%; text-align: center; display: grid; gap: 8px;
+  max-width: 320px; width: 100%; max-height: 100%; overflow-y: auto;
+  text-align: center; display: grid; gap: 8px;
   padding: 22px 20px; border-radius: 18px;
   background: linear-gradient(180deg, rgba(16,32,43,.98), rgba(8,17,23,.99));
   border: 1px solid rgba(231,183,91,.4);
@@ -1820,9 +1835,13 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
     linear-gradient(180deg, rgba(6,12,17,.34), rgba(4,8,11,.72));
   overflow-y: auto; -webkit-overflow-scrolling: touch;
 }
+/* Three numbered steps instead of one sentence made the card taller than a
+   phone. The card is now capped to the screen and only the steps scroll, so
+   the title, the hand and both buttons are always where the thumb expects. */
 .brief-inner {
-  width: min(100%, 420px);
-  display: grid; gap: 12px; justify-items: stretch; text-align: left;
+  width: min(100%, 420px); max-height: 100%;
+  display: flex; flex-direction: column; gap: 12px; text-align: left;
+  min-height: 0;
   padding: 20px 18px 18px; border-radius: 20px;
   background: linear-gradient(180deg, rgba(13,28,37,.98), rgba(7,15,21,.99));
   border: 1px solid rgba(231,183,91,.34);
@@ -1834,6 +1853,8 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
   color: var(--gold-light);
 }
 .brief-prompt { margin: 0; font-size: .98rem; line-height: 1.6; color: var(--paper); }
+.brief-steps { min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.brief-steps::-webkit-scrollbar { width: 0; }
 .brief-how { list-style: none; margin: 2px 0 0; padding: 0; display: grid; gap: 9px; }
 .brief-how li {
   display: flex; gap: 10px; align-items: flex-start;
@@ -1982,6 +2003,22 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
 }
 .paused-how canvas { width: 132px; height: 68px; display: block; }
 .paused-how b { display: block; font-size: .72rem; letter-spacing: .1em; color: var(--gold); }
+/* The pause card repeats the same numbered steps, so a player who forgot the
+   briefing does not have to leave the scene to find it again. */
+.paused-steps {
+  list-style: none; counter-reset: pstep; margin: 6px 0 0; padding: 0;
+  display: grid; gap: 6px; text-align: left;
+}
+.paused-steps li {
+  counter-increment: pstep; position: relative; padding-left: 22px;
+  font-size: .82rem; line-height: 1.45; color: #e4edef;
+}
+.paused-steps li::before {
+  content: counter(pstep); position: absolute; left: 0; top: 1px;
+  width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center;
+  font-size: .6rem; font-weight: 700; color: #2a1c08;
+  background: radial-gradient(circle at 34% 28%, #f3d493, #a97c31);
+}
 .paused-how p { margin: 1px 0 0; }
 @media (max-height: 780px) {
   .brief-full { padding: 12px; }
