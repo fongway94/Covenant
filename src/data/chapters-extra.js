@@ -83,7 +83,7 @@ export const EXTRA_CHAPTERS = [
     nodes: {
       start: {
         lines: L(
-          ["", "The scroll opens on dry wind and the smell of dust. Red mountains rise on every side, and a small flock of sheep picks its way across the stones.", "书卷在干燥的风里展开，满是尘土的气味。红色的山从四面围上来，一小群羊在石头之间挑着路走。"],
+          ["", "The scroll opens on dry wind and the smell of dust. Red mountains rise on every side, and a small flock of sheep picks its way across the stones.", "书卷在干燥的风里展开，满是尘土的气味。红色的山从四面围上来，一小群羊在石头之间找路走。"],
           ["elias", "Moses has been here forty years. He was a prince once. Now he counts sheep for his father-in-law.", "摩西在这片旷野已经四十年了。他从前是埃及的王子，如今替岳父数羊。"],
           ["moses", "One is missing. It always goes toward the high ground.", "少了一只。它总往高处跑。"],
           ["elias", "Then we go after it. Watch your footing — the wind is getting up.", "那就去追。脚下留神，风起来了。"]
@@ -102,7 +102,7 @@ export const EXTRA_CHAPTERS = [
           ["elias", "Take off your sandals. This ground has just become different from every other ground you have stood on.", "把鞋脱下来。你脚下这块地，跟你站过的任何地方都不一样了。"]
         ),
         choices: [
-          C(["Take off your sandals", "把鞋脱下来"], "bush", { stat: { faith: 2 }, xp: 9, faith: true, tag: ["Faith", "信心"], reply: ["Your bare feet feel the hot stone. It is the most honest thing you have done all day.", "赤脚踩在滚烫的石头上。这是你今天做过最诚实的一件事。"], replyBy: "" }),
+          C(["Take off your sandals", "把鞋脱下来"], "bush", { stat: { faith: 2 }, xp: 9, faith: true, tag: ["Faith", "信心"], reply: ["Your bare feet feel the hot stone. It is the most honest thing you have done all day.", "赤脚踩在滚烫的石头上。这是你今天做得最诚实的一件事。"], replyBy: "" }),
           C(["Ask Moses to cover his face", "叫摩西蒙住脸"], "bush", { stat: { wisdom: 2 }, xp: 8, reply: ["He does — and then he looks anyway, because he cannot help it. Awe and curiosity are not enemies.", "他蒙住脸——又忍不住从指缝里看。敬畏和好奇，本来就不冲突。"], replyBy: "" }),
           C(["Stand back and watch the flame", "退后，静静看着那团火焰"], "bush", { stat: { courage: 1, compassion: 1 }, xp: 8, reply: ["You count your breaths. The fire does not flicker. It has all the time in the world.", "你数着自己的呼吸。火焰一动不动，好像有的是时间。"], replyBy: "" })
         ]
@@ -131,7 +131,7 @@ export const EXTRA_CHAPTERS = [
           ["", "The mountain is very quiet. The sandstorm has moved on. Somewhere below, a lamb bleats.", "山上非常安静。沙暴已经过去。山下某处，一只小羊在叫。"]
         ),
         choices: [
-          C(["Go with him toward Egypt", "陪他往埃及去"], "end", { stat: { courage: 2 }, xp: 12, require: { courage: 5 }, tag: ["Courage 5", "勇气 5"], reply: ["You do not feel brave. You go anyway. That is usually what brave looks like from the inside.", "你并不觉得自己勇敢，可你还是去了。人在勇敢的那一刻，往往自己并不觉得。"], replyBy: "" }),
+          C(["Go with him toward Egypt", "陪他往埃及去"], "end", { stat: { courage: 2 }, xp: 12, require: { courage: 5 }, tag: ["Courage 5", "勇气 5"], reply: ["You do not feel brave. You go anyway. That is usually what brave looks like from the inside.", "你并不觉得自己勇敢，可你还是去了。走上去的时候，没有人会觉得自己勇敢。"], replyBy: "" }),
           C(["Give him your staff for the road", "把你的手杖送给他上路"], "end", { stat: { compassion: 2 }, xp: 10, reply: ["He takes it, testing its weight. A stick is not much — but it is something to hold.", "他接过去，掂了掂分量。一根杖算不了什么——可上路的人手里总得有点什么。"], replyBy: "" }),
           C(["Ask him to remember this mountain", "请他记住这座山"], "end", { stat: { wisdom: 2, faith: 1 }, xp: 10, reply: ["“I will,” he says. “Especially on the days I would rather forget.”", "「我会的，」他说，「特别是在那些我宁愿忘掉的日子里。」"], replyBy: "moses" })
         ]
@@ -151,10 +151,10 @@ export const EXTRA_CHAPTERS = [
       takeaway: ["God's call often begins with who He is, not with what you can do. Moses argued, hesitated and bargained — and God stayed. Courage is not confidence in yourself; it is trust in the One who says 'I will be with you.'", "神的呼召往往先讲祂是谁，而不是你能做什么。摩西争辩、迟疑、讨价还价——神仍然在。勇气不是对自己有信心，而是信靠那位说「我必与你同在」的神。"]
     },
     reflection: {
-      q: ["What “burning bush” has God put in front of you lately — an ordinary moment that felt strangely holy?", "最近神把什么「燃烧的荆棘」放在你面前——一个平凡却异常神圣的时刻？"],
+      q: ["What “burning bush” has God put in front of you lately — an ordinary moment that felt strangely holy?", "最近神把什么「燃烧的荆棘」放在你面前——一个平凡、却忽然变得神圣的时刻？"],
       options: [
         { t: ["An ordinary day that suddenly mattered", "一个忽然变得重要的平凡日子"], stat: { wisdom: 2 }, insight: ["Moses was doing his job when the bush burned. Watch your ordinary Tuesdays. Exodus 3:1", "摩西是在上班时看见荆棘燃烧的。留意你平凡的星期二。出埃及记 3:1"] },
-        { t: ["Something I am afraid to say yes to", "一件我不敢答应的事"], stat: { courage: 2 }, insight: ["God's answer to inadequacy is never 'try harder' — it is 'I will be with thee.' Exodus 3:12", "「我不配」这句话，神从来不回答「再努力一点」。祂只说：「我必与你同在。」出埃及记 3:12"] },
+        { t: ["Something I am afraid to say yes to", "一件我不敢答应的事"], stat: { courage: 2 }, insight: ["God's answer to inadequacy is never 'try harder' — it is 'I will be with thee.' Exodus 3:12", "当你说「我不配」，神从不回答「再努力一点」，祂只说：「我必与你同在。」出埃及记 3:12"] },
         { t: ["I am not sure I would notice", "我不确定自己会留意到"], stat: { faith: 2 }, insight: ["The bush burned for a while before Moses turned aside. Ask for the grace to turn aside. Exodus 3:3", "摩西转过去看之前，荆棘已经烧了一会儿。求恩典让你愿意转身。出埃及记 3:3"] }
       ]
     }
@@ -258,12 +258,12 @@ export const EXTRA_CHAPTERS = [
     brief: {
       place: ["c. 780 BC. Nineveh is the capital of Assyria, the most feared empire of the age — a city so large the Bible says it takes three days to walk across.", "约公元前 780 年。尼尼微是亚述的京城，当时最令人生畏的帝国——大到圣经说走遍全城要三天。"],
       who: ["God tells the prophet Jonah to go to Nineveh and call it to repent. Instead Jonah buys a ticket on a ship sailing the opposite way, to Tarshish.", "神叫先知约拿到尼尼微去，向那座城宣告审判，好让他们回转。约拿却买了船票，往相反方向的他施去。"],
-      stake: ["A storm hits the ship. The sailors will do anything to stay alive. And the reason for the storm is asleep down in the hold — a prophet running from the one errand he cannot avoid.", "海上起了风暴。水手们为了活命什么都肯做，而这场风暴的起因，正睡在船舱里——一个想逃掉那唯一躲不掉的一件事的先知。"]
+      stake: ["A storm hits the ship. The sailors will do anything to stay alive. And the reason for the storm is asleep down in the hold — a prophet running from the one errand he cannot avoid.", "海上起了风暴。水手们为了活命什么都肯做，而这场风暴的起因，正睡在船舱里——一个想逃掉唯一躲不掉的那件事的先知。"]
     },
     scroll: {
       verse: ["And Jonah was in the belly of the fish three days and three nights. Then Jonah prayed unto the LORD his God out of the fish’s belly.", "约拿在鱼腹中三日三夜。约拿在鱼腹中祷告耶和华他的神。"],
       ref: ["Jonah 1:17, 2:1 (KJV)", "约拿书 1:17, 2:1（和合本）"],
-      note: ["Jonah is the reluctant prophet: he runs because he suspects God will be merciful to Nineveh — and he would rather they were judged. The book ends with God asking a question He does not answer, leaving the reader to examine their own reluctance to forgive.", "约拿是不情愿的先知：他逃跑，是因为他猜到神会怜悯尼尼微——而他宁愿他们被审判。这卷书以神一个没有回答的问题作结，让读者审视自己不愿饶恕的心。"],
+      note: ["Jonah is the reluctant prophet: he runs because he suspects God will be merciful to Nineveh — and he would rather they were judged. The book ends with God asking a question He does not answer, leaving the reader to examine their own reluctance to forgive.", "约拿是不情愿的先知：他逃跑，是因为他猜到神会怜悯尼尼微——而他宁愿他们被审判。这卷书最后，神问了一个问题，却没有给答案，好让读者看看自己心里那份不肯饶恕。"],
       timeline: ["c. 780 BC · Mediterranean Sea and Nineveh", "约公元前 780 年 · 地中海与尼尼微"]
     },
     cast: {
@@ -315,7 +315,7 @@ export const EXTRA_CHAPTERS = [
         ),
         choices: [
           C(["Sit with Jonah outside the city", "陪约拿坐在城外"], "end", { stat: { compassion: 2 }, xp: 11, reply: ["He is sitting in the dust, furious that mercy won. You sit down too. It is an honest place to sit.", "他坐在尘土里生闷气——气的是神居然饶了他们。你也在旁边坐下。这个位置不体面，但诚实。"], replyBy: "" }),
-          C(["Remind him of the fish", "提醒他关于那条大鱼的事"], "end", { stat: { wisdom: 2 }, xp: 10, reply: ["“You were given mercy when you deserved none,” you say. He has no answer for that.", "「你自己得怜悯的时候，也不比他们配。」你说。他没有话可答。"], replyBy: "" }),
+          C(["Remind him of the fish", "提醒他关于那条大鱼的事"], "end", { stat: { wisdom: 2 }, xp: 10, reply: ["“You were given mercy when you deserved none,” you say. He has no answer for that.", "「你自己得怜悯的时候，也不见得比他们配。」你说。他没有话可答。"], replyBy: "" }),
           C(["Ask God why He cares about Nineveh", "问神为何在乎尼尼微"], "end", { stat: { faith: 2 }, xp: 11, faith: true, tag: ["Faith", "信心"], reply: ["The answer is a question about a plant, a worm, and a hundred and twenty thousand people who do not know their right hand from their left.", "答案不是一句话，是一个问题——关于一棵一夜长起来的植物、一条虫，和十二万个连左右手都分不清的人。"], replyBy: "elias" })
         ]
       },
@@ -337,7 +337,7 @@ export const EXTRA_CHAPTERS = [
       q: ["Who is your Nineveh — the person or group you would rather God did not forgive?", "谁是你的尼尼微——那个你不太希望神饶恕的人或群体？"],
       options: [
         { t: ["Someone who hurt me", "伤害过我的人"], stat: { compassion: 2 }, insight: ["God's question to Jonah is not 'do they deserve it?' but 'should I not spare?' Jonah 4:11", "神问约拿的不是「他们配不配」，而是「我岂能不爱惜」。约拿书 4:11"] },
-        { t: ["People whose views I cannot stand", "我无法认同其观点的人"], stat: { wisdom: 2 }, insight: ["Jonah preferred a storm to their repentance. Check which storm you are standing in. Jonah 1:12", "约拿宁愿要一场风暴，也不愿他们悔改。看看你正站在哪一场风暴里。约拿书 1:12"] },
+        { t: ["People whose views I cannot stand", "我无法认同其观点的人"], stat: { wisdom: 2 }, insight: ["Jonah preferred a storm to their repentance. Check which storm you are standing in. Jonah 1:12", "约拿宁愿要一场风暴，也不愿他们悔改。你现在是不是也想先跑开？约拿书 1:12"] },
         { t: ["Honestly? Sometimes myself.", "老实说？有时候是我自己。"], stat: { faith: 2 }, insight: ["The fish was a quiet room, not a punishment cell. Mercy starts at home. Jonah 2:1–2", "鱼腹是一间安静的屋子，不是牢房。怜悯从自己开始。约拿书 2:1–2"] }
       ]
     }
@@ -392,7 +392,7 @@ export const EXTRA_CHAPTERS = [
         ),
         choices: [
           C(["Help him down from the branch", "扶他从树枝上下来"], "house", { stat: { compassion: 2 }, xp: 9, reply: ["His hands are shaking. He has not been touched kindly in a very long time.", "他的手在抖。他已经很久没被人这样碰过了。"], replyBy: "" }),
-          C(["Whisper: “He knows your name”", "轻声说：「祂知道你的名字」"], "house", { stat: { faith: 2 }, xp: 9, faith: true, tag: ["Faith", "信心"], reply: ["He climbs down faster than he climbed up. Being known is a powerful thing.", "他下树比上树还快。被人认出来，是件很有力量的事。"], replyBy: "" }),
+          C(["Whisper: “He knows your name”", "轻声说：「祂知道你的名字」"], "house", { stat: { faith: 2 }, xp: 9, faith: true, tag: ["Faith", "信心"], reply: ["He climbs down faster than he climbed up. Being known is a powerful thing.", "他下树比上树还快。被人认出名字，比什么都管用。"], replyBy: "" }),
           C(["Look at the crowd’s faces instead", "转头看人群的表情"], "house", { stat: { wisdom: 2 }, xp: 9, reply: ["They are furious. Grace to the wrong person always looks like injustice to somebody.", "他们气得脸都变了。恩典落到「不该得的人」身上，在某些人眼里总像是不公平。"], replyBy: "elias" })
         ]
       },
@@ -427,7 +427,7 @@ export const EXTRA_CHAPTERS = [
       q: ["What would “restoring fourfold” look like in your own life?", "在你自己的生命里，「四倍偿还」会是什么样子？"],
       options: [
         { t: ["Returning something I took wrongly", "归还我不该拿的东西"], stat: { courage: 2 }, insight: ["Zacchaeus did not just feel sorry, he counted it out. Luke 19:8", "撒该不只是觉得抱歉，他真把钱一笔一笔数了出来。路加福音 19:8"] },
-        { t: ["Giving more than is expected of me", "给出超过别人期望的"], stat: { compassion: 2 }, insight: ["Fourfold was beyond the Law. Grace makes people unreasonable in the best way. Luke 19:8", "四倍远超过律法的要求。恩典让人「不合常理」——而且是最漂亮的那种不合常理。路加福音 19:8"] },
+        { t: ["Giving more than is expected of me", "给出超过别人期望的"], stat: { compassion: 2 }, insight: ["Fourfold was beyond the Law. Grace makes people unreasonable in the best way. Luke 19:8", "四倍远超过律法的要求。恩典常常让人做出不合常理的事——而且是最漂亮的那一种。路加福音 19:8"] },
         { t: ["Welcoming someone nobody else welcomes", "接纳一个没有人接纳的人"], stat: { faith: 2 }, insight: ["Jesus ate in the wrong house on purpose. Who is at your table? Luke 19:5", "耶稣故意进错了家门。今天谁在你的桌旁？路加福音 19:5"] }
       ]
     }

@@ -85,7 +85,7 @@ export const PROFILES = [
       "又使这众人知道耶和华使人得胜，不是用刀用枪，因为争战的胜败全在乎耶和华。"),
     verseRef: B("1 Samuel 17:47", "撒母耳记上 17:47"),
     why: B("You kept choosing the front of the line. Like David, your instinct was to move toward the noise rather than away from it — and the game gave you Courage for it.",
-      "你一次又一次选择走向最前面。像大卫一样，你的本能是朝巨响走过去，而不是往后退——所以这里记你一份勇气。"),
+      "你一次又一次选择走向最前面。像大卫一样，你的本能是朝巨响走过去，而不是往后退——所以这里给你记上一份勇气。"),
     shadow: B("David also wrote Psalm 51 after committing adultery and arranging Uriah’s death (2 Samuel 11). The brave man became a broken man. Scripture does not hide it.",
       "大卫在犯奸淫、设计杀害乌利亚之后，写了诗篇 51 篇（撒母耳记下 11 章）。勇敢的人后来成了破碎的人。圣经没有把这段藏起来。"),
     grace: B("God did not discard him. “A broken and a contrite heart, O God, thou wilt not despise” (Psalm 51:17). Courage is not the same as never falling.",
@@ -104,7 +104,7 @@ export const PROFILES = [
     why: B("You planned, waited for the right moment, then moved. Esther did not rush the throne room; she fasted three days, and then she went in anyway.",
       "你会先盘算，等合适的时机，然后行动。以斯帖没有莽撞地冲进王宫；她禁食三天，然后仍然走了进去。"),
     shadow: B("Esther hid her Jewish identity until she had to reveal it, and the book never once names God. Faithfulness inside a hostile court is complicated — the Bible lets it stay complicated.",
-      "以斯帖一直藏着自己的犹太人身分，直到不得不说；而这卷书一次也没有提到神的名。在敌对的宫廷里守住所信，本来就复杂——圣经没有把它讲简单。"),
+      "以斯帖一直藏着自己的犹太人身分，直到不得不说；而这卷书一次也没有提到神的名。在一个不欢迎你的宫廷里，仍然守住所信的，本来就不简单——圣经也没有把它讲得简单。"),
     grace: B("Deliverance came anyway. God was at work in a book where His name is never spoken — which is precisely why the story is in the canon.",
       "拯救还是来了。神在一卷从没提过祂名字的书里工作——这正是这卷书留在圣经里的原因。"),
     read: B("Read Esther 3–8. Count how many “coincidences” the story stacks up before the decree is reversed.",
@@ -153,7 +153,7 @@ export const PROFILES = [
     why: B("You stayed. Not dramatically — you just kept showing up. Ruth’s faithfulness is one decision repeated every morning in a field that did not belong to her.",
       "你留下了。并不轰轰烈烈——只是一直出现。路得的忠心，是在一块不属于她的田里，每天早晨重复同一个决定。"),
     shadow: B("Ruth had no power at all: no husband, no land, no child, and she was a Moabite in Israel. Her story is not a triumph of strategy. She is rescued, not self-made.",
-      "路得毫无能力：没有丈夫、没有土地、没有孩子，而且她是在以色列的摩押女子。她的故事不是策略的胜利。她是被救赎的，不是白手起家的。"),
+      "路得手里什么都没有：没有丈夫、没有土地、没有孩子，而且她还是住在以色列的摩押女子。她的故事不是策略的胜利。她是被人赎回来的，不是靠自己挣出来的。"),
     grace: B("Boaz notices her (Ruth 2:5–12). Her “reward” is a redeemer — and the genealogy at the end leads to David, and eventually to Jesus (Matthew 1:5).",
       "波阿斯留意到她（路得记 2:5–12）。她所得的「奖赏」是一位救赎者——而书末的家谱通向大卫，最终通向耶稣（马太福音 1:5）。"),
     read: B("Read Ruth 1–4 in one sitting. Count how often kindness is shown before anyone has earned it.",
@@ -223,7 +223,7 @@ export const PROFILES = [
     shadow: B("He was a chief tax collector who had grown rich by collaborating with Rome and overcharging his neighbours (Luke 19:2, 8). The crowd’s anger was not imaginary.",
       "他是税吏长，靠着与罗马合作、向邻人多收税款致富（路加福音 19:2、8）。群众的愤怒并不是凭空而来。"),
     grace: B("Jesus invited Himself to dinner before asking for anything. Zacchaeus’s fourfold repayment is a fruit of being welcomed, not the price of it (Luke 19:8–10).",
-      "耶稣先邀请自己到他家，才开口要求任何事。撒该四倍偿还是「被接纳」所结的果子，不是换取接纳的代价（路加福音 19:8–10）。"),
+      "耶稣先开口说要到他家吃饭，别的要求都还没提。撒该四倍偿还是「被接纳」所结的果子，不是换取接纳的代价（路加福音 19:8–10）。"),
     read: B("Read Luke 19:1–10. Ask why Jesus says “I must abide at thy house” — who needed whom?",
       "读路加福音 19:1–10。问：耶稣为什么说「今天我必住在你家里」——到底谁需要谁？")
   },
@@ -278,7 +278,7 @@ export const MIRROR_COPY = {
   hintsClean: B("You walked with the hints hidden. This mirror reflects choices you made without being told what they meant.",
     "你是在关掉提示的情况下走完的。这面镜子反映的，是没有人先告诉你含义时，你自己做出的选择。"),
   hintsSeen: B("You asked for help with hints {n} time(s). Those moments are counted separately — they are not scored as observation.",
-    "你曾 {n} 次请求提示帮助。这些时刻被单独记录——不会被算作「观察」。")
+    "你曾 {n} 次请求提示帮助。这些时刻单独记着——不算进「观察」。")
 };
 
 /* --------------------------------------------------------------- analysis */

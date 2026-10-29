@@ -267,7 +267,7 @@ export const ZH_UI = {
   /* ---- choice tags / hints / legacy minigame feedback ----------------- */
   "Courage": "勇气", "Wisdom": "智慧", "Compassion": "怜悯", "Faith": "信心",
   "Courage 6": "勇气 6", "Faith 3": "信心 3", "Faith 4": "信心 4", "Faith 5": "信心 5",
-  "A practical answer": "务实的回答", "Scripture": "经文",
+  "A practical answer": "实在的回答", "Scripture": "经文",
   "Pray once in this chapter to grow your Faith": "本章祷告一次可增长信心",
   "Pray in this chapter to grow your Faith": "在本章祷告可增长信心",
   "Grow Courage in earlier chapters": "在前面的章节中提升勇气",

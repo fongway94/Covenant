@@ -60,7 +60,7 @@ export const MOMENTS = {
       "tend", 0.42, 0.62,
       B("Bind the wounds", "包扎伤口"),
       B("Tap each wound to clean it with oil and wine. Be gentle — he is barely conscious.", "伤口亮起来就点一下，先用油和酒冲干净。他已经快没有意识，所以一下一下慢慢来。"),
-      B("Oil, wine, bandages. Mercy has a cost and it is counted in linen.", "油、酒、绷带。怜悯是要付代价的，代价都记在这些布上。"), "stay",
+      B("Oil, wine, bandages. Mercy has a cost and it is counted in linen.", "油、酒、绷带。怜悯是要付代价的，这笔代价就花在这些麻布上。"), "stay",
       { spots: [[0.26, 0.685], [0.31, 0.655], [0.375, 0.665], [0.44, 0.598], [0.485, 0.572], [0.52, 0.545]] }),
     M("passers", "rhythm", "foot",
       "jericho", 0.50, 0.64,
@@ -151,7 +151,7 @@ export const MOMENTS = {
       "zacchaeus", 0.50, 0.62,
       B("Count out four coins", "数出四倍的钱"),
       B("Tap each coin as he counts. Fourfold — more than the Law required.", "他数一枚，你点一下。四倍——远远超过律法的要求。"),
-      B("Nobody asked him to. That is what grace does when it is welcomed.", "没有人这样要求他。恩典就是这样被人接住的。"), "stay",
+      B("Nobody asked him to. That is what grace does when it is welcomed.", "没有人这样要求他。恩典落到人身上，人就是这样接住的。"), "stay",
       { spawn: [0.18, 0.58, 0.82, 0.84] })
   ]
 };
