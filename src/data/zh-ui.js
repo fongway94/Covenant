@@ -72,7 +72,7 @@ export const ZH_UI = {
   "Full Harvest": "丰收",
   " seal.": " 印记。",
   " gathered.": " 已收集。",
-  "Seals are earned by the way you walk the road.": "印记不是发下来的奖励，是你一路上走出来的。",
+  "Seals are earned by the way you walk the road.": "那些属于你的印记，也不是谁颁发的奖励，是你在每一次选择中，一步一步活出来的。",
   " earned.": " 枚已获得。",
   "“But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance: against such there is no law.”": "「圣灵所结的果子，就是仁爱、喜乐、和平、忍耐、恩慈、良善、信实、温柔、节制；这样的事，没有律法禁止。」",
   "— Galatians 5:22–23 (KJV)": "— 加拉太书 5:22–23（和合本）",

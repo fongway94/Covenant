@@ -182,7 +182,7 @@ const MIRROR_EN = {
   faith: "You paused more than most. In the stopping, you learned that God is present before He is understood."
 };
 const MIRROR_ZH = {
-  courage: "你比自己预想的更常遇见恐惧——却还是继续走。你的勇气不是喊出来的，是一步一步走出来的。",
+  courage: "你比自己预想的更常遇见恐惧——却还是继续走。勇气不是喊出来的，信心不是说出来的。",
   wisdom: "你总是停下来仔细看。别人只顾赶路，你会停下来把眼前这一处看清楚；路也就一点一点向你打开。",
   compassion: "你不断留意故事边缘的那个人。怜悯在成为你的决定之前，就已经是你的习惯。",
   faith: "你比多数人更常停下来。在停歇里，你学会：神在你理解祂以前，就已经在这里了。"
@@ -359,7 +359,7 @@ export function finaleHtml(ui) {
           <div><span>✓</span><p>${tx(`Gathered ${s.relics.length} relics, ${s.fruits.length} fruits and ${s.seals.length} seals`, `收集了 ${s.relics.length} 件圣物、${s.fruits.length} 个果子、${s.seals.length} 枚印记`)}</p></div>
           <div><span>✓</span><p>${tx(`Prayed ${s.prayedIn.length} times and answered ${reflections} honest reflections`, `祷告 ${s.prayedIn.length} 次，回答了 ${reflections} 道诚实的反思题`)}</p></div>
           <div><span>✓</span><p>${tx(`Completed ${questsDone} of ${QUESTS.length} camp quests; ${s.adventure?.guidance || 0} Guidance still in hand`, `营地任务完成 ${questsDone} / ${QUESTS.length}；手上还留着 ${s.adventure?.guidance || 0} 点「引导」`)}</p></div>
-          <div><span>✓</span><p>${tx("Reached a hint-free ending — a mirror, not a scoreboard", `走到一个没有提示的结局——一面镜子，不是计分板`)}</p></div>
+          <div><span>✓</span><p>${tx("Reached a hint-free ending — a mirror, not a scoreboard", `走到一个没有提示的结局——一面让你重新认识自己的镜子`)}</p></div>
         </div>
       </div>
 
@@ -375,7 +375,7 @@ export function finaleHtml(ui) {
         <div class="eyebrow" style="margin-bottom:6px">${tx("Immersive mode · no tips", "沉浸模式 · 没有提示")}</div>
         <p class="tiny muted" style="margin:0">${clean
           ? tx("You walked with the hints hidden — that is the default way to play. No checklist at the end, no circle telling you what to feel. Ten stories happened exactly as Scripture records them, and you were there. What you carry out is yours to decide.", "你是在关掉提示的情况下走完的——这本来就是游戏的默认方式。终点没有清单，也没有圆圈告诉你该有什么感受。十个故事完全按圣经记载发生，而你在场。你要带走什么，由你自己决定。")
-          : tx("You chose to see the hint circles. You can turn Immersive mode back on in Settings at any time: the hints disappear, but the ending does not change. The finale is a mirror, not a checklist — it shows what your choices formed, and then it stops talking.", "你选择了看见提示圆圈。你随时可以在设置里重新开启沉浸模式：提示会消失，但结局不会改变。终章是一面镜子，不是清单——它显明你的选择塑造了什么，然后就安静下来。")}</p>
+          : tx("You chose to see the hint circles. You can turn Immersive mode back on in Settings at any time: the hints disappear, but the ending does not change. The finale is a mirror, not a checklist — it shows what your choices formed, and then it stops talking.", "你选择了看见提示圆圈。你随时可以在设置里重新开启沉浸模式：提示会消失，但结局不会改变。这一路，不是一场用来评定你表现的考试，而是一面让你重新认识自己的镜子。")}</p>
       </div>
 
       <div class="card-quiet" style="margin-top:12px; padding:14px">
