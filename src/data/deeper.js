@@ -41,8 +41,8 @@ export const DEEPER = {
   esther: {
     ref: B("Esther 3–8", "以斯帖记 3–8 章"),
     hook: B("God is never mentioned by name in the whole book. The story is built out of timing, an insomnia and a banquet.",
-      "整卷以斯帖记一次也没有提到神的名字。故事是由时机、一次失眠和一场筵席堆起来的。"),
-    ask: B("Where have you seen God’s work in a story that never says His name?", "在哪里，你见过神在一件没有提祂名字的事里工作？")
+      "整卷以斯帖记一次也没有提到神的名字。故事是一次失眠、一场筵席和一个恰好的时机串起来的。"),
+    ask: B("Where have you seen God’s work in a story that never says His name?", "有没有哪件事，从头到尾没提神的名字，你却看见祂在工作？")
   },
   bush: {
     ref: B("Exodus 3–4", "出埃及记 3–4 章"),
@@ -54,7 +54,7 @@ export const DEEPER = {
     ref: B("Ruth 1–4", "路得记 1–4 章"),
     hook: B("Boaz leaves extra grain on purpose (Ruth 2:16). The book ends with a genealogy that leads to David — and later to Jesus.",
       "波阿斯故意多留下麦穗（路得记 2:16）。全书以一份家谱结束，通向大卫——后来通向耶稣。"),
-    ask: B("Who is allowed to gather from the corners of your field?", "谁被允许在你田里的角落拾取？")
+    ask: B("Who is allowed to gather from the corners of your field?", "谁可以到你田角去拾麦穗？")
   },
   jonah: {
     ref: B("Jonah 1–4", "约拿书 1–4 章"),

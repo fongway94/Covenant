@@ -29,8 +29,8 @@ export const MOMENTS = {
     M("start2", "hold", "ground",
       "elah", 0.46, 0.68,
       B("Hold your ground", "站稳"),
-      B("The giant's shout rolls over the valley. Press and hold until your breathing steadies.", "按住屏幕别松手，直到呼吸的圆圈填满。巨人的喊声正从山谷滚过来。"),
-      B("You did not run. That is what courage looked like from the inside.", "你没有跑。从里面看，勇敢就是这个样子。"), "wait", { span: 0.40 }),
+      B("The giant's shout rolls over the valley. Press and hold until your breathing steadies.", "按住不放，等圆圈填满。巨人的喊声正从山谷滚过来。"),
+      B("You did not run. That is what courage looked like from the inside.", "你没有跑。勇敢是什么滋味，大概就是这样。"), "wait", { span: 0.40 }),
     M("arrival", "balance", "provision",
       "elah-field", 0.44, 0.68,
       B("Carry the provisions", "稳住供给"),
@@ -50,7 +50,7 @@ export const MOMENTS = {
     M("upstairs", "hold", "shutter",
       "lions", 0.55, 0.60,
       B("Keep the window open", "让窗户敞着"),
-      B("Hold to keep the shutters open toward Jerusalem while the city goes quiet.", "按住屏幕别松手，把那扇朝耶路撒冷的窗一直撑开，直到全城静下来。"),
+      B("Hold to keep the shutters open toward Jerusalem while the city goes quiet.", "按住不放，把朝耶路撒冷的那扇窗一直撑着，直到全城静下来。"),
       B("Three times a day. The same as yesterday. The same as always.", "一日三次。和昨天一样。和往常一样。"), "wait")
   ],
   jericho: [
@@ -60,7 +60,7 @@ export const MOMENTS = {
       "tend", 0.42, 0.62,
       B("Bind the wounds", "包扎伤口"),
       B("Tap each wound to clean it with oil and wine. Be gentle — he is barely conscious.", "伤口亮起来就点一下，先用油和酒冲干净。他已经快没有意识，所以一下一下慢慢来。"),
-      B("Oil, wine, bandages. Mercy has a cost and it is counted in linen.", "油、酒、绷带。怜悯是有代价的，代价是用布来数的。"), "stay",
+      B("Oil, wine, bandages. Mercy has a cost and it is counted in linen.", "油、酒、绷带。怜悯是要付代价的，代价都记在这些布上。"), "stay",
       { spots: [[0.26, 0.685], [0.31, 0.655], [0.375, 0.665], [0.44, 0.598], [0.485, 0.572], [0.52, 0.545]] }),
     M("passers", "rhythm", "foot",
       "jericho", 0.50, 0.64,
@@ -77,7 +77,7 @@ export const MOMENTS = {
     M("storm", "hold", "rope",
       "storm", 0.50, 0.50,
       B("Hold the rope", "抓住绳索"),
-      B("Hold on. The wave is coming over the bow and the rope is all you have.", "按住屏幕别松手。浪正翻过船头，你手里只剩这根绳子。"),
+      B("Hold on. The wave is coming over the bow and the rope is all you have.", "按住别松手。浪正翻过船头，你手里只剩这根绳子。"),
       B("The rope held. So did you.", "绳子没有断。你也没有。"), "wait")
   ],
   prodigal: [
@@ -96,13 +96,13 @@ export const MOMENTS = {
     M("fast", "hold", "lamp",
       "esther", 0.40, 0.76,
       B("Three days of fasting", "禁食三日"),
-      B("Hold through the fast. Nothing happens. That is the point — you are waiting.", "按住屏幕别松手，把这三天的禁食撑完。什么也不会发生——你就是在等。"),
+      B("Hold through the fast. Nothing happens. That is the point — you are waiting.", "按住不放，把这三天的禁食撑完。什么也不会发生——你就是在等。"),
       B("Three days. Then she will go in, though it is against the law.", "三天。然后她要进去，虽然这是违反禁令的。"), "wait"),
     M("throne", "rhythm", "light",
       "hall", 0.46, 0.52,
       B("Approach the throne", "走到宝座前"),
       B("Each step must land in the narrow moment of favour. Tap when the light reaches the mark.", "光点走进金色那一段时点一下。她一步一步走向宝座。"),
-      B("The scepter is extended. The decree is not yet reversed.", "金杖伸了出来。但谕令还没有被翻转。"), "step")
+      B("The scepter is extended. The decree is not yet reversed.", "金杖伸了出来。但那道谕令还没有收回。"), "step")
   ],
   bush: [
     M("stray", "trace", "slope",

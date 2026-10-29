@@ -42,6 +42,13 @@ try {
   check(d.querySelector(".map-node"), "map missing");
   d.querySelector('.map-node[data-id="elah"]').click();
   d.querySelector('[data-action="enter-chapter"]').click();
+  /* A chapter opens on its own prelude page now; tap through it the way a
+     player does before asking for the dialogue box. */
+  for (let i = 0; i < 12 && !d.querySelector(".dialogue"); i++) {
+    const tap = d.querySelector('[data-action="tap-story"]');
+    if (!tap) break;
+    tap.click();
+  }
   check(d.querySelector(".dialogue"), "story dialogue missing");
   for (let i = 0; i < 40 && !d.querySelector('[data-action="choose"]'); i++) d.querySelector("#dialogue").click();
   check(d.querySelector('[data-action="choose"]'), "choices never appeared");

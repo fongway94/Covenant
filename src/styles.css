@@ -323,14 +323,17 @@ p { margin: 0 0 .85em; }
   font-size: .76rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold);
   text-shadow: 0 2px 8px #000;
 }
-.story-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; padding: 0 14px 12px; }
+.story-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; padding: 0 14px 12px; position: relative; }
 .story-hud { display: flex; gap: 6px; align-items: center; padding: 4px 0 10px; flex: 0 0 auto; flex-wrap: wrap; }
-.stat-chips { display: flex; gap: 5px; flex: 1; min-width: 0; }
+.stat-chips { display: flex; gap: 4px; flex: 1; min-width: 0; }
+/* English virtue names are long; a hyphen at a real syllable reads as type,
+   where a break inside a syllable reads as a bug. */
+body:not(.lang-zh) .chip { word-break: keep-all; }
 .chip {
-  flex: 1 1 0; min-width: 0; text-align: center; padding: 5px 3px; border-radius: 8px;
-  line-height: 1.25; overflow-wrap: anywhere;
+  flex: 1 1 0; min-width: 0; text-align: center; padding: 5px 2px; border-radius: 8px;
+  line-height: 1.25; overflow-wrap: anywhere; hyphens: auto;
   background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.07);
-  font-size: .6rem; letter-spacing: .04em; color: var(--muted);
+  font-size: .6rem; letter-spacing: 0; color: var(--muted);
 }
 .chip b { display: block; font-size: .84rem; color: var(--paper); font-family: var(--serif); }
 .chip.up { animation: chip-pop .7s ease; border-color: rgba(79,184,168,.6); }
@@ -465,7 +468,7 @@ p { margin: 0 0 .85em; }
   background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.08); color: var(--muted);
 }
 .tabs button.active { background: rgba(231,183,91,.13); border-color: var(--line); color: var(--gold); }
-.codex-list { display: grid; gap: 10px; }
+.codex-list { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); }
 .codex-item {
   display: flex; align-items: center; gap: 13px; width: 100%; text-align: left;
   padding: 13px; border-radius: 14px;
@@ -1169,18 +1172,48 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 
 .story-art { flex: 0 0 40%; min-height: 210px; max-height: 380px; background-position: center 32%; }
 
-/* While the answers are on screen the picture steps back a little: Chinese
-   answers run long, and the cards need the height more than the art does. */
-.story.choosing .story-art { flex-basis: 28%; min-height: 150px; max-height: 220px; }
-.story.choosing .choice-area { max-height: 68%; }
-/* The line just read stays on screen, but it stops eating the answers. Tap-to-
-   advance is already off on this page, so scrolling it cannot skip a line. */
-.story.choosing .dialogue { max-height: 30vh; overflow-y: auto; }
-/* On the answer page only the one-line "swipe or tap" hint earns its space;
-   the decorative paragraph above it would push a third answer off-screen. */
-.story.choosing .choice-aside { padding: 2px 20px 4px; }
-.story.choosing .choice-aside .ornament,
-.story.choosing .choice-aside p { display: none; }
+/* While the answers are on screen the picture steps back to a band: the cards
+   need the height far more than the art does. An answer that is only half
+   drawn reads as a broken button, so nothing on this page may take room the
+   cards need — the art shrinks to a strip, the line just read shrinks and then
+   scrolls, and the cards get every pixel that is left. */
+.story.choosing .story-art { flex: 0 0 96px; min-height: 96px; max-height: 96px; }
+/* Nothing else on this page may compete with the answers: the scene title, the
+   chapter tag, the floating figure and the virtue chips all step aside, and the
+   one control that can still change the outcome — praying, for a locked answer
+   — stays in a slim strip of its own. */
+.story.choosing .story-tag,
+.story.choosing .story-scene-title,
+.story.choosing .story-figure,
+.story.choosing .stat-chips { display: none; }
+.story.choosing .story-hud { justify-content: flex-end; padding: 2px 0 6px; }
+.story.choosing .story-body { padding-bottom: 6px; }
+.story.choosing .choice-area { flex: 1 1 auto; min-height: 0; max-height: none; gap: 6px; }
+/* The line just read stays on screen, but it yields to the answers: it shrinks
+   first and only then scrolls. Tap-to-advance is off on this page, so scrolling
+   it cannot skip a line. */
+.story.choosing .dialogue { flex: 0 1 auto; min-height: 56px; max-height: 36vh; padding: 10px 14px 8px; overflow-y: auto; }
+/* The name is enough here — the portrait costs a whole line of the text. */
+.story.choosing .speaker .portrait { display: none; }
+.story.choosing .speaker { min-height: 18px; }
+.dialogue.has-more { -webkit-mask-image: linear-gradient(180deg, #000 74%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(180deg, #000 74%, rgba(0,0,0,0) 100%); }
+.story.choosing .choice { padding: 10px 12px; }
+.story.choosing .choice .label { line-height: 1.3; font-size: calc(1rem * var(--choice-fit, 1)); }
+.story.choosing .choice .hint { font-size: calc(.8rem * var(--choice-fit, 1)); }
+/* The "swipe or tap" footer is guidance, not content; the cards own the page. */
+.story.choosing .choice-aside { display: none; }
+/* Answers still longer than the phone (English at the largest text size on a
+   360px screen) get an honest cue instead of a silently cropped card. */
+.choice-more {
+  position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: 54px;
+  display: none; align-items: flex-end; justify-content: center; padding-bottom: 4px;
+  background: linear-gradient(180deg, rgba(11,20,28,0) 0%, rgba(11,20,28,.86) 62%, #0b141c 100%);
+  pointer-events: none; text-align: center;
+  font-size: .62rem; letter-spacing: .14em; color: var(--gold);
+}
+.choice-more.on { display: flex; }
+.choice-more span { opacity: .85; animation: moreNudge 1.8s ease-in-out infinite; }
+@keyframes moreNudge { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 .story-foreground {
   position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; height: 42%;
   pointer-events: none;

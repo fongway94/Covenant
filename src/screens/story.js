@@ -130,6 +130,7 @@ export function mountStory(ui) {
   if (!ui.story) return;
   const p = ui.story.phase;
   if (p === "lines" || p === "reply") renderLineDOM(ui);
+  else if (p === "choices") mountChoices();
   else if (p === "mini") { startMiniLoop(ui); mountDemos(document); }
   else if (p === "action") {
     if (ui.story.game?.ready) mountActionScene(ui);
@@ -154,6 +155,62 @@ function mountPrelude() {
   body.addEventListener("scroll", sync, { passive: true });
   sync();
   requestAnimationFrame(sync);
+}
+
+/* If the answers are taller than the phone, say so. A card that is quietly cut
+   in half looks like a button that failed to draw; one card plus a "more
+   below" cue looks like a list you can push up. Runs after every re-render and
+   re-checks on scroll, so it also survives a font-size change. */
+function mountChoices() {
+  const area = document.getElementById("choice-area");
+  const cue = document.getElementById("choice-more");
+  const line = document.getElementById("dialogue");
+  if (!area || !cue) return;
+
+  /* Answers that are a few pixels too tall would otherwise be cropped — the one
+     thing that must never happen to a choice. Three steps, in order of what a
+     player would give up last: the line already read gives up its spare room,
+     then the answer text steps down (but never below normal reading size), and
+     only then does the line shrink to a teaser. Whatever is still left over
+     gets an honest "more below" cue instead of a silently half-drawn card. */
+  /* Measure the cards themselves, not the scroll box: the entrance animation
+     nudges each card down for half a second, and reading that as overflow made
+     the page shrink text it did not need to shrink. */
+  const over = () => {
+    const cards = area.querySelectorAll(".choice");
+    if (!cards.length) return false;
+    const gap = parseFloat(getComputedStyle(area).rowGap) || 0;
+    const top = parseFloat(getComputedStyle(area).paddingTop) || 0;
+    let need = top;
+    cards.forEach((c) => { need += c.offsetHeight; });
+    need += gap * (cards.length - 1);
+    return need > area.clientHeight + 2;
+  };
+  const fit = () => {
+    area.style.removeProperty("--choice-fit");
+    if (line) line.style.removeProperty("max-height");
+    if (line) {
+      let h = line.getBoundingClientRect().height;
+      while (over() && h > 118) { h -= 22; line.style.maxHeight = h + "px"; }
+    }
+    let k = 1;
+    while (over() && k > 0.8) { k -= 0.04; area.style.setProperty("--choice-fit", k.toFixed(2)); }
+    if (line) {
+      let h = line.getBoundingClientRect().height;
+      while (over() && h > 56) { h -= 18; line.style.maxHeight = h + "px"; }
+    }
+  };
+  const sync = () => {
+    const more = area.scrollHeight - area.scrollTop - area.clientHeight > 6;
+    area.classList.toggle("has-more", more);
+    cue.classList.toggle("on", more);
+    if (line) line.classList.toggle("has-more", line.scrollHeight - line.clientHeight > 6);
+  };
+  area.addEventListener("scroll", sync, { passive: true });
+  if (line) line.addEventListener("scroll", sync, { passive: true });
+  fit();
+  sync();
+  requestAnimationFrame(() => { fit(); sync(); });
 }
 
 /* ------------------------------------------------------------------ choices */
@@ -209,7 +266,7 @@ export function chooseOption(ui, index, force = false) {
 export function revealHints(ui) {
   const s = st(ui);
   if (!s || s.phase !== "choices" || s.revealed) return false;
-  if (!spendGuidance(ui.state, 1)) { toast(tx("You need one Guidance. Pray or rest at the campfire.", "你需要 1 点引导。可以祷告，或在营火旁歇息。"), "✟"); return false; }
+  if (!spendGuidance(ui.state, 1)) { toast(tx("You need one Guidance. Pray or rest at the campfire.", "引导不够了，还差 1 点。祷告一次，或到营火旁歇一会儿。"), "✟"); return false; }
   addHintUse(ui.state, 1);
   s.revealed = true;
   sfx("unlock");
@@ -224,7 +281,7 @@ export function guidedChoose(ui, index) {
   if (!s || s.phase !== "choices") return false;
   const choice = node(ui).choices[index];
   if (!choice || meets(ui, choice.require)) return false;
-  if (!spendGuidance(ui.state, 2)) { toast(tx("You need two Guidance. Pray or rest at the campfire.", "你需要 2 点引导。可以祷告，或在营火旁歇息。"), "✟"); return false; }
+  if (!spendGuidance(ui.state, 2)) { toast(tx("You need two Guidance. Pray or rest at the campfire.", "引导不够了，还差 2 点。祷告一次，或到营火旁歇一会儿。"), "✟"); return false; }
   addHintUse(ui.state, 1);
   toast(tx("Guidance opened the door", "引导为你开了门"), "✟");
   chooseOption(ui, index, true);
@@ -636,9 +693,9 @@ function hotspotsBrief(ui, cfg) {
         eyebrow: tx("LANTERN SEARCH", "提灯搜寻"),
         title: tx(cfg.title, cfg.titleZh),
         prompt: tx(cfg.prompt, cfg.promptZh),
-        demo: "drag", demoLabel: tx("Watch the hand, then try it", "看它怎么动，再自己试一次"),
+        demo: "drag", demoLabel: tx("Watch the hand, then try it", "先看一遍示范，再自己来"),
         how: [tx("Drag a finger across the picture and the lantern follows it.", "手指在画面上慢慢拖，提灯就跟着你的手走。"),
-              tx("Only what the lantern touches can be seen. Pale shapes are decoys — three wrong ones end the search.", "提灯照到哪里，哪里才看得见；浅色的影子都是假的。认错三次，这次搜寻就先到这里。")],
+              tx("Only what the lantern touches can be seen. Pale shapes are decoys — three wrong ones end the search.", "提灯照到哪里，哪里才亮；浅色的影子都是假的。看错三次，这次搜寻就结束。")],
         note: tx("The search starts when you light the lantern.", "点亮提灯，搜寻才开始。"),
         start: "hotspot-start", startLabel: tx("Light the lantern", "点亮提灯"),
         skip: "hotspot-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不拿奖励")
@@ -678,7 +735,7 @@ function hotspotsHtml(ui) {
     ${done
       ? `<div class="hotspot-done"><div class="result-icon">✦</div><h3>${tx("Well done!", "做得好！")}</h3><p class="small muted">${tx("Bonus earned", "获得奖励")} · +${cfg.xp || 8} ${tx("XP", "经验")} · ${tx("Found", "已找到")} ${h.found.length}/${cfg.count}</p>
          <button class="btn btn-primary hotspot-done-btn" data-action="hotspot-done">${tx("Keep going", "继续")} ${icon("forward", 16)}</button></div>`
-      : `<div class="hotspot-foot"><p class="tiny muted">${tx("Drag the lantern to reveal · avoid the pale decoys · 3 mistakes ends the search", "拖动提灯照一照 · 浅色的都是假的 · 认错三次就结束")}</p>
+      : `<div class="hotspot-foot"><p class="tiny muted">${tx("Drag the lantern to reveal · avoid the pale decoys · 3 mistakes ends the search", "拖动提灯照一照 · 浅色的都是假的 · 看错三次就结束")}</p>
          <button class="btn btn-ghost btn-sm hotspot-skip" data-action="hotspot-skip">${tx("Skip — no bonus", "跳过 · 不拿奖励")}</button></div>`}
   </div>`;
 }
@@ -830,12 +887,20 @@ function burstReward(ui) {
   }
 }
 
-function hudRow(ui, ch) {
+/* The four virtue names sit in a quarter of a phone's width. English words
+   that long break inside a syllable on a narrow screen, which reads as a bug;
+   a soft hyphen gives the browser an honest place to break ("Com-passion")
+   without changing the word when there is room. Chinese needs neither. */
+const HYPHENATED = { Courage: "Cour\u00ADage", Wisdom: "Wis\u00ADdom", Compassion: "Com\u00ADpas\u00ADsion" };
+const chipLabel = (name, zh) => (zh ? name : HYPHENATED[name] || name);
+
+function hudRow(ui, ch, compact = false) {
   const s = ui.state;
   const bump = st(ui).bump || {};
-  const chips = STAT_KEYS.map((k) => `<div class="chip ${bump[k] ? "up" : ""}"><b>${s.stats[k]}</b>${esc(STATS[k].name)}</div>`).join("");
+  const zh = document.documentElement.lang.startsWith("zh");
+  const chips = STAT_KEYS.map((k) => `<div class="chip ${bump[k] ? "up" : ""}"><b>${s.stats[k]}</b>${esc(chipLabel(STATS[k].name, zh))}</div>`).join("");
   const prayed = hasPrayed(s, ch.id);
-  return `<div class="story-hud">
+  return `<div class="story-hud${compact ? " hud-compact" : ""}">
     <div class="stat-chips">${chips}</div>
     <span class="guidance-mini" title="${tx("Guidance", "引导")}">✟ ${adventure(s).guidance || 0}</span>
     <button class="pray-btn" id="pray-btn" data-hold="pray" data-action="pray-now" ${prayed ? "disabled" : ""} aria-label="${tx("Hold to pray", "按住祷告")}"><span class="pray-ring"></span>${icon("pray", 13)} <span>${prayed ? tx("Prayed", "已祷告") : tx("Pray", "祷告")}</span></button>
@@ -854,7 +919,7 @@ function choicesHtml(ui) {
       const need = c.require ? Object.entries(c.require).map(([k, v]) => `${STATS[k].name} ${v}`).join(" & ") : "";
       const cls = ["choice", locked ? "locked" : "", c.faith && !locked ? "faith" : "", clean && !showHints ? "clean" : ""].filter(Boolean).join(" ");
       const hint = !showHints ? "" : locked
-        ? tx(`Requires ${need} — pray once this chapter, or keep growing.`, `需要${need}——可在本章祷告一次，或继续成长。`)
+        ? tx(`Requires ${need} — pray once this chapter, or keep growing.`, `需要${need}——本章祷告一次，或多走几步就长上来了。`)
         : (c.hint || "");
       const guided = locked && clean && !showHints && guidance >= 2;
       const action = locked ? (guided ? "guided-choice" : "locked-choice") : "choose";
@@ -893,10 +958,10 @@ function miniHtml(ui) {
         title: cfg.title,
         prompt: cfg.prompt,
         demo: "taprow",
-        demoLabel: tx("Watch the hand, then try it", "看它怎么动，再自己试一次"),
+        demoLabel: tx("Watch the hand, then try it", "先看一遍示范，再自己来"),
         how: [tx("A light runs back and forth along the track.", "光点会沿着横线来回走。"),
               tx("Tap once, when it is inside the gold mark.", "光点走进金色那一段时，点一下。")],
-        note: tx("Press the button and the light starts moving.", "按下按钮，光点才开始走。"),
+        note: tx("Press the button and the light starts moving.", "点了开始，光点才会动。"),
         start: "mini-start", startLabel: tx("Start", "开始"),
         skip: "mini-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不拿奖励")
       })}
@@ -936,7 +1001,7 @@ function briefHtml(ui, o) {
       <div class="eyebrow">${esc(o.eyebrow)}</div>
       <h2>${esc(o.title)}</h2>
       ${o.prompt ? `<p class="brief-prompt">${esc(o.prompt)}</p>` : ""}
-      ${o.demo ? `<div class="brief-demo"><canvas data-demo="${esc(o.demo)}" aria-hidden="true"></canvas><span><b>${esc(o.demoLabel || tx("Watch the hand", "看它怎么动"))}</b>${esc(o.demoNote || "")}</span></div>` : ""}
+      ${o.demo ? `<div class="brief-demo"><canvas data-demo="${esc(o.demo)}" aria-hidden="true"></canvas><span><b>${esc(o.demoLabel || tx("Watch the hand", "先看示范"))}</b>${esc(o.demoNote || "")}</span></div>` : ""}
       ${rows}
       ${o.note ? `<p class="brief-note">${esc(o.note)}</p>` : ""}
       <button class="btn btn-primary brief-start" data-action="${o.start}">${icon("play", 16)} ${esc(o.startLabel || tx("Start", "开始"))}</button>
@@ -981,13 +1046,13 @@ function actBriefHtml(ui, info, { first, resuming = false }) {
         title: info.title,
         prompt: info.prompt,
         demo: info.demo,
-        demoLabel: tx("Watch the hand, then try it", "看它怎么动，再自己试一次"),
+        demoLabel: tx("Watch the hand, then try it", "先看一遍示范，再自己来"),
         how: [info.how || info.hint || ""].filter(Boolean),
         note: resuming
-          ? tx("No rush — the scene waits here while you read.", "不着急，你读的时候，画面就停在这里等你。")
+          ? tx("No rush — the scene waits here while you read.", "不着急。先读完，准备好了再点开始。")
           : first
-            ? tx("No rush. Press the button below when you are ready.", "不着急，准备好了就按下面的按钮开始。")
-            : tx("No rush. Press the button and this act begins; your score carries on.", "不着急。按下面的按钮，这一幕才接上；前面的得分会带过来。"),
+            ? tx("No rush. Press the button below when you are ready.", "不着急，准备好了再点开始。")
+            : tx("No rush. Press the button and this act begins; your score carries on.", "不着急。点了开始才进这一幕，分数接着算。"),
         start: first ? "game-start" : "game-act-start",
         startLabel: resuming
           ? tx("Back to the scene", "接着玩")
@@ -1027,7 +1092,7 @@ function actionHtml(ui) {
         <div class="paused-how">
           <canvas data-demo="${esc(info.demo)}" aria-hidden="true"></canvas>
           <div>
-            <b>${tx("How to play", "这样玩")}</b>
+            <b>${tx("How to play", "怎么玩")}</b>
             <p class="small">${esc(info.how || info.hint)}</p>
             <p class="tiny muted">${tx("Whenever you are ready.", "想好了再接着玩。")}</p>
           </div>
@@ -1053,7 +1118,7 @@ function actionResultHtml(ui) {
       <h2>${esc(ok ? tx("Well done!", "做得好！") : tx("The story continues.", "故事继续。"))}</h2>
       <div class="result-stars">${[0, 1, 2].map((i) => `<span class="${i < stars ? "on" : ""}">★</span>`).join("")}</div>
       <div class="result-score">${tx("SCORE", "得分")} <strong>${r.score || 0}</strong></div>
-      ${r.late ? `<div class="tiny muted">${tx("You took it slowly — the scene is no less yours for it.", "你走得慢一点，可这一幕一样是你亲手走完的。")}</div>` : ""}
+      ${r.late ? `<div class="tiny muted">${tx("You took it slowly — the scene is no less yours for it.", "慢一点也一样——这一幕照样是你自己走完的。")}</div>` : ""}
       <div class="card-quiet small">${esc(ok ? tx("Bonus earned", "获得奖励") + " · +14 " + tx("XP", "经验") + " · +1 " + tx("Courage", "勇气") + " · +1 " + tx("Faith", "信心") : tx("No bonus", "这次没有额外奖励"))}</div>
       <button class="btn btn-primary" data-action="action-done">${tx("Keep going", "继续")} ${icon("forward", 16)}</button>
     </div>
@@ -1225,9 +1290,9 @@ function momentHtml(ui) {
         <div class="moment-meter-track"><i id="moment-meter"></i></div>
         <div class="moment-feedback" id="moment-feedback"></div>`
           : `<div class="brief-inline">
-              <div class="brief-demo" aria-hidden="true"><canvas data-demo="${esc(momentDemo(m.kind))}" aria-hidden="true"></canvas><span><b>${tx("Watch the hand, then try it", "看它怎么动，再自己试一次")}</b></span></div>
+              <div class="brief-demo" aria-hidden="true"><canvas data-demo="${esc(momentDemo(m.kind))}" aria-hidden="true"></canvas><span><b>${tx("Watch the hand, then try it", "先看一遍示范，再自己来")}</b></span></div>
               <p class="brief-one">${esc(momentHow(m.kind))}</p>
-              <p class="brief-note">${tx("No rush. Press the button below when you are ready.", "不着急，准备好了就按下面的按钮开始。")}</p>
+              <p class="brief-note">${tx("No rush. Press the button below when you are ready.", "不着急，准备好了再点开始。")}</p>
               <button class="btn btn-primary brief-start" data-action="moment-start">${icon("play", 16)} ${tx("Start this moment", "开始这一刻")}</button>
             </div>`}
         <button class="btn btn-ghost btn-sm" data-action="moment-skip">${tx("Skip this moment", "跳过这一刻")}</button>
@@ -1304,7 +1369,7 @@ export function storyHtml(ui) {
     </div>
     <div class="story-body">
       <div class="story-art-echo" style="background-image:url('${ch.art}')"></div>
-      ${hudRow(ui, ch)}
+      ${hudRow(ui, ch, s.phase === "choices")}
       <div class="dialogue" data-action="tap-story" id="dialogue">
         ${speakerMarkup(ch, who)}
         <p class="dialogue-text" id="dialogue-text">${shownText}</p>
@@ -1312,6 +1377,7 @@ export function storyHtml(ui) {
       </div>
       ${typingPhase ? `<div class="story-tapzone" data-action="tap-story"><span class="ornament">✧</span><small>${tx("Tap anywhere to continue", "点击任意处继续")}</small></div>` : ""}
       <div class="choice-area" id="choice-area">${choicesHtml(ui)}</div>
+      ${s.phase === "choices" ? `<div class="choice-more" id="choice-more" aria-hidden="true"><span>▾ ${tx("More answers below", "下面还有选项")}</span></div>` : ""}
       ${s.phase === "choices" && !ui.state?.settings?.cleanMode ? `<div class="choice-aside"><span class="ornament">✧</span><p>${tx("Your choices shape you — the story stays true to Scripture.", "你的选择塑造你自己——故事始终忠于圣经。")}</p><small>${tx("Swipe or tap a choice", "滑动或点击选项")}</small></div>` : ""}
     </div>
     ${s.phase === "mini" ? miniHtml(ui) : ""}
