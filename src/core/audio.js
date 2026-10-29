@@ -241,10 +241,10 @@ const PRESETS = {
   night:  { root: 130.81, mode: "dorian",  prog: PROG.minor,   beat: 1.04, drone: 0.016, pad: 0.055, pluck: 0.052, reed: 0.054, drum: 0.16, bell: 0.10, bright: 2500, reverb: 0.34, noise: 0.008, cutoff: 360,  intens: 0.7 },
   desert: { root: 164.81, mode: "mixo",    prog: PROG.major,   beat: 0.80, drone: 0.017, pad: 0.056, pluck: 0.054, reed: 0.058, drum: 0.48, bell: 0.06, bright: 3200, reverb: 0.26, noise: 0.034, cutoff: 1200, intens: 1.2 },
   sea:    { root: 146.83, mode: "mixo",    prog: PROG.major,   beat: 0.94, drone: 0.018, pad: 0.056, pluck: 0.054, reed: 0.058, drum: 0.22, bell: 0.10, bright: 2700, reverb: 0.32, noise: 0.044, cutoff: 460,  intens: 1.0 },
-  field:  { root: 220.00, mode: "ionian",  prog: PROG.major,   beat: 0.76, drone: 0.014, pad: 0.048, pluck: 0.060, reed: 0.056, drum: 0.26, bell: 0.10, bright: 3200, reverb: 0.24, noise: 0.016, cutoff: 950,  intens: 0.9 },
+  field:  { root: 174.61, mode: "ionian",  prog: PROG.major,   beat: 0.76, drone: 0.014, pad: 0.048, pluck: 0.060, reed: 0.056, drum: 0.26, bell: 0.10, bright: 3200, reverb: 0.24, noise: 0.016, cutoff: 950,  intens: 0.9 },
   temple: { root: 155.56, mode: "dorian",  prog: PROG.minor,   beat: 0.98, drone: 0.017, pad: 0.056, pluck: 0.052, reed: 0.054, drum: 0.16, bell: 0.14, bright: 2600, reverb: 0.36, noise: 0.010, cutoff: 440,  intens: 0.75 },
   city:   { root: 196.00, mode: "mixo",    prog: PROG.major,   beat: 0.72, drone: 0.014, pad: 0.048, pluck: 0.054, reed: 0.058, drum: 0.44, bell: 0.05, bright: 3100, reverb: 0.24, noise: 0.028, cutoff: 1300, intens: 1.1 },
-  finale: { root: 220.00, mode: "ionian",  prog: PROG.major,   beat: 0.84, drone: 0.016, pad: 0.055, pluck: 0.056, reed: 0.064, drum: 0.36, bell: 0.12, bright: 3300, reverb: 0.30, noise: 0.012, cutoff: 820,  intens: 0.85 }
+  finale: { root: 196.00, mode: "ionian",  prog: PROG.major,   beat: 0.84, drone: 0.016, pad: 0.055, pluck: 0.056, reed: 0.064, drum: 0.36, bell: 0.12, bright: 3300, reverb: 0.30, noise: 0.012, cutoff: 820,  intens: 0.85 }
 };
 
 /** The written material, exposed so the checks can reason about harmony
