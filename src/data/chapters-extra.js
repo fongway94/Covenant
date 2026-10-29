@@ -174,7 +174,7 @@ export const EXTRA_CHAPTERS = [
     scroll: {
       verse: ["And Ruth said, Intreat me not to leave thee … for whither thou goest, I will go; and where thou lodgest, I will lodge: thy people shall be my people, and my God my God.", "路得说：「不要催我回去不跟随你。你往哪里去，我也往那里去；你在哪里住宿，我也在那里住宿；你的国就是我的国，你的神就是我的神。」"],
       ref: ["Ruth 1:16 (KJV)", "路得记 1:16（和合本）"],
-      note: ["Ruth was a Moabite — an outsider with no status in Bethlehem. Gleaning was the ancient safety net: the poor could follow the reapers and pick up what was dropped. Boaz's generosity turns a survival mechanism into a love story.", "路得是摩押人——在伯利恒抬不起头的外乡人。拾穗是古时给穷人的活路：跟在收割的人后面，捡掉在地上的麦穗。波阿斯的慷慨，让一条活路变成了爱情。"],
+      note: ["Ruth was a Moabite — an outsider with no status in Bethlehem. Gleaning was the ancient safety net: the poor could follow the reapers and pick up what was dropped. Boaz's generosity turns a survival mechanism into a love story.", "路得是摩押人——在伯利恒抬不起头的外乡人。拾穗是古时给穷人的活路：跟在收割的人后面，捡掉在地上的麦穗。波阿斯多留的那几把麦穗，成了这段爱情的开头。"],
       timeline: ["c. 1100 BC · Bethlehem, harvest season", "约公元前 1100 年 · 伯利恒，收割季节"]
     },
     cast: {
@@ -196,7 +196,7 @@ export const EXTRA_CHAPTERS = [
         ),
         choices: [
           C(["Walk behind them, carrying the bundle", "跟在她们后面，替她们背包袱"], "field", { stat: { compassion: 2 }, xp: 8, reply: ["The bundle is not heavy. The silence between the two women is.", "行李不重。两个女人之间的沉默才重。"], replyBy: "" }),
-          C(["Ask Corin why Ruth would choose hardship", "问柯林，路得为何选择吃苦"], "field", { stat: { wisdom: 2 }, xp: 8, reply: ["“Because love is not a calculation,” he says. “It is a direction. She has picked hers.”", "「因为爱不是计算，」他说，「爱是一个方向。她已经选好了。」"], replyBy: "elias" }),
+          C(["Ask Corin why Ruth would choose hardship", "问柯林，路得为何选择吃苦"], "field", { stat: { wisdom: 2 }, xp: 8, reply: ["“Because love is not a calculation,” he says. “It is a direction. She has picked hers.”", "「因为爱不是先算清楚划不划算，」他说，「爱是朝着一个人走过去。她已经走过去了。」"], replyBy: "elias" }),
           C(["Pray that Bethlehem receives them", "祷告伯利恒能接纳她们"], "field", { stat: { faith: 2 }, xp: 8, faith: true, tag: ["Faith", "信心"], reply: ["You have no idea how literally that prayer will be answered.", "你还不知道，这个祷告会怎样一字不差地应验。"], replyBy: "" })
         ]
       },
@@ -228,7 +228,7 @@ export const EXTRA_CHAPTERS = [
       end: {
         end: true,
         lines: L(
-          ["elias", "Ruth did not save Israel. She simply refused to leave one person. Great stories are usually built out of small refusals.", "路得没有拯救以色列，她只是不肯离开一个人。许多伟大的故事，就是从一个很小的「不肯」开始的。"],
+          ["elias", "Ruth did not save Israel. She simply refused to leave one person. Great stories are usually built out of small refusals.", "路得没有拯救以色列，她只是不肯离开一个人。许多后来很大的事，一开始只是有人在很小的地方说了「不」。"],
           ["", "The sun goes down over the barley. Naomi carries the basket home; Ruth carries Naomi’s hand.", "太阳落在大麦田上。拿俄米抱着篮子回家；路得牵着拿俄米的手。"],
           ["", "The scroll turns, smelling faintly of cut grain.", "书卷翻页，带着淡淡的麦香。"]
         )
@@ -322,9 +322,9 @@ export const EXTRA_CHAPTERS = [
       end: {
         end: true,
         lines: L(
-          ["elias", "The book ends with God’s question hanging in the air. He does not answer it. He wants Jonah — and us — to answer it.", "这卷书停在一个悬在半空的问题上。神没有回答，祂要约拿——也要我们——自己回答。"],
+          ["elias", "The book ends with God’s question hanging in the air. He does not answer it. He wants Jonah — and us — to answer it.", "这卷书停下来的时候，那个问题还悬在半空。神没有回答，祂要约拿——也要我们——自己回答。"],
           ["", "Should I not spare Nineveh? The wind moves over the fields. Somewhere a worm eats a plant.", "我岂能不爱惜尼尼微呢？风吹过田野。不知哪里，一条虫正在啃一棵植物。"],
-          ["", "The scroll closes on the question, not the answer.", "书卷合上了，合在一个问题上，而不是一个答案上。"]
+          ["", "The scroll closes on the question, not the answer.", "书卷合上了。它留给你的不是一个答案，而是一个问题。"]
         )
       }
     },
