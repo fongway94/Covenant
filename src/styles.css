@@ -1688,6 +1688,16 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
   touch-action: manipulation;
 }
 .action-pause:active { transform: scale(.94); background: rgba(231,183,91,.16); }
+/* "how do I play this?" — reopens the briefing, animation and all, over a
+   held scene. Same size and place as the pause button so it never moves. */
+.action-help {
+  display: grid; place-items: center; width: 34px; height: 30px;
+  border-radius: 9px; border: 1px solid rgba(255,255,255,.16);
+  background: rgba(8,18,25,.55); color: var(--gold-light);
+  font-size: .92rem; font-weight: 700; line-height: 1; cursor: pointer;
+  touch-action: manipulation;
+}
+.action-help:active { transform: scale(.94); background: rgba(231,183,91,.16); }
 
 .action-paused {
   position: absolute; inset: 0; z-index: 8;

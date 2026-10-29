@@ -87,7 +87,7 @@ function slingHand(c) {
 }
 
 const sling = {
-  demo: "aim",
+  demo: "aimrelease",
   titleEn: "The Sling", titleZh: "甩石迎敌",
   promptEn: "Drag away from David to wind the sling, release to fire. Strike Goliath's forehead twice — mind the wind and his raised shield.",
   promptZh: "从大卫身后往外拖，蓄住力再松手投石。要打中歌利亚的额头两次。小心风，也小心他抬起来的盾牌。",
@@ -1634,7 +1634,7 @@ const flame = {
 
 /* ─────────────── 4. NINEVEH — carry the cry through the city ─────────────── */
 const cry = {
-  demo: "tap",
+  demo: "walktap",
   titleEn: "Yet forty days", titleZh: "再等四十日",
   promptEn: "Nineveh is three days wide and the message is one sentence. Walk the street — drag to move — and stop where people are listening long enough to cry it out.",
   promptZh: "尼尼微大得三天也走不完，可要说的话只有一句。顺着街往前走，在有人肯听的地方停下，把话喊出去。",
@@ -1785,7 +1785,7 @@ const cry = {
 /* ---------------------------------------------------------------- 4. STORM */
 
 const storm = {
-  demo: "drag",
+  demo: "steer",
   titleEn: "Hold the Tiller", titleZh: "掌舵迎浪",
   promptEn: "Drag to counter-steer the boat against the waves. Tap BAIL to throw water out. Survive until the storm breaks.",
   promptZh: "拖动船舵顶住风浪，点击「舀水」把舱里的水泼出去。撑到风浪过去。",
@@ -2340,7 +2340,7 @@ const desert = {
 
 /* ══════════════════════ 7b. RUTH — glean before sunset ══════════════════════ */
 const glean = {
-  demo: "hold",
+  demo: "catch",
   art: "assets/art/ruth.jpg", weather: "petals",
   titleEn: "Glean the field", titleZh: "拾取麦穗",
   promptEn: "Gather 12 sheaves of barley before the sun sets. Keep clear of the swinging sickles — Boaz has told his men to leave extra for you.",
@@ -2662,7 +2662,7 @@ function roundPrayer(n) {
 
 /* ══════════════════════ 7d. ZACCHAEUS — climb the sycamore ══════════════════════ */
 const climb = {
-  demo: "lift",
+  demo: "twosides",
   titleEn: "Climb the sycamore", titleZh: "爬上桑树",
   promptEn: "Hand over hand: pull up on the side the light is on, then the other. Eight holds and you are above the crowd — pull on the wrong branch and you lose your grip.",
   promptZh: "两只手换着来：哪一侧有光，就从哪一侧往上拉。拉够八次，你就高过人群；拉错了枝子会脱手。",

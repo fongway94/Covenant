@@ -11,7 +11,7 @@ import { mapHtml, journalHtml, characterHtml } from "./screens/world.js";
 import { modalHtml } from "./screens/modals.js";
 import { campHtml, finaleHtml, startBreath, tapBreath } from "./screens/camp.js";
 import {
-  storyHtml, mountStory, cleanupStory, startChapter, tapStory, chooseOption, exitChapterToMap, startAct,
+  storyHtml, mountStory, cleanupStory, startChapter, tapStory, chooseOption, exitChapterToMap, startAct, showActHelp,
   continueStory, prayNow, openScroll, miniTap, miniSkip, reflectAnswer,
   goToReflection, leaveStory, finishStory,
   skipAction, actionDone, hotspotTap, hotspotDone, hotspotSkip,
@@ -255,6 +255,7 @@ root.addEventListener("click", (e) => {
 
     case "game-start": startActionNow(ui); break;
     case "game-act-start": startAct(ui); break;
+    case "game-help": showActHelp(ui); break;
     case "game-pause": pauseGame(ui, { by: "user" }); break;
     case "game-resume": resumeGame(ui); break;
     case "game-skip": skipAction(ui); break;

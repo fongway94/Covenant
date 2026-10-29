@@ -377,11 +377,30 @@ function mountActionScene(ui) {
 export function startAct(ui) {
   const s = st(ui);
   if (!s?.game?.actGate) return;
+  const wasHelp = !!s.game.helpHeld;     // the card was opened from the help button
   s.game.actGate = null;
+  s.game.helpHeld = false;
   sfx("tap");
   bus.render();
   const controller = s.game.controller;
-  if (controller) requestAnimationFrame(() => { try { controller.beginAct(); } catch { /* noop */ } });
+  if (!controller) return;
+  requestAnimationFrame(() => {
+    try { if (wasHelp) controller.resume(); else controller.beginAct(); } catch { /* noop */ }
+  });
+}
+
+/** "How does this work again?" — reopen the briefing for the act being played,
+    animation and all, and hold the scene while it is read. */
+export function showActHelp(ui) {
+  const s = st(ui);
+  if (!s?.game || s.phase !== "action") return false;
+  const idx = (() => { try { return s.game.controller?.actIndex?.() || 0; } catch { return 0; } })();
+  s.game.actGate = gameInfo(s.game.key, idx);
+  s.game.helpHeld = true;
+  try { s.game.controller?.pause(); } catch { /* noop */ }
+  sfx("tap");
+  bus.render();
+  return true;
 }
 
 function finishAction(ui, result) {
@@ -947,7 +966,7 @@ function momentHow(kind) {
 /* One card per act. The first act is announced before the canvas exists; every
    later act is announced the same way, and nothing in it moves until the player
    presses the button. */
-function actBriefHtml(ui, info, { first }) {
+function actBriefHtml(ui, info, { first, resuming = false }) {
   const ch = chapter(ui);
   const of = info.acts > 1 ? tx(`Act ${info.act} of ${info.acts}`, `第 ${info.act} 幕，共 ${info.acts} 幕`) : "";
   return `${first ? `<div class="action-art" style="background-image:url('${ch.art}')"></div>` : ""}
@@ -962,11 +981,15 @@ function actBriefHtml(ui, info, { first }) {
           info.hint ? tx(`Your hand: ${info.hint}`, `手怎么动：${info.hint}`) : "",
           tx("No clock is running. Taking your time only lowers the score.", "没有倒计时。慢一点，只是得分少一点，不会输。")
         ].filter(Boolean),
-        note: first
-          ? tx("Nothing has started yet — press the button when you are ready.", "现在还没有开始，准备好再按下面的按钮。")
-          : tx("This act is held until you press the button. Your score carries over.", "这一幕先停着，按了按钮才动。分数接着算。"),
+        note: resuming
+          ? tx("The scene is held while you read. Nothing is lost.", "你读的时候，画面停着。什么都不会丢。")
+          : first
+            ? tx("Nothing has started yet — press the button when you are ready.", "现在还没有开始，准备好再按下面的按钮。")
+            : tx("This act is held until you press the button. Your score carries over.", "这一幕先停着，按了按钮才动。分数接着算。"),
         start: first ? "game-start" : "game-act-start",
-        startLabel: first ? tx("Start this scene", "开始这一关") : tx("Start this act", "开始这一幕"),
+        startLabel: resuming
+          ? tx("Back to the scene", "接着玩")
+          : first ? tx("Start this scene", "开始这一关") : tx("Start this act", "开始这一幕"),
         skip: "game-skip", skipLabel: tx("Skip — no bonus", "跳过 · 不给分")
       })}`;
 }
@@ -986,13 +1009,14 @@ function actionHtml(ui) {
     <canvas id="action-canvas" class="action-canvas" aria-label="${esc(info.title)}"></canvas>
     <div class="action-head compact">
       <div class="action-tools">
+        <button class="action-help" data-action="game-help" aria-label="${tx("How do I play this?", "这一关怎么玩？")}">?</button>
         <button class="action-pause" data-action="game-pause" aria-label="${tx("Pause", "暂停")}">❚❚</button>
         <button class="action-skip" data-action="game-skip">${tx("Skip", "跳过")} →</button>
       </div>
       <h2>${esc(info.title)}</h2>
       <p class="small">${esc(info.hint)}</p>
     </div>
-    ${gate ? `<div class="act-gate">${actBriefHtml(ui, info, { first: false })}</div>` : ""}
+    ${gate ? `<div class="act-gate">${actBriefHtml(ui, info, { first: false, resuming: !!s.game.helpHeld })}</div>` : ""}
     <div class="action-paused ${s.game?.paused ? "on" : ""}" data-action="game-resume">
       <div class="action-paused-card">
         <div class="action-paused-glyph">❚❚</div>

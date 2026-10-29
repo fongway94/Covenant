@@ -10,7 +10,9 @@
 
 const KINDS = new Set([
   "circle", "hold", "tap", "jump", "duck", "jumpduck", "drag", "pull", "lift",
-  "path", "aim", "taprow"
+  "path", "aim", "taprow",
+  /* compound gestures, for the chapter's own game */
+  "walktap", "catch", "twosides", "steer", "aimrelease"
 ]);
 
 const TAU = Math.PI * 2;
@@ -236,6 +238,144 @@ function paint(ctx, kind, w, h, p, t) {
     ctx.restore();
     finger(ctx, tx, ty, r, 1, p > 0.45 ? 0.7 : 0.25);
     if (p > 0.5) ripple(ctx, tx, ty, (p - 0.5) / 0.5, "170,220,250");
+  } else if (kind === "walktap") {
+    /* walk along the street, stop in front of the door, then call out */
+    const door = { x: w * 0.72, y: cy };
+    ctx.save();
+    ctx.strokeStyle = "rgba(226,206,164,.6)"; ctx.lineWidth = 2;
+    ctx.strokeRect(door.x - 11, door.y - 20, 22, 40);
+    ctx.fillStyle = "rgba(255,232,180,.7)";
+    ctx.beginPath(); ctx.arc(door.x, door.y - 6, 2.4, 0, TAU); ctx.fill();
+    ctx.restore();
+    if (p < 0.62) {
+      const q = p / 0.62;
+      ctx.save();
+      ctx.strokeStyle = "rgba(226,206,164,.45)"; ctx.lineWidth = 2; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(w * 0.14, cy + 18); ctx.lineTo(door.x - 22, cy + 18); ctx.stroke();
+      ctx.restore();
+      const x = w * 0.14 + q * (door.x - 22 - w * 0.14);
+      finger(ctx, x, cy + 18, r * 0.92, 1, 0.45);
+    } else {
+      const q = (p - 0.62) / 0.38;
+      const vx = door.x - 24, vy = door.y - 4;
+      if (q < 0.22) ripple(ctx, vx, vy, q / 0.22);
+      finger(ctx, vx, vy + 14, r * 0.9, 1, q < 0.3 ? 0.95 : 0.18);
+      /* three sound waves leaving the caller */
+      ctx.save();
+      for (let i = 0; i < 3; i++) {
+        const t2 = Math.min(1, Math.max(0, q * 1.6 - i * 0.22));
+        if (t2 <= 0) continue;
+        ctx.globalAlpha = 0.75 * (1 - t2);
+        ctx.strokeStyle = "rgba(255,240,205,.95)"; ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.arc(vx, vy, 8 + t2 * 26, -1.0, 1.0); ctx.stroke();
+      }
+      ctx.restore();
+    }
+  } else if (kind === "catch") {
+    /* stand under the sheaf and take it as it falls */
+    const fall = Math.min(1, (p % 0.6) / 0.6);
+    const gy = h * (0.14 + fall * 0.6);
+    ctx.save();
+    ctx.fillStyle = "rgba(226,196,120,.95)";
+    ctx.beginPath(); ctx.ellipse(cx, gy, 7, 10, 0.5, 0, TAU); ctx.fill();
+    ctx.strokeStyle = "rgba(200,166,90,.8)"; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(cx, gy - 8); ctx.lineTo(cx, gy + 8); ctx.stroke();
+    ctx.restore();
+    const bucketY = h * 0.8;
+    const near = gy > bucketY - 16;
+    if (near && p % 0.6 > 0.5) ripple(ctx, cx, bucketY, ((p % 0.6) - 0.5) / 0.1, "230,200,140");
+    finger(ctx, cx, bucketY, r, 1, near ? 0.85 : 0.3);
+    arrow(ctx, cx - 26, h * 0.3, cx - 26, bucketY - 6, 0.35);
+  } else if (kind === "twosides") {
+    /* hand over hand up a tree: left side, then right side, then up */
+    const half = (p % 1) < 0.5;
+    const q = ((p % 0.5) / 0.5);
+    const x = half ? w * 0.3 : w * 0.7;
+    const y = h * (0.86 - q * 0.66);
+    ctx.save();
+    ctx.strokeStyle = "rgba(214,196,160,.35)"; ctx.lineWidth = 2; ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(w * 0.3, h * 0.92); ctx.lineTo(w * 0.3, h * 0.1); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w * 0.7, h * 0.92); ctx.lineTo(w * 0.7, h * 0.1); ctx.stroke();
+    ctx.restore();
+    /* the hand that is not moving waits where it stopped */
+    if (!half) finger(ctx, w * 0.3, h * 0.24, r * 0.8, 0.35, 0);
+    if (half) finger(ctx, w * 0.7, h * 0.24, r * 0.8, 0.35, 0);
+    finger(ctx, x, y, r, 1, 0.55);
+    arrow(ctx, x + 14, h * 0.8, x + 14, h * 0.2, 0.45);
+  } else if (kind === "steer") {
+    /* hold the tiller and turn it, then bail: drag one way, then tap the bucket */
+    if (p < 0.62) {
+      const q = (p / 0.62) * TAU * 1.1;
+      const R = Math.min(w * 0.2, h * 0.26);
+      ctx.save();
+      /* the wheel rim, drawn bright enough to read on a dark card */
+      ctx.strokeStyle = "rgba(226,206,164,.85)"; ctx.lineWidth = 3.2;
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke();
+      ctx.strokeStyle = "rgba(226,206,164,.5)"; ctx.lineWidth = 2;
+      for (let i = 0; i < 4; i++) {
+        const a = (i / 4) * Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(cx - Math.cos(a) * R, cy - Math.sin(a) * R);
+        ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R);
+        ctx.stroke();
+      }
+      ctx.fillStyle = "rgba(255,232,180,.9)";
+      ctx.beginPath(); ctx.arc(cx, cy, 3, 0, TAU); ctx.fill();
+      ctx.restore();
+      const a = -Math.PI / 2 + q * 0.55;
+      finger(ctx, cx + Math.cos(a) * R, cy + Math.sin(a) * R, r, 1, 0.55);
+    } else {
+      const q = (p - 0.62) / 0.38;
+      const bx = cx + w * 0.3, by = cy + h * 0.16;
+      ctx.save();
+      /* a pail going over the side */
+      ctx.strokeStyle = "rgba(178,214,238,.9)"; ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ctx.moveTo(bx - 9, by - 8); ctx.lineTo(bx + 9, by - 8);
+      ctx.lineTo(bx + 6, by + 7); ctx.lineTo(bx - 6, by + 7); ctx.closePath(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(bx, by - 8, 9, Math.PI, 0); ctx.stroke();
+      ctx.globalAlpha = 0.5 + Math.sin(q * 20) * 0.3;
+      ctx.strokeStyle = "rgba(170,220,250,.9)"; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.moveTo(bx, by + 8); ctx.lineTo(bx, by + 16); ctx.stroke();
+      ctx.restore();
+      if (q < 0.3) ripple(ctx, bx, by, q / 0.3, "170,220,250");
+      finger(ctx, bx, by, r * 0.9, 1, q < 0.35 ? 0.95 : 0.2);
+    }
+  } else if (kind === "aimrelease") {
+    /* pull the sling back, then let go: the stone flies and lands */
+    if (p < 0.55) {
+      const q = p / 0.55;
+      const bx = cx + w * 0.1, by = h * 0.72;
+      ctx.save();
+      ctx.strokeStyle = "rgba(226,206,164,.8)"; ctx.lineWidth = 2.4; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(bx - 6, by - 6); ctx.lineTo(bx + 6, by - 2); ctx.stroke();
+      ctx.restore();
+      const fx = bx + q * w * 0.07, fy = by + q * h * 0.2;
+      finger(ctx, fx, fy, r, 1, 0.6);
+      arrow(ctx, bx, by + 6, bx + w * 0.08, by + h * 0.24, 0.5);
+    } else {
+      const q = (p - 0.55) / 0.45;
+      const bx = cx + w * 0.17, by = h * 0.92;
+      const tx = w * 0.2, ty = h * 0.3;
+      ctx.save();
+      /* the arc of the stone */
+      ctx.strokeStyle = "rgba(170,220,250,.5)"; ctx.lineWidth = 1.6; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(bx, by); ctx.quadraticCurveTo((bx + tx) / 2, ty - h * 0.1, tx, ty); ctx.stroke();
+      ctx.restore();
+      /* the giant's mark where it lands */
+      ctx.save();
+      ctx.strokeStyle = q > 0.85 ? "rgba(255,240,190,.95)" : "rgba(226,206,164,.5)";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(tx, ty, 7, 0, TAU); ctx.stroke();
+      ctx.restore();
+      const sx = bx + (tx - bx) * q;
+      const sy = by + (ty - by) * q - Math.sin(q * Math.PI) * h * 0.12;
+      ctx.fillStyle = "rgba(255,246,214,.98)";
+      ctx.beginPath(); ctx.arc(sx, sy, 3.6, 0, TAU); ctx.fill();
+      finger(ctx, bx - q * w * 0.03, by, r * 0.9, 1, q < 0.16 ? 0.9 : 0.1);
+      if (q < 0.16) ripple(ctx, bx, by, q / 0.16);
+    }
   }
 }
 
