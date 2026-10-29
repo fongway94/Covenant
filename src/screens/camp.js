@@ -182,7 +182,7 @@ const MIRROR_EN = {
   faith: "You paused more than most. In the stopping, you learned that God is present before He is understood."
 };
 const MIRROR_ZH = {
-  courage: "你比自己预想的更常遇见恐惧——却仍然继续走。你的勇气一点也不张扬，只是每次该往前走的时候，再走一步。",
+  courage: "你比自己预想的更常遇见恐惧——却还是继续走。你的勇气不是喊出来的，是一步一步走出来的。",
   wisdom: "你总是停下来仔细看。别人只顾赶路，你会停下来把眼前这一处看清楚；路也就一点一点向你打开。",
   compassion: "你不断留意故事边缘的那个人。怜悯在成为你的决定之前，就已经是你的习惯。",
   faith: "你比多数人更常停下来。在停歇里，你学会：神在你理解祂以前，就已经在这里了。"
