@@ -15,6 +15,7 @@ globalThis.cancelAnimationFrame = (id) => clearTimeout(id);
 
 const { MOMENTS, momentFor, momentCount, MOMENT_WAY_FALLBACK } = await import("../src/data/moments.js");
 const { startMoment } = await import("../src/engine/moments.js");
+const { MOMENT_STEPS, momentSteps } = await import("../src/data/moment-steps.js");
 const { CHAPTERS } = await import("../src/data/chapters.js");
 const { WAY_KEYS } = await import("../src/core/state.js");
 
@@ -52,6 +53,28 @@ for (const zh of [false, true]) {
   if (momentFor("elah", raw.at, zh, { [raw.at + ":moment"]: true })) fail("done guard failed");
 }
 if (momentFor("elah", "end", false, {})) fail("momentFor returned a moment for a node without one");
+
+/* Briefing copy: every kind of moment must say what the hand does in three
+   numbered steps, in both languages. One vague sentence is the defect this
+   guards against — the moments are where a new player first touches the game. */
+for (const kind of [...KINDS, "default"]) {
+  const pair = momentSteps(kind);
+  if (!pair || pair !== MOMENT_STEPS[kind] && kind !== "default") fail(`steps: no copy for ${kind}`);
+  for (const lang of ["en", "zh"]) {
+    const lines = pair?.[lang];
+    if (!Array.isArray(lines) || lines.length !== 3) { fail(`steps ${kind}/${lang}: need three lines`); continue; }
+    lines.forEach((l, i) => {
+      /* Chinese says the same thing in far fewer characters — measure each
+         language by its own floor rather than by one number. */
+      const min = lang === "zh" ? 8 : 20;
+      if (typeof l !== "string" || l.trim().length < min) fail(`steps ${kind}/${lang}[${i}]: too short to instruct`);
+      if (lang === "zh" && !zhRe.test(l)) fail(`steps ${kind}/${lang}[${i}]: no Chinese`);
+      if (lang === "en" && zhRe.test(l)) fail(`steps ${kind}/${lang}[${i}]: English line contains Chinese`);
+    });
+    if (new Set(lines).size !== lines.length) fail(`steps ${kind}/${lang}: duplicate lines`);
+  }
+}
+if (!MOMENT_STEPS.default) fail("steps: no fallback copy for a new kind");
 
 /* Engine boots for all five kinds, builds its stage, and resolves on skip. */
 for (const kind of KINDS) {

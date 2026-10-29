@@ -4,6 +4,7 @@ import { CHAPTERS, chapterById } from "../data/chapters.js";
 import { addStat, addXp, grantFruit, checkSeals, completeChapter, recordReflection, hasPrayed, pray as prayState, saveGame, xpNeeded, spendGuidance, adventure, markFinale, addWay, addWaysFromStats, addHintUse } from "../core/state.js";
 import { deeperFor } from "../data/deeper.js";
 import { momentFor } from "../data/moments.js";
+import { momentSteps } from "../data/moment-steps.js";
 import { startMoment } from "../engine/moments.js";
 import { sfx } from "../core/audio.js";
 import { bus } from "../core/bus.js";
@@ -1038,16 +1039,12 @@ function momentDemo(kind) {
   }
 }
 
-/** The one line that says what the hand does, for each kind of story moment. */
+/** What the hand does, what the screen shows in answer, and what finishes it.
+    The copy lives in data/moment-steps.js so every kind can be checked for
+    three lines in both languages; this only localises it. */
 function momentHow(kind) {
-  switch (kind) {
-    case "hold": return tx("Press the screen and keep your finger there until the ring fills.", "按住屏幕别松手，等圆圈填满。");
-    case "tap": return tx("Every time a mark lights up, tap it once.", "光点亮起来，就点它一下。");
-    case "trace": return tx("Start at the bottom and drag up along the dotted line.", "从下往上，沿虚线一路拖。");
-    case "balance": return tx("Drag left and right until the bubble sits in the notch, then hold it there.", "左右拖，把气泡送进缺口，停稳别让它滑出去。");
-    case "rhythm": return tx("When the moving mark reaches the gold band, tap once.", "标记走到金色那一段时，点一下。");
-    default: return tx("Slide your finger across the picture and follow what moves.", "手指在画面上滑动，跟着动的地方走。");
-  }
+  const pair = momentSteps(kind);
+  return pair.en.map((line, i) => tx(line, pair.zh[i]));
 }
 
 /* One card per act. The first act is announced before the canvas exists; every
@@ -1325,7 +1322,7 @@ function momentHtml(ui) {
         <div class="moment-feedback" id="moment-feedback"></div>`
           : `<div class="brief-inline">
               <div class="brief-demo" aria-hidden="true"><canvas data-demo="${esc(momentDemo(m.kind))}" aria-hidden="true"></canvas><span><b>${tx("Watch the hand, then try it", "先看一遍示范，再自己来")}</b></span></div>
-              <p class="brief-one">${esc(momentHow(m.kind))}</p>
+              <div class="brief-steps"><ol class="brief-how">${momentHow(m.kind).map((h, i) => `<li><span class="n">${i + 1}</span><span>${esc(h)}</span></li>`).join("")}</ol></div>
               <p class="brief-note">${tx("No rush. Press the button below when you are ready.", "不着急，准备好了再点开始。")}</p>
               <button class="btn btn-primary brief-start" data-action="moment-start">${icon("play", 16)} ${tx("Start this moment", "开始这一刻")}</button>
             </div>`}

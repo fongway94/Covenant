@@ -1874,8 +1874,16 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
 .brief-start { width: 100%; min-height: 54px; font-size: 1.02rem; margin-top: 2px; }
 .brief-leave { width: 100%; min-height: 44px; color: var(--muted); }
 /* the briefing stands where the stage will be, so the card does not
-   look empty while you read */
-.brief-inline { flex: 0 0 auto; display: grid; gap: 12px; padding: 2px 0; }
+   look empty while you read. It is inside the moment card rather than a
+   full-screen overlay, so it gets the same rule as .brief-inner: the card is
+   capped to the phone, the three steps take whatever is left and scroll, and
+   the hand demo, the note and the button never move. */
+.brief-inline {
+  flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;
+  gap: 12px; padding: 2px 0;
+}
+.brief-inline .brief-demo, .brief-inline .brief-note, .brief-inline .brief-start { flex: 0 0 auto; }
+.brief-inline .brief-steps { flex: 1 1 auto; min-height: 0; }
 .brief-inline .brief-start { min-height: 50px; }
 .minigame-brief { display: block; }
 .minigame-brief .brief-inner { background: none; border: 0; box-shadow: none; padding: 0; gap: 11px; }
