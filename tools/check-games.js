@@ -318,6 +318,21 @@ for (const r of results) console.log("  " + r);
   const problems = [];
   const at = (cell) => ({ x: cell.x, y: cell.y, down: true, dx: 0, dy: 0 });
 
+  /* The seals have to *look* separate, not merely be separate in the maths:
+     the glow round a lit seal must not reach its neighbour, and a press must
+     not be able to mean two of them. */
+  {
+    let minGap = Infinity;
+    for (let i = 0; i < s.cells.length; i++) {
+      for (let j = i + 1; j < s.cells.length; j++) {
+        minGap = Math.min(minGap, dist(s.cells[i].x, s.cells[i].y, s.cells[j].x, s.cells[j].y));
+      }
+    }
+    const halo = s.sealR * 1.6 * 2;
+    if (minGap < halo * 1.5) problems.push(`the seals are ${Math.round(minGap)}px apart but their glow is ${Math.round(halo)}px wide`);
+    if (s.reach > minGap / 2) problems.push("one press can reach two seals");
+  }
+
   /* no two seals may share a finger */
   for (let i = 0; i < s.cells.length; i++) {
     for (let j = i + 1; j < s.cells.length; j++) {

@@ -1320,10 +1320,10 @@ function drawSeal(ctx, x, y, r, i, lit, t) {
   ctx.restore();
   if (lit) {
     ctx.save(); ctx.globalCompositeOperation = "screen";
-    const halo = ctx.createRadialGradient(0, 0, r * 0.4, 0, 0, r * 2.2);
-    halo.addColorStop(0, `rgba(255,196,140,${0.3 + Math.sin(t * 4) * 0.08})`);
+    const halo = ctx.createRadialGradient(0, 0, r * 0.35, 0, 0, r * 1.6);
+    halo.addColorStop(0, `rgba(255,196,140,${0.26 + Math.sin(t * 4) * 0.07})`);
     halo.addColorStop(1, "rgba(255,140,80,0)");
-    ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(0, 0, r * 2.2, 0, TAU); ctx.fill();
+    ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(0, 0, r * 1.6, 0, TAU); ctx.fill();
     ctx.restore();
   }
   ctx.restore();
@@ -1339,18 +1339,26 @@ function orderStage(cfg) {
        not tell which the player meant, and the whole act fell over on a press
        that was perfectly aimed. The reach is now derived from the spacing, so
        no two seals can ever share one tap. */
-    const cols = 3, rows = n / cols;
-    const x0 = c.w * (mode === "seal" ? 0.17 : 0.16), x1 = c.w * (mode === "seal" ? 0.83 : 0.84);
-    const y0 = c.h * (mode === "seal" ? 0.585 : 0.46);
-    const dy = c.h * (mode === "seal" ? 0.15 : 0.17);
+    const cols = 3;
+    const x0 = c.w * (mode === "seal" ? 0.165 : 0.16), x1 = c.w * (mode === "seal" ? 0.835 : 0.84);
+    const y0 = c.h * (mode === "seal" ? 0.565 : 0.44);
+    const dy = c.h * (mode === "seal" ? 0.235 : 0.17);
+    const dx = (x1 - x0) / (cols - 1);
     const cells = Array.from({ length: n }, (_, i) => ({
       i,
-      x: x0 + (i % cols) * ((x1 - x0) / (cols - 1)),
+      x: x0 + (i % cols) * dx,
       y: y0 + Math.floor(i / cols) * dy
     }));
-    const reach = Math.min(34, (dy * 0.34), ((x1 - x0) / (cols - 1)) * 0.34);
+    /* The wax disc is sized from the space it actually has, and the glow round
+       a lit seal is only 1.6 of it, so two neighbours never touch. The last
+       version drew a 26px seal with a 57px halo at a 126px spacing: the halos
+       met, and six seals read as one crowded cluster even though the maths
+       said otherwise. */
+    const gap = Math.min(dx, dy);
+    const sealR = Math.round(clamp(gap * 0.17, 13, 24));
+    const reach = Math.min(30, gap * 0.3);
     c.state = {
-      t: 0, left: cfg.seconds, cells, reach, round: 0, seq: [], shown: 0, phase: "show",
+      t: 0, left: cfg.seconds, cells, reach, sealR, gap, round: 0, seq: [], shown: 0, phase: "show",
       timer: 0, flash: 0, finished: false, active: -1, stamped: [], mode,
       /* One press is one seal. The finger has to come off the glass before
          the next stamp can land, which is the only rule that can tell a
@@ -1453,11 +1461,11 @@ function orderStage(cfg) {
       const cell = s.cells[i], active = i === s.active;
       const done = s.stamped.includes(i);
       if (mode === "seal") {
-        drawSeal(ctx, cell.x, cell.y, 26, i, active, c.t);
+        drawSeal(ctx, cell.x, cell.y, s.sealR, i, active, c.t);
         if (done) {
           // the seal sits pressed into the wax, so it is marked by its own shine
           ctx.strokeStyle = "rgba(255,240,200,.5)"; ctx.lineWidth = 1.6;
-          ctx.beginPath(); ctx.arc(cell.x, cell.y, 31, 0, TAU); ctx.stroke();
+          ctx.beginPath(); ctx.arc(cell.x, cell.y, s.sealR * 1.2, 0, TAU); ctx.stroke();
         }
       } else {
         /* A bough hanging out of the canopy above you, close enough to take

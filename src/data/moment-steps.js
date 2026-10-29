@@ -39,7 +39,7 @@ export const MOMENT_STEPS = {
   ], [
     "从虚线最下面开始，手指落在线上。",
     "顺着线往上慢慢拖；离得太远，光就不跟着走了。",
-    "一路拖到最上面，走过的地方会亮起来，这一刻就完成了。"
+    "一路拖到最上面，走过的路会亮起来，这一幕就过去了。"
   ]),
 
   balance: S([
@@ -69,7 +69,7 @@ export const MOMENT_STEPS = {
     "The bar underneath shows how far you have come.",
     "Carry it to the end and the moment closes."
   ], [
-    "手指在画面上滑动，跟着动的地方走。",
+    "手指在画面上滑动，哪儿在动就跟着哪儿走。",
     "下面的那条进度会跟着往前走。",
     "一直跟到底，这一刻就结束了。"
   ])

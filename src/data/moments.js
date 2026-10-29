@@ -35,7 +35,7 @@ export const MOMENTS = {
       "elah-field", 0.44, 0.68,
       B("Carry the provisions", "稳住供给"),
       B("A pole across your shoulders, bread on one end and cheese on the other. Drag left and right to keep the bubble in its notch while the ridge tips underfoot.", "左右拖动，让气泡停在中间的缺口里，别让它滑出来。扁担压在肩上，一头是饼，一头是奶酪，山路一直斜着。"),
-      B("You reach the top without dropping anything. Nobody noticed you arrive.", "你一样东西也没掉，爬到了山顶。没有人注意到你来了。"), "stay", { span: 0.46 })
+      B("You reach the top without dropping anything. Nobody noticed you arrive.", "一件也没掉，就这么扛到了山顶。谁也没留意你上来。"), "stay", { span: 0.46 })
   ],
   lions: [
     /* The decree is the open scroll on the mat in this painting: the nodes
@@ -96,8 +96,8 @@ export const MOMENTS = {
     M("fast", "hold", "lamp",
       "esther", 0.40, 0.76,
       B("Three days of fasting", "禁食三日"),
-      B("Hold through the fast. Nothing happens. That is the point — you are waiting.", "按住不放，把这三天的禁食撑完。什么也不会发生——你就是在等。"),
-      B("Three days. Then she will go in, though it is against the law.", "三天。然后她要进去，虽然这是违反禁令的。"), "wait"),
+      B("Hold through the fast. Nothing happens. That is the point — you are waiting.", "按住不放，把这三天熬过去。什么也不会发生——你要做的只是等。"),
+      B("Three days. Then she will go in, though it is against the law.", "三天。三天之后她要走进去，哪怕这是死罪。"), "wait"),
     M("throne", "rhythm", "light",
       "hall", 0.46, 0.52,
       B("Approach the throne", "走到宝座前"),
@@ -146,12 +146,12 @@ export const MOMENTS = {
       "branches", 0.55, 0.35,
       B("Climb the sycamore", "爬上桑树"),
       B("Drag up the winding branches. You are short and the crowd is tall.", "从下往上，沿着树枝慢慢拖。他个子矮，人群又高。"),
-      B("You only wanted to see. Being seen was not part of the plan.", "你只是想看一眼。被看见并不在你的计划里。"), "step"),
+      B("You only wanted to see. Being seen was not part of the plan.", "你只想看一眼。被人看见，不在你的计划里。"), "step"),
     M("house", "tap", "coin",
       "zacchaeus", 0.50, 0.62,
       B("Count out four coins", "数出四倍的钱"),
       B("Tap each coin as he counts. Fourfold — more than the Law required.", "他数一枚，你点一下。四倍——远远超过律法的要求。"),
-      B("Nobody asked him to. That is what grace does when it is welcomed.", "没有人要求他这样做。恩典被接住了，就是这样。"), "stay",
+      B("Nobody asked him to. That is what grace does when it is welcomed.", "没有人这样要求他。恩典就是这样被人接住的。"), "stay",
       { spawn: [0.18, 0.58, 0.82, 0.84] })
   ]
 };

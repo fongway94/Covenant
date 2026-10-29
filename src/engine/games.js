@@ -2113,7 +2113,7 @@ const esther = {
   demo: "lift",
   titleEn: "If I perish, I perish", titleZh: "我若死就死吧",
   promptEn: "Cross the hall a step at a time, and let each step finish before you take the next. Then kneel at the edge of the carpet and wait: the sceptre is his to extend, not yours to take.",
-  promptZh: "一步一步穿过大厅，一步走稳了再走下一步。走到毯边跪下，然后等——金杖是他伸出来的，不能你自己去拿。",
+  promptZh: "一步一步穿过大厅，一步走稳了再走下一步。走到毯边跪下，然后等——金杖要他伸出来，不能自己去拿。",
   hintEn: "Drag up to step · then kneel", hintZh: "往上拖一步 · 再跪下",
   howEn: "Drag upward to take one steady step at a time, then kneel at the carpet and wait for the sceptre.", howZh: "往上拖，一步走稳了再走下一步；到毯边跪下，等王伸出金杖。",
   hint() { return tx(this.hintEn, this.hintZh); },
@@ -2852,7 +2852,7 @@ export const PRELUDES = {
       kind: "dodge", hero: "david", villain: "goliath", ...P("elah-field", "leaves"),
       title: ["Cross the valley", "穿过山谷"],
       prompt: ["Goliath throws two kinds of spear at David as he walks to the line. One skims the dust — tap to leap over it. One comes at his chest — press and drag down to drop under it. Four hits and he is driven back; the story goes on either way.",
-        "大卫往阵前走的时候，歌利亚一边投枪。枪贴着地飞来，点一下跳过去；枪朝他胸口飞来，按住往下拖，蹲下来让它从头顶过。被击中四次他会退回原地——故事照样往下走。"],
+        "大卫往阵前走的时候，歌利亚一边投枪。枪贴着地飞来，点一下跳过去；枪朝他胸口飞来，按住往下拖，蹲下来让它从头顶过。被击中四次就退回谷口重走一遍——不扣分，故事也不会跳过这一仗。"],
       hint: ["Ground spear: tap to leap · chest spear: drag down", "贴地来的点一下 · 冲胸来的往下拖"],
     how: ["Tap when the spear skims the ground; press and drag down when it comes at his chest.", "枪贴地飞来，点一下跳过去；枪朝胸口飞来，按住往下拖，蹲下去。"],
       seconds: 17, reward: 30

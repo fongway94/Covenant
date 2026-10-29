@@ -46,7 +46,7 @@ export const ZH_UI = {
   " (public domain). Other dialogue is clearly written for the game and is not presented as scripture.": "（公有领域）。其余对白是本游戏创作内容，不代表经文。",
   "Reflection questions have no “wrong” answer. This is a game about formation, not a quiz about facts.": "反思题没有「标准答案」。这是一场关于生命塑造的游戏，不是事实测验。",
   "What is in this prototype": "这个原型里有什么",
-  "Six playable chapters, branching dialogue, four virtues, nine fruits of the Spirit (Galatians 5:22–23), six relics, seven seals, two timing mini-games, offline play, and automatic save to your device.": "十个可玩章节、分支对话、四种品格、圣灵九果（加拉太书 5:22–23）、十件圣物、九枚印记、十个互动关卡、离线游玩，以及自动保存在本机。",
+  "Ten playable chapters, branching dialogue, four virtues, nine fruits of the Spirit (Galatians 5:22–23), ten relics, nine seals, fifteen controllable scenes, offline play, and automatic save to your device.": "十个可玩章节、分支对话、四种品格、圣灵九果（加拉太书 5:22–23）、十件圣物、九枚印记、十五个可动手的场景、离线游玩，以及自动保存在本机。",
   "Under the hood": "技术实现",
   "Plain HTML, CSS and JavaScript — no build step, no tracking, no ads. It runs in any mobile browser, installs to the home screen as a PWA, and can be packaged for the iOS App Store and Google Play with": "纯 HTML、CSS 与 JavaScript——无需编译，没有追踪，没有广告。它可在任何手机浏览器中运行，可作为 PWA 安装到主屏幕，也可用",
   ". See": "打包上架 iOS App Store 与 Google Play。详见",

@@ -153,8 +153,8 @@ export const EXTRA_CHAPTERS = [
     reflection: {
       q: ["What “burning bush” has God put in front of you lately — an ordinary moment that felt strangely holy?", "最近神把什么「燃烧的荆棘」放在你面前——一个平凡却异常神圣的时刻？"],
       options: [
-        { t: ["A ordinary day that suddenly mattered", "一个忽然变得重要的平凡日子"], stat: { wisdom: 2 }, insight: ["Moses was doing his job when the bush burned. Watch your ordinary Tuesdays. Exodus 3:1", "摩西是在上班时看见荆棘燃烧的。留意你平凡的星期二。出埃及记 3:1"] },
-        { t: ["Something I am afraid to say yes to", "一件我不敢答应的事"], stat: { courage: 2 }, insight: ["God's answer to inadequacy is never 'try harder' — it is 'I will be with thee.' Exodus 3:12", "神面对「我不配」的回答，从来不是「再努力一点」，而是「我必与你同在」。出埃及记 3:12"] },
+        { t: ["An ordinary day that suddenly mattered", "一个忽然变得重要的平凡日子"], stat: { wisdom: 2 }, insight: ["Moses was doing his job when the bush burned. Watch your ordinary Tuesdays. Exodus 3:1", "摩西是在上班时看见荆棘燃烧的。留意你平凡的星期二。出埃及记 3:1"] },
+        { t: ["Something I am afraid to say yes to", "一件我不敢答应的事"], stat: { courage: 2 }, insight: ["God's answer to inadequacy is never 'try harder' — it is 'I will be with thee.' Exodus 3:12", "「我不配」这句话，神从来不回答「再努力一点」。祂只说：「我必与你同在。」出埃及记 3:12"] },
         { t: ["I am not sure I would notice", "我不确定自己会留意到"], stat: { faith: 2 }, insight: ["The bush burned for a while before Moses turned aside. Ask for the grace to turn aside. Exodus 3:3", "摩西转过去看之前，荆棘已经烧了一会儿。求恩典让你愿意转身。出埃及记 3:3"] }
       ]
     }
@@ -165,16 +165,16 @@ export const EXTRA_CHAPTERS = [
     id: "ruth", num: 8, roman: "VIII", art: "assets/art/ruth.jpg", pos: [74, 62],
     title: ["The Gleaning Field", "拾穗的麦田"], subtitle: ["Ruth and Naomi", "路得与拿俄米"],
     ref: ["Ruth 1–2", "路得记 1–2 章"], theme: ["Loyalty", "忠诚"], length: ["10–12 min", "10–12 分钟"],
-    intro: ["Two widows walk home with nothing. One of them refuses to leave the other.", "两个寡妇身无分文地走回家。其中一个拒绝离开另一个。"],
+    intro: ["Two widows walk home with nothing. One of them refuses to leave the other.", "两个寡妇空着手走回家。其中一个怎么也不肯离开另一个。"],
     brief: {
       place: ["c. 1100 BC, in Bethlehem at the start of the barley harvest. A famine has just broken; the fields are full and the town is full of talk.", "约公元前 1100 年，伯利恒，大麦刚开镰。饥荒刚过去，田里满是庄稼，城里满是闲话。"],
       who: ["Naomi came back from Moab with nothing — no husband, no sons, and a foreign daughter-in-law, Ruth, who refused to stay behind. Ruth is a Moabite, and Moabites are not welcome here.", "拿俄米从摩押回来时一无所有：丈夫没了，两个儿子也没了，只剩下一个外族媳妇路得，怎么劝都不肯走。路得是摩押人，而摩押人在伯利恒不受欢迎。"],
       stake: ["Both women have no income and no protector. The Law allowed the poor to follow the harvesters and pick up what fell — that is where Ruth goes to find food, and where the owner of the field first sees her.", "两个寡妇没有收入，也没有男人可以依靠。律法允许穷人在收割的人后面捡拾掉落的麦穗——路得就是去那里找吃的，而田主第一次看见她，也在那里。"]
     },
     scroll: {
-      verse: ["And Ruth said, Intreat me not to leave thee … for whither thou goest, I will go; and where thou lodgest, I will lodge: thy people shall be my people, and my God my God.", "路得说：「不要催我回去离开你……你往哪里去，我也往那里去；你在哪里住宿，我也在那里住宿；你的国就是我的国，你的神就是我的神。」"],
+      verse: ["And Ruth said, Intreat me not to leave thee … for whither thou goest, I will go; and where thou lodgest, I will lodge: thy people shall be my people, and my God my God.", "路得说：「不要催我回去不跟随你。你往哪里去，我也往那里去；你在哪里住宿，我也在那里住宿；你的国就是我的国，你的神就是我的神。」"],
       ref: ["Ruth 1:16 (KJV)", "路得记 1:16（和合本）"],
-      note: ["Ruth was a Moabite — an outsider with no status in Bethlehem. Gleaning was the ancient safety net: the poor could follow the reapers and pick up what was dropped. Boaz's generosity turns a survival mechanism into a love story.", "路得是摩押人——在伯利恒毫无地位的外来者。拾穗是古代的安全网：穷人可以跟在收割者后面，捡拾掉落的麦穗。波阿斯的慷慨，把一个求生机制变成了一个爱的故事。"],
+      note: ["Ruth was a Moabite — an outsider with no status in Bethlehem. Gleaning was the ancient safety net: the poor could follow the reapers and pick up what was dropped. Boaz's generosity turns a survival mechanism into a love story.", "路得是摩押人——在伯利恒抬不起头的外乡人。拾穗是古时给穷人的活路：跟在收割的人后面，捡掉在地上的麦穗。波阿斯的慷慨，把一条活路写成了一段爱情。"],
       timeline: ["c. 1100 BC · Bethlehem, harvest season", "约公元前 1100 年 · 伯利恒，收割季节"]
     },
     cast: {

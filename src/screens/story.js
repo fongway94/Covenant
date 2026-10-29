@@ -118,7 +118,13 @@ function renderLineDOM(ui) {
   /* A new line starts at its own beginning, even if the last one was long
      enough to scroll. */
   const wrap = document.getElementById("dialogue-line");
-  if (wrap) wrap.scrollTop = 0;
+  if (wrap) {
+    wrap.scrollTop = 0;
+    /* A long quotation does not fit the box at reading size. Give those lines
+       a slightly smaller setting so most of them arrive whole, and keep the
+       scroll (with its fade) for the few that still do not. */
+    wrap.classList.toggle("long-line", text.length > 190 && !/[\u4e00-\u9fff]/.test(text));
+  }
   txEl.innerHTML = "";
   s.fullText = text;
   s.typing = true;
