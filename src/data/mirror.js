@@ -204,7 +204,7 @@ export const PROFILES = [
     why: B("You often chose the gentle answer and let people come back. The father in this parable does not chase, bargain or lecture — he watches the road, and runs when he sees a figure.",
       "你常常选择温和的回答，也给人回头的余地。比喻里的父亲没有追赶、没有讲条件、没有说教——他只是望着那条路，看见人影就跑过去。"),
     shadow: B("This is a parable about God, not a parenting technique. And the elder brother is left outside in the final scene, unresolved (Luke 15:28–32). Mercy is offensive to the person who stayed.",
-      "这个比喻讲的是神，不是一套教养孩子的方法。最后一幕，大儿子留在门外，故事没有交代结局（路加福音 15:28–32）。对一直守在身边的人，怜悯有时像一种冒犯。"),
+      "这个比喻讲的是神，不是一套教养孩子的方法。最后一幕，大儿子留在门外，故事没有交代结局（路加福音 15:28–32）。对一直守在身边的人来说，父亲这样款待弟弟，反而像在说：你这些年白守了。"),
     grace: B("Grace came before reformation: the son’s rehearsed speech is interrupted by the robe and the ring (Luke 15:21–24).",
       "恩典在改变之前临到：儿子准备好的认罪台词，被袍子和戒指打断了（路加福音 15:21–24）。"),
     read: B("Read Luke 15:11–32. Then read verse 28 again and ask which brother you actually are today.",
