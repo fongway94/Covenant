@@ -1,0 +1,59 @@
+ID	SPEAKER	ENGLISH	CHINESE (rewrite this column, keep the ID)
+ch.bush.title		The Burning Bush	燃烧的荆棘
+ch.bush.subtitle		Moses at Horeb	摩西在何烈山
+ch.bush.intro		A shepherd follows one stray sheep up a mountain — and finds a fire that does not burn out.	一个牧人为了一只走失的羊上山——却遇见一团烧不尽的火焰。
+ch.bush.brief.place		c. 1440 BC, in Midian, on the far side of the desert. Moses has lived here forty years, shepherding the flock of his father-in-law Jethro.	约公元前 1440 年，米甸，旷野的那一边。摩西在这里住了四十年，替岳父叶忒罗放羊。
+ch.bush.brief.who		Moses was raised as a prince in Egypt, then fled after killing an Egyptian. He is a shepherd now, married, with a family — and God has been silent for forty years.	摩西在埃及王宫长大，后来杀了人，逃到旷野。如今他是牧人，有妻子有孩子，而神已经四十年没有出声。
+ch.bush.brief.stake		Israel is enslaved in Egypt, and God is about to speak. The bush that burns without burning up is not the point — the point is what God says about Himself, and what He asks Moses to do.	以色列人还在埃及做奴隶，神就要开口了。烧不坏的荆棘不是重点；重点是神怎样介绍自己，以及祂要摩西去做什么。
+ch.bush.scroll.note		Moses had been in Midian for forty years. The call comes not in a palace but on an ordinary workday, while he is chasing a lost sheep. God's first words are not a command but a self-introduction: I am the God of your father.	摩西在米甸已经四十年。呼召不是发生在王宫，而是在一个平凡的工作日——他正在追赶一只走失的羊。神开口第一句不是命令，而是自我介绍：「我是你父亲的神。」
+ch.bush.ending.text		You did not receive a task. You received a presence.	你领受的不是一项任务，而是一位一直与你同在的神。
+ch.bush.ending.takeaway		God's call often begins with who He is, not with what you can do. Moses argued, hesitated and bargained — and God stayed. Courage is not confidence in yourself; it is trust in the One who says 'I will be with you.'	神的呼召往往先讲祂是谁，而不是你能做什么。摩西争辩、迟疑、讨价还价——神仍然在。勇气不是对自己有信心，而是信靠那位说「我必与你同在」的神。
+ch.bush.reflection.q		What “burning bush” has God put in front of you lately — an ordinary moment that felt strangely holy?	最近神把什么「燃烧的荆棘」放在你面前——一个平凡、却忽然变得神圣的时刻？
+ch.bush.reflection.0.t		An ordinary day that suddenly mattered	一个忽然变得重要的平凡日子
+ch.bush.reflection.0.insight		Moses was doing his job when the bush burned. Watch your ordinary Tuesdays. Exodus 3:1	摩西是在上班时看见荆棘燃烧的。留意你平凡的星期二。出埃及记 3:1
+ch.bush.reflection.1.t		Something I am afraid to say yes to	一件我不敢答应的事
+ch.bush.reflection.1.insight		God's answer to inadequacy is never 'try harder' — it is 'I will be with thee.' Exodus 3:12	当你说「我不配」，神从不回答「再努力一点」，祂只说：「我必与你同在。」出埃及记 3:12
+ch.bush.reflection.2.t		I am not sure I would notice	我不确定自己会留意到
+ch.bush.reflection.2.insight		The bush burned for a while before Moses turned aside. Ask for the grace to turn aside. Exodus 3:3	摩西转过去看之前，荆棘已经烧了一会儿。求恩典让你愿意转身。出埃及记 3:3
+ch.bush.game.prompt		Drag across the dunes to gather the three scattered sheep before the sandstorm reaches the burning bush.	拖过沙丘，在沙暴抵达荆棘之前找回三只走散的羊。
+ch.bush.start.L0		The scroll opens on dry wind and the smell of dust. Red mountains rise on every side, and a small flock of sheep picks its way across the stones.	书卷在干燥的风里展开，满是尘土的气味。红色的山从四面围上来，一小群羊在石头之间找路走。
+ch.bush.start.L1	elias	Moses has been here forty years. He was a prince once. Now he counts sheep for his father-in-law.	摩西在这片旷野已经四十年了。他从前是埃及的王子，如今替岳父数羊。
+ch.bush.start.L2	moses	One is missing. It always goes toward the high ground.	少了一只。它总往高处跑。
+ch.bush.start.L3	elias	Then we go after it. Watch your footing — the wind is getting up.	那就去追。脚下留神，风起来了。
+ch.bush.start.C0		Go after the stray sheep yourself	自己去追那只走失的羊
+ch.bush.start.R0		You scramble up the scree, hands scraped raw, and find a lamb trembling behind a boulder.	你爬上碎石坡，手掌磨破，在一块巨石后发现一只发抖的小羊。
+ch.bush.start.C1		Ask Corin why God waited forty years	问柯林，神为何等了四十年
+ch.bush.start.R1	elias	“Perhaps,” he says, “because a prince had to become a shepherd before he could lead shepherds.”	「也许，」他说，「因为一个王子得先学会当牧人，才带得动牧人。」
+ch.bush.start.C2		Pray for the lost one before climbing	上山之前为那只迷失的羊祷告
+ch.bush.start.R2		The prayer is small and ordinary. That, you will learn, is how most of them start.	这个祷告又小又普通。后来你会知道，大多数祷告都是这样开始的。
+ch.bush.stray.L0		The sandstorm rolls across the valley like a wall. And there, ahead of it — a shrub on fire, blazing gold against the red rock.	沙暴像一堵墙压过山谷。就在它前面，一丛灌木正烧着，在红色岩石上闪出金光。
+ch.bush.stray.L1	moses	It is burning. But the leaves are still green.	它在烧。可叶子还是绿的。
+ch.bush.stray.L2	elias	Take off your sandals. This ground has just become different from every other ground you have stood on.	把鞋脱下来。你脚下这块地，跟你站过的任何地方都不一样了。
+ch.bush.stray.C0		Take off your sandals	把鞋脱下来
+ch.bush.stray.R0		Your bare feet feel the hot stone. It is the most honest thing you have done all day.	赤脚踩在滚烫的石头上。这是你今天做过最诚实的一件事。
+ch.bush.stray.C1		Ask Moses to cover his face	叫摩西蒙住脸
+ch.bush.stray.R1		He does — and then he looks anyway, because he cannot help it. Awe and curiosity are not enemies.	他蒙住脸——又忍不住从指缝里看。敬畏和好奇，本来就不冲突。
+ch.bush.stray.C2		Stand back and watch the flame	退后，静静看着那团火焰
+ch.bush.stray.R2		You count your breaths. The fire does not flicker. It has all the time in the world.	你数着自己的呼吸。火焰一动不动，好像有的是时间。
+ch.bush.bush.L0	voice	I am the God of thy father, the God of Abraham, the God of Isaac, and the God of Jacob.	我是你父亲的神，是亚伯拉罕的神、以撒的神、雅各的神。
+ch.bush.bush.L1		Moses hides his face. The bush keeps burning. No smoke, no ash, no hurry.	摩西蒙住脸。荆棘继续烧着。没有烟，没有灰，一点也不着急。
+ch.bush.bush.L2	elias	Listen. He does not begin with a task. He begins with a relationship — I am the God your father knew.	听。祂先说的是关系，不是任务——我是你父亲的神。
+ch.bush.bush.C0		Whisper: “Here am I”	轻声说：「我在这里」
+ch.bush.bush.R0	elias	It is the same answer Abraham gave. Some sentences are handed down like a family trade.	这也是亚伯拉罕当年的回答。有些话，就这么一代一代传下来了。
+ch.bush.bush.C1		Ask what His name is	问祂的名字是什么
+ch.bush.bush.R1		The answer comes slowly: “I AM THAT I AM” (Exodus 3:14). Not a label to hold — a presence that simply is.	答案慢慢浮出来：「我是我所是」（出埃及记 3:14）。这不是一个能攥在手里的名号，而是一位一直都在的神。
+ch.bush.bush.C2		Say nothing, and stay on your knees	什么也不说，只是跪着
+ch.bush.bush.R2		Silence is also an answer. The flame waits for you.	沉默也是一种回答。火焰等着你。
+ch.bush.call.L0	voice	I have surely seen the affliction of my people … and I am come down to deliver them. Come now therefore, and I will send thee unto Pharaoh.	我实在看见我百姓的困苦了……我下来是要救他们。故此，我要打发你去见法老。
+ch.bush.call.L1	moses	Who am I, that I should go unto Pharaoh?	我算什么，竟能去见法老呢？
+ch.bush.call.L2	elias	Notice: God does not answer “you are qualified.” He answers “I will be with you.”	留意：神没有回答「你够资格」，祂回答的是「我必与你同在」。
+ch.bush.call.L3		The mountain is very quiet. The sandstorm has moved on. Somewhere below, a lamb bleats.	山上非常安静。沙暴已经过去。山下某处，一只小羊在叫。
+ch.bush.call.C0		Go with him toward Egypt	陪他往埃及去
+ch.bush.call.R0		You do not feel brave. You go anyway. That is usually what brave looks like from the inside.	你并不觉得自己勇敢，可你还是去了。走上去的时候，没有人会觉得自己勇敢。
+ch.bush.call.C1		Give him your staff for the road	把你的手杖送给他上路
+ch.bush.call.R1		He takes it, testing its weight. A stick is not much — but it is something to hold.	他接过去，掂了掂分量。一根杖算不了什么——可上路的人手里总得有点什么。
+ch.bush.call.C2		Ask him to remember this mountain	请他记住这座山
+ch.bush.call.R2	moses	“I will,” he says. “Especially on the days I would rather forget.”	「我会的，」他说，「特别是在那些我宁愿忘掉的日子里。」
+ch.bush.end.L0	elias	The call did not make Moses fearless. It made him accompanied. That is the whole difference.	呼召并没有让摩西不再惧怕，而是让他不再孤单。区别就在这里。
+ch.bush.end.L1		You look back once. The bush is still burning — quietly, patiently, with no audience at all.	你回头看了一眼。荆棘仍在燃烧——安静、耐心，完全没有观众。
+ch.bush.end.L2		The scroll turns. Egypt is a long way off.	书卷翻页。埃及还很远。

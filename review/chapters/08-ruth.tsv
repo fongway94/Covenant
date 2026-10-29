@@ -1,0 +1,49 @@
+ID	SPEAKER	ENGLISH	CHINESE (rewrite this column, keep the ID)
+ch.ruth.title		The Gleaning Field	拾穗的麦田
+ch.ruth.subtitle		Ruth and Naomi	路得与拿俄米
+ch.ruth.intro		Two widows walk home with nothing. One of them refuses to leave the other.	两个寡妇空着手走回家。其中一个怎么也不肯离开另一个。
+ch.ruth.brief.place		c. 1100 BC, in Bethlehem at the start of the barley harvest. A famine has just broken; the fields are full and the town is full of talk.	约公元前 1100 年，伯利恒，大麦刚开镰。饥荒刚过去，田里满是庄稼，城里满是闲话。
+ch.ruth.brief.who		Naomi came back from Moab with nothing — no husband, no sons, and a foreign daughter-in-law, Ruth, who refused to stay behind. Ruth is a Moabite, and Moabites are not welcome here.	拿俄米从摩押回来时一无所有：丈夫没了，两个儿子也没了，只剩下一个外族媳妇路得，怎么劝都不肯走。路得是摩押人，而摩押人在伯利恒不受欢迎。
+ch.ruth.brief.stake		Both women have no income and no protector. The Law allowed the poor to follow the harvesters and pick up what fell — that is where Ruth goes to find food, and where the owner of the field first sees her.	两个寡妇没有收入，也没有男人可以依靠。律法允许穷人在收割的人后面捡拾掉落的麦穗——路得就是去那里找吃的，田主第一次看见她，也是在那里。
+ch.ruth.scroll.note		Ruth was a Moabite — an outsider with no status in Bethlehem. Gleaning was the ancient safety net: the poor could follow the reapers and pick up what was dropped. Boaz's generosity turns a survival mechanism into a love story.	路得是摩押人——在伯利恒抬不起头的外乡人。拾穗是古时给穷人的活路：跟在收割的人后面，捡掉在地上的麦穗。波阿斯多留的那几把麦穗，成了这段爱情的开头。
+ch.ruth.ending.text		Loyalty is love that has kept walking after the feeling fades.	忠诚不是一直有感觉，而是感觉淡了以后，还继续走下去。
+ch.ruth.ending.takeaway		Ruth's famous words are not a vow of romance — they are a daughter-in-law's promise to an old, grieving woman. God honoured a small, stubborn kindness by weaving it into the lineage of the Messiah.	路得那段著名的话，其实不是情话，而是一个儿媳对一位年老伤心的婆婆许下的承诺。神看重这份微小又固执的善良，把它编进了弥赛亚的家谱。
+ch.ruth.reflection.q		Who is the person you would “go with” even when it costs you?	谁是你愿意「一同前往」的人，即使要付代价？
+ch.ruth.reflection.0.t		An ageing parent or grandparent	年迈的父母或祖父母
+ch.ruth.reflection.0.insight		Ruth's choice was towards the person with the least to offer her. Ruth 1:16–17	路得选择的，是那个最无法回报她的人。路得记 1:16–17
+ch.ruth.reflection.1.t		A friend who is struggling	一位正在挣扎的朋友
+ch.ruth.reflection.1.insight		Presence is the rarest gift because it cannot be sent from a distance. Ruth 1:16	陪伴是最难得的礼物，因为它没法隔空送过去。路得记 1:16
+ch.ruth.reflection.2.t		I am not sure I have anyone yet	我还不确定有没有这样的人
+ch.ruth.reflection.2.insight		Then start small: show up once, and then again. Loyalty is built one Tuesday at a time. Ruth 1:16	那就从小事开始：这一次在场，下一次也在场。忠诚就是这么一天一天攒出来的。路得记 1:16
+ch.ruth.game.prompt		Drag to gather 12 sheaves while the sun sets. Keep away from the swinging sickles.	拖动收集 12 捆麦穗，在日落之前完成。避开挥舞的镰刀。
+ch.ruth.start.L0		The road from Moab is long and dusty. Two women walk it with empty hands and one shared water skin.	从摩押回来的路又长又灰。两个女人空着手，共用一个水袋，一步一步往回走。
+ch.ruth.start.L1	naomi	Go back, my daughters. I have nothing left to give you.	我的女儿们，回去吧。我已经没有什么可以给你们了。
+ch.ruth.start.L2	elias	Orpah turns back. That is not the cruel choice — it is the reasonable one. Watch Ruth.	另一个媳妇俄珥巴哭着回去了。这不算狠心，是人之常情。留意路得。
+ch.ruth.start.L3	ruth	Whither thou goest, I will go. Thy people shall be my people, and my God my God.	你往哪里去，我也往那里去。你的国就是我的国，你的神就是我的神。
+ch.ruth.start.C0		Walk behind them, carrying the bundle	跟在她们后面，替她们背包袱
+ch.ruth.start.R0		The bundle is not heavy. The silence between the two women is.	行李不重。两个女人之间的沉默才重。
+ch.ruth.start.C1		Ask Corin why Ruth would choose hardship	问柯林，路得为何选择吃苦
+ch.ruth.start.R1	elias	“Because love is not a calculation,” he says. “It is a direction. She has picked hers.”	「因为爱不是计算，」他说，「爱是一个方向。她已经选好了。」
+ch.ruth.start.C2		Pray that Bethlehem receives them	祷告伯利恒能接纳她们
+ch.ruth.start.R2		You have no idea how literally that prayer will be answered.	你还不知道，这个祷告会怎样一字不差地应验。
+ch.ruth.field.L0		Barley harvest. The reapers cut, the stalks fall, and behind them the poor gather what is dropped.	大麦开镰了。收割的人割下麦子，麦穗落在地上，穷人就跟在后面捡。
+ch.ruth.field.L1	ruth	Let me glean, I pray you, after him in whose sight I shall find grace.	求你容我跟着收割的人，拾取打捆剩下的麦穗。
+ch.ruth.field.L2	elias	This is not charity as a spectacle. It is a law written into the edges of a field — leave something for the person who has nothing. Leviticus 19:9	这不是做给人看的施舍。这是写进田角的律法：给一无所有的人留一点。利未记 19:9
+ch.ruth.field.C0		Glean beside her all afternoon	陪她拾一整个下午的麦穗
+ch.ruth.field.R0		Your back aches, your hands are scratched, and by evening the basket is full. It is a good ache.	你的后背发酸，手被划破，到傍晚篮子满了。这种酸疼，值得。
+ch.ruth.field.C1		Ask the reapers to leave extra behind	请收割的人多留一些麦穗
+ch.ruth.field.R1	reaper	They shrug, then grin, and suddenly a whole corner of the field is 'accidentally' uncut.	他们耸耸肩，咧嘴一笑——忽然间，整块田角都「不小心」没割到。
+ch.ruth.field.C2		Sit with Naomi at the edge of the field	陪拿俄米坐在田边
+ch.ruth.field.R2	naomi	She watches Ruth work and says only: “She has not stopped. Not once.”	她看着路得干活，只说了一句：「她一直没停。一次都没有。」
+ch.ruth.kindness.L0	boaz	Let her glean even among the sheaves, and reproach her not. And let fall also some of the handfuls of purpose for her.	容她在捆中拾取麦穗，不可羞辱她。并要从捆里抽出些来，留在地下任她拾取。
+ch.ruth.kindness.L1		Boaz does not make a speech about kindness. He gives an instruction to the men with sickles. That is what makes it real.	波阿斯没有讲一篇关于仁慈的大道理，只是吩咐拿镰刀的人一句话。真正的仁慈，就是这样一点一点落到实处的。
+ch.ruth.kindness.L2	elias	Notice the pattern: a foreign widow, a field owner, a handful of dropped grain. Nobody calls it a miracle. It is the family line of David — and later, of Jesus.	留意这条线：一个外邦寡妇，一块田，几把故意落下的麦穗。没有人称它为神迹，可这就是大卫的家谱——后来也是耶稣的家谱。
+ch.ruth.kindness.C0		Thank Boaz on Ruth’s behalf	替路得向波阿斯道谢
+ch.ruth.kindness.R0	boaz	He waves it away. “She did the hard part,” he says. “I only told my men to look the other way.”	他摆摆手：「难的那部分是她自己做的。我只是叫工人别看得那么紧。」
+ch.ruth.kindness.C1		Tell Naomi what happened in the field	把田里发生的事告诉拿俄米
+ch.ruth.kindness.R1		Her face changes. For the first time since Moab, she says the word “hope” out loud.	她的脸色变了。从摩押回来以后，她第一次把「盼望」这两个字说出了口。
+ch.ruth.kindness.C2		Stay silent. Some kindness is shy.	什么也不说。有些善意不必说出口。
+ch.ruth.kindness.R2		You say nothing. Ruth never learns your name. That is also a kind of love.	你什么也没说。路得始终不知道你的名字。那也是一种爱。
+ch.ruth.end.L0	elias	Ruth did not save Israel. She simply refused to leave one person. Great stories are usually built out of small refusals.	路得没有拯救以色列，她只是不肯离开一个人。许多伟大的故事，就是从一个很小的「不肯」开始的。
+ch.ruth.end.L1		The sun goes down over the barley. Naomi carries the basket home; Ruth carries Naomi’s hand.	太阳落在大麦田上。拿俄米抱着篮子回家；路得牵着拿俄米的手。
+ch.ruth.end.L2		The scroll turns, smelling faintly of cut grain.	书卷翻页，带着淡淡的麦香。

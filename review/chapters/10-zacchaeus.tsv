@@ -1,0 +1,50 @@
+ID	SPEAKER	ENGLISH	CHINESE (rewrite this column, keep the ID)
+ch.zacchaeus.title		Up A Sycamore Tree	爬上桑树
+ch.zacchaeus.subtitle		Zacchaeus of Jericho	耶利哥的撒该
+ch.zacchaeus.intro		A short, rich, lonely man climbs a tree just to see — and comes down carrying a different life.	一个矮小、富有、孤独的人为了看一眼而爬上树——下来的时候，人生已经不一样了。
+ch.zacchaeus.brief.place		c. AD 30, in Jericho — a rich trade town on the main road east, with a customs post and a Roman garrison.	约公元 30 年，耶利哥。这是大道上的富庶商镇，有关卡，也驻着罗马兵。
+ch.zacchaeus.brief.who		Zacchaeus is the chief tax collector: he has bought the right to collect Rome's taxes and takes extra for himself. He is rich, hated, and short enough that he cannot see over the crowd.	撒该是税吏长：他买下了替罗马收税的权利，还从中多收。他有钱，被人恨，个子又矮，站在人群后面什么也看不见。
+ch.zacchaeus.brief.stake		Jesus is passing through town, and the crowd will not make room for a collaborator. So Zacchaeus climbs a sycamore. What happens next is not a reward for good behaviour — it is an invitation given before he has changed anything.	耶稣正从城里经过，人群不会给一个替罗马办事的人让路。撒该只好爬上桑树。接下来发生的事，不是好行为的奖赏，而是一份在他还没改变之前就先给出的邀请。
+ch.zacchaeus.scroll.note		Zacchaeus was a chief tax collector — wealthy, collaborating with Rome, and despised by his own town. His offer to repay fourfold goes beyond what the Law required. Jesus does not demand it first; He simply invites Himself to dinner. Grace comes before reformation.	撒该是税吏长——富有、与罗马合作、被本城人藐视。他愿意四倍偿还，远超律法的要求。但耶稣并没有先要求他这样做，祂只是邀请自己到他家吃饭。恩典先到，改变在后。
+ch.zacchaeus.ending.text		Grace arrived first. Change followed it out of the door.	恩典先到，改变在后头跟着来。
+ch.zacchaeus.ending.takeaway		Zacchaeus was not asked to clean up before Jesus came to dinner. Being welcomed made him generous. The story insists that real change is a fruit of grace, not a price paid to earn it.	耶稣去吃饭之前，并没有要求撒该先把自己收拾干净。被接纳，反倒让他慷慨起来。这个故事要说的正是：真正的改变是恩典结出来的果子，不是用来换取恩典的条件。
+ch.zacchaeus.reflection.q		What would “restoring fourfold” look like in your own life?	在你自己的生命里，「四倍偿还」会是什么样子？
+ch.zacchaeus.reflection.0.t		Returning something I took wrongly	归还我不该拿的东西
+ch.zacchaeus.reflection.0.insight		Zacchaeus did not just feel sorry, he counted it out. Luke 19:8	撒该不只是觉得抱歉，他真把钱一笔一笔数了出来。路加福音 19:8
+ch.zacchaeus.reflection.1.t		Giving more than is expected of me	给出超过别人期望的
+ch.zacchaeus.reflection.1.insight		Fourfold was beyond the Law. Grace makes people unreasonable in the best way. Luke 19:8	四倍，远远超过律法的要求。没有人要求他这样做；恩典常常让人做出不合常理的事。路加福音 19:8
+ch.zacchaeus.reflection.2.t		Welcoming someone nobody else welcomes	接纳一个没有人接纳的人
+ch.zacchaeus.reflection.2.insight		Jesus ate in the wrong house on purpose. Who is at your table? Luke 19:5	耶稣故意进错了家门。今天谁在你的桌旁？路加福音 19:5
+ch.zacchaeus.game.prompt		Tap left and right branches in turn to climb before Jesus passes. Miss twice and you slip.	交替点击左右树枝向上爬，在耶稣经过之前到达树顶。失误两次就会滑落。
+ch.zacchaeus.start.L0		Jericho is packed. Palm branches, dust, shouting, and the particular noise of a crowd that already knows who it dislikes.	耶利哥挤满了人。棕树枝、尘土、喊声，还有那种人群特有的吵闹——他们早就知道自己讨厌谁。
+ch.zacchaeus.start.L1	crowd	He is a sinner. A collaborator. He stole from us.	他是个罪人，是替罗马卖命的。他坑过我们的钱。
+ch.zacchaeus.start.L2	elias	There he is — Zacchaeus. Short enough that the crowd is a wall. Watch what he does.	他就在那儿——撒该。个子太矮，人群对他来说就是一堵墙。看他怎么做。
+ch.zacchaeus.start.L3	zacchaeus	I only want to see Him. Just once. That is all.	我只想看祂一眼。就一眼。就这样。
+ch.zacchaeus.start.C0		Make a gap in the crowd for him	在人群中为他让出一条缝
+ch.zacchaeus.start.R0		Two people move. Then three. The gap lasts about four seconds before it closes again.	先有两个人让开，接着又是三个。缝隙撑了大约四秒，又合上了。
+ch.zacchaeus.start.C1		Point to the sycamore tree ahead	指向前面那棵桑树
+ch.zacchaeus.start.R1		He follows your finger, and his whole face changes. It is not dignified. It is perfect.	他顺着你的手看过去，整张脸都亮了。说不上体面，却刚刚好。
+ch.zacchaeus.start.C2		Ask the crowd why they hate him	问人群为什么恨他
+ch.zacchaeus.start.R2	crowd	They list his sins in detail. Nobody mentions his name without spitting first.	他们一条一条数他的罪。没有一个人提起他的名字时不先啐一口。
+ch.zacchaeus.tree.L0		A rich man, a chief tax collector, is sitting in a tree like a child. The crowd laughs. He does not care.	一个财主、一个税吏长，像小孩一样坐在树上。人群在笑。他不在乎。
+ch.zacchaeus.tree.L1	jesus	Zacchaeus, make haste, and come down; for to day I must abide at thy house.	撒该，快下来！今天我必住在你家里。
+ch.zacchaeus.tree.L2	elias	Jesus does not say “repay what you stole and then I will come.” He invites Himself first. That order matters.	耶稣没有说「先把钱还清，我再进你家」。祂先开口要住进去。这个顺序很要紧。
+ch.zacchaeus.tree.C0		Help him down from the branch	扶他从树枝上下来
+ch.zacchaeus.tree.R0		His hands are shaking. He has not been touched kindly in a very long time.	他的手在抖。他已经很久没被人这样碰过了。
+ch.zacchaeus.tree.C1		Whisper: “He knows your name”	轻声说：「祂知道你的名字」
+ch.zacchaeus.tree.R1		He climbs down faster than he climbed up. Being known is a powerful thing.	他下树比上树还快。被人认出名字，比什么都管用。
+ch.zacchaeus.tree.C2		Look at the crowd’s faces instead	转头看人群的表情
+ch.zacchaeus.tree.R2	elias	They are furious. Grace to the wrong person always looks like injustice to somebody.	他们气得脸都变了。恩典落到「不该得的人」身上，在某些人眼里总像是不公平。
+ch.zacchaeus.house.L0	zacchaeus	Behold, Lord, the half of my goods I give to the poor; and if I have taken any thing from any man by false accusation, I restore him fourfold.	主啊，我把所有的一半给穷人；我若讹诈了谁，就还他四倍。
+ch.zacchaeus.house.L1		Fourfold. The Law asked for one-fifth extra. Nobody asked him for this. Nobody had to.	四倍。律法只要求多加五分之一。没有人要求他这样做，也没有人逼他。
+ch.zacchaeus.house.L2	elias	This is what grace does when it is received rather than resisted. It makes a generous person out of a greedy one — without a single instruction.	这就是人接受恩典之后会发生的事：一个贪心的人变得慷慨，没有人下过一道命令。
+ch.zacchaeus.house.L3	servant	He has never once opened that storeroom before.	这间库房，他从来没打开过。
+ch.zacchaeus.house.C0		Help him carry the coins to the door	帮他把钱币搬到门口
+ch.zacchaeus.house.R0		The bags are heavy. He carries the heaviest one himself.	袋子很沉。最重的那袋，他自己扛。
+ch.zacchaeus.house.C1		Tell the crowd what he just did	把刚才的事告诉人群
+ch.zacchaeus.house.R1		Some of them do not believe you. A few go quiet. One woman starts to cry.	有些人根本不信。有几个人不说话了。一个女人开始哭。
+ch.zacchaeus.house.C2		Ask Jesus why He chose this house	问耶稣为何选这一家
+ch.zacchaeus.house.R2	jesus	“For the Son of man is come to seek and to save that which was lost.”	「人子来，为要寻找拯救失丧的人。」
+ch.zacchaeus.end.L0	elias	Ten chapters. Ten different ways God walks into an ordinary day and refuses to leave it ordinary.	十章了。十次不同的经过——神走进平凡的一天，不容它继续平凡下去。
+ch.zacchaeus.end.L1		The dust of Jericho settles. Somewhere, a very short man is counting out coins and smiling.	耶利哥的尘土落定。某个地方，一个很矮的人正在数钱，一边数一边笑。
+ch.zacchaeus.end.L2		The scroll grows warm in your hands. The road, somehow, is still going.	书卷在你手里发热。这条路，不知怎么，还在往前。

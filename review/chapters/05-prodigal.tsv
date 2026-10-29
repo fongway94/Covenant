@@ -1,0 +1,91 @@
+ID	SPEAKER	ENGLISH	CHINESE (rewrite this column, keep the ID)
+ch.prodigal.title		The Far Country	远方
+ch.prodigal.subtitle		The Prodigal Son	浪子回头
+ch.prodigal.intro		A son asks for his inheritance early. His father gives it — and then waits by the road.	两个儿子，一个父亲。一个离家，一个留下；父亲却为两个人都跑了出去。
+ch.prodigal.brief.place		c. AD 30, in Galilee. Jesus is answering religious leaders who complain that he welcomes the wrong people, and he tells three stories in a row about something lost: a sheep, a coin, a son.	约公元 30 年，加利利。耶稣正在回答宗教领袖的抱怨——他们怪他接待不该接待的人。他一连讲了三个「失而复得」的故事：一只羊、一块钱、一个儿子。
+ch.prodigal.brief.who		A father and two sons. The younger asks for his inheritance now — in that culture, the same as saying “I wish you were dead”. The elder stays, works, and keeps every rule.	一位父亲，两个儿子。小儿子现在就要求分家产——在那时的文化里，等于说「我巴不得你死了」。大儿子留下了，干活，规矩一条没犯。
+ch.prodigal.brief.stake		This story is not mainly about the son who leaves. Watch the father: what he does once the money is gone is the part that would have shocked Jesus’ first listeners.	这个故事真正的主角不是出走的儿子，而是父亲。钱花光以后他做了什么，才是当年听众最受不了的地方。
+ch.prodigal.scroll.note		This is the third of three “lost” parables in Luke 15 — the lost sheep, the lost coin, and the lost son. It is told because the religious crowd was grumbling that Jesus welcomed sinners.	这是路加福音 15 章三个「失而复得」的故事中的第三个：丢了羊、丢了钱、丢了儿子。耶稣讲这些，是因为宗教人士抱怨他接待罪人。
+ch.prodigal.ending.text		Grace is the father running before the apology is finished.	恩典就是：道歉的话还没说完，父亲已经跑过去抱住了他。
+ch.prodigal.ending.takeaway		The father absorbs the cost, restores the ring, and throws a feast — while still going out to plead with the son who never left. He is prodigal, extravagant, with mercy for both.	父亲为两个儿子都付上了代价：袍子、戒指、鞋、肥牛犊，然后还要走出门去劝那个从没离开过的儿子。对这两个儿子，他都是这样不计代价地爱。
+ch.prodigal.reflection.q		Which brother are you today — and what would coming home look like?	今天的你，更像哪一个儿子？对你来说，「回家」会是什么样子？
+ch.prodigal.reflection.0.t		The younger: I need to stop rehearsing and start walking	小儿子：别再把台词背下去了，该往回走了
+ch.prodigal.reflection.0.insight		Repentance in Luke 15 is a journey, not a mood. “He arose and came to his father.” Luke 15:20	悔改不是在心里难过一阵就够了，而是要真的站起来，转过身，往家走。「于是起来，往他父亲那里去。」路加福音 15:20
+ch.prodigal.reflection.1.t		The elder: I have stayed, but my heart is far away	大儿子：我人留下了，心却离得很远
+ch.prodigal.reflection.1.insight		The father went out to him too. Obedience without love is its own kind of far country. Luke 15:28–31	父亲也为大儿子走了出去。人还留在家里，心一样可以走得很远——顺服里没有爱，人也一样会走丢。路加福音 15:28–31
+ch.prodigal.reflection.2.t		The bystander: I want to know how to welcome someone	旁观者：我想学会怎么接纳一个人
+ch.prodigal.reflection.2.insight		Then leave the seat empty and the door open. That is how the parable invites us to finish it. Luke 15:32	那就把座位留着，把门开着。耶稣讲这个故事，就是想让我们站在这个位置上。路加福音 15:32
+ch.prodigal.start.L0		The scroll opens on a warm courtyard: a large house, olive trees, servants moving between the storehouses. Two sons. One father.	书卷展开在一座温暖的院子里：大宅、橄榄树、仆人在仓库之间来来去去。两个儿子，一位父亲。
+ch.prodigal.start.L1	younger	Father, give me the portion of goods that falleth to me.	「父亲，请你把我应得的家业分给我。」
+ch.prodigal.start.L2	elias	In that culture, this is not a request for an allowance. It is “I wish you were dead, and I want my share now.” The inheritance would normally come at the funeral.	在那个年代，这句话不是要零花钱，而是「我巴不得你死了，现在就分给我」。产业本来要等到父亲去世才分。
+ch.prodigal.start.L3		The father says nothing for a long moment. Then he divides his living between them.	父亲沉默了很久。然后，他把产业分给了他们。
+ch.prodigal.start.C0		Try to talk the younger son out of it	试着劝小儿子回心转意
+ch.prodigal.start.R0		He will not even look at you. Somebody has promised him a better story somewhere else, and he can already hear its music.	他连看都没看你。有人已经给他描绘过一个更自在的地方，他连那边的音乐都听见了。
+ch.prodigal.start.C1		Ask the father why he agrees to give it	问父亲为什么答应他
+ch.prodigal.start.R1	father	“Because love that holds on by force is not love,” he says. “I would rather be wounded and keep my son than keep my property and lose him.”	「靠扣住家产把人留住，留住的不是爱，只是人，」他说，「我宁可自己受伤，也不要这样。」
+ch.prodigal.start.C2		Stand with the servants, who have gone quiet	和沉默下来的仆人们站在一起
+ch.prodigal.start.R2		They know that a divided estate means some of them will be let go. Nobody in this story is untouched by the son’s choice.	他们清楚，家一分，有些帮工就得走。这个儿子的决定，牵着每一个人的生计。
+ch.prodigal.leaving.L0		Not many days later, the younger son gathers everything, takes a journey into a far country — and spends it all.	过了不多几日，小儿子把所有的都收拾起来，往远方去了——就在那里散尽了。
+ch.prodigal.leaving.L1	elias	Luke uses one devastating phrase: “wasted his substance with riotous living.” No details. We are not invited to enjoy the sin.	路加用了一句很重的话：「任意放荡，浪费资财。」没有细节。那些罪，没什么好细看的。
+ch.prodigal.leaving.L2		Back home, the father is often on the road, looking toward the horizon.	而在家里，父亲常常走到路口，望着天边。
+ch.prodigal.leaving.L3	servant	He goes out there every evening. Every single evening.	「他每天傍晚都出去。每一天。」
+ch.prodigal.leaving.C0		Ask how long the father intends to keep waiting	问父亲打算等到什么时候
+ch.prodigal.leaving.R0	servant	The servant shrugs. “Until he comes back, I suppose.” It has been more than a year.	仆人耸耸肩：「大概是等到他回来吧。」已经一年多了。
+ch.prodigal.leaving.C1		Go out to the road and wait with him	到路上陪他一起等
+ch.prodigal.leaving.R1		You stand beside him in the dust until the light fails. He does not say much. He does not need you to.	你在尘土里站到他旁边，直到天光褪尽。他没说多少话，也不需要你说。
+ch.prodigal.leaving.C2		Follow the younger son into the far country	跟着小儿子去远方
+ch.prodigal.leaving.R2		You find a city that is bright at night and expensive in the morning. His friends are already gone when the money runs out.	你找到一座城：夜里灯火通明，白天什么都贵。钱花光以后，他的朋友一个都不见了。
+ch.prodigal.famine.L0		A mighty famine rises in that land. The son, who once threw money from a table, now hires himself out to a citizen — to feed pigs.	那地方遇上大饥荒。从前把钱往外撒的儿子，如今去投靠本地一个人——替他放猪。
+ch.prodigal.famine.L1		He is so hungry that the pods the pigs eat look good to him. And no one gives him anything.	他饿到觉得猪吃的豆荚都是好东西。可没有人给他。
+ch.prodigal.famine.L2	elias	For a Jewish listener, pigs are the bottom. Luke could not have made the fall steeper.	对当时的犹太听众来说，猪圈已经是最低的地方了——再往下，就没有了。
+ch.prodigal.famine.L3	younger	He came to himself.	「他醒悟过来。」
+ch.prodigal.famine.L4	elias	Four words. The turning point of the whole parable. He does not get rescued first — he comes to himself.	四个字。整个比喻在这里拐了个弯。他不是先被救出来——他是先醒过来。
+ch.prodigal.famine.C0		Remind him that his father’s hired servants have bread	提醒他：父亲家里连雇工都有饼吃
+ch.prodigal.famine.R0	younger	The thought lands like a physical blow. “Bread,” he says. “Even the servants.” He has not thought of home in months.	这句话像打了他一拳。「连雇工，」他喃喃地说，「都有饼吃。」他已经好几个月没想起家了。
+ch.prodigal.famine.C1		Sit in the mud with him until he can speak	陪他坐在泥里，等他自己开口
+ch.prodigal.famine.R1		You say nothing. After a long time he says, “I have to go back.” You nod. He needs to hear himself say it.	你什么也没说。过了很久，他说：「我得回去。」你点点头——他需要听见自己说出口。
+ch.prodigal.famine.C2		Help him rehearse the words: “Father, I have sinned”	陪他把「父亲，我得罪了」练一遍
+ch.prodigal.famine.R2		He practises it out loud, twice, and then a third time. He is preparing to return as a servant, not a son.	他大声练了两遍，又练了第三遍。他想好了：回去做雇工，不做儿子。
+ch.prodigal.pigsty.L0	younger	I will arise and go to my father, and will say unto him, Father, I have sinned against heaven, and before thee, and am no more worthy to be called thy son: make me as one of thy hired servants.	「我要起来，到我父亲那里去，向他说：父亲！我得罪了天，又得罪了你；从今以后，我不配称为你的儿子，把我当作一个雇工吧！」
+ch.prodigal.pigsty.L1	elias	Repentance in this story is not a feeling of regret. It is a direction. He stands up and starts walking — hundreds of miles, in the same sandals he wore into the pigsty.	这个故事里，悔改不是心里懊悔一下，而是一个方向。他站起来开始走——几百里路，穿的还是走进猪圈时那双鞋。
+ch.prodigal.pigsty.L2		The road is long. He gets quieter the closer he gets to home.	路很长。离家越近，他越说不出话。
+ch.prodigal.pigsty.C0		Walk with him as far as the last ridge	陪他走到最后一道山脊
+ch.prodigal.pigsty.R0		At the top he stops, and you see the roof of the house below. He is crying. You leave him there — the last part is his.	到了山脊上他停住了。你看见山下那座房子的屋顶。他在哭。你先走开几步——最后这一程，得他自己走。
+ch.prodigal.pigsty.C1		Run ahead and warn the household	先跑回家去报信
+ch.prodigal.pigsty.R1		You burst into the courtyard shouting. The father is already running past you before you finish the sentence.	你冲进院子大喊。话还没说完，父亲已经从你身边跑了出去。
+ch.prodigal.pigsty.C2		Ask Corin whether the father will take him back	问柯林，父亲会不会收他
+ch.prodigal.pigsty.R2	elias	Corin smiles. “You have read this story before,” he says. “Watch the father’s feet.”	柯林笑了：「你从前读过这个故事吧。留意父亲的脚。」
+ch.prodigal.road.L0		And he arose, and came to his father. But when he was yet a great way off, his father saw him.	「于是起来，往他父亲那里去。相离还远，他父亲看见他。」
+ch.prodigal.road.L1	elias	He saw him a great way off — because he had been looking. Every evening. For years.	相离还远就看见了——因为他一直在看。每个傍晚，看了好几年。
+ch.prodigal.road.L2		The father runs. In that culture, a patriarch does not run; it is undignified. He does not care. He falls on his son’s neck and kisses him.	父亲跑过去。在那个文化里，一家之主是不跑的，那很失体面。他不在乎。他搂住他的脖子，连连亲他。
+ch.prodigal.road.L3	younger	Father, I have sinned against heaven, and in thy sight, and am no more worthy to be called thy son —	「父亲！我得罪了天，又得罪了你；从今以后，我不配称为你的儿子——」
+ch.prodigal.road.L4	father	Bring forth the best robe, and put it on him; and put a ring on his hand, and shoes on his feet! And bring hither the fatted calf, and kill it; and let us eat, and be merry!	「快把上好的袍子拿出来给他穿，把戒指戴在他指头上，把鞋穿在他脚上；把那肥牛犊牵来宰了，我们可以吃喝快乐！」
+ch.prodigal.road.L5	elias	He never lets his son finish the sentence. The rehearsed speech about becoming a hired servant is cut off by a party.	儿子的话没说完。那段排练好的、关于做雇工的讲词，被一场筵席打断了。
+ch.prodigal.road.C0		Run alongside the father to meet him	跟着父亲一起跑出去迎他
+ch.prodigal.road.R0	father	You arrive out of breath in time to see the ring go onto a hand that is still shaking. “My son was dead, and is alive again,” the father keeps saying.	你气喘吁吁赶到，正看见戒指套上一只还在发抖的手。「我这个儿子是死而复活，」父亲一遍一遍地说。
+ch.prodigal.road.C1		Weep at the edge of the crowd	站在人群边上哭
+ch.prodigal.road.R1		You are not family. You are not a servant. You are nobody in this story. And still you cannot stop crying. That is what grace does to bystanders.	你不是家人，也不是仆人。在这个故事里你谁都不是。可你还是止不住眼泪——站在旁边看见恩典的人，都是这样。
+ch.prodigal.road.C2		Fetch the best robe yourself	亲自去取那件上好的袍子
+ch.prodigal.road.R2		The robe is heavy and smells of cedar. You put it over shoulders that are still covered in pig-sty dust. Nobody seems to mind.	袍子很沉，有香柏木的味道。你把它披在一副还沾着猪圈尘土的肩上。好像没人在意这些。
+ch.prodigal.feast.L0		Music. Dancing. Lamps in the courtyard. And then the story turns — because the elder son is out in the field.	音乐、舞蹈、院子里的灯。然后故事拐了个弯——大儿子还在田里。
+ch.prodigal.feast.L1	elder	What do these things mean? Lo, these many years do I serve thee, neither transgressed I at any time thy commandment — and yet thou never gavest me a kid, that I might make merry with my friends! But as soon as this thy son was come, which hath devoured thy living, thou hast killed for him the fatted calf!	「我服事你这多年，从来没有违背过你的命，你并没有给我一只山羊羔，叫我和朋友一同快乐。」
+ch.prodigal.feast.L2	elias	Notice: “this thy son.” He will not say “my brother.” He is not wrong about the facts. He is wrong about the family.	留意他说的是「你这个儿子」。他不肯说「我的兄弟」。论事实，他没有说错；可论关系，他离得还很远。
+ch.prodigal.feast.L3		The father goes out and pleads with him. He leaves the party to stand in the dark with the son who stayed.	父亲出去劝他。他离开筵席，走进黑地里，去陪那个留下来的儿子。
+ch.prodigal.feast.C0		Go out and listen to the elder brother	出去听大儿子把话说完
+ch.prodigal.feast.R0		You stand in the field with him. He is not angry at the party, really. He is hurt that nobody noticed he never left.	你和他一起站在田里。他真正气的不是筵席，是没有人注意到——他从来没离开过。
+ch.prodigal.feast.C1		Tell him he is being unfair	直接告诉他这不公平
+ch.prodigal.feast.R1		You say it plainly. He says something sharp back. Later you will wish you had asked a question instead.	你照直说了。他顶了你一句。后来你会希望当时多问一句，而不是先下判断。
+ch.prodigal.feast.C2		Ask the father why he goes out to both sons	问父亲：为什么两个儿子，你都要出去找
+ch.prodigal.feast.R2	father	“Because both of them are lost,” he says. “One was lost far away. One is lost three feet from my table.”	「因为两个都迷了路，」他说，「一个迷在远方，一个迷在离我饭桌三步远的地方。」
+ch.prodigal.elder.L0	father	Son, thou art ever with me, and all that I have is thine. It was meet that we should make merry, and be glad: for this thy brother was dead, and is alive again; and was lost, and is found.	「儿啊，你常和我同在，我一切所有的都是你的；只是你这个兄弟是死而复活、失而又得的，所以我们理当欢喜快乐。」
+ch.prodigal.elder.L1	elias	The parable ends there. Jesus never tells us whether the elder brother came inside. That silence is deliberate — because the people He was speaking to were the elder brothers, and the ending was up to them.	比喻就停在这里。耶稣没有说大儿子最后有没有进屋。这份沉默是故意的——因为当年听他讲道的人，正是那些大儿子。结局得他们自己写。
+ch.prodigal.elder.L2		You look at the lit doorway. Then you look at the dark field.	你看了看那扇亮着灯的门，又看了看黑下来的田。
+ch.prodigal.elder.C0		Stand with the elder brother in the dark, and wait	站在黑地里，陪大儿子一起等
+ch.prodigal.elder.R0		You do not push. You just stay. Sometimes that is the only invitation a person can accept.	你没有催促他，也没有急着劝他，只是安静地留在他身边。因为有时候，一个人最需要的，不是有人告诉他该怎么走出来，而是有人愿意陪着他，等他慢慢走出来。
+ch.prodigal.elder.C1		Remind him gently that he is already inside the family	温和地提醒他：他早就在这个家里
+ch.prodigal.elder.R1		“All that I have is thine,” you repeat. He looks at the house for a long time. It is the truest thing anyone has said to him all day.	「我一切所有的都是你的，」你把这句话重复了一遍。他望着那幢房子，望了很久。这是他一天里听到的最真实的一句话。
+ch.prodigal.elder.C2		Go back to the feast and keep his seat empty	回到筵席，把他的座位留着
+ch.prodigal.elder.R2		You set an extra place at the table, just in case. The music goes on. The door stays open.	你多摆了一副餐具，以防万一。音乐没有停，门也一直开着。
+ch.prodigal.end.L0	elias	Two sons. One runs away, one stays and resents it. The father runs after both.	两个儿子。一个出走，一个留下却满心怨气。父亲为两个人都跑了出去。
+ch.prodigal.end.L1	elias	Most of us have been the younger son at some point. Quite a lot of us have been the elder one for years and never noticed.	我们多半在某一段时间里是小儿子；也有不少人做了很多年的大儿子，自己却没察觉。
+ch.prodigal.end.L2		The scroll turns, but the music from the courtyard follows you down the road.	书卷翻页，院子里的音乐却一路跟着你。

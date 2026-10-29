@@ -1,0 +1,50 @@
+ID	SPEAKER	ENGLISH	CHINESE (rewrite this column, keep the ID)
+ch.jonah.title		The Great Fish	大鱼腹中
+ch.jonah.subtitle		Jonah and Nineveh	约拿与尼尼微
+ch.jonah.intro		A prophet runs the wrong way, a storm follows him, and mercy waits at the bottom of the sea.	一位先知往反方向跑，风暴追着他，而怜悯在海底等着他。
+ch.jonah.brief.place		c. 780 BC. Nineveh is the capital of Assyria, the most feared empire of the age — a city so large the Bible says it takes three days to walk across.	约公元前 780 年。尼尼微是亚述的京城，当时最令人生畏的帝国——大到圣经说走遍全城要三天。
+ch.jonah.brief.who		God tells the prophet Jonah to go to Nineveh and call it to repent. Instead Jonah buys a ticket on a ship sailing the opposite way, to Tarshish.	神叫先知约拿到尼尼微去，向那座城宣告审判，好让他们回转。约拿却买了船票，往相反方向的他施去。
+ch.jonah.brief.stake		A storm hits the ship. The sailors will do anything to stay alive. And the reason for the storm is asleep down in the hold — a prophet running from the one errand he cannot avoid.	海上起了风暴。水手们为了活命什么都肯做，而这场风暴的起因，正睡在船舱里——一个想逃掉唯一躲不掉的那件事的先知。
+ch.jonah.scroll.note		Jonah is the reluctant prophet: he runs because he suspects God will be merciful to Nineveh — and he would rather they were judged. The book ends with God asking a question He does not answer, leaving the reader to examine their own reluctance to forgive.	约拿是不情愿的先知：他逃跑，是因为他猜到神会怜悯尼尼微——而他宁愿他们被审判。这卷书最后，神问了一个问题，却没有给答案，好让读者看看自己心里那份不肯饶恕。
+ch.jonah.ending.text		Mercy is hardest when it is given to people you dislike.	怜悯落到你讨厌的人身上时，最难接受——可那才是怜悯。
+ch.jonah.ending.takeaway		Jonah is the only prophet who succeeds spectacularly and resents it. God's final question is not about Nineveh's worthiness but about Jonah's heart — a mirror held up to every one of us who would rather see justice than grace.	约拿是唯一一位大获成功却因此愤愤不平的先知。神最后问的，不是尼尼微配不配，而是约拿的心——它是一面镜子，照出我们这些宁愿看见公义、不愿看见恩典的人。
+ch.jonah.reflection.q		Who is your Nineveh — the person or group you would rather God did not forgive?	谁是你的尼尼微——那个你不太希望神饶恕的人或群体？
+ch.jonah.reflection.0.t		Someone who hurt me	伤害过我的人
+ch.jonah.reflection.0.insight		God's question to Jonah is not 'do they deserve it?' but 'should I not spare?' Jonah 4:11	神问约拿的不是「他们配不配」，而是「我岂能不爱惜」。约拿书 4:11
+ch.jonah.reflection.1.t		People whose views I cannot stand	我无法认同其观点的人
+ch.jonah.reflection.1.insight		Jonah preferred a storm to their repentance. Check which storm you are standing in. Jonah 1:12	约拿宁愿要一场风暴，也不愿他们悔改。你现在是不是也想先跑开？约拿书 1:12
+ch.jonah.reflection.2.t		Honestly? Sometimes myself.	老实说？有时候是我自己。
+ch.jonah.reflection.2.insight		The fish was a quiet room, not a punishment cell. Mercy starts at home. Jonah 2:1–2	鱼腹是一间安静的屋子，不是牢房。怜悯从自己开始。约拿书 2:1–2
+ch.jonah.game.prompt		Drag up and down to swim through the dark water. Avoid drifting rocks and jellyfish; gather three prayer bubbles.	上下拖动在黑暗的海水中游动。避开漂浮的岩石和水母，收集三个祷告气泡。
+ch.jonah.start.L0		Joppa harbour. A ship is loading for Tarshish — which is, notably, in the opposite direction from Nineveh.	约帕港。一艘船正装货开往他施——巧的是，他施正好在尼尼微的反方向。
+ch.jonah.start.L1	captain	What meanest thou, O sleeper? Arise, call upon thy God!	你这沉睡的人哪，为何这样呢？起来，求告你的神！
+ch.jonah.start.L2	elias	The storm is not random. Jonah knows it. Watch what he tells the sailors to do.	这场风暴不是偶然的。约拿知道。留意他叫水手做什么。
+ch.jonah.start.L3	jonah	Take me up, and cast me forth into the sea; so shall the sea be calm unto you.	你们将我抬起来，抛在海中，海就平静了。
+ch.jonah.start.C0		Beg the sailors not to throw him over	求水手不要把他抛下海
+ch.jonah.start.R0		They hesitate — and the waves climb higher. Sometimes the kind thing is not the safe thing.	他们犹豫了，浪又高一尺。善良和稳妥，有时候不是一回事。
+ch.jonah.start.C1		Stand with Jonah and pray	和约拿站在一起祷告
+ch.jonah.start.R1		He will not look at you. Shame makes people want to be alone.	他不肯看你。羞愧会让人想一个人待着。
+ch.jonah.start.C2		Ask Corin why Jonah is running	问柯林，约拿为何逃跑
+ch.jonah.start.R2	elias	“Because he is afraid God will forgive them,” Corin says. “It is the strangest reason anyone has ever run.”	「因为他怕神真的饶恕他们，」柯林说，「这大概是最奇怪的一个逃跑理由。」
+ch.jonah.deep.L0		The water closes over him. It is very cold, very dark, and very quiet — and then the great fish comes.	海水在他头上合拢。又冷、又黑、又静——然后大鱼来了。
+ch.jonah.deep.L1	jonah	I cried by reason of mine affliction unto the LORD, and he heard me; out of the belly of hell cried I.	我遭遇患难求告耶和华，他就应允我；从阴间的腹中呼求。
+ch.jonah.deep.L2	elias	Three days. Not a punishment cell — a quiet room. Some people only stop running when they cannot run any more.	三天。这不是牢房，是一间安静的屋子。有些人非要跑到跑不动，才肯停下来。
+ch.jonah.deep.C0		Pray with him in the dark	在黑暗中和他一同祷告
+ch.jonah.deep.R0		The prayer is mostly silence. That is enough. The fish keeps swimming.	祷告大半是沉默。那也够了。大鱼继续往前游。
+ch.jonah.deep.C1		Ask him what he is most afraid of	问他最害怕的是什么
+ch.jonah.deep.R1	jonah	“That they will change,” he says at last. “And that God will be glad.”	「怕他们真的会改，」他终于开口，「也怕神会为这个高兴。」
+ch.jonah.deep.C2		Count the days and wait	数着日子等候
+ch.jonah.deep.R2		On the third day, the fish is sick of him. Mercy sometimes arrives as being spat out.	第三天，大鱼把他吐出来，他摔在沙滩上。有些路，得先从那里面出来，才走得回去。
+ch.jonah.nineveh.L0		Nineveh is enormous — three days’ walk across. Jonah walks one day into it and shouts a single sentence.	尼尼微大得走三天也走不完。约拿只走了一天，就喊出一句话。
+ch.jonah.nineveh.L1	jonah	Yet forty days, and Nineveh shall be overthrown!	再等四十日，尼尼微必倾覆了！
+ch.jonah.nineveh.L2	king	Let man and beast be covered with sackcloth, and cry mightily unto God … who can tell if God will turn and repent?	人和牲畜都当披上麻布，人要切切求告神……或者神转意后悔，也不灭绝我们，也未可知。
+ch.jonah.nineveh.L3	elias	The whole city stops. Even the animals, says the king. And God does turn. Jonah is furious.	全城都停了下来，连牲畜也披上麻布——这是王的命令。神果然回心转意。约拿气得不行。
+ch.jonah.nineveh.C0		Sit with Jonah outside the city	陪约拿坐在城外
+ch.jonah.nineveh.R0		He is sitting in the dust, furious that mercy won. You sit down too. It is an honest place to sit.	他坐在尘土里生闷气——气的是神居然饶了他们。你也在旁边坐下。这个位置不体面，但诚实。
+ch.jonah.nineveh.C1		Remind him of the fish	提醒他关于那条大鱼的事
+ch.jonah.nineveh.R1		“You were given mercy when you deserved none,” you say. He has no answer for that.	「你自己得怜悯的时候，也不见得比他们配。」你说。他没有话可答。
+ch.jonah.nineveh.C2		Ask God why He cares about Nineveh	问神为何在乎尼尼微
+ch.jonah.nineveh.R2	elias	The answer is a question about a plant, a worm, and a hundred and twenty thousand people who do not know their right hand from their left.	答案不是一句话，是一个问题——关于一棵一夜长起来的植物、一条虫，和十二万个连左右手都分不清的人。
+ch.jonah.end.L0	elias	The book ends with God’s question hanging in the air. He does not answer it. He wants Jonah — and us — to answer it.	这卷书停在一个悬在半空的问题上。神没有回答，祂要约拿——也要我们——自己回答。
+ch.jonah.end.L1		Should I not spare Nineveh? The wind moves over the fields. Somewhere a worm eats a plant.	我岂能不爱惜尼尼微呢？风吹过田野。不知哪里，一条虫正在啃一棵植物。
+ch.jonah.end.L2		The scroll closes on the question, not the answer.	书卷合上了，合在一个问题上，而不是一个答案上。
