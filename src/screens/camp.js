@@ -386,7 +386,7 @@ export function finaleHtml(ui) {
         <div class="eyebrow" style="margin-bottom:6px">${tx("Carry it outside", "把它带到游戏之外")}</div>
         <p class="tiny muted" style="margin:0">${tx(
           "This is where the game stops and your life begins. Retell one of the ten stories to somebody this week. When you face a decision, pause and breathe before you choose — the same way you did at the campfire. Open the book of Jeremiah and read chapter 29 in full. And notice which of the four virtues is hardest for you: that is the road still ahead.",
-          "游戏在这里停下，你的生活从这里开始。这一周，把十段故事中的一段讲给一个人听；面对选择时，先停下来呼吸，再决定——就像你在营火旁做的那样；翻开耶利米书，把第 29 章完整读一遍；然后留意四种品格里哪一种对你最难——那就是你前面还有的路。"
+          "游戏在这里停下，你的生活从这里开始。这一周，把十段故事中的一段讲给一个人听；面对选择时，先停下来呼吸，再决定——就像你在营火旁做的那样；翻开耶利米书，把第 29 章完整读一遍；然后留意四种品格里哪一种对你最难——那就是你接下来要走的路。"
         )}</p>
       </div>
 

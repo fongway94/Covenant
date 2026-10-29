@@ -85,7 +85,7 @@ export const PROFILES = [
       "又使这众人知道耶和华使人得胜，不是用刀用枪，因为争战的胜败全在乎耶和华。"),
     verseRef: B("1 Samuel 17:47", "撒母耳记上 17:47"),
     why: B("You kept choosing the front of the line. Like David, your instinct was to move toward the noise rather than away from it — and the game gave you Courage for it.",
-      "你一次又一次选择走向最前面。像大卫一样，你的本能是朝巨响走过去，而不是往后退——所以这里给你记上一份勇气。"),
+      "你一次又一次选择走向最前面。像大卫一样，你的本能是朝巨响走过去，而不是往后退——所以你在勇气上又长了一分。"),
     shadow: B("David also wrote Psalm 51 after committing adultery and arranging Uriah’s death (2 Samuel 11). The brave man became a broken man. Scripture does not hide it.",
       "大卫在犯奸淫、设计杀害乌利亚之后，写了诗篇 51 篇（撒母耳记下 11 章）。勇敢的人后来成了破碎的人。圣经没有把这段藏起来。"),
     grace: B("God did not discard him. “A broken and a contrite heart, O God, thou wilt not despise” (Psalm 51:17). Courage is not the same as never falling.",
