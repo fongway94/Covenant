@@ -4,6 +4,7 @@
    Run: npm run check:games */
 
 import { GAMES, SCENES } from "../src/engine/games.js";
+import { ACT_BUILDERS } from "../src/engine/stages.js";
 import { clamp, rnd, dist, overInfo } from "../src/engine/scene.js";
 import { stepsFor } from "../src/data/game-steps.js";
 
@@ -105,24 +106,17 @@ function preludeInput(c, frame, seen) {
   if (s.cells && s.seq && s.phase) {
     if (s.phase === "input" && s.shown < s.seq.length) {
       const cell = s.cells[s.seq[s.shown]];
-      if (cell && seen.orderKey !== `${s.round}:${s.shown}`) { seen.orderKey = `${s.round}:${s.shown}`; tap(cell.x, cell.y); }
+      if (cell && seen.orderKey !== `${s.round}:${s.shown}`) {
+        seen.orderKey = `${s.round}:${s.shown}`;
+        tap(cell.x, cell.y);
+        /* a real hand comes off the glass between two seals */
+        g.onUp?.(c, p);
+      }
     }
     return;
   }
   // dodge: leap the low throw, crouch under the high one
-  if (s.hazards && typeof s.x === "number") {
-    const near = s.hazards.find((hz) => !hz.done && hz.x - s.x > 30 && hz.x - s.x < 80);
-    if (near?.kind === "high") {
-      p.down = true; p.dy = 40; p.x = s.x; p.y = s.y;
-      g.onDown?.(c, p); g.onMove?.(c, p);
-    } else if (near?.kind === "low") {
-      if (p.down) { p.down = false; p.dy = 0; g.onUp?.(c, p); }
-      if (!s.jump && frame % 4 === 0) {
-        tap(s.x, s.y); p.down = false; g.onUp?.(c, p);
-      }
-    } else if (p.down) { p.down = false; p.dy = 0; g.onUp?.(c, p); }
-    return;
-  }
+  if (s.hazards && typeof s.x === "number") { dodgeInput(c, frame); return; }
   // trace: drag up the middle of the winding ribbon
   if (typeof s.progress === "number" && s.left !== undefined) {
     const top = c.h * 0.47, bottom = c.h * 0.9;
@@ -132,9 +126,23 @@ function preludeInput(c, frame, seen) {
   }
 }
 
+/* The valley: duck the chest-high throw, leap the one that skims the dust. */
+function dodgeInput(c, frame) {
+  const p = c.pointer, s = c.state, g = c.game;
+  const near = s.hazards.find((hz) => !hz.done && hz.x - s.x > 24 && hz.x - s.x < 90);
+  if (near?.kind === "high") {
+    p.down = true; p.dy = 40; p.x = s.x; p.y = s.y;
+    g.onDown?.(c, p); g.onMove?.(c, p);
+  } else if (near?.kind === "low") {
+    if (p.down) { p.down = false; p.dy = 0; g.onUp?.(c, p); }
+    if (!s.jump && frame % 3 === 0) { p.down = true; g.onDown?.(c, p); p.down = false; g.onUp?.(c, p); }
+  } else if (p.down) { p.down = false; p.dy = 0; g.onUp?.(c, p); }
+}
+
 /* Input scripts for the climax act. */
 function climaxInput(key, c, frame) {
   const p = c.pointer, s = c.state, g = c.game;
+  if (s && typeof s.x === "number" && Array.isArray(s.hazards)) { dodgeInput(c, frame); return; }
   switch (key) {
     case "sling":
       if (frame % 60 === 1) { p.startX = 60; p.startY = 500; g.onDown?.(c, p); }
@@ -291,6 +299,104 @@ for (const [key, game] of [...Object.entries(GAMES), ...Object.entries(SCENES).m
 }
 
 for (const r of results) console.log("  " + r);
+
+/* ---- one press is one seal ----
+   The reported bug: on the decree, one press stamped two or three seals and
+   then threw the round away for a "wrong seal" nobody pressed. Two causes —
+   a touch screen delivering both pointerdown and touchstart (fixed in
+   scene.js), and a hit test that could not tell two neighbouring seals
+   apart. This drives the stage directly and hands it the same press twice. */
+{
+  const build = () => ACT_BUILDERS.order({
+    title: ["Seal the decree", "在谕旨上用印"], prompt: ["", ""], hint: ["", ""],
+    rounds: 2, seconds: 34, reward: 30, mode: "seal"
+  });
+  const c = makeC("seals");
+  c.game = build();
+  c.game.init(c);
+  const s = c.state;
+  const problems = [];
+  const at = (cell) => ({ x: cell.x, y: cell.y, down: true, dx: 0, dy: 0 });
+
+  /* no two seals may share a finger */
+  for (let i = 0; i < s.cells.length; i++) {
+    for (let j = i + 1; j < s.cells.length; j++) {
+      const gap = dist(s.cells[i].x, s.cells[i].y, s.cells[j].x, s.cells[j].y);
+      if (gap < s.reach * 2 + 8) problems.push(`seals ${i} and ${j} are ${Math.round(gap)}px apart with a ${Math.round(s.reach)}px reach`);
+    }
+  }
+
+  /* run out the "show" phase, then deliver one press twice */
+  s.phase = "input"; s.shown = 0; s.timer = 0;
+  const firstCell = s.cells[s.seq[0]];
+  c.game.onDown(c, at(firstCell));
+  if (s.shown !== 1) problems.push(`the first press did not stamp the first seal (shown=${s.shown})`);
+  const stampedOnce = s.shown;
+  c.game.onDown(c, at(firstCell));          // the same finger, delivered again
+  if (s.shown !== stampedOnce) problems.push("one press stamped two seals");
+
+  /* a deliberate second press on the *same* seal is a wrong seal, not a
+     second stamp: lift, then press it again */
+  c.game.onUp(c, at(firstCell));
+  const roundBefore = s.round, seqBefore = s.seq.join("");
+  c.game.onDown(c, at(firstCell));
+  if (s.shown !== 0) problems.push("pressing the same seal twice counted as two stamps");
+  if (s.round !== roundBefore) problems.push("a wrong seal cost a round");
+  if (s.seq.join("") === seqBefore) problems.push("a wrong seal did not deal a new sequence");
+
+  /* and a correct press after lifting does advance */
+  c.game.onUp(c, at(firstCell));
+  s.phase = "input";
+  c.game.onDown(c, at(s.cells[s.seq[0]]));
+  if (s.shown !== 1) problems.push("a correct press after lifting did not advance");
+
+  /* a sequence never asks for the same seal twice in a row */
+  for (let r = 0; r < 40; r++) {
+    const cc = makeC("seals2"); cc.game = build(); cc.game.init(cc);
+    const seq = cc.state.seq;
+    for (let i = 1; i < seq.length; i++) {
+      if (seq[i] === seq[i - 1]) { problems.push("a sequence repeats the same seal twice in a row"); break; }
+    }
+  }
+
+  if (problems.length) {
+    console.error("\n✗ the seals: " + [...new Set(problems)].join("; "));
+    process.exit(1);
+  }
+}
+
+/* ---- four hits sends David back to the start, it does not skip the fight ----
+   This was the reported bug: after four misses the act ended itself and the
+   story moved straight on to the sling, so a fight that was never fought was
+   scored as won. Nothing in this game is failed; the valley is simply walked
+   again. */
+{
+  const stage = ACT_BUILDERS.dodge({
+    title: ["Cross the valley", "穿过山谷"], prompt: ["", ""], hint: ["", ""], seconds: 17, reward: 30
+  });
+  const c = makeC("dodge-reset");
+  c.game = stage;
+  stage.init(c);
+  const start = c.w * 0.1;
+  let sawRestart = false, runs = c.state.runs, xAtRestart = null;
+  for (let i = 0; i < 3000 && !c.ended; i++) {
+    stage.step(c, 0.05);           // deliberately answer nothing
+    if (c.state.runs !== runs) {
+      runs = c.state.runs; sawRestart = true;
+      xAtRestart = c.state.x;      // where he stood the moment the run began again
+    }
+  }
+  const problems = [];
+  if (c.ended) problems.push("the act ended itself after four hits");
+  if (!sawRestart) problems.push("four hits never restarted the run");
+  if (c.state.runs < 2) problems.push("the run counter never moved");
+  if (xAtRestart === null) problems.push("the player was never put back at the start");
+  else if (xAtRestart > start + c.w * 0.06) problems.push(`David was not returned to the start (x=${Math.round(xAtRestart)} of ${Math.round(start)})`);
+  if (problems.length) {
+    console.error("\n✗ the valley: " + problems.join("; "));
+    process.exit(1);
+  }
+}
 
 /* Every act of every scene must carry the three numbered steps a player reads
    before it starts, in both languages. One sentence was not enough to know

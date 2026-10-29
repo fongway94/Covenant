@@ -1334,14 +1334,28 @@ function orderStage(cfg) {
 
   function init(c) {
     const n = 6;
+    /* The seals are spread across the whole decree, not gathered in the middle
+       of it. Crowded together, a thumb covered two of them, the hit test could
+       not tell which the player meant, and the whole act fell over on a press
+       that was perfectly aimed. The reach is now derived from the spacing, so
+       no two seals can ever share one tap. */
+    const cols = 3, rows = n / cols;
+    const x0 = c.w * (mode === "seal" ? 0.17 : 0.16), x1 = c.w * (mode === "seal" ? 0.83 : 0.84);
+    const y0 = c.h * (mode === "seal" ? 0.585 : 0.46);
+    const dy = c.h * (mode === "seal" ? 0.15 : 0.17);
     const cells = Array.from({ length: n }, (_, i) => ({
       i,
-      x: c.w * (0.2 + (i % 3) * 0.3),
-      y: c.h * (mode === "seal" ? 0.60 : 0.5) + Math.floor(i / 3) * c.h * (mode === "seal" ? 0.13 : 0.15)
+      x: x0 + (i % cols) * ((x1 - x0) / (cols - 1)),
+      y: y0 + Math.floor(i / cols) * dy
     }));
+    const reach = Math.min(34, (dy * 0.34), ((x1 - x0) / (cols - 1)) * 0.34);
     c.state = {
-      t: 0, left: cfg.seconds, cells, round: 0, seq: [], shown: 0, phase: "show",
-      timer: 0, flash: 0, finished: false, active: -1, stamped: [], mode
+      t: 0, left: cfg.seconds, cells, reach, round: 0, seq: [], shown: 0, phase: "show",
+      timer: 0, flash: 0, finished: false, active: -1, stamped: [], mode,
+      /* One press is one seal. The finger has to come off the glass before
+         the next stamp can land, which is the only rule that can tell a
+         repeated press from the same press delivered twice by the browser. */
+      held: false
     };
     newRound(c, c.state, cfg);
     c.setHint(T(cfg.hint));
@@ -1352,7 +1366,7 @@ function orderStage(cfg) {
     tick(c, s, cfg, dt); if (s.finished) return;
     s.timer -= dt;
     if (s.phase === "show") {
-      const beat = Math.floor((s.showTotal - s.timer) / 0.62);
+      const beat = Math.floor((s.showTotal - s.timer) / 0.54);
       s.active = beat < s.seq.length ? s.seq[beat] : -1;
       if (s.timer <= 0) { s.phase = "input"; s.shown = 0; s.active = -1; }
     }
@@ -1519,10 +1533,19 @@ function orderStage(cfg) {
   return {
     label: () => T(cfg.title),
     init, step, draw,
+    onUp(c) { if (c.state) c.state.held = false; },
     onDown(c, p) {
       const s = c.state; if (s.finished || s.phase !== "input") return;
-      let hit = -1;
-      for (let i = 0; i < s.cells.length; i++) if (dist(p.x, p.y, s.cells[i].x, s.cells[i].y) < 40) hit = i;
+      if (s.held) return;
+      s.held = true;
+      /* The nearest seal under the finger, and only if it is closer than the
+         reach: the old test took the last seal within 40px, which on a short
+         screen could be the wrong one of two. */
+      let hit = -1, best = 1e9;
+      for (let i = 0; i < s.cells.length; i++) {
+        const d = dist(p.x, p.y, s.cells[i].x, s.cells[i].y);
+        if (d < s.reach && d < best) { best = d; hit = i; }
+      }
       if (hit < 0) return;
       if (hit === s.seq[s.shown]) {
         s.shown++; s.stamped.push(hit);
@@ -1541,10 +1564,19 @@ function orderStage(cfg) {
   };
 }
 function newRound(c, s, cfg) {
-  const len = 3 + s.round;
-  s.seq = Array.from({ length: len }, () => Math.floor(Math.random() * 6));
+  const len = 4 + s.round;
+  /* Never the same seal twice in a row. Two identical presses in succession
+     cannot be told apart from one press delivered twice, and asking the hand
+     to repeat itself teaches nothing. */
+  const seq = [];
+  while (seq.length < len) {
+    const next = Math.floor(Math.random() * s.cells.length);
+    if (seq.length && next === seq[seq.length - 1]) continue;
+    seq.push(next);
+  }
+  s.seq = seq;
   s.phase = "show"; s.shown = 0; s.stamped = [];
-  s.showTotal = len * 0.62 + 0.35; s.timer = s.showTotal; s.active = -1;
+  s.showTotal = len * 0.54 + 0.5; s.timer = s.showTotal; s.active = -1;
 }
 
 /* ══════════════════════════════════ ACT TYPE 6 · DODGE (cross the valley) ══
@@ -1604,7 +1636,8 @@ function dodgeStage(cfg) {
         t: 0, left: cfg.seconds, x: c.w * 0.1, y: c.h * 0.78,
         vy: 0, jump: false, duck: 0, duckWant: false, pressT: -1,
         hazards: [], spawn: 0, hits: 0, dodges: 0, streak: 0, flash: 0, finished: false,
-        puffs: [], cue: "", cueT: 0, throwT: 0, landed: true, nextAt: 1.0
+        puffs: [], cue: "", cueT: 0, throwT: 0, landed: true, nextAt: 1.0,
+        runs: 1, restart: 0
       };
       c.setHint(T(cfg.hint));
     },
@@ -1612,7 +1645,9 @@ function dodgeStage(cfg) {
       const s = c.state; if (s.finished) return;
       tick(c, s, cfg, dt); if (s.finished) return;
       const ground = c.h * 0.78;
-      s.x = Math.min(c.w * 0.86, s.x + dt * (c.w * 0.05));
+      /* Between runs he stands where he was put, so the reset is legible. */
+      s.restart = Math.max(0, s.restart - dt);
+      if (!s.restart) s.x = Math.min(c.w * 0.86, s.x + dt * (c.w * 0.05));
 
       /* jump: canvas Y grows downward, so gravity ADDS to vy */
       if (s.jump) {
@@ -1634,7 +1669,7 @@ function dodgeStage(cfg) {
          the last one has been answered. The order is fixed, not random, so the
          rhythm can be learned: leap, duck, duck, leap, leap, duck… */
       const THROWS = "LHHLLHLHHLLH";
-      const busy = s.hazards.some((h) => !h.done);
+      const busy = s.hazards.some((h) => !h.done) || s.restart > 0;
       if (!busy && s.spawn < THROWS.length && s.t >= s.nextAt) {
         const kind = THROWS[s.spawn] === "H" ? "high" : "low";
         s.spawn++;
@@ -1680,7 +1715,13 @@ function dodgeStage(cfg) {
           for (let i = 0; i < 8; i++) {
             s.puffs.push({ x: s.x, y: s.y - 18, r: rnd(3, 10), life: 0.6, vx: rnd(-52, 52), vy: rnd(-46, -8) });
           }
-          if (s.hits >= 4) { s.finished = true; c.end(true, c.score); return; }
+          /* Four hits does not end the act — it sends him back to where he
+             started, which is what the briefing promised. Ending here used to
+             hand the player straight to the next scene (the sling against
+             Goliath) after four misses, which read as the game skipping a
+             fight that was never fought. Nothing in this game is lost by
+             failing: only the walk is walked again. */
+          if (s.hits >= 4) { restartRun(c, s); return; }
         }
       }
       s.hazards = s.hazards.filter((h) => h.x > -60);
@@ -1693,7 +1734,10 @@ function dodgeStage(cfg) {
       s.puffs = s.puffs.filter((pf) => pf.life > 0);
 
       c.progress = (s.x - c.w * 0.1) / (c.w * 0.76);
-      c.setHint(`${tx("HITS", "被击中")} ${s.hits}/4   ·   ${tx("CLEAN", "躲过")} ${s.dodges}`);
+      c.setHint(s.restart > 0
+        ? tx("Driven back — starting again from here", "被逼退——从这里重新走")
+        : `${tx("HITS", "被击中")} ${s.hits}/4   ·   ${tx("CLEAN", "躲过")} ${s.dodges}` +
+          (s.runs > 1 ? `   ·   ${tx("RUN", "第")} ${s.runs}` : ""));
       if (s.x >= c.w * 0.86) win(c, s, cfg, cfg.reward || 30);
     },
     draw(c, ctx) {
@@ -1767,14 +1811,33 @@ function dodgeStage(cfg) {
       }
 
       /* David's answer, shown beside him the moment a spear is within reach:
-         an up chevron for a low throw, a down chevron for a high one. */
-      const crouch = 1 - 0.42 * s.duck;
-      actorShadow(ctx, s.x, horizon + 2, dH * (0.2 + s.duck * 0.04), s.jump ? 0.24 : 0.42);
-      const runDrawn = actor(ctx, "david", s.x, s.y, dH, {
-        rot: s.jump ? -0.06 : 0.04 * s.duck + Math.sin(c.t * 9) * 0.012,
-        squash: s.jump ? 1.03 : crouch + Math.sin(c.t * 9) * 0.012
+         an up chevron for a low throw, a down chevron for a high one.
+
+         He ducks by dropping, not by being squeezed. A painted man is one
+         image; scaling it on a single axis turned him into a blob exactly
+         when the player was looking at him, and that reads as a bug rather
+         than as a crouch. Drawn smaller all over, leaning from the ankles and
+         kicking up dust around his knees, his head still goes under a
+         chest-high spear and he is still a man. */
+      const duck = s.duck;
+      const davidH = dH * (1 - 0.3 * duck);
+      actorShadow(ctx, s.x, horizon + 2, dH * (0.2 + duck * 0.1), s.jump ? 0.24 : 0.42);
+      if (duck > 0.25) {
+        /* the dust a crouch lifts, so the drop is his movement and not the
+           camera's */
+        for (let i = 0; i < 3; i++) {
+          const a = c.t * 2.4 + i * 2.1;
+          ctx.fillStyle = `rgba(206,186,150,${0.05 + duck * 0.07})`;
+          ctx.beginPath();
+          ctx.ellipse(s.x + Math.cos(a) * (12 + duck * 16), horizon - 2 - Math.abs(Math.sin(a)) * 6,
+            10 + duck * 12, 4 + duck * 4, 0, 0, TAU);
+          ctx.fill();
+        }
+      }
+      const runDrawn = actor(ctx, "david", s.x, s.y, davidH, {
+        rot: s.jump ? -0.06 : 0.13 * duck + Math.sin(c.t * 9) * 0.01
       });
-      if (!runDrawn) pilgrim(ctx, s.x, s.y, 0.9, c.t * 3, 1, 1, true);
+      if (!runDrawn) pilgrim(ctx, s.x, s.y, 0.9 * (1 - 0.3 * duck), c.t * 3, 1, 1, true);
 
       if (s.cue) {
         const up = s.cue === "low";
@@ -1820,6 +1883,21 @@ function dodgeStage(cfg) {
       if (k === "arrowdown") c.state.duckWant = true;
     }
   };
+}
+
+/** Put David back at the start of the valley with the count cleared. The
+    act is not failed and not skipped: he walks it again. */
+function restartRun(c, s) {
+  s.runs += 1;
+  s.hits = 0; s.streak = 0; s.dodges = 0;
+  s.hazards = []; s.spawn = 0; s.nextAt = s.t + 1.4;
+  s.x = c.w * 0.1; s.y = c.h * 0.78; s.vy = 0; s.jump = false;
+  s.duck = 0; s.duckWant = false; s.pressT = -1;
+  s.restart = 1.4;
+  s.flash = 0.8;
+  c.bump(10);
+  c.float(c.w / 2, c.h * 0.5, tx("Driven back — try the valley again", "被逼退——从头再走一遍"), "#e8b7a0");
+  c.spark(c.w * 0.1, c.h * 0.78, "#c9a06a", 16, 120);
 }
 
 function glowDot(ctx, x, y, r, color) {

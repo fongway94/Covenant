@@ -41,11 +41,11 @@ export const GAME_STEPS = {
     main: S([
       "The valley is open in front of you. Goliath throws two kinds of spear as David walks to the line.",
       "If the spear skims the dust, tap anywhere once and David leaps over it.",
-      "If it comes at his chest, press on the screen and drag down, and he drops under it. Hold each one off and the sling is yours."
+      "If it comes at his chest, press and drag down and he drops under it. Four hits and he is driven back to the start of the valley — nothing is lost, you walk it again."
     ], [
       "山谷在你面前铺开。大卫往阵前走的时候，歌利亚会一直投枪，一共两种。",
       "枪贴着地皮飞来时，点一下屏幕，大卫就跳过去。",
-      "枪冲着他胸口来时，按住屏幕往下拖，他蹲下去躲过。躲开这几枪，就轮到你甩石了。"
+      "枪冲着他胸口来时，按住往下拖，他蹲下去躲过。被击中四次会被逼回谷口，不扣分，从原地再走一遍。"
     ])
   },
 
@@ -168,11 +168,11 @@ export const GAME_STEPS = {
     prelude: S([
       "The herald reads the decree, and each royal seal is pressed into the wax as it is read.",
       "Watch the order the seals light up. Do not press anything yet — just follow it with your eyes.",
-      "Then press the same seals in the same order. Two readings, the second one longer."
+      "Then press the same seals in the same order — one finger, one seal, lifting between presses. Two readings, the second one longer."
     ], [
       "传令官念谕旨，念到哪一处，王印就盖到哪一处。",
       "先看清王印亮起的顺序，不要急着按，只用眼睛跟着走。",
-      "看清了，再按同样的顺序按一遍。会念两遍，第二遍更长。"
+      "看清了，再照同样的顺序按一遍。一根手指按一个印，按完抬手再按下一个。会念两遍，第二遍更长。"
     ]),
     main: S([
       "Esther walks toward the throne, and one wrong step is enough.",

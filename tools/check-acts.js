@@ -112,7 +112,8 @@ function feed(kind, c, act, frames, ex) {
       } else if (kind === "order") {
         if (s.phase === "input" && s.shown < s.seq.length) {
           const cell = s.cells[s.seq[s.shown]];
-          if (cell) tap(c, act, cell.x, cell.y);
+          /* one press is one seal: press, then lift, exactly as a hand does */
+          if (cell) { tap(c, act, cell.x, cell.y); act.onUp?.(c, p); }
         }
       } else if (kind === "trace") {
         const top = c.h * 0.47, bottom = c.h * 0.9;
@@ -131,7 +132,8 @@ function feed(kind, c, act, frames, ex) {
           ex.ducked = true;
         } else if (near?.kind === "low") {
           if (p.down) { p.down = false; p.dy = 0; act.onUp?.(c, p); }
-          if (!s.jump) {
+          /* a leap cannot start while the last crouch is still coming up */
+          if (!s.jump && s.duck < 0.2) {
             /* a tap is press AND release: the leap is launched on release */
             p.x = s.x; p.y = s.y; p.startX = s.x; p.startY = s.y; p.dy = 0;
             p.down = true; act.onDown?.(c, p);
@@ -153,7 +155,9 @@ function driveAct(kind, cfg) {
   const ex = { maxUp: Infinity, landed: false, groundY: c.h * 0.78 };
   act.init?.(c);
 
-  const maxFrames = Math.ceil((cfg.seconds + 4) * 60);
+  /* The valley restarts from the top on the fourth hit, so a driver that is
+     merely adequate needs more than one pass' worth of frames to finish. */
+  const maxFrames = Math.ceil((cfg.seconds + 4) * 60 * (kind === "dodge" ? 3 : 1));
   while (!c.ended && frames < maxFrames) {
     frames++; c.t = frames / 60;
     const s = c.state, p = c.pointer;

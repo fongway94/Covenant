@@ -164,45 +164,93 @@ let impulseBuffer = null;
 /* ------------------------------------------------------------- modes
    The seven notes of each mode, in semitones from the tonic. Chords are
    built by stacking scale degrees, never by adding fixed intervals, so a
-   chord always belongs to the mode the chapter is in. */
+   chord always belongs to the mode the chapter is in.
+
+   There is a version of this score that is easy to write and impossible to
+   listen to: a low drone, a very slow tempo, a flat second, and a lone high
+   whistle drifting over the top. That is the language of a horror film, and
+   an earlier draft of this file spoke it. Every mode here has a bright
+   third — no flat seconds anywhere — and the tunes are ordinary and
+   singable. */
 const MODES = {
-  aeolian: [0, 2, 3, 5, 7, 8, 10],     // the valley, the den: grave, old
-  dorian:  [0, 2, 3, 5, 7, 9, 10],     // sea and field: open, a little hopeful
-  hijaz:   [0, 1, 4, 5, 7, 8, 10],     // desert and Babylon: the ancient East
-  ionian:  [0, 2, 4, 5, 7, 9, 11],     // title, camp, finale: warm and singable
-  mixo:    [0, 2, 4, 5, 7, 9, 10]      // the city: bright, crowded, a shaded third
+  ionian:  [0, 2, 4, 5, 7, 9, 11],     // title, camp, fields, finale: warm, open
+  mixo:    [0, 2, 4, 5, 7, 9, 10],     // desert, city: a folk flat seventh, still bright
+  dorian:  [0, 2, 3, 5, 7, 9, 10],     // valley, sea, temple: minor with a raised sixth
+  aeolian: [0, 2, 3, 5, 7, 8, 10]      // the den at night: the plainest minor of all
 };
 
 function deg(mode, d) {
-  const m = MODES[mode] || MODES.aeolian;
+  const m = MODES[mode] || MODES.ionian;
   const oct = Math.floor(d / 7);
   const i = ((d % 7) + 7) % 7;
   return m[i] + 12 * oct;
 }
 
-/** Four bars of chord roots, as scale degrees (0 = tonic). */
+/** Four bars of chord roots, as scale degrees (0 = tonic). A minor tonic
+    cannot use the same harmonisation as a major one: in dorian and aeolian
+    the chord on the sixth degree is diminished, so the minor version moves
+    by VII and iv instead. Both end on the tonic, which is where the tune
+    resolves and where the loop comes round.
+
+    Every bar three is IV on purpose. That is the chord the tune's turn (G A
+    G F) fits note for note, and the one place a held note would otherwise
+    grind against the harmony. */
 const PROG = {
-  hope:    [0, 4, 5, 3],
-  warm:    [0, 3, 5, 4],
-  solemn:  [0, 5, 2, 6],
-  desert:  [0, 3, 1, 0],
-  ocean:   [0, 6, 3, 4],
-  triumph: [0, 4, 5, 0]
+  major: [0, 5, 3, 0],      // I  vi IV I
+  minor: [0, 6, 3, 0]       // i  VII iv i
 };
 
-/** root = Hz, beat = seconds per beat (a bar is four), drum = frame-drum level. */
+/* ------------------------------------------------------------- the theme
+   One melody, sixteen beats, four bars. Every chapter plays it, transposed
+   into that chapter's mode and key — the same tune dressed for each place.
+   A soundtrack that remembers its own tune is what a player means when they
+   say the music belongs to the game; a handful of random contours is not.
+
+   Scale degrees, and how long each note lasts in beats. Written to be sung:
+   two rising notes, an answering fall, a turn, and a held third that steps
+   down to the tonic — which is where every bar four lands, in every mode.
+   Short notes may pass through anything; a note held for a beat or more is
+   always a chord tone, so the tune can never grind against its harmony. */
+const THEME = [
+  [4, 1], [4, 1], [5, 0.5], [4, 0.5], [2, 1],   // bar 1
+  [4, 1.5], [2, 0.5], [1, 1], [0, 1],           // bar 2
+  [4, 1], [5, 1], [4, 1], [3, 1],               // bar 3
+  [2, 2], [0, 2]                                // bar 4
+];
+
+/** Beat -> the note that starts there, for the sixteen-beat cycle. */
+const THEME_AT = (() => {
+  const table = new Array(16).fill(null);
+  let halves = 0;
+  for (const [d, len] of THEME) {
+    const spot = Math.floor(halves / 2);
+    if (spot < 16) table[spot] = { d, len };
+    halves += Math.round(len * 2);
+  }
+  return table;
+})();
+
+/** root = Hz, beat = seconds per beat (a bar is four), drum = frame-drum level.
+    60-90 BPM: slow enough to breathe, fast enough to be music and not
+    just atmosphere. The old presets ran at 28-40 BPM, which is a drone with a
+    tune lost somewhere in it. */
 const PRESETS = {
-  title:  { root: 146.83, mode: "ionian",  prog: PROG.hope,    beat: 1.45, drone: 0.034, pad: 0.030, pluck: 0.052, reed: 0.062, drum: 0.30, bell: 0.16, bright: 2400, reverb: 0.34, noise: 0.013, cutoff: 480,  intens: 0.9 },
-  camp:   { root: 164.81, mode: "ionian",  prog: PROG.warm,    beat: 1.60, drone: 0.031, pad: 0.028, pluck: 0.054, reed: 0.060, drum: 0.34, bell: 0.10, bright: 2300, reverb: 0.32, noise: 0.022, cutoff: 640,  intens: 0.9 },
-  valley: { root: 130.81, mode: "aeolian", prog: PROG.solemn,  beat: 1.75, drone: 0.036, pad: 0.034, pluck: 0.048, reed: 0.064, drum: 0.42, bell: 0.14, bright: 2200, reverb: 0.46, noise: 0.026, cutoff: 760,  intens: 1.15 },
-  night:  { root: 110.00, mode: "aeolian", prog: PROG.solemn,  beat: 2.15, drone: 0.038, pad: 0.036, pluck: 0.042, reed: 0.058, drum: 0.10, bell: 0.30, bright: 2600, reverb: 0.56, noise: 0.010, cutoff: 300,  intens: 0.7 },
-  desert: { root: 146.83, mode: "hijaz",   prog: PROG.desert,  beat: 1.55, drone: 0.035, pad: 0.030, pluck: 0.052, reed: 0.072, drum: 0.50, bell: 0.10, bright: 2600, reverb: 0.38, noise: 0.042, cutoff: 1150, intens: 1.2 },
-  sea:    { root: 123.47, mode: "dorian",  prog: PROG.ocean,   beat: 1.95, drone: 0.038, pad: 0.038, pluck: 0.040, reed: 0.060, drum: 0.18, bell: 0.14, bright: 2100, reverb: 0.52, noise: 0.052, cutoff: 400,  intens: 1.0 },
-  field:  { root: 174.61, mode: "dorian",  prog: PROG.warm,    beat: 1.50, drone: 0.031, pad: 0.026, pluck: 0.054, reed: 0.062, drum: 0.26, bell: 0.18, bright: 2500, reverb: 0.40, noise: 0.020, cutoff: 900,  intens: 0.9 },
-  temple: { root: 155.56, mode: "aeolian", prog: PROG.solemn,  beat: 2.05, drone: 0.039, pad: 0.040, pluck: 0.042, reed: 0.062, drum: 0.10, bell: 0.40, bright: 2300, reverb: 0.60, noise: 0.011, cutoff: 420,  intens: 0.75 },
-  city:   { root: 164.81, mode: "mixo",    prog: PROG.warm,    beat: 1.35, drone: 0.030, pad: 0.026, pluck: 0.054, reed: 0.062, drum: 0.44, bell: 0.08, bright: 2500, reverb: 0.36, noise: 0.032, cutoff: 1300, intens: 1.1 },
-  finale: { root: 196.00, mode: "ionian",  prog: PROG.triumph, beat: 1.55, drone: 0.032, pad: 0.038, pluck: 0.054, reed: 0.072, drum: 0.34, bell: 0.24, bright: 2700, reverb: 0.48, noise: 0.014, cutoff: 780,  intens: 0.85 }
+  title:  { root: 174.61, mode: "ionian",  prog: PROG.major,   beat: 0.78, drone: 0.016, pad: 0.052, pluck: 0.060, reed: 0.058, drum: 0.30, bell: 0.10, bright: 3000, reverb: 0.26, noise: 0.010, cutoff: 520,  intens: 0.9 },
+  camp:   { root: 196.00, mode: "ionian",  prog: PROG.major,   beat: 0.86, drone: 0.015, pad: 0.056, pluck: 0.058, reed: 0.056, drum: 0.32, bell: 0.08, bright: 2900, reverb: 0.24, noise: 0.018, cutoff: 700,  intens: 0.9 },
+  valley: { root: 146.83, mode: "dorian",  prog: PROG.minor,   beat: 0.92, drone: 0.018, pad: 0.053, pluck: 0.056, reed: 0.060, drum: 0.40, bell: 0.08, bright: 2800, reverb: 0.32, noise: 0.022, cutoff: 800,  intens: 1.15 },
+  night:  { root: 130.81, mode: "dorian",  prog: PROG.minor,   beat: 1.04, drone: 0.016, pad: 0.055, pluck: 0.052, reed: 0.054, drum: 0.16, bell: 0.10, bright: 2500, reverb: 0.34, noise: 0.008, cutoff: 360,  intens: 0.7 },
+  desert: { root: 164.81, mode: "mixo",    prog: PROG.major,   beat: 0.80, drone: 0.017, pad: 0.056, pluck: 0.054, reed: 0.058, drum: 0.48, bell: 0.06, bright: 3200, reverb: 0.26, noise: 0.034, cutoff: 1200, intens: 1.2 },
+  sea:    { root: 146.83, mode: "mixo",    prog: PROG.major,   beat: 0.94, drone: 0.018, pad: 0.056, pluck: 0.054, reed: 0.058, drum: 0.22, bell: 0.10, bright: 2700, reverb: 0.32, noise: 0.044, cutoff: 460,  intens: 1.0 },
+  field:  { root: 220.00, mode: "ionian",  prog: PROG.major,   beat: 0.76, drone: 0.014, pad: 0.048, pluck: 0.060, reed: 0.056, drum: 0.26, bell: 0.10, bright: 3200, reverb: 0.24, noise: 0.016, cutoff: 950,  intens: 0.9 },
+  temple: { root: 155.56, mode: "dorian",  prog: PROG.minor,   beat: 0.98, drone: 0.017, pad: 0.056, pluck: 0.052, reed: 0.054, drum: 0.16, bell: 0.14, bright: 2600, reverb: 0.36, noise: 0.010, cutoff: 440,  intens: 0.75 },
+  city:   { root: 196.00, mode: "mixo",    prog: PROG.major,   beat: 0.72, drone: 0.014, pad: 0.048, pluck: 0.054, reed: 0.058, drum: 0.44, bell: 0.05, bright: 3100, reverb: 0.24, noise: 0.028, cutoff: 1300, intens: 1.1 },
+  finale: { root: 220.00, mode: "ionian",  prog: PROG.major,   beat: 0.84, drone: 0.016, pad: 0.055, pluck: 0.056, reed: 0.064, drum: 0.36, bell: 0.12, bright: 3300, reverb: 0.30, noise: 0.012, cutoff: 820,  intens: 0.85 }
 };
+
+/** The written material, exposed so the checks can reason about harmony
+    instead of only about runtime errors. `tools/check-audio.js` uses it to
+    prove the tune never lands a semitone against the chord under it. */
+export const SCORE = { MODES, PROG, THEME, PRESETS };
 
 /** Which score each chapter uses. */
 export const CHAPTER_AMBIENCE = {
@@ -283,7 +331,7 @@ function makeLayers(c, preset) {
      thing that makes generated music sound synthetic. */
   const wetLp = c.createBiquadFilter();
   wetLp.type = "lowpass";
-  wetLp.frequency.value = 2400;
+  wetLp.frequency.value = 3400;
   wetLp.Q.value = 0.3;
   bus.connect(conv); conv.connect(wetLp); wetLp.connect(wet); wet.connect(out);
 
@@ -301,12 +349,15 @@ function makeLayers(c, preset) {
   droneSwell.start();
 
   const droneOscs = [];
-  for (const [mult, vol, det] of [[1, 0.6, -4], [1.5, 0.26, 5], [2, 0.16, -7]]) {
+  /* Tonic and fifth, no detuned twins. Two sines a few cents apart beat
+     against each other slowly, and a slow beat under a long reverb is exactly
+     the sound of a horror score. One clean voice each, and a triangle so the
+     low end has some warmth instead of a pure sine's hollowness. */
+  for (const [mult, vol] of [[1, 0.66], [1.5, 0.3], [2, 0.14]]) {
     const o = c.createOscillator();
     const g = c.createGain();
-    o.type = "sine";
+    o.type = mult === 1 ? "triangle" : "sine";
     o.frequency.value = preset.root * mult;
-    o.detune.value = det;
     g.gain.value = vol;
     o.connect(g).connect(droneGain);
     o.start();
@@ -327,7 +378,7 @@ function makeLayers(c, preset) {
 
   const padFilter = c.createBiquadFilter();
   padFilter.type = "lowpass";
-  padFilter.frequency.value = 900;
+  padFilter.frequency.value = 1500;
   padFilter.Q.value = 0.35;
   padFilter.connect(padGain);
 
@@ -346,7 +397,7 @@ function makeLayers(c, preset) {
 
   /* 3 — bass. One sine an octave under the chord root, felt more than heard. */
   const bassGain = c.createGain();
-  bassGain.gain.value = 0.026;
+  bassGain.gain.value = 0.018;
   bassGain.connect(bus);
   const bassOscs = [];
   for (const [mult, vol] of [[0.5, 0.7], [0.75, 0.18]]) {
@@ -398,8 +449,8 @@ function applyChord(c, L, bar, at) {
   try {
     /* Slow glides (0.6–1.1 s) so the pad slides into the new chord instead of
        switching to it — the difference between a synth and a section. */
-    L.padOscs[0].frequency.setTargetAtTime(f[1] * 2, at, 0.85);
-    L.padOscs[1].frequency.setTargetAtTime(f[2] * 2, at, 1.05);
+    L.padOscs[0].frequency.setTargetAtTime(f[2], at, 0.7);        // the fifth
+    L.padOscs[1].frequency.setTargetAtTime(f[1] * 2, at, 0.85);   // the third, an octave up
     L.bassOscs[0].frequency.setTargetAtTime(f[0] / 2, at, 0.5);
     L.bassOscs[1].frequency.setTargetAtTime(f[2] / 2, at, 0.7);
   } catch { /* noop */ }
@@ -549,78 +600,74 @@ function bowl(c, L, at, freq, vel) {
   }
 }
 
-/* Melodic contours: scale-degree offsets above the current chord. Each is a
-   short phrase in the mode, played once and then left alone — the rests are
-   as written as the notes. */
-const PHRASES = [
-  [2, 3, 2, 1],
-  [4, 3, 2, 3],
-  [0, 1, 2, 1],
-  [2, 1, 0, -1],
-  [4, 2, 3, 2],
-  [1, 2, 3, 4]
-];
-
 /** Schedule one beat of the score at an absolute time. Pure with respect to
     the clock, so it can be driven by the live scheduler below or rendered into
     an offline context by fillScore(). */
 function scheduleBeat(c, L, at) {
   const p = L.preset;
+  const beatInCycle = L.beatCount % 16;
   const bar = Math.floor(L.beatCount / 4);
   const beat = L.beatCount % 4;
   if (beat === 0) applyChord(c, L, bar, at);
   const f = L.chord.length ? L.chord : chordFreqs(p, bar);
+  const loud = 1 + L.intensity * 0.18;
 
   /* --- the frame drum ---
-     One stroke on the first beat of a bar, a softer answer on the third in
-     the louder places, and a heartbeat pair when a scene is urgent. */
+     A soft stroke on the first beat, a lighter one on the third, and one on
+     the "and" of four when the scene is urgent. Never on every beat: a
+     drum under every quaver is what makes a soundtrack sound like a game
+     loop. */
   if (p.drum > 0) {
-    const strong = beat === 0;
-    const answer = beat === 2 && p.drum > 0.24;
-    if (strong) { try { drum(c, L, at, p.drum * (1 + L.intensity * 0.2)); } catch { /* noop */ } }
-    else if (answer) { try { drum(c, L, at, p.drum * 0.55 * (1 + L.intensity * 0.2)); } catch { /* noop */ } }
-    if (L.intensity > 0.5 && strong) {
-      try { drum(c, L, at + 0.3, p.drum * 0.4); } catch { /* noop */ }
-    }
+    if (beat === 0) { try { drum(c, L, at, p.drum * loud); } catch { /* noop */ } }
+    else if (beat === 2 && p.drum > 0.2) { try { drum(c, L, at, p.drum * 0.62 * loud); } catch { /* noop */ } }
+    if (L.intensity > 0.5 && beat === 3) { try { drum(c, L, at + p.beat * 0.5, p.drum * 0.36); } catch { /* noop */ } }
   }
 
-  /* --- the bowl, in the quiet places --- */
-  if (beat === 0 && p.bell > 0.05 && bar % 2 === 0 && Math.random() < p.bell * 1.4) {
-    try { bowl(c, L, at, f[0] * 2, 0.85 + L.intensity * 0.1); } catch { /* noop */ }
+  /* --- the bowl, once a phrase, in the still places --- */
+  if (beat === 0 && p.bell > 0.05 && bar % 4 === 0) {
+    try { bowl(c, L, at, f[0] * 2, 0.7); } catch { /* noop */ }
   }
 
-  /* --- the oud ---
-     Beat 0 is a rolled pair (root, then its octave 55 ms later). Beat 2 may
-     take a third or a fifth. Nothing else — the silence between is what
-     makes it sound played rather than sequenced. */
+  /* --- the lyre ---
+     A broken chord that walks where the tune walks: the root on one, the
+     fifth under the tune's long note, the third at the turn. Two strings
+     rolled together at the top of every bar. It is accompaniment, so it
+     stays under the melody and leaves space. */
+  const note = THEME_AT[beatInCycle];
   if (beat === 0 && f[0]) {
-    try { pluck(c, L, at, f[0] * 2, 0.95, -0.22); } catch { /* noop */ }
-    try { pluck(c, L, at + 0.055, f[3] * 2, 0.55, 0.24); } catch { /* noop */ }
+    try { pluck(c, L, at, f[0] * 2, 0.9, -0.2); } catch { /* noop */ }
+    try { pluck(c, L, at + 0.045, f[2] * 2, 0.62, 0.2); } catch { /* noop */ }
+  } else if (beat === 2 && f[2]) {
+    try { pluck(c, L, at, f[2] * 2, 0.52, 0.26); } catch { /* noop */ }
+  } else if (beat === 3 && f[1] && Math.random() < 0.5) {
+    try { pluck(c, L, at, f[1] * 4, 0.4, -0.28, 1.6); } catch { /* noop */ }
   }
-  if (beat === 2 && Math.random() < 0.55) {
-    const note = Math.random() < 0.5 ? f[2] : f[1];
-    try { pluck(c, L, at + (Math.random() - 0.5) * 0.05, note * 2, 0.6 + Math.random() * 0.25, 0.3); } catch { /* noop */ }
-  }
-  /* an ornament, rarely: two quick notes, the way a player fills a gap */
-  if (beat === 3 && Math.random() < 0.16) {
-    const o = f[1] * 4;
-    try { pluck(c, L, at, o, 0.42, -0.3, 1.2); pluck(c, L, at + 0.14, f[2] * 4, 0.36, -0.3, 1.2); } catch { /* noop */ }
+  /* a rolled pair right under a long melody note: two strings, a hand's width
+     apart, so the tune never lands in silence */
+  if (note && note.len >= 1.5 && f[0]) {
+    try { pluck(c, L, at + 0.012, f[3], 0.34, 0.3, 2.0); } catch { /* noop */ }
   }
 
-  /* --- the melody ---
-     One phrase per two bars. Four notes, each held across a beat, taken
-     from a contour and quantised to the chord so it never clashes. */
-  if ((bar % 2 === 0 || Math.random() < 0.22) && beat === 1) {
-    const phrase = PHRASES[bar % PHRASES.length];
-    const rootDeg = L.chordRoot ?? 0;
-    for (let i = 0; i < phrase.length; i++) {
-      const at2 = at + i * p.beat * 0.78;
-      const semi = deg(p.mode, rootDeg + phrase[i] + 7);
-      const freq = p.root * Math.pow(2, semi / 12);
-      const dur = p.beat * (i === phrase.length - 1 ? 1.9 : 0.86);
-      const vel = (0.9 - i * 0.08) * (1 - (bar % 2) * 0.35) + L.intensity * 0.14;
-      try { reed(c, L, at2, freq, dur, Math.max(0.5, vel)); } catch { /* noop */ }
-    }
+  /* --- the theme ---
+     The same sixteen beats in every chapter. Two octaves above the tonic,
+     which puts it in a singer's range rather than a whistle's; the second
+     octave carries it as a quiet body so a phone speaker still has
+     something to hold. */
+  if (note) {
+    const semi = deg(p.mode, note.d + 14);
+    const freq = p.root * Math.pow(2, semi / 12);
+    const dur = p.beat * note.len * 0.94;
+    const vel = 0.92 * loud;
+    try { reed(c, L, at, freq, dur, vel); } catch { /* noop */ }
+    try { reed(c, L, at + 0.01, freq / 2, dur, vel * 0.42); } catch { /* noop */ }
+  }
+
+  /* --- an answer in the low register every other phrase ---
+     When the tune rests, the lyre takes the fifth of the chord an octave
+     down: call, then response, which is what keeps sixteen bars from
+     sounding like a loop. */
+  if (!note && beat === 1 && f[2]) {
+    try { pluck(c, L, at, f[2], 0.5, -0.34, 2.2); } catch { /* noop */ }
   }
 }
 

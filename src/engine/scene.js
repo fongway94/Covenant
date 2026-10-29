@@ -583,24 +583,38 @@ export function startScene(canvas, key, onResult, seed = {}, hooks = {}) {
   }
   function keyup(e) { keys.delete(e.key.toLowerCase()); game.onKey?.(c, e.key.toLowerCase(), false); }
 
+  /* One finger, one event.
+     A touch screen fires pointerdown AND touchstart for the same press, and
+     this canvas used to listen to both: every tap was delivered to the scene
+     twice. On a timer or a jump that is invisible; on a sequence of seals it
+     stamped two of them at once, and on a wrong-stamp check it turned a
+     correct press into an instant penalty. Where Pointer Events exist, they
+     are the only listener; the touch/mouse pair is the fallback for WebViews
+     that do not have them. */
+  const HAS_POINTER = typeof window !== "undefined" && "PointerEvent" in window;
+
   function attach() {
-    canvas.addEventListener("pointerdown", down, { passive: false });
-    window.addEventListener("pointermove", move, { passive: false });
-    window.addEventListener("pointerup", up, { passive: false });
-    canvas.addEventListener("touchstart", down, { passive: false });
-    window.addEventListener("touchmove", move, { passive: false });
-    window.addEventListener("touchend", up, { passive: false });
+    if (HAS_POINTER) {
+      canvas.addEventListener("pointerdown", down, { passive: false });
+      window.addEventListener("pointermove", move, { passive: false });
+      window.addEventListener("pointerup", up, { passive: false });
+      window.addEventListener("pointercancel", up, { passive: false });
+    } else {
+      canvas.addEventListener("touchstart", down, { passive: false });
+      window.addEventListener("touchmove", move, { passive: false });
+      window.addEventListener("touchend", up, { passive: false });
+      canvas.addEventListener("mousedown", down, { passive: false });
+      window.addEventListener("mousemove", move, { passive: false });
+      window.addEventListener("mouseup", up, { passive: false });
+    }
     window.addEventListener("keydown", keydown);
     window.addEventListener("keyup", keyup);
     window.addEventListener("resize", resize);
   }
   function detach() {
-    canvas.removeEventListener("pointerdown", down);
-    window.removeEventListener("pointermove", move);
-    window.removeEventListener("pointerup", up);
-    canvas.removeEventListener("touchstart", down);
-    window.removeEventListener("touchmove", move);
-    window.removeEventListener("touchend", up);
+    for (const type of ["pointerdown", "touchstart", "mousedown"]) canvas.removeEventListener(type, down);
+    for (const type of ["pointermove", "touchmove", "mousemove"]) window.removeEventListener(type, move);
+    for (const type of ["pointerup", "pointercancel", "touchend", "mouseup"]) window.removeEventListener(type, up);
     window.removeEventListener("keydown", keydown);
     window.removeEventListener("keyup", keyup);
     window.removeEventListener("resize", resize);

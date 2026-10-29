@@ -124,6 +124,52 @@ for (const kind of kinds) {
   audio.setEnabled(true);
 }
 
+/* ---- harmony ---- the tune must never grind against the chord under it.
+   This is the check that would have caught the first draft of this score,
+   where a flat second sat under a held note and the whole thing sounded like
+   a horror film. A short passing note may go anywhere; anything held for a
+   beat or more has to be consonant with every note in the chord. */
+{
+  const { SCORE } = audio;
+  const { MODES, PROG, THEME, PRESETS } = SCORE;
+  const deg = (mode, d) => { const m = MODES[mode]; return m[((d % 7) + 7) % 7] + 12 * Math.floor(d / 7); };
+  const pc = (x) => ((x % 12) + 12) % 12;
+  const bad = [];
+  let halves = 0;
+  const notes = [];
+  for (const [d, len] of THEME) { notes.push({ at: halves / 2, d, len }); halves += Math.round(len * 2); }
+  if (halves !== 32) bad.push(`theme is ${halves / 2} beats, not sixteen`);
+  for (const [kind, p] of Object.entries(PRESETS)) {
+    if (!MODES[p.mode]) bad.push(`${kind}: unknown mode ${p.mode}`);
+    if (!Object.values(PROG).includes(p.prog)) bad.push(`${kind}: progression is not one of the written ones`);
+    if (p.beat < 0.6 || p.beat > 1.2) bad.push(`${kind}: ${p.beat}s per beat is outside 50-100 BPM`);
+    if (p.mode !== "ionian" && p.mode !== "mixo" && p.prog === PROG.major) bad.push(`${kind}: a minor mode cannot use the major harmonisation`);
+    if ((p.mode === "ionian" || p.mode === "mixo") && p.prog === PROG.minor) bad.push(`${kind}: a major mode cannot use the minor harmonisation`);
+    for (let bar = 0; bar < 4; bar++) {
+      const chord = [0, 2, 4, 7].map((k) => pc(deg(p.mode, p.prog[bar] + k)));
+      for (const n of notes) {
+        if (n.at < bar * 4 || n.at >= bar * 4 + 4 || n.len < 1) continue;
+        const m = pc(deg(p.mode, n.d));
+        for (const c of chord) {
+          const iv = Math.abs(m - c) % 12, dist = Math.min(iv, 12 - iv);
+          if (dist === 1) bad.push(`${kind} bar ${bar + 1}: melody and chord a semitone apart`);
+        }
+      }
+    }
+  }
+  /* and the modes themselves have to be bright: no flat second anywhere,
+     because a flat second under a long note is the horror interval. */
+  for (const [name, mode] of Object.entries(MODES)) {
+    if (mode[1] !== 2) bad.push(`mode ${name}: second degree is not a whole tone`);
+    if (mode[2] !== 3 && mode[2] !== 4) bad.push(`mode ${name}: third degree is neither major nor minor`);
+  }
+  if (bad.length) {
+    console.error(`\n✗ harmony: ${bad.length} problem(s):`);
+    for (const b of bad) console.error("  " + b);
+    process.exit(1);
+  }
+}
+
 /* ---- offline rendering ---- the audition path (tools render a preview WAV
    from this) must lay the whole score down up front, with no timers and no
    dependence on a clock, and must cover every beat of the span asked for. */
