@@ -131,7 +131,7 @@ export const EXTRA_CHAPTERS = [
           ["", "The mountain is very quiet. The sandstorm has moved on. Somewhere below, a lamb bleats.", "山上非常安静。沙暴已经过去。山下某处，一只小羊在叫。"]
         ),
         choices: [
-          C(["Go with him toward Egypt", "陪他往埃及去"], "end", { stat: { courage: 2 }, xp: 12, require: { courage: 5 }, tag: ["Courage 5", "勇气 5"], reply: ["You do not feel brave. You go anyway. That is usually what brave looks like from the inside.", "你并不觉得勇敢。但你还是去了。从里面看，勇敢通常就是这个样子。"], replyBy: "" }),
+          C(["Go with him toward Egypt", "陪他往埃及去"], "end", { stat: { courage: 2 }, xp: 12, require: { courage: 5 }, tag: ["Courage 5", "勇气 5"], reply: ["You do not feel brave. You go anyway. That is usually what brave looks like from the inside.", "你并不觉得自己勇敢，可你还是去了。人在勇敢的那一刻，往往自己并不觉得。"], replyBy: "" }),
           C(["Give him your staff for the road", "把你的手杖送给他上路"], "end", { stat: { compassion: 2 }, xp: 10, reply: ["He takes it, testing its weight. A stick is not much — but it is something to hold.", "他接过去，掂了掂分量。一根杖算不了什么——可上路的人手里总得有点什么。"], replyBy: "" }),
           C(["Ask him to remember this mountain", "请他记住这座山"], "end", { stat: { wisdom: 2, faith: 1 }, xp: 10, reply: ["“I will,” he says. “Especially on the days I would rather forget.”", "「我会的，」他说，「特别是在那些我宁愿忘掉的日子里。」"], replyBy: "moses" })
         ]
@@ -147,8 +147,8 @@ export const EXTRA_CHAPTERS = [
     },
     ending: {
       seal: "✦", title: ["I AM THAT I AM", "我是我所是"],
-      text: ["You did not receive a task. You received a presence.", "你领受的不是一项任务，而是一位同在者。"],
-      takeaway: ["God's call often begins with who He is, not with what you can do. Moses argued, hesitated and bargained — and God stayed. Courage is not confidence in yourself; it is trust in the One who says 'I will be with you.'", "神的呼召往往先讲祂是谁，而不是你能做什么。摩西争辩、迟疑、讨价还价——神仍然在。勇气不是对自己有信心，而是信靠那位说「我必与你同在」的主。"]
+      text: ["You did not receive a task. You received a presence.", "你领受的不是一项任务，而是一位一直与你同在的神。"],
+      takeaway: ["God's call often begins with who He is, not with what you can do. Moses argued, hesitated and bargained — and God stayed. Courage is not confidence in yourself; it is trust in the One who says 'I will be with you.'", "神的呼召往往先讲祂是谁，而不是你能做什么。摩西争辩、迟疑、讨价还价——神仍然在。勇气不是对自己有信心，而是信靠那位说「我必与你同在」的神。"]
     },
     reflection: {
       q: ["What “burning bush” has God put in front of you lately — an ordinary moment that felt strangely holy?", "最近神把什么「燃烧的荆棘」放在你面前——一个平凡却异常神圣的时刻？"],
@@ -216,7 +216,7 @@ export const EXTRA_CHAPTERS = [
       kindness: {
         lines: L(
           ["boaz", "Let her glean even among the sheaves, and reproach her not. And let fall also some of the handfuls of purpose for her.", "容她在捆中拾取麦穗，不可羞辱她。并要从捆里抽出些来，留在地下任她拾取。"],
-          ["", "Boaz does not make a speech about kindness. He gives an instruction to the men with sickles. That is what makes it real.", "波阿斯没有讲一篇关于仁慈的大道理，只是吩咐拿镰刀的人一句话。真正的仁慈，就是这样实实在在的。"],
+          ["", "Boaz does not make a speech about kindness. He gives an instruction to the men with sickles. That is what makes it real.", "波阿斯没有讲一篇关于仁慈的大道理，只是吩咐拿镰刀的人一句话。真正的仁慈，就是这样一点一点落到实处的。"],
           ["elias", "Notice the pattern: a foreign widow, a field owner, a handful of dropped grain. Nobody calls it a miracle. It is the family line of David — and later, of Jesus.", "留意这条线：一个外邦寡妇，一块田，几把故意落下的麦穗。没有人称它为神迹，可这就是大卫的家谱——后来也是耶稣的家谱。"]
         ),
         choices: [
@@ -236,7 +236,7 @@ export const EXTRA_CHAPTERS = [
     },
     ending: {
       seal: "❀", title: ["Under His Wings", "在祂的翅膀下"],
-      text: ["Loyalty is love that has kept walking after the feeling fades.", "忠诚，是感觉淡了以后还继续走下去的爱。"],
+      text: ["Loyalty is love that has kept walking after the feeling fades.", "忠诚不是一直有感觉，而是感觉淡了以后，还继续走下去。"],
       takeaway: ["Ruth's famous words are not a vow of romance — they are a daughter-in-law's promise to an old, grieving woman. God honoured a small, stubborn kindness by weaving it into the lineage of the Messiah.", "路得那段著名的话，其实不是情话，而是一个儿媳对一位年老伤心的婆婆许下的承诺。神看重这份微小又固执的善良，把它编进了弥赛亚的家谱。"]
     },
     reflection: {
@@ -330,8 +330,8 @@ export const EXTRA_CHAPTERS = [
     },
     ending: {
       seal: "✧", title: ["Should I Not Spare?", "我岂能不爱惜？"],
-      text: ["Mercy is hardest when it is given to people you dislike.", "怜悯落到你讨厌的人身上时，最难接受。"],
-      takeaway: ["Jonah is the only prophet who succeeds spectacularly and resents it. God's final question is not about Nineveh's worthiness but about Jonah's heart — a mirror held up to every one of us who would rather see justice than grace.", "约拿是唯一一位大获成功却因此愤愤不平的先知。神最后的问题不是关于尼尼微配不配，而是关于约拿的心——它是一面镜子，照出我们这些宁愿看见公义、不愿看见恩典的人。"]
+      text: ["Mercy is hardest when it is given to people you dislike.", "怜悯落到你讨厌的人身上时，最难接受——可那才是怜悯。"],
+      takeaway: ["Jonah is the only prophet who succeeds spectacularly and resents it. God's final question is not about Nineveh's worthiness but about Jonah's heart — a mirror held up to every one of us who would rather see justice than grace.", "约拿是唯一一位大获成功却因此愤愤不平的先知。神最后问的，不是尼尼微配不配，而是约拿的心——它是一面镜子，照出我们这些宁愿看见公义、不愿看见恩典的人。"]
     },
     reflection: {
       q: ["Who is your Nineveh — the person or group you would rather God did not forgive?", "谁是你的尼尼微——那个你不太希望神饶恕的人或群体？"],
@@ -420,7 +420,7 @@ export const EXTRA_CHAPTERS = [
     },
     ending: {
       seal: "◎", title: ["Today Salvation Has Come", "今天救恩到了这家"],
-      text: ["Grace arrived first. Change followed it out of the door.", "恩典先到，改变随后就来。"],
+      text: ["Grace arrived first. Change followed it out of the door.", "恩典先到，改变在后头跟着来。"],
       takeaway: ["Zacchaeus was not asked to clean up before Jesus came to dinner. Being welcomed made him generous. The story insists that real change is a fruit of grace, not a price paid to earn it.", "耶稣去吃饭之前，并没有要求撒该先把自己收拾干净。被接纳，反倒让他慷慨起来。这个故事要说的正是：真正的改变是恩典结的果子，不是用来换恩典的价钱。"]
     },
     reflection: {

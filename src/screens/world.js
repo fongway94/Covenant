@@ -120,7 +120,7 @@ export function journalHtml(ui) {
       }).join("")}</div>
       <div class="card-quiet" style="margin-top:14px"><p class="verse small" style="margin:0">${isZh() ? "「圣灵所结的果子，就是仁爱、喜乐、和平、忍耐、恩慈、良善、信实、温柔、节制；这样的事，没有律法禁止。」" : "“But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance: against such there is no law.”"}</p><p class="tiny gold" style="margin:6px 0 0">— ${tx("Galatians 5:22–23 (KJV)", "加拉太书 5:22–23（和合本）")}</p></div>`;
   } else {
-    body = `<p class="small muted" style="margin:0 0 12px">${tx("Seals are earned by the way you walk the road.", "印记不是奖励，是你一路走出来的。")} ${s.seals.length}/${SEALS.length} ${tx("earned.", "枚已获得。")}</p>
+    body = `<p class="small muted" style="margin:0 0 12px">${tx("Seals are earned by the way you walk the road.", "印记不是发下来的奖励，是你一路上走出来的。")} ${s.seals.length}/${SEALS.length} ${tx("earned.", "枚已获得。")}</p>
       <div class="codex-list">${SEALS.map((seal) => {
         const got = s.seals.includes(seal.id);
         return `<button class="codex-item ${got ? "" : "locked"}" data-action="open-item" data-kind="seal" data-id="${seal.id}">
@@ -224,7 +224,7 @@ export function characterHtml(ui) {
       </div>
 
       <button class="btn btn-danger btn-sm" style="margin-top:14px" data-action="ask-reset">${icon("refresh", 15)} ${tx("Erase this journey", "清除这段旅程")}</button>
-      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.9.23 · Everything is saved only on this device.", "Covenant v0.9.23 · 所有进度仅保存在本机。")}</p>
+      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.9.24 · Everything is saved only on this device.", "Covenant v0.9.24 · 所有进度仅保存在本机。")}</p>
     </div>
     ${tabsHtml(ui, "character")}
   </div>`;

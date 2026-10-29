@@ -72,7 +72,7 @@ export const ZH_UI = {
   "Full Harvest": "丰收",
   " seal.": " 印记。",
   " gathered.": " 已收集。",
-  "Seals are earned by the way you walk the road.": "印记不是奖励，是你一路走出来的。",
+  "Seals are earned by the way you walk the road.": "印记不是发下来的奖励，是你一路上走出来的。",
   " earned.": " 枚已获得。",
   "“But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance: against such there is no law.”": "「圣灵所结的果子，就是仁爱、喜乐、和平、忍耐、恩慈、良善、信实、温柔、节制；这样的事，没有律法禁止。」",
   "— Galatians 5:22–23 (KJV)": "— 加拉太书 5:22–23（和合本）",
@@ -346,7 +346,7 @@ export const ZH_COMPENDIUM = {
     selfcontrol: { name: "节制", note: "箴言 16:32 —— 治服己心的，强如取城。" }
   },
   relics: {
-    stones: { name: "五块光滑的石子", chapter: "以拉谷", desc: "从溪里捡来的凉石头，小得能放进牧人的口袋，却够对付一个不可能的早晨。", ref: "撒母耳记上 17:40" },
+    stones: { name: "五块光滑的石子", chapter: "以拉谷", desc: "从溪里捡来的凉石头，小得能放进牧人的口袋，却够撑过一个看起来不可能的早晨。", ref: "撒母耳记上 17:40" },
     signet: { name: "王的印戒", chapter: "狮子坑", desc: "压在封住坑口的胶泥上——提醒我们：人的法令，并不是最后的定论。", ref: "但以理书 6:17" },
     denarii: { name: "二两银子", chapter: "耶利哥路上", desc: "两天的工钱，交给店主，请他照顾一个陌生人。怜悯是要花钱的。", ref: "路加福音 10:35" },
     rope: { name: "渔夫的绳索", chapter: "住了吧，静了吧", desc: "从一艘本该沉掉的船上解下来的绳子，被海水泡得发硬。它到底撑住了。", ref: "马可福音 4:39" },
