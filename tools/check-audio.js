@@ -79,7 +79,7 @@ globalThis.clearInterval = () => { tick = null; };
 globalThis.setTimeout = (fn) => { fn(); return 1; };   // dispose immediately in test
 
 const audio = await import("../src/core/audio.js");
-const { setAmbience, resumeAudio, setMusicEnabled, duckAmbience, isMusicEnabled, CHAPTER_AMBIENCE, sfx } = audio;
+const { setAmbience, resumeAudio, setMusicEnabled, duckAmbience, isMusicEnabled, CHAPTER_AMBIENCE, sfx, penTick, fillScore } = audio;
 
 if (!isMusicEnabled()) throw new Error("music should default to on");
 resumeAudio();
@@ -101,6 +101,41 @@ for (const kind of kinds) {
   console.log(`  ${kind.padEnd(9)} ok   voices=${String(stats.started - before).padStart(4)}`);
 }
 
+/* ---- the pen under the dialogue ----
+   Two oscillators per tick, one clock-guarded gap so a fast typer cannot
+   machine-gun it, and silence of its own accord when sound is off. */
+{
+  const ctxM = globalThis.__mockCtx;
+  ctxM.currentTime = 10;
+  const a = stats.osc;
+  penTick();
+  const one = stats.osc - a;
+  if (one < 2) throw new Error("penTick produced no voice");
+  for (let i = 0; i < 12; i++) penTick();              // same instant: all swallowed
+  if (stats.osc - a !== one) throw new Error("penTick is not rate-limited (" + (stats.osc - a) + " voices)");
+  ctxM.currentTime += 0.09;
+  penTick();
+  if (stats.osc - a <= one) throw new Error("penTick stayed silent after the gap");
+  audio.setEnabled(false);
+  const off = stats.osc;
+  ctxM.currentTime += 1;
+  penTick();
+  if (stats.osc !== off) throw new Error("penTick ignores the sound setting");
+  audio.setEnabled(true);
+}
+
+/* ---- offline rendering ---- the audition path (tools render a preview WAV
+   from this) must lay the whole score down up front, with no timers and no
+   dependence on a clock, and must cover every beat of the span asked for. */
+{
+  const before = stats.started;
+  const L = fillScore(globalThis.__mockCtx, "temple", 12);
+  const made = stats.started - before;
+  if (!L || !L.chord.length) throw new Error("fillScore produced no chord");
+  if (made < 40) throw new Error("fillScore was too sparse for 12 s (" + made + " voices)");
+  if (!tick) throw new Error("fillScore should not need the interval scheduler");
+}
+
 /* Re-render style calls must be idempotent, not rebuild the orchestra. */
 setAmbience("title", 0);
 const b = stats.started;
@@ -117,4 +152,4 @@ setMusicEnabled(true);
 if (!tick) throw new Error("scheduler did not restart after music on");
 
 globalThis.setInterval = realSetInterval;
-console.log(`\n✓ Procedural score: ${kinds.length} moods, moving chords, harp, drums, reverb and ambience — no bad params or leaks.`);
+console.log(`\n✓ Procedural score: ${kinds.length} moods on five modes — drone, bowed pad, oud, reed melody, frame drum, bowl, room reverb and air — plus the rate-limited pen under the dialogue. No bad params or leaks.`);

@@ -105,7 +105,7 @@ function howtoInner() {
         <li><strong>Rest at the camp</strong> between chapters: talk to three travellers, claim three quests, and breathe at the fire for Guidance.</li>
         <li><strong>Immersive / no-tips mode is ON by default.</strong> Every hint circle, virtue gate and reward preview is hidden so the story feels like a story. Turn it off in Settings if you want the tips back; spend Guidance to reveal one at a time.</li>
         <li><strong>Open the scroll</strong> (top right) any time to read the real passage, the historical note and the reference.</li>
-        <li><strong>Ambient music</strong> plays a living procedural score — moving chords, harp phrases and soft drums — with wind, water or crowd sounds that change per chapter. Toggle it with the ♪ button or in Settings.</li>
+        <li><strong>Ambient music</strong> plays a living procedural score — a low drone, a bowed pad moving through old modal chords, a plucked oud, a reed melody and a soft frame drum — with wind, water or crowd sounds that change per chapter. Every chapter has its own mode, so the desert does not sound like the valley. Toggle it with the ♪ button or in Settings.</li>
       </ul>
       <h3>At the end of each chapter</h3>
       <p>You will receive a relic, a fruit of the Spirit, and one honest reflection question. There are no wrong answers — only different ones.</p>

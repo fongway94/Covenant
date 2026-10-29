@@ -17,3 +17,5 @@ _shots/
 _check*.png
 _art_*/
 __pycache__/
+
+_audio_preview/

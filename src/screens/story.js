@@ -6,7 +6,7 @@ import { deeperFor } from "../data/deeper.js";
 import { momentFor } from "../data/moments.js";
 import { momentSteps } from "../data/moment-steps.js";
 import { startMoment } from "../engine/moments.js";
-import { sfx } from "../core/audio.js";
+import { sfx, penTick } from "../core/audio.js";
 import { bus } from "../core/bus.js";
 import { tx, isZh } from "../core/i18n.js";
 import { startScene, gameInfo } from "../engine/scene.js";
@@ -103,6 +103,9 @@ function finishTyping(ui) {
   syncDialogueOverflow();
 }
 
+/* Characters that get no tick: the pen lifts at a space and at punctuation. */
+const PEN_SILENT = /[\s\u3000，、。；：！？…—·「」『』（）《》〈〉“”‘’"'\-–.,;:!?()\[\]]/;
+
 function renderLineDOM(ui) {
   const s = st(ui);
   const ch = chapter(ui);
@@ -127,6 +130,11 @@ function renderLineDOM(ui) {
     if (!ui.story || ui.story !== s) { clearInterval(s.timer); return; }
     i += step;
     txEl.innerHTML = esc(text.slice(0, i));
+    /* A quiet tick under each few letters, as if the line were being written
+       by hand. Spaces and punctuation are silent — it is a pen, not a
+       metronome — and the sound itself caps its own rate. */
+    const ch = text.charAt(Math.min(i, text.length) - 1);
+    if (ch && !PEN_SILENT.test(ch)) penTick();
     if (i >= text.length) finishTyping(ui);
   }, 18);
   sfx("tap");

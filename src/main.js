@@ -71,7 +71,7 @@ function syncAmbience() {
   if (ui.state) {
     if (ui.view === "story" && ui.story) {
       kind = CHAPTER_AMBIENCE[ui.story.chapterId] || "camp";
-      // Action scenes add a stronger drum pulse and a faster, brighter harp.
+      // Action scenes add the drum pulse and a heartbeat under it.
       intensity = ["mini", "action", "hotspots", "hotspots-done"].includes(ui.story.phase) ? 1 : 0;
     }
     else if (ui.view === "finale") kind = "finale";

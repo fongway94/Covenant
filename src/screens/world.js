@@ -192,7 +192,7 @@ export function characterHtml(ui) {
           <button class="toggle ${s.settings.sound ? "on" : ""}" data-action="toggle-sound" aria-label="${tx("Toggle sound", "切换音效")}"><i></i></button>
         </div>
         <div class="setting-row">
-          <div class="lbl">${tx("Ambient music", "环境音乐")}<small>${tx("A living procedural score — moving chords, harp phrases and soft drums — with wind, water or crowd ambience for each chapter", "活的程序配乐——流动的和弦、竖琴乐句与轻柔鼓点——每一章还有风声、水声或人群环境音")}</small></div>
+          <div class="lbl">${tx("Ambient music", "环境音乐")}<small>${tx("A living procedural score — a low drone, a bowed pad moving through old modal chords, a plucked oud, a reed melody and a soft frame drum — with wind, water or crowd ambience for each chapter", "活的程序配乐——低音持续音、缓缓推移的老调式和弦、拨弦的乌德琴、芦苇笛般的旋律与轻柔的手鼓——每一章还有风声、水声或人群环境音")}</small></div>
           <button class="toggle ${isMusicEnabled() ? "on" : ""}" data-action="toggle-music" aria-label="${tx("Toggle ambient music", "切换环境音乐")}"><i></i></button>
         </div>
         <div class="setting-row">
@@ -224,7 +224,7 @@ export function characterHtml(ui) {
       </div>
 
       <button class="btn btn-danger btn-sm" style="margin-top:14px" data-action="ask-reset">${icon("refresh", 15)} ${tx("Erase this journey", "清除这段旅程")}</button>
-      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.9.17 · Everything is saved only on this device.", "Covenant v0.9.17 · 所有进度仅保存在本机。")}</p>
+      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.9.18 · Everything is saved only on this device.", "Covenant v0.9.18 · 所有进度仅保存在本机。")}</p>
     </div>
     ${tabsHtml(ui, "character")}
   </div>`;
