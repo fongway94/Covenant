@@ -4,7 +4,7 @@
    Run: npm run check:games */
 
 import { GAMES, SCENES } from "../src/engine/games.js";
-import { clamp, rnd, dist } from "../src/engine/scene.js";
+import { clamp, rnd, dist, overInfo } from "../src/engine/scene.js";
 import { stepsFor } from "../src/data/game-steps.js";
 
 const gradient = { addColorStop() {} };
@@ -313,6 +313,38 @@ if (copyProblems.length) {
   for (const p of copyProblems) console.error("  " + p);
   process.exit(1);
 }
+/* ---- the score clock may not charge anyone for learning -------------------
+   A scene keeps a soft budget in `state.left`; nothing is ever shown and
+   nothing can end when it runs out. What it must not do is shrink the payout
+   for time spent reading the steps or finding the right spot, so the clock is
+   only charged from the moment the player has got somewhere in the act. */
+{
+  const clock = [];
+  /* a scene starts with `left` seconds on its budget and counts both down */
+  const at = (t, progress = 0, budget = 48) => ({ state: { t, left: budget - t }, progress });
+
+  let c = at(90);                                  // three times over, still exploring
+  if (overInfo(c).keep !== 1 || overInfo(c).over !== 0) clock.push("charged for time spent before touching the act");
+
+  c = at(5, 0.2);                                  // first progress at 5 s
+  c.state.t = 20; c.state.left = 28;
+  if (overInfo(c).over !== 0) clock.push("charged inside the budget after starting");
+
+  c.state.t = 70; c.state.left = -22;               // 65 s after progress, budget 48
+  const late = overInfo(c);
+  if (!(late.over > 0)) clock.push("never charged even long after the budget");
+  if (!(late.keep < 1 && late.keep >= 0.3)) clock.push("late payout outside 30–100%");
+
+  c = at(100, 0);                                   // same lateness, nothing ever done
+  if (overInfo(c).keep !== 1) clock.push("time alone cost points with no progress at all");
+
+  if (clock.length) {
+    console.error(`\n✗ score clock: ${clock.length} problem(s):`);
+    for (const m of clock) console.error("  " + m);
+    process.exit(1);
+  }
+}
+
 if (errors.length) {
   console.error(`\n✗ ${errors.length} action-scene error(s):`);
   for (const e of errors) console.error("  " + e.split("\n").slice(0, 4).join("\n    "));

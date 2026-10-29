@@ -414,11 +414,21 @@ function uiScale() {
   } catch { return 1; }
 }
 
-function overInfo(c) {
+export function overInfo(c) {
   const s = c.state || {};
   if (typeof s.left !== "number" || typeof s.t !== "number") return { over: 0, keep: 1 };
+  /* Reading the three steps, working out where the finger goes, or simply
+     looking at the painting is not paid for. The clock inside a scene only
+     starts once the player has actually got somewhere in it — every scene
+     reports that as c.progress — and it is measured from there, so a careful
+     hand is never charged for being careful. */
   const budget = Math.max(12, s.t + s.left);   // the act's own starting budget
-  const over = Math.max(0, -s.left);
+  if (typeof s.startedAt !== "number") {
+    if (!(c.progress > 0)) return { over: 0, keep: 1 };
+    s.startedAt = s.t;
+    s.budget = budget;
+  }
+  const over = Math.max(0, s.t - s.startedAt - (s.budget ?? budget));
   return { over, keep: clamp(1 - over / (budget * 0.9), 0.3, 1) };
 }
 
