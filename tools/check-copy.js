@@ -45,8 +45,29 @@ const BANNED = [
   [/你的地址/, "你的地址", "「your address」别直译；说「你现在站的地方」"],
   [/整个人/, "整个人", "「整个人」当副词是英文腔；说清是谁做了什么动作"],
   [/就会这样回应/, "就会这样回应", "「回应」太空；说「人自己就会想这样做」"],
-  [/的地址/, "的地址", "「address」作比喻时只能是门牌号；说「出处」「地方」"],
-  [/成了[^，。]{0,6}的起点/, "成了…的起点", "抽象的起点；把那一件事说出来"],
+];
+
+/* Lines the player has read and approved. If a future pass makes one of these
+   trip a rule above, the rule is wrong — not the line. Recorded 2026-10-29. */
+const KEEP = [
+  "成了信心的起点",
+  "爱是一个方向",
+  "法律改变时也没有改变的祷告习惯",
+  "重复同一个决定",
+  "从一个很小的「不肯」开始的",
+  "合在一个问题上，而不是一个答案上",
+  "都有真实的地址",
+  "看见恩典的人，都是这样",
+  "在那样一个时刻",
+  "成了这段爱情的开头",
+  "是因为他先被接纳了",
+  "心里怕，可你没有跑",
+  "还要算上一笔代价",
+];
+
+/* Punctuation is never a matter of taste — these apply even to kept lines. */
+const ALWAYS = [
+  [/。。|，，|、、/, "重复标点", "删掉重复的标点"],
 ];
 
 function files(dir, out = []) {
@@ -67,7 +88,8 @@ for (const file of files(join(ROOT, "src"))) {
   text.split("\n").forEach((line, i) => {
     if (!CJK.test(line)) return;
     checked++;
-    for (const [re, label, fix] of BANNED) {
+    const kept = KEEP.some((k) => line.includes(k));
+    for (const [re, label, fix] of (kept ? ALWAYS : BANNED)) {
       if (re.test(line)) problems.push({ rel, line: i + 1, label, fix, text: line.trim().slice(0, 96) });
     }
   });

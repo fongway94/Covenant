@@ -41,7 +41,7 @@ export const DEEPER = {
   esther: {
     ref: B("Esther 3–8", "以斯帖记 3–8 章"),
     hook: B("God is never mentioned by name in the whole book. The story is built out of timing, an insomnia and a banquet.",
-      "整卷以斯帖记一次也没有提到神的名字。这个故事是一点一点串起来的：一次失眠，两场筵席，一个刚刚好的时机。"),
+      "整卷以斯帖记一次也没有提到神的名字。故事是一次失眠、一场筵席和一个恰好的时机串起来的。"),
     ask: B("Where have you seen God’s work in a story that never says His name?", "有没有哪件事，从头到尾没提神的名字，你却看见祂在工作？")
   },
   bush: {
@@ -65,7 +65,7 @@ export const DEEPER = {
   zacchaeus: {
     ref: B("Luke 19:1–10", "路加福音 19:1–10"),
     hook: B("Zacchaeus offers fourfold repayment before Jesus says anything about his money. Grace arrived before the bill.",
-      "耶稣还没有提到钱，撒该就主动提出四倍偿还。恩典先到，偿还随后就跟了上来。"),
+      "耶稣还没有提到钱，撒该就主动提出四倍偿还。恩典先到，账单后来。"),
     ask: B("What would you change if you were welcomed first?", "如果你先被接纳，你会主动改变什么？")
   }
 };

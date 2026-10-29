@@ -26,7 +26,7 @@ export const QUESTS = [
     id: "roads", glyph: "⌁",
     titleEn: "Walk five roads", titleZh: "走过五条路",
     descEn: "Complete five chapters. The road is learned by walking it.",
-    descZh: "完成五个章节。路是一步一步走出来的。",
+    descZh: "完成五个章节。路，是走出来的。",
     goal: 5,
     progress: (s) => countDone(s),
     reward: { guidance: 3, courage: 1 }
