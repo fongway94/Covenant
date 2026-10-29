@@ -41,7 +41,7 @@ export const CHAPTERS = [
       timeline: "c. 1020 BC · Valley of Elah, between Socoh and Azekah"
     },
     cast: {
-      elias:   { name: "Elias", role: "Your companion" },
+      elias:   { name: "Corin", role: "Your companion" },
       david:   { name: "David", role: "A shepherd from Bethlehem" },
       goliath: { name: "Goliath", role: "Champion of the Philistines" },
       soldier: { name: "An Israelite soldier", role: "" },
@@ -54,16 +54,16 @@ export const CHAPTERS = [
       start: {
         lines: [
           ["", "The scroll grows warm in your hands. The ink shifts, campfires flicker into being, and the smell of dust and sheep fills the air."],
-          ["", "A man in a travel-stained scribe’s robe steps beside you. This is Elias, your companion on the road."],
+          ["", "A man in a travel-stained scribe’s robe steps beside you. This is Corin, your companion on the road."],
           ["elias", "The Valley of Elah, around 1020 BC. Hear me clearly: we are witnesses. We cannot rewrite what God has written. But we can choose what kind of people we become while we watch."],
           ["soldier", "Forty days. Forty mornings that giant has shouted at us, and not one man has answered."],
           ["goliath", "Choose a man for yourselves, and let him come down to me! If he be able to fight with me and kill me, then will we be your servants — but if I prevail, then shall ye be our servants!"],
-          ["", "The whole line of Israel shifts backward. Elias looks at you. So — where will you stand?"],
+          ["", "The whole line of Israel shifts backward. Corin looks at you. So — where will you stand?"],
           ["elias", "Every choice here will leave a mark on you, not on the story. That is how the road works."]
         ],
         choices: [
           { t: "Walk to the front line and face the shouting", to: "start2", stat: { courage: 2 }, xp: 6, tag: "Courage", reply: "Your legs do not feel brave, but they carry you forward. The giant’s voice fills your chest — and you stay." },
-          { t: "Ask Elias what the Law says about fear", to: "start2", stat: { wisdom: 2 }, xp: 6, tag: "Wisdom", reply: "Elias opens his scroll. “The officers shall say to the people: let not your hearts faint, fear not — for the LORD your God goeth with you.” You had heard it before. Today you need it.", replyBy: "elias" },
+          { t: "Ask Corin what the Law says about fear", to: "start2", stat: { wisdom: 2 }, xp: 6, tag: "Wisdom", reply: "Corin opens his scroll. “The officers shall say to the people: let not your hearts faint, fear not — for the LORD your God goeth with you.” You had heard it before. Today you need it.", replyBy: "elias" },
           { t: "Find the soldiers who are shaking and sit with them", to: "start2", stat: { compassion: 2 }, xp: 6, tag: "Compassion", reply: "You sit in the dust beside a boy no older than sixteen. He stops trembling long enough to share his bread. Courage is easier when you are not alone." }
         ]
       },
@@ -89,7 +89,7 @@ export const CHAPTERS = [
         ],
         choices: [
           { t: "Offer David your own walking staff", to: "brook", stat: { compassion: 2 }, xp: 5, reply: "He thanks you, smiling, and hands it gently back. “I have not proved these,” he says of the king’s armour. He takes his staff, his bag, and nothing else.", replyBy: "david" },
-          { t: "Urge him to take the king’s sword anyway", to: "brook", stat: { wisdom: 1 }, xp: 5, reply: "He fastens it, takes two steps, and nearly falls. “I cannot go with these.” He unbuckles it. Elias raises an eyebrow at you.", replyBy: "david" },
+          { t: "Urge him to take the king’s sword anyway", to: "brook", stat: { wisdom: 1 }, xp: 5, reply: "He fastens it, takes two steps, and nearly falls. “I cannot go with these.” He unbuckles it. Corin raises an eyebrow at you.", replyBy: "david" },
           { t: "Say nothing. Watch what he does.", to: "brook", stat: { wisdom: 2 }, xp: 6, tag: "Wisdom", reply: "A borrowed identity never fits in the valley. David walks out in a shepherd’s tunic." }
         ]
       },
@@ -116,7 +116,7 @@ export const CHAPTERS = [
         lines: [
           ["goliath", "Am I a dog, that thou comest to me with staves? Come to me, and I will give thy flesh unto the fowls of the air and to the beasts of the field!"],
           ["david", "Thou comest to me with a sword, and with a spear, and with a shield: but I come to thee in the name of the LORD of hosts, the God of the armies of Israel, whom thou hast defied."],
-          ["", "David runs toward the line. He reaches into his bag. The whole valley seems to hold its breath — and Elias grips your sleeve."],
+          ["", "David runs toward the line. He reaches into his bag. The whole valley seems to hold its breath — and Corin grips your sleeve."],
           ["elias", "Do not look away. Whatever you do, do not look away."]
         ],
         next: "end"
@@ -170,7 +170,7 @@ export const CHAPTERS = [
       timeline: "c. 539 BC · Babylon / the Median-Persian empire"
     },
     cast: {
-      elias:   { name: "Elias", role: "Your companion" },
+      elias:   { name: "Corin", role: "Your companion" },
       daniel:  { name: "Daniel", role: "A servant of the living God" },
       satrap:  { name: "A royal official", role: "" },
       darius:  { name: "King Darius", role: "" },
@@ -185,13 +185,13 @@ export const CHAPTERS = [
           ["", "The scroll turns. Cedar, hot brick, and the noise of a vast city. You are standing in the shadow of a palace in Babylon."],
           ["elias", "Daniel is an old man now — near eighty. He has outlived kings and empires. King Darius is about to set him over the whole realm."],
           ["satrap", "We shall not find any occasion against this Daniel, except we find it against him concerning the law of his God."],
-          ["", "The officials drift toward the throne room with a parchment in their hands. Elias’ jaw tightens."],
+          ["", "The officials drift toward the throne room with a parchment in their hands. Corin’s jaw tightens."],
           ["elias", "They are going to make faithfulness illegal. What do you do with what you just heard?"]
         ],
         choices: [
           { t: "Read the decree as it is posted in the gate", to: "decree", stat: { wisdom: 2 }, xp: 6, tag: "Wisdom", reply: "You memorise the wording: thirty days, no petition to any god or man except the king. The penalty is the lions’ den. The trap is aimed at one man.", replyBy: "" },
           { t: "Warn Daniel that the officials are watching him", to: "decree", stat: { compassion: 2 }, xp: 6, tag: "Compassion", reply: "He thanks you with real warmth. Then he asks whether you would like to pray — it is nearly the ninth hour.", replyBy: "daniel" },
-          { t: "Ask Elias why they hate a man who has done no wrong", to: "decree", stat: { wisdom: 1, faith: 1 }, xp: 6, reply: "“Because a blameless life is a mirror,” Elias says. “And some people cannot bear what they see in it.”", replyBy: "elias" }
+          { t: "Ask Corin why they hate a man who has done no wrong", to: "decree", stat: { wisdom: 1, faith: 1 }, xp: 6, reply: "“Because a blameless life is a mirror,” Corin says. “And some people cannot bear what they see in it.”", replyBy: "elias" }
         ]
       },
       decree: {
@@ -203,7 +203,7 @@ export const CHAPTERS = [
         ],
         choices: [
           { t: "Tell Daniel to pray privately — just for thirty days", to: "upstairs", stat: { compassion: 1 }, xp: 5, reply: "Daniel listens, then shakes his head, not unkindly. “If I hide it now, I have already agreed that the decree is true.” He reaches for the window latch.", replyBy: "daniel" },
-          { t: "Ask whether the king can be persuaded to change the law", to: "upstairs", stat: { wisdom: 2 }, xp: 7, tag: "Wisdom", reply: "Elias sighs. “Not this law. That is the snare. The officials made mercy impossible, and they know the king loves him.”", replyBy: "elias" },
+          { t: "Ask whether the king can be persuaded to change the law", to: "upstairs", stat: { wisdom: 2 }, xp: 7, tag: "Wisdom", reply: "Corin sighs. “Not this law. That is the snare. The officials made mercy impossible, and they know the king loves him.”", replyBy: "elias" },
           { t: "Say nothing. Follow him at the ninth hour.", to: "upstairs", stat: { faith: 2 }, xp: 8, faith: true, tag: "Faith", reply: "You follow him to the upper room, and you are not the only one watching. Two officials are already in the courtyard below.", replyBy: "" }
         ]
       },
@@ -249,7 +249,7 @@ export const CHAPTERS = [
         choices: [
           { t: "Hold your breath and listen", to: "end", stat: { wisdom: 2 }, xp: 6, reply: "Sometimes the faithful thing is simply to stop talking and hear what God has done.", replyBy: "elias" },
           { t: "Fall to your knees on the cold stone", to: "end", stat: { faith: 2 }, xp: 8, faith: true, tag: "Faith", reply: "You are not the only one. Half the courtyard is on its knees before Daniel finishes speaking.", replyBy: "" },
-          { t: "Look for the angel Elias told you about", to: "end", stat: { courage: 1, faith: 1 }, xp: 6, reply: "You see nothing but a shaft of gold light from the grate above. That is more than enough.", replyBy: "" }
+          { t: "Look for the angel Corin told you about", to: "end", stat: { courage: 1, faith: 1 }, xp: 6, reply: "You see nothing but a shaft of gold light from the grate above. That is more than enough.", replyBy: "" }
         ]
       },
       end: {
@@ -301,7 +301,7 @@ export const CHAPTERS = [
       timeline: "c. AD 30 · the road from Jerusalem down to Jericho"
     },
     cast: {
-      elias:     { name: "Elias", role: "Your companion" },
+      elias:     { name: "Corin", role: "Your companion" },
       jesus:     { name: "Jesus", role: "" },
       lawyer:    { name: "A lawyer", role: "" },
       samaritan: { name: "A Samaritan", role: "" },
@@ -353,7 +353,7 @@ export const CHAPTERS = [
         choices: [
           { t: "Shout after them to come back", to: "passers", stat: { courage: 2 }, xp: 7, tag: "Courage", reply: "They do not turn around. Your voice cracks on the last word. The man at your feet does not notice.", replyBy: "" },
           { t: "Stay with the wounded man and keep pressure on the wound", to: "passers", stat: { compassion: 2 }, xp: 9, faith: true, tag: "Compassion", reply: "You stay. It is unglamorous and it takes a long time. Most mercy looks exactly like this.", replyBy: "" },
-          { t: "Ask Elias why the holy men walked away", to: "passers", stat: { wisdom: 2 }, xp: 7, reply: "“Because knowing the Law and loving your neighbour are not the same achievement,” he says quietly. “I have been both men.”", replyBy: "elias" }
+          { t: "Ask Corin why the holy men walked away", to: "passers", stat: { wisdom: 2 }, xp: 7, reply: "“Because knowing the Law and loving your neighbour are not the same achievement,” he says quietly. “I have been both men.”", replyBy: "elias" }
         ]
       },
       passers: {
@@ -366,7 +366,7 @@ export const CHAPTERS = [
         ],
         choices: [
           { t: "Go down and offer to carry his supplies", to: "inn", stat: { compassion: 2 }, xp: 9, give: { fruit: "kindness" }, tag: "Compassion", reply: "He looks up, surprised, then nods as if this is the most natural thing in the world. “Hold the oil,” he says. “I will lift him.”", replyBy: "samaritan" },
-          { t: "Ask him why he is helping an enemy", to: "why", stat: { wisdom: 2 }, xp: 8, tag: "Wisdom", reply: "He does not answer. He simply keeps bandaging. Elias says: “The parable never tells us his reasons. I think that is deliberate — mercy that needs a reason can be argued away.”", replyBy: "elias" },
+          { t: "Ask him why he is helping an enemy", to: "why", stat: { wisdom: 2 }, xp: 8, tag: "Wisdom", reply: "He does not answer. He simply keeps bandaging. Corin says: “The parable never tells us his reasons. I think that is deliberate — mercy that needs a reason can be argued away.”", replyBy: "elias" },
           { t: "Take the donkey’s lead rope and follow", to: "inn", stat: { faith: 2 }, xp: 8, faith: true, tag: "Faith", reply: "The donkey is calm. The man on its back is not. You lead them both down the long road toward an inn.", replyBy: "" }
         ]
       },
@@ -401,7 +401,7 @@ export const CHAPTERS = [
         ],
         choices: [
           { t: "Answer with the lawyer: the one who showed mercy", to: "end", stat: { wisdom: 2 }, xp: 10, faith: true, tag: "Scripture", reply: "Jesus nods. You have understood the parable — which is the easy half.", replyBy: "" },
-          { t: "Answer: the priest, because he knew the Law", to: "end", stat: { courage: 1 }, xp: 5, reply: "Elias winces. Jesus gently repeats the story, more slowly this time. Being corrected by kindness is its own kind of mercy.", replyBy: "elias" },
+          { t: "Answer: the priest, because he knew the Law", to: "end", stat: { courage: 1 }, xp: 5, reply: "Corin winces. Jesus gently repeats the story, more slowly this time. Being corrected by kindness is its own kind of mercy.", replyBy: "elias" },
           { t: "Stay silent and let the question sit with you", to: "end", stat: { wisdom: 1, compassion: 1 }, xp: 7, reply: "You say nothing. But you notice that you can still feel the weight of the man on the donkey. That is a beginning.", replyBy: "" }
         ]
       },
@@ -453,7 +453,7 @@ export const CHAPTERS = [
       timeline: "c. AD 31 · the Sea of Galilee, at evening"
     },
     cast: {
-      elias:   { name: "Elias", role: "Your companion" },
+      elias:   { name: "Corin", role: "Your companion" },
       jesus:   { name: "Jesus", role: "" },
       disciple:{ name: "A disciple", role: "" },
       peter:   { name: "Peter", role: "A fisherman" }
@@ -495,7 +495,7 @@ export const CHAPTERS = [
           ["peter", "Master! Master, we perish!"],
           ["", "The waves beat into the boat so that it is already filling. The other little ships are vanishing in the spray."],
           ["elias", "Hold the tiller. Three waves are coming — keep her steady through all three. Breathe between them."],
-          ["", "Elias puts a hand on your shoulder. “Do the next thing in front of you. That is how trust actually looks in a storm.”"]
+          ["", "Corin puts a hand on your shoulder. “Do the next thing in front of you. That is how trust actually looks in a storm.”"]
         ],
         next: "asleep"
       },
@@ -573,7 +573,7 @@ export const CHAPTERS = [
       timeline: "c. AD 32 · told somewhere in Judea"
     },
     cast: {
-      elias:   { name: "Elias", role: "Your companion" },
+      elias:   { name: "Corin", role: "Your companion" },
       father:  { name: "The father", role: "" },
       younger: { name: "The younger son", role: "" },
       elder:   { name: "The elder son", role: "" },
@@ -633,7 +633,7 @@ export const CHAPTERS = [
         choices: [
           { t: "Walk with him as far as the last ridge", to: "road", stat: { compassion: 2 }, xp: 8, reply: "At the top he stops, and you see the roof of the house below. He is crying. You leave him there — the last part is his.", replyBy: "" },
           { t: "Run ahead and warn the household", to: "road", stat: { courage: 2 }, xp: 8, tag: "Courage", reply: "You burst into the courtyard shouting. The father is already running past you before you finish the sentence.", replyBy: "" },
-          { t: "Ask Elias whether the father will take him back", to: "road", stat: { wisdom: 2, faith: 1 }, xp: 8, reply: "Elias smiles. “You have read this story before,” he says. “Watch the father’s feet.”", replyBy: "elias" }
+          { t: "Ask Corin whether the father will take him back", to: "road", stat: { wisdom: 2, faith: 1 }, xp: 8, reply: "Corin smiles. “You have read this story before,” he says. “Watch the father’s feet.”", replyBy: "elias" }
         ]
       },
       road: {
@@ -724,7 +724,7 @@ export const CHAPTERS = [
       timeline: "c. 480 BC · Susa, the Persian capital"
     },
     cast: {
-      elias:    { name: "Elias", role: "Your companion" },
+      elias:    { name: "Corin", role: "Your companion" },
       mordecai: { name: "Mordecai", role: "Esther’s cousin and guardian" },
       esther:   { name: "Queen Esther", role: "" },
       hatach:   { name: "Hathach", role: "A palace attendant" },
@@ -744,7 +744,7 @@ export const CHAPTERS = [
         choices: [
           { t: "Read a copy of the decree in the gate yourself", to: "decree", stat: { wisdom: 2 }, xp: 7, tag: "Wisdom", reply: "The date is set eleven months out. The whole thing is legal, sealed, and public. That is what makes it so frightening.", replyBy: "" },
           { t: "Sit with Mordecai in the ashes", to: "decree", stat: { compassion: 2 }, xp: 8, tag: "Compassion", reply: "He does not stop crying, but he makes room for you. Grief is easier to carry when someone sits down in it with you.", replyBy: "" },
-          { t: "Ask Elias where God is in all of this", to: "decree", stat: { faith: 2 }, xp: 9, faith: true, tag: "Faith", reply: "“That is the question this entire book asks,” Elias says. “His name is never mentioned once. Watch the timing instead of looking for thunder.”", replyBy: "elias" }
+          { t: "Ask Corin where God is in all of this", to: "decree", stat: { faith: 2 }, xp: 9, faith: true, tag: "Faith", reply: "“That is the question this entire book asks,” Corin says. “His name is never mentioned once. Watch the timing instead of looking for thunder.”", replyBy: "elias" }
         ]
       },
       decree: {
@@ -756,7 +756,7 @@ export const CHAPTERS = [
         ],
         choices: [
           { t: "Carry the message to Esther exactly as Mordecai gave it", to: "mordecai", stat: { courage: 2 }, xp: 8, tag: "Courage", reply: "You do not soften it. She reads it once, then again, very slowly. Her face does not change; her hands do.", replyBy: "" },
-          { t: "Soften the hardest parts before you tell her", to: "mordecai", stat: { compassion: 1 }, xp: 6, reply: "She thanks you — and then asks for the actual parchment. Elias gives you a look. People in danger deserve the truth, not comfort.", replyBy: "elias" },
+          { t: "Soften the hardest parts before you tell her", to: "mordecai", stat: { compassion: 1 }, xp: 6, reply: "She thanks you — and then asks for the actual parchment. Corin gives you a look. People in danger deserve the truth, not comfort.", replyBy: "elias" },
           { t: "Ask about the law for approaching the king unsummoned", to: "mordecai", stat: { wisdom: 2 }, xp: 8, reply: "Hathach goes pale. “One law: whoever comes in uncalled is put to death, unless the king holds out the golden sceptre. Thirty days,” he whispers. “She has not been called in thirty days.”", replyBy: "hatach" }
         ]
       },
@@ -769,7 +769,7 @@ export const CHAPTERS = [
         ],
         choices: [
           { t: "Deliver his words to Esther without changing a syllable", to: "message", stat: { courage: 2 }, xp: 9, tag: "Courage", reply: "She receives the message standing. Then she sits down. Then she stands again. “Gather the people,” she says.", replyBy: "esther" },
-          { t: "Ask Elias what “such a time as this” actually means", to: "message", stat: { wisdom: 2 }, xp: 9, reply: "“It means your ordinary life has quietly become somebody else’s only option,” he says. “Mordecai is not flattering her. He is telling her the truth about the moment.”", replyBy: "elias" },
+          { t: "Ask Corin what “such a time as this” actually means", to: "message", stat: { wisdom: 2 }, xp: 9, reply: "“It means your ordinary life has quietly become somebody else’s only option,” he says. “Mordecai is not flattering her. He is telling her the truth about the moment.”", replyBy: "elias" },
           { t: "Remind her that deliverance will come either way", to: "message", stat: { faith: 2 }, xp: 9, faith: true, tag: "Faith", reply: "“God does not need me,” she says slowly — and you can see the moment the sentence frees her. “But perhaps He wants me.”", replyBy: "esther" }
         ]
       },
@@ -808,7 +808,7 @@ export const CHAPTERS = [
         choices: [
           { t: "Step forward with her into the throne room", to: "end", stat: { courage: 2 }, xp: 12, require: { courage: 6 }, faith: true, tag: "Courage 6", hint: "Grow Courage in earlier chapters", reply: "You are not summoned either. But the sceptre is out, and the moment is now. You walk.", replyBy: "" },
           { t: "Hold your breath at the pillar and watch", to: "end", stat: { wisdom: 2 }, xp: 9, reply: "You watch a queen choose patience over accusation. Boldness and hurry are not the same thing.", replyBy: "" },
-          { t: "Ask Elias why she waits until the second banquet", to: "end", stat: { wisdom: 2, faith: 1 }, xp: 10, reply: "“Because she is not just brave — she is wise,” he says. “Courage without gentleness can win a moment and lose a kingdom. She does both.”", replyBy: "elias" }
+          { t: "Ask Corin why she waits until the second banquet", to: "end", stat: { wisdom: 2, faith: 1 }, xp: 10, reply: "“Because she is not just brave — she is wise,” he says. “Courage without gentleness can win a moment and lose a kingdom. She does both.”", replyBy: "elias" }
         ]
       },
       end: {

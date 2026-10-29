@@ -36,7 +36,7 @@ function scrollInner(ch) {
     <p class="small gold" style="margin-top:-4px">— ${esc(ch.scroll.ref)}</p>
     <div class="divider"></div>
     <div class="card-quiet">
-      <div class="eyebrow" style="margin-bottom:6px">${tx("Elias’ note", "以利亚斯的笔记")}</div>
+      <div class="eyebrow" style="margin-bottom:6px">${tx("Corin’s note", "柯林的笔记")}</div>
       <p class="small" style="margin:0">${esc(ch.scroll.note)}</p>
     </div>
     ${ch.brief ? `<div class="card-quiet" style="margin-top:12px">
@@ -110,7 +110,7 @@ function howtoInner() {
       <h3>At the end of each chapter</h3>
       <p>You will receive a relic, a fruit of the Spirit, and one honest reflection question. There are no wrong answers — only different ones.</p>
       <h3>Go deeper into the real Bible</h3>
-      <p>At the end of every chapter there is a <strong>Go deeper</strong> card: the exact passage, one detail to look for, and one honest question. Open the scroll any time to read the real verse, Elias’ historical note and the timeline. The finale collects all ten passages into a reading list you can tap.</p>
+      <p>At the end of every chapter there is a <strong>Go deeper</strong> card: the exact passage, one detail to look for, and one honest question. Open the scroll any time to read the real verse, Corin’s historical note and the timeline. The finale collects all ten passages into a reading list you can tap.</p>
       <h3>What you achieve by finishing</h3>
       <p>You will have witnessed all ten biblical stories without changing their outcome, grown Courage, Wisdom, Compassion and Faith, gathered up to 9 fruits, 10 relics and 9 seals, and practised pausing to pray before choosing. The finale gives you a completion seal and a <strong>Journey Mirror</strong> — your four virtues, four ways of walking, and one biblical person whose story rhymes with yours, their real failure included, plus the passage to read. It is a portrait of the person your choices formed, not a personality type or a score of your worth. What you do with it happens outside the game.</p>
       <p class="tiny muted">Progress saves automatically on your device. No account, no ads, no tracking.</p>
@@ -133,7 +133,7 @@ function howtoInner() {
       <h3>每章结束</h3>
       <p>你会得到一件圣物、一颗圣灵的果子，还有一道要你诚实回答的问题。那题没有标准答案，只有你自己的答案。</p>
       <h3>再走一步：读真正的圣经</h3>
-      <p>每章结束都有一张<strong>「再走一步」</strong>卡：准确的经文地址、一个值得留意的细节，以及一道诚实的问题。随时打开书卷，可阅读真正的经文、以利亚斯的历史注解与年代表。终章会把十段经文整理成一份可点击的阅读清单。</p>
+      <p>每章结束都有一张<strong>「再走一步」</strong>卡：准确的经文地址、一个值得留意的细节，以及一道诚实的问题。随时打开书卷，可阅读真正的经文、柯林的历史注解与年代表。终章会把十段经文整理成一份可点击的阅读清单。</p>
       <h3>玩完全程，你会得到什么</h3>
       <p>你会在不改变经文结局的前提下，见证十段圣经故事；培养勇气、智慧、怜悯与信心；最多收集 9 个果子、10 件圣物、9 枚印记；并练习「先祷告，再选择」。终章会给你一枚完成印记和一面<strong>「旅程之镜」</strong>——四种品格、四种走路方式，以及一位与你相似的圣经人物（包括他真实的失败）和一段你可以去读的经文。这是「你的选择塑造了怎样的人」的画像，不是人格类型，也不是衡量你价值的分数。真正的后续，发生在游戏之外。</p>
       <p class="tiny muted">进度自动保存在你的设备上。没有账号、没有广告、没有追踪。</p>
@@ -212,7 +212,8 @@ function campNpcInner(ui) {
   const role = isZh() ? n.roleZh : n.roleEn;
   const lines = isZh() ? n.linesZh : n.linesEn;
   return `<div class="center"><div style="font-size:2.4rem">${n.glyph}</div>
-    <div class="eyebrow">${esc(role)}</div><h2>${esc(name)}</h2></div>
+    <div class="eyebrow">${esc(role)}</div><h2>${esc(name)}</h2>
+    <p class="tiny muted" style="margin:6px 0 0">${tx("One of this camp's own travellers — not a figure from the Bible.", "营地里的旅人，不是圣经中的人物。")}</p></div>
     <div class="npc-lines">${lines.map((l, i) => `<p class="small serif"><span class="gold">${i + 1}.</span> ${esc(l)}</p>`).join("")}</div>
     <button class="btn btn-primary" style="margin-top:10px" data-action="close-modal">${tx("Thank you", "谢谢你")}</button>`;
 }

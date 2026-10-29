@@ -63,7 +63,7 @@ function questBoard(ui) {
   const allDone = QUESTS.every((q) => claimed[q.id]);
   return `<section class="camp-section">
     <div class="camp-section-head">
-      <div><div class="eyebrow">${tx("Miriam's board", "米利暗的木板")}</div>
+      <div><div class="eyebrow">${tx("Ada's board", "艾达的木板")}</div>
         <h3>${tx("Three small tasks", "三件小事")}</h3></div>
       <span class="pill ${allDone ? "gold" : ""}">${QUESTS.filter((q) => claimed[q.id]).length}/${QUESTS.length}</span>
     </div>
@@ -88,7 +88,7 @@ function questBoard(ui) {
         </div>
       </div>`;
     }).join("")}</div>
-    ${allDone ? `<p class="small serif gold center" style="margin:12px 0 0">${tx("Miriam has carved your name into the camp post.", "米利暗已把你的名字刻在营地木桩上。")}</p>` : ""}
+    ${allDone ? `<p class="small serif gold center" style="margin:12px 0 0">${tx("Ada has carved your name into the camp post.", "艾达已把你的名字刻在营地木桩上。")}</p>` : ""}
   </section>`;
 }
 

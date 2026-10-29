@@ -36,21 +36,21 @@ export const QUESTS = [
 /* The three people you can talk to at the camp. Lines change as you progress. */
 export const CAMP_NPCS = [
   {
-    id: "elias", glyph: "✦", nameEn: "Elias", nameZh: "以利亚斯",
+    id: "elias", glyph: "✦", nameEn: "Corin", nameZh: "柯林",
     roleEn: "the scribe", roleZh: "文士",
     linesEn: [
-      "You carry a scroll, but the scroll is not the journey. It is only the door.",
+      "I keep the scrolls. Whatever happens on this road I write down, so that later you can see what you were becoming while you were busy becoming it.",
       "When you hold the prayer button, you are not buying a reward. You are stopping long enough to notice God is already there.",
       "The circles around a choice are hints — virtue gates, reward previews, little lights on the path. Turn on Clean Mode in Settings and they disappear."
     ],
     linesZh: [
-      "你带着一卷书，但书卷不是旅程本身，它只是一扇门。",
+      "我管书卷。这条路上发生的事我都记下来——过上些日子你回头看，才看得见自己一路在变成什么样的人。",
       "按住祷告按钮，不是在换取奖励，而是停下来，久到足以察觉神早已在那里。",
       "选项周围的圆圈是提示——品格门槛、奖励预览、路上的小灯。在设置里开启「沉浸模式」，它们就会消失。"
     ]
   },
   {
-    id: "miriam", glyph: "❀", nameEn: "Miriam", nameZh: "米利暗",
+    id: "miriam", glyph: "❀", nameEn: "Ada", nameZh: "艾达",
     roleEn: "keeper of the camp", roleZh: "营地守护者",
     linesEn: [
       "Everyone arrives here with empty hands. Stay a while and the hands fill up.",
@@ -64,7 +64,7 @@ export const CAMP_NPCS = [
     ]
   },
   {
-    id: "caleb", glyph: "⌁", nameEn: "Caleb", nameZh: "迦勒",
+    id: "caleb", glyph: "⌁", nameEn: "Tobin", nameZh: "托宾",
     roleEn: "a fellow traveller", roleZh: "同行的旅人",
     linesEn: [
       "I have walked ten roads. The strange thing is, they all end at the same question: what kind of person are you becoming?",

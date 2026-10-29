@@ -39,7 +39,7 @@ export function titleHtml(ui) {
           <button class="btn btn-ghost" data-action="go" data-view="about">${icon("scroll", 16)} ${tx("About", "关于")}</button>
         </div>
       </div>
-      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.9.13", "互动圣经故事角色扮演游戏 · v0.9.13 原型")}</div>
+      <div class="title-footer">${tx("An interactive Bible story RPG · prototype v0.9.14", "互动圣经故事角色扮演游戏 · v0.9.14 原型")}</div>
     </div>
   </div>`;
 }
@@ -97,7 +97,7 @@ export function aboutHtml(ui) {
       <h3>How we stay faithful to the text</h3>
       <ul>
         <li>The player is a <strong>witness</strong>, never the hero who rewrites the outcome. David still faces Goliath; the storm still stops.</li>
-        <li>Every chapter shows its scripture reference, a historical note from your companion Elias, and the passage behind the story.</li>
+        <li>Every chapter shows its scripture reference, a historical note from your companion Corin, and the passage behind the story.</li>
         <li>Scripture quotations use the <strong>King James Version</strong> (public domain). Other dialogue is clearly written for the game and is not presented as scripture.</li>
         <li>Reflection questions have no “wrong” answer. This is a game about formation, not a quiz about facts.</li>
         <li><strong>Red-letter rule:</strong> Jesus is depicted with a portrait, but He is never given invented dialogue. Every line He speaks is a verbatim KJV / 中文和合本 quotation, checked automatically in both languages. The Father’s voice stays as light.</li>
@@ -112,7 +112,7 @@ export function aboutHtml(ui) {
       <h3>For churches &amp; ministries</h3>
       <p>Before publishing, have your content reviewed by your own pastors or theological advisors. Translation choice, denominational distinctives and age-appropriateness are decisions best made by your community. See <code>docs/GAME_DESIGN.md</code> for the content guidelines and a chapter template.</p>
       <div class="divider"></div>
-      <p class="tiny muted center">Artwork generated for this project · interface and story text written for Covenant · v0.9.13 prototype</p>
+      <p class="tiny muted center">Artwork generated for this project · interface and story text written for Covenant · v0.9.14 prototype</p>
       ` : `
       <p class="verse">「你的话是我脚前的灯，是我路上的光。」 <span style="font-style:normal;font-size:.8em;color:var(--muted)">— 诗篇 119:105</span></p>
       <p>《Covenant／圣约》是一款以圣经真实故事为核心的互动角色扮演游戏。你不是在读<em>关于</em>大卫、但以理或以斯帖的故事，而是站在他们身旁——你的选择会塑造你自己：勇气、智慧、怜悯、信心。</p>
@@ -121,7 +121,7 @@ export function aboutHtml(ui) {
       <h3>我们怎样忠于经文</h3>
       <ul>
         <li>玩家是一位<strong>见证者</strong>，绝不是改写结局的英雄。大卫仍然迎战歌利亚；风浪仍然止息。</li>
-        <li>每一章都会标明经文出处、同伴以利亚斯的历史注解，以及故事背后的经文。</li>
+        <li>每一章都会标明经文出处、同伴柯林的历史注解，以及故事背后的经文。</li>
         <li>经文引用采用<strong>英王钦定本／中文和合本</strong>（公有领域）。其余对白是本游戏创作内容，不代表经文。</li>
         <li>反思题没有「标准答案」。这是一场关于生命塑造的游戏，不是事实测验。</li>
         <li><strong>红字原则：</strong>耶稣会有立绘，但我们绝不替祂编造对白。祂说的每一句都是 KJV／中文和合本的逐字引用，并有自动检查（中英双语）。父神的声音仍以非具象的光表示。</li>
@@ -136,7 +136,7 @@ export function aboutHtml(ui) {
       <h3>给教会与事工团队</h3>
       <p>正式发布前，请让你们的牧者或神学顾问审阅内容。译本选择、宗派特色与适龄程度，最好由你们的群体决定。参见 <code>docs/GAME_DESIGN.md</code> 中的内容规范与章节模板。</p>
       <div class="divider"></div>
-      <p class="tiny muted center">插画为本项目生成 · 界面与故事文本为 Covenant 创作 · v0.9.13 原型</p>
+      <p class="tiny muted center">插画为本项目生成 · 界面与故事文本为 Covenant 创作 · v0.9.14 原型</p>
       `}
       <button class="btn btn-ghost btn-sm" style="margin-top:14px" data-action="go" data-view="title">${tx("Back to the title", "返回首页")}</button>
     </div>

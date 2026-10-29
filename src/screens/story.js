@@ -1,6 +1,6 @@
 import { esc, icon } from "../core/util.js";
 import { STATS, STAT_KEYS, FRUITS, RELICS, countDone } from "../data/compendium.js";
-import { chapterById } from "../data/chapters.js";
+import { CHAPTERS, chapterById } from "../data/chapters.js";
 import { addStat, addXp, grantFruit, checkSeals, completeChapter, recordReflection, hasPrayed, pray as prayState, saveGame, xpNeeded, spendGuidance, adventure, markFinale, addWay, addWaysFromStats, addHintUse } from "../core/state.js";
 import { deeperFor } from "../data/deeper.js";
 import { momentFor } from "../data/moments.js";
@@ -99,6 +99,7 @@ function finishTyping(ui) {
   s.typing = false;
   const el = document.getElementById("dialogue-text");
   if (el) el.innerHTML = esc(s.fullText || "");
+  syncDialogueOverflow();
 }
 
 function renderLineDOM(ui) {
@@ -110,6 +111,10 @@ function renderLineDOM(ui) {
   const txEl = document.getElementById("dialogue-text");
   if (!sp || !txEl) return;
   sp.outerHTML = speakerMarkup(ch, who);
+  /* A new line starts at its own beginning, even if the last one was long
+     enough to scroll. */
+  const wrap = document.getElementById("dialogue-line");
+  if (wrap) wrap.scrollTop = 0;
   txEl.innerHTML = "";
   s.fullText = text;
   s.typing = true;
@@ -126,10 +131,22 @@ function renderLineDOM(ui) {
   sfx("tap");
 }
 
+/* A quoted verse can be longer than the box. When it is, the fade at the
+   bottom says so, so a scrollable line never looks like a line that was cut. */
+function syncDialogueOverflow() {
+  const line = document.getElementById("dialogue-line");
+  if (!line) return;
+  line.classList.toggle("has-more", line.scrollHeight - line.scrollTop - line.clientHeight > 6);
+  if (!line.dataset.sync) {
+    line.dataset.sync = "1";
+    line.addEventListener("scroll", syncDialogueOverflow, { passive: true });
+  }
+}
+
 export function mountStory(ui) {
   if (!ui.story) return;
   const p = ui.story.phase;
-  if (p === "lines" || p === "reply") renderLineDOM(ui);
+  if (p === "lines" || p === "reply") { renderLineDOM(ui); syncDialogueOverflow(); }
   else if (p === "choices") mountChoices();
   else if (p === "mini") { startMiniLoop(ui); mountDemos(document); }
   else if (p === "action") {
@@ -164,7 +181,7 @@ function mountPrelude() {
 function mountChoices() {
   const area = document.getElementById("choice-area");
   const cue = document.getElementById("choice-more");
-  const line = document.getElementById("dialogue");
+  const line = document.getElementById("dialogue-line");
   if (!area || !cue) return;
 
   /* Answers that are a few pixels too tall would otherwise be cropped — the one
@@ -1125,6 +1142,21 @@ function actionResultHtml(ui) {
   </div>`;
 }
 
+/** What comes next. A story that ends by pointing at the next chapter keeps the
+    thread going; a story that ends on "back to the map" drops it. */
+function nextChapterCard(ui, ch) {
+  const i = CHAPTERS.findIndex((c) => c.id === ch.id);
+  const next = CHAPTERS[i + 1];
+  if (!next) return "";
+  return `<div class="card-quiet next-chapter">
+    <div class="eyebrow">${tx("Next", "接着往下")}</div>
+    <p class="small serif" style="margin:6px 0 0">
+      <strong class="gold">${tx(`Chapter ${next.roman}`, `第 ${next.roman} 章`)}</strong>
+      · ${esc(next.title)}</p>
+    <p class="tiny muted" style="margin:4px 0 0">${esc(next.subtitle)}</p>
+  </div>`;
+}
+
 /** One simple invitation per chapter to open the REAL passage. No new mechanic. */
 function rewardDeeperCard(ui, ch) {
   const d = deeperFor(ch.id, isZh());
@@ -1188,7 +1220,7 @@ function outcomeHtml(ui) {
       <p class="verse center" style="margin-top:8px">${esc(opt.insight)}</p>
       <div class="card-quiet"><p class="small serif" style="margin:0">“${esc(ch.scroll.verse)}”</p>
         <p class="tiny gold" style="margin:8px 0 0">— ${esc(ch.scroll.ref)}</p></div>
-      ${allDone ? `<div class="card-quiet center"><div class="eyebrow">${tx("All ten chapters walked", "十章全部走完")}</div><p class="small" style="margin:6px 0 0">${tx("You have seen courage, integrity, mercy, trust, grace, boldness, calling, kindness, repentance and welcome. The road continues in your own life.", "你看见了勇气、正直、怜悯、信靠、恩典、胆识、呼召、恩慈、悔改与接纳。这条路，要在你自己的生命里继续。")}</p></div>` : ""}
+      ${allDone ? `<div class="card-quiet center"><div class="eyebrow">${tx("All ten chapters walked", "十章全部走完")}</div><p class="small" style="margin:6px 0 0">${tx("You have seen courage, integrity, mercy, trust, grace, boldness, calling, kindness, repentance and welcome. The road continues in your own life.", "你看见了勇气、正直、怜悯、信靠、恩典、胆识、呼召、恩慈、悔改与接纳。这条路，要在你自己的生命里继续。")}</p></div>` : nextChapterCard(ui, ch)}
       <button class="btn btn-primary" style="margin-top:8px" data-action="finish-story">${icon("map", 16)} ${allDone ? tx("See your journey", "看看你的旅程") : tx("Return to the map", "返回地图")}</button>
     </div></div>`;
   }
@@ -1371,8 +1403,10 @@ export function storyHtml(ui) {
       <div class="story-art-echo" style="background-image:url('${ch.art}')"></div>
       ${hudRow(ui, ch, s.phase === "choices")}
       <div class="dialogue" data-action="tap-story" id="dialogue">
+        <div class="dialogue-line" id="dialogue-line">
+          <p class="dialogue-text" id="dialogue-text">${shownText}</p>
+        </div>
         ${speakerMarkup(ch, who)}
-        <p class="dialogue-text" id="dialogue-text">${shownText}</p>
         <span class="dialogue-caret"></span>
       </div>
       ${typingPhase ? `<div class="story-tapzone" data-action="tap-story"><span class="ornament">✧</span><small>${tx("Tap anywhere to continue", "点击任意处继续")}</small></div>` : ""}

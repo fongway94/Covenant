@@ -40,7 +40,7 @@ export const ZH_UI = {
   "The player is a": "玩家是一位",
   "witness": "见证者",
   ", never the hero who rewrites the outcome. David still faces Goliath; the storm still stops.": "，绝不是改写结局的英雄。大卫仍然迎战歌利亚；风浪仍然止息。",
-  "Every chapter shows its scripture reference, a historical note from your companion Elias, and the passage behind the story.": "每一章都会标明经文出处、同伴以利亚斯的历史注解，以及故事背后的经文。",
+  "Every chapter shows its scripture reference, a historical note from your companion Corin, and the passage behind the story.": "每一章都会标明经文出处、同伴柯林的历史注解，以及故事背后的经文。",
   "Scripture quotations use the": "经文引用采用",
   "King James Version": "英王钦定本（KJV）／中文和合本",
   " (public domain). Other dialogue is clearly written for the game and is not presented as scripture.": "（公有领域）。其余对白是本游戏创作内容，不代表经文。",
@@ -90,7 +90,7 @@ export const ZH_UI = {
   "Erase this journey": "清除这段旅程",
   
   /* ---- modals --------------------------------------------------------- */
-  "Elias’ note": "以利亚斯的笔记",
+  "Corin’s note": "柯林的笔记",
   "Scripture quotations: King James Version (public domain). Narrative dialogue is written for this game and is not scripture.": "经文引用：英王钦定本／中文和合本（公有领域）。叙事对白为本游戏创作，并非经文。",
   "Close the scroll": "合上书卷",
   "Fruit of the Spirit": "圣灵的果子",
@@ -242,7 +242,7 @@ export const ZH_UI = {
   "The Lost Fragments": "失落的书卷碎片", "Find 3 scroll fragments hidden around the camp": "找出藏在营地里的 3 张书卷碎片",
   "The Wandering Sheep": "走失的羊", "Tap 3 wandering sheep in the camp": "点击营地里 3 只走散的羊",
   "Prayers at the Well": "井边的祷告", "Pray at the well 3 times": "在井边祷告 3 次",
-  "Elias": "以利亚斯", "Miriam": "米利暗", "Caleb": "迦勒", "The Well": "水井",
+  "Corin": "柯林", "Ada": "艾达", "Tobin": "托宾", "The Well": "水井",
   "Campfire": "篝火", "Chapter Gate": "章节之门", "Notice Board": "任务板",
   "Immersive mode": "沉浸模式", "Hide hints and decorative tips around choices": "隐藏选项周围的提示与装饰",
   "Show hints": "显示提示", "Clean choices": "简洁选项",

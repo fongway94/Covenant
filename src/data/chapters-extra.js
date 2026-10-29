@@ -73,7 +73,7 @@ export const EXTRA_CHAPTERS = [
       timeline: ["c. 1440 BC · Mount Horeb / Sinai", "约公元前 1440 年 · 何烈山／西奈山"]
     },
     cast: {
-      elias: [["Elias", "以利亚斯"], ["Your companion", "你的同伴"]],
+      elias: [["Corin", "柯林"], ["Your companion", "你的同伴"]],
       moses: [["Moses", "摩西"], ["A shepherd in Midian", "米甸的牧人"]],
       voice: [["The Voice", "那声音"], ["From the flame", "从火焰中"]],
       shepherd: [["A Midianite shepherd", "米甸牧人"], [""]]
@@ -90,7 +90,7 @@ export const EXTRA_CHAPTERS = [
         ),
         choices: [
           C(["Go after the stray sheep yourself", "自己去追那只走失的羊"], "stray", { stat: { compassion: 2 }, xp: 7, reply: ["You scramble up the scree, hands scraped raw, and find a lamb trembling behind a boulder.", "你爬上碎石坡，手掌磨破，在一块巨石后发现一只发抖的小羊。"], replyBy: "" }),
-          C(["Ask Elias why God waited forty years", "问以利亚斯，神为何等了四十年"], "stray", { stat: { wisdom: 2 }, xp: 7, reply: ["“Perhaps,” he says, “because a prince had to become a shepherd before he could lead shepherds.”", "「也许，」他说，「因为一个王子得先学会当牧人，才带得动牧人。」"], replyBy: "elias" }),
+          C(["Ask Corin why God waited forty years", "问柯林，神为何等了四十年"], "stray", { stat: { wisdom: 2 }, xp: 7, reply: ["“Perhaps,” he says, “because a prince had to become a shepherd before he could lead shepherds.”", "「也许，」他说，「因为一个王子得先学会当牧人，才带得动牧人。」"], replyBy: "elias" }),
           C(["Pray for the lost one before climbing", "上山之前为那只迷失的羊祷告"], "stray", { stat: { faith: 2 }, xp: 7, faith: true, tag: ["Faith", "信心"], reply: ["The prayer is small and ordinary. That, you will learn, is how most of them start.", "这个祷告又小又普通。后来你会知道，大多数祷告都是这样开始的。"], replyBy: "" })
         ]
       },
@@ -178,7 +178,7 @@ export const EXTRA_CHAPTERS = [
       timeline: ["c. 1100 BC · Bethlehem, harvest season", "约公元前 1100 年 · 伯利恒，收割季节"]
     },
     cast: {
-      elias: [["Elias", "以利亚斯"], ["Your companion", "你的同伴"]],
+      elias: [["Corin", "柯林"], ["Your companion", "你的同伴"]],
       ruth: [["Ruth", "路得"], ["A Moabite widow", "摩押寡妇"]],
       naomi: [["Naomi", "拿俄米"], ["Her mother-in-law", "她的婆婆"]],
       boaz: [["Boaz", "波阿斯"], ["Owner of the field", "田主"]],
@@ -196,7 +196,7 @@ export const EXTRA_CHAPTERS = [
         ),
         choices: [
           C(["Walk behind them, carrying the bundle", "跟在她们后面，替她们背包袱"], "field", { stat: { compassion: 2 }, xp: 8, reply: ["The bundle is not heavy. The silence between the two women is.", "行李不重。两个女人之间的沉默才重。"], replyBy: "" }),
-          C(["Ask Elias why Ruth would choose hardship", "问以利亚斯，路得为何选择吃苦"], "field", { stat: { wisdom: 2 }, xp: 8, reply: ["“Because love is not a calculation,” he says. “It is a direction. She has picked hers.”", "「因为爱不是计算，」他说，「爱是一个方向。她已经选好了。」"], replyBy: "elias" }),
+          C(["Ask Corin why Ruth would choose hardship", "问柯林，路得为何选择吃苦"], "field", { stat: { wisdom: 2 }, xp: 8, reply: ["“Because love is not a calculation,” he says. “It is a direction. She has picked hers.”", "「因为爱不是计算，」他说，「爱是一个方向。她已经选好了。」"], replyBy: "elias" }),
           C(["Pray that Bethlehem receives them", "祷告伯利恒能接纳她们"], "field", { stat: { faith: 2 }, xp: 8, faith: true, tag: ["Faith", "信心"], reply: ["You have no idea how literally that prayer will be answered.", "你还不知道，这个祷告会怎样一字不差地应验。"], replyBy: "" })
         ]
       },
@@ -267,7 +267,7 @@ export const EXTRA_CHAPTERS = [
       timeline: ["c. 780 BC · Mediterranean Sea and Nineveh", "约公元前 780 年 · 地中海与尼尼微"]
     },
     cast: {
-      elias: [["Elias", "以利亚斯"], ["Your companion", "你的同伴"]],
+      elias: [["Corin", "柯林"], ["Your companion", "你的同伴"]],
       jonah: [["Jonah", "约拿"], ["A prophet running away", "逃跑的先知"]],
       captain: [["The ship’s captain", "船长"], [""]],
       sailor: [["A sailor", "水手"], [""]],
@@ -286,7 +286,7 @@ export const EXTRA_CHAPTERS = [
         choices: [
           C(["Beg the sailors not to throw him over", "求水手不要把他抛下海"], "deep", { stat: { compassion: 2 }, xp: 8, reply: ["They hesitate — and the waves climb higher. Sometimes the kind thing is not the safe thing.", "他们犹豫了，浪又高一尺。善良和稳妥，有时候不是一回事。"], replyBy: "" }),
           C(["Stand with Jonah and pray", "和约拿站在一起祷告"], "deep", { stat: { faith: 2 }, xp: 8, faith: true, tag: ["Faith", "信心"], reply: ["He will not look at you. Shame makes people want to be alone.", "他不肯看你。羞愧会让人想一个人待着。"], replyBy: "" }),
-          C(["Ask Elias why Jonah is running", "问以利亚斯，约拿为何逃跑"], "deep", { stat: { wisdom: 2 }, xp: 8, reply: ["“Because he is afraid God will forgive them,” Elias says. “It is the strangest reason anyone has ever run.”", "「因为他怕神真的饶恕他们，」以利亚斯说，「这大概是最奇怪的一个逃跑理由。」"], replyBy: "elias" })
+          C(["Ask Corin why Jonah is running", "问柯林，约拿为何逃跑"], "deep", { stat: { wisdom: 2 }, xp: 8, reply: ["“Because he is afraid God will forgive them,” Corin says. “It is the strangest reason anyone has ever run.”", "「因为他怕神真的饶恕他们，」柯林说，「这大概是最奇怪的一个逃跑理由。」"], replyBy: "elias" })
         ]
       },
       deep: {
@@ -361,7 +361,7 @@ export const EXTRA_CHAPTERS = [
       timeline: ["c. AD 30 · Jericho", "约公元 30 年 · 耶利哥"]
     },
     cast: {
-      elias: [["Elias", "以利亚斯"], ["Your companion", "你的同伴"]],
+      elias: [["Corin", "柯林"], ["Your companion", "你的同伴"]],
       zacchaeus: [["Zacchaeus", "撒该"], ["A chief tax collector", "税吏长"]],
       jesus: [["Jesus", "耶稣"], [""]],
       crowd: [["Someone in the crowd", "人群中的一人"], [""]],

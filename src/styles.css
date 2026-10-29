@@ -346,24 +346,43 @@ body:not(.lang-zh) .chip { word-break: keep-all; }
 .pray-btn svg { width: 13px; height: 13px; }
 .pray-btn:disabled { opacity: .35; }
 
+/* The box: the line at the top, the speaker at the bottom. The line can
+   scroll inside its own region (only ever on a very long line at the largest
+   text size), so a face twice the old size costs the page nothing and the
+   page can never be pushed off the phone. */
 .dialogue {
-  flex: 0 0 auto; min-height: 118px; overflow: hidden;
+  flex: 0 1 auto; min-height: 150px; max-height: 62vh; overflow: hidden;
+  display: flex; flex-direction: column;
   background: linear-gradient(180deg, rgba(20,38,49,.96), rgba(11,23,31,.97));
   border: 1px solid var(--line); border-radius: 16px;
   padding: 14px 16px 12px; position: relative;
   box-shadow: 0 10px 30px rgba(0,0,0,.35);
   cursor: pointer;
 }
+.dialogue-line { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.dialogue-line::-webkit-scrollbar { width: 0; }
+.dialogue-line.has-more {
+  -webkit-mask-image: linear-gradient(180deg, #000 80%, rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(180deg, #000 80%, rgba(0,0,0,0) 100%);
+}
 .dialogue::before {
   content: ""; position: absolute; top: 0; left: 18px; width: 44px; height: 2px;
   background: var(--gold); border-radius: 0 0 4px 4px;
 }
+/* Who is speaking, said with a face instead of a letter.
+   The name used to sit at the top of the box beside a 25-pixel circle, which
+   was too small to recognise on a phone. The speaker now closes the box from
+   the bottom with a portrait big enough to know at a glance, and the line is
+   read first, then attributed. */
 .speaker {
-  font-family: var(--serif); font-size: .9rem; font-weight: 700; color: var(--gold);
-  letter-spacing: .04em; margin-bottom: 7px;
-  display: flex; align-items: center; gap: 7px;
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--serif); font-size: 1.04rem; font-weight: 700; color: var(--gold);
+  letter-spacing: .03em;
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid rgba(231,183,91,.16);
 }
-.speaker .role { font-family: var(--sans); font-size: .72rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
+.speaker .who { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.speaker .role { font-family: var(--sans); font-size: .7rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
 .speaker.narrator { color: var(--teal); }
 .dialogue-text {
   font-family: var(--serif); font-size: 1.1rem; line-height: 1.66;
@@ -380,7 +399,7 @@ body:not(.lang-zh) .chip { word-break: keep-all; }
    scrolls instead. */
 .choice-area { flex: 1 1 auto; max-height: 62%; overflow-y: auto; padding-top: 10px; display: grid; grid-auto-rows: max-content; gap: 8px; align-content: start; }
 .story-tapzone {
-  flex: 1 1 auto; min-height: 54px; display: flex; flex-direction: column;
+  flex: 0 0 54px; min-height: 54px; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 6px; cursor: pointer;
   color: rgba(231,183,91,.34);
 }
@@ -460,6 +479,8 @@ body:not(.lang-zh) .chip { word-break: keep-all; }
 .reflect-q { font-family: var(--serif); font-size: 1.15rem; line-height: 1.5; }
 .reflect-opt.answered { border-color: rgba(79,184,168,.6); background: rgba(79,184,168,.1); }
 .reflect-opt.answered.wrong { border-color: rgba(217,132,104,.5); background: rgba(217,132,104,.09); }
+/* The hand-off card: the thread that carries you from one chapter to the next. */
+.next-chapter { border-color: rgba(231,183,91,.28); background: rgba(231,183,91,.05); }
 
 /* ---------- Journal / codex ---------- */
 .tabs { display: flex; gap: 6px; padding: 0 16px 12px; flex: 0 0 auto; }
@@ -705,21 +726,20 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 @keyframes parallaxDrift { from { transform: scale(1.03) translate(-1%, 0); } to { transform: scale(1.09) translate(2%, -2%); } }
 @keyframes figureFloat { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-7px) rotate(2deg); } }
 
-.speaker { display: flex; align-items: center; gap: 8px; }
 .speaker .portrait {
-  flex: 0 0 auto; width: 25px; height: 25px; border-radius: 50%;
-  display: grid; place-items: center; font-family: var(--serif); font-size: .78rem;
+  flex: 0 0 auto; border-radius: 50%;
+  display: grid; place-items: center; font-family: var(--serif);
   color: #2b1e0a; background: radial-gradient(circle at 35% 28%, #f3d493, #a97c31);
   border: 1px solid rgba(255,240,205,.7);
-  animation: portraitIn .35s both, portraitSpeak 1.6s ease-in-out infinite .35s;
+  animation: portraitIn .35s both, portraitSpeak 2.4s ease-in-out infinite .35s;
 }
 .speaker.narrator .portrait, .speaker .portrait.narrator-pop { background: rgba(79,184,168,.2); color: var(--teal); border-color: rgba(79,184,168,.5); }
-.speaker .who { display: flex; flex-direction: column; }
 @keyframes portraitIn { from { opacity: 0; transform: scale(.5) rotate(-20deg); } to { opacity: 1; transform: none; } }
 @keyframes portraitSpeak { 0%,100% { box-shadow: 0 0 0 0 rgba(231,183,91,.35); } 50% { box-shadow: 0 0 0 5px rgba(231,183,91,0); } }
+/* The typing dot lives in the corner of the box so it costs no line of text. */
 .dialogue-caret {
-  display: inline-block; width: 7px; height: 7px; margin-left: 3px;
-  border-radius: 50%; background: var(--gold); vertical-align: middle;
+  position: absolute; right: 16px; bottom: 34px;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--gold);
   animation: blink 1.2s infinite;
 }
 .choice { position: relative; overflow: hidden; transition: transform .16s, opacity .16s, background .2s; touch-action: pan-y; }
@@ -1170,7 +1190,9 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
    v0.4 — Character portraits + cinematic dialogue framing
    ================================================================== */
 
-.story-art { flex: 0 0 40%; min-height: 210px; max-height: 380px; background-position: center 32%; }
+/* The picture gives up a little of its 40% so the speaker can be twice the
+   size it was without the answer or continue button moving off-screen. */
+.story-art { flex: 0 0 36%; min-height: 190px; max-height: 340px; background-position: center 32%; }
 
 /* While the answers are on screen the picture steps back to a band: the cards
    need the height far more than the art does. An answer that is only half
@@ -1192,11 +1214,19 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
 /* The line just read stays on screen, but it yields to the answers: it shrinks
    first and only then scrolls. Tap-to-advance is off on this page, so scrolling
    it cannot skip a line. */
-.story.choosing .dialogue { flex: 0 1 auto; min-height: 56px; max-height: 36vh; padding: 10px 14px 8px; overflow-y: auto; }
+/* The answers own this page, so the box shrinks to the face and one line, and
+   the line scrolls inside it. The face stays, because "who said this" is part
+   of reading the answer. */
+.story.choosing .dialogue { min-height: 0; max-height: 30vh; padding: 10px 14px 8px; }
+.story.choosing .dialogue-line { flex: 0 1 auto; max-height: 5.2em; }
 /* The name is enough here — the portrait costs a whole line of the text. */
-.story.choosing .speaker .portrait { display: none; }
-.story.choosing .speaker { min-height: 18px; }
-.dialogue.has-more { -webkit-mask-image: linear-gradient(180deg, #000 74%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(180deg, #000 74%, rgba(0,0,0,0) 100%); }
+/* On the answer page the face shrinks but does not disappear: the answers need
+   the room, and the name beside it still says who is talking. */
+.story.choosing .speaker { margin-top: 6px; padding-top: 6px; gap: 8px; font-size: .92rem; }
+.story.choosing .speaker .portrait { width: 34px; height: 34px; font-size: .8rem; border-width: 1px; }
+.story.choosing .speaker .role { display: none; }
+.story.choosing .dialogue-caret { display: none; }
+
 .story.choosing .choice { padding: 10px 12px; }
 .story.choosing .choice .label { line-height: 1.3; font-size: calc(1rem * var(--choice-fit, 1)); }
 .story.choosing .choice .hint { font-size: calc(.8rem * var(--choice-fit, 1)); }
@@ -1270,13 +1300,13 @@ body.lang-zh .dialogue-text { line-height: 1.75; }
   backdrop-filter: blur(3px);
 }
 
-/* Speaker portrait in the dialogue box */
-.speaker { gap: 10px; }
+/* Speaker portrait in the dialogue box — the face is the label.
+   Big enough to name the speaker from arm's length on a phone. */
 .speaker .portrait {
-  width: 36px; height: 36px; font-size: .9rem;
-  background-size: cover; background-position: center 20%;
-  border: 1px solid rgba(255,240,205,.75);
-  box-shadow: 0 0 0 2px rgba(6,12,17,.7), 0 3px 12px rgba(0,0,0,.5);
+  width: clamp(62px, 20vw, 82px); height: clamp(62px, 20vw, 82px); font-size: 1.5rem;
+  background-size: cover; background-position: center 18%;
+  border: 2px solid rgba(255,240,205,.78);
+  box-shadow: 0 0 0 3px rgba(6,12,17,.75), 0 8px 22px rgba(0,0,0,.55), 0 0 26px rgba(231,183,91,.16);
 }
 .speaker .portrait.has-art { color: transparent; }
 /* The narrator is a voice, not a character: a seal medallion, never a face,
