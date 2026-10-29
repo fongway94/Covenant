@@ -151,7 +151,7 @@ export const MOMENTS = {
       "zacchaeus", 0.50, 0.62,
       B("Count out four coins", "数出四倍的钱"),
       B("Tap each coin as he counts. Fourfold — more than the Law required.", "他数一枚，你点一下。四倍——远远超过律法的要求。"),
-      B("Nobody asked him to. That is what grace does when it is welcomed.", "没有人这样要求他。恩典进到人心里，人就会这样回应。"), "stay",
+      B("Nobody asked him to. That is what grace does when it is welcomed.", "没有人这样要求他。可恩典一进到心里，人自己就会想这样做。"), "stay",
       { spawn: [0.18, 0.58, 0.82, 0.84] })
   ]
 };

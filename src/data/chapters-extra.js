@@ -427,7 +427,7 @@ export const EXTRA_CHAPTERS = [
       q: ["What would “restoring fourfold” look like in your own life?", "在你自己的生命里，「四倍偿还」会是什么样子？"],
       options: [
         { t: ["Returning something I took wrongly", "归还我不该拿的东西"], stat: { courage: 2 }, insight: ["Zacchaeus did not just feel sorry, he counted it out. Luke 19:8", "撒该不只是觉得抱歉，他真把钱一笔一笔数了出来。路加福音 19:8"] },
-        { t: ["Giving more than is expected of me", "给出超过别人期望的"], stat: { compassion: 2 }, insight: ["Fourfold was beyond the Law. Grace makes people unreasonable in the best way. Luke 19:8", "四倍远超过律法的要求。恩典常常让人做出不合常理的事，而且做得漂漂亮亮。路加福音 19:8"] },
+        { t: ["Giving more than is expected of me", "给出超过别人期望的"], stat: { compassion: 2 }, insight: ["Fourfold was beyond the Law. Grace makes people unreasonable in the best way. Luke 19:8", "四倍，远远超过律法的要求。没有人要求他这样做；恩典常常让人做出不合常理的事。路加福音 19:8"] },
         { t: ["Welcoming someone nobody else welcomes", "接纳一个没有人接纳的人"], stat: { faith: 2 }, insight: ["Jesus ate in the wrong house on purpose. Who is at your table? Luke 19:5", "耶稣故意进错了家门。今天谁在你的桌旁？路加福音 19:5"] }
       ]
     }
