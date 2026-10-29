@@ -1,0 +1,24 @@
+Covenant — Chinese copy review loop
+
+FILES
+  zh-story.tsv   657 lines : every story line, briefing, reflection, ending
+  zh-ui.tsv      320 lines : every interface string
+
+FORMAT
+  ID <TAB> SPEAKER <TAB> ENGLISH ORIGINAL <TAB> CHINESE
+  Do not touch column 1 (ID) or column 3 (English). Rewrite column 4 only.
+  Delete the lines you are happy with, or leave them unchanged — both are fine.
+
+WHAT TO ASK FOR
+  The standard the player set, in their words:
+    "不只是一个感觉而已，是要付上代价的"
+  Full sentences that explain themselves. No compressed aphorisms, no abstract
+  nouns doing a verb's work, no literal renderings of English metaphor.
+
+HOW TO RETURN IT
+  Send back only the rows you changed. Then:
+    node tools/zh-review.js apply <file.tsv>
+  The tool finds the old string in the source, swaps in the new one, and refuses
+  any line whose old text is not unique — nothing else in the repo is touched.
+  Then run the lints:
+    npm run check:copy && npm run check:i18n && npm run smoke

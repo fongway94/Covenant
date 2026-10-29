@@ -1,0 +1,658 @@
+ID	SPEAKER	ENGLISH	CHINESE (rewrite this column, keep the ID)
+ch.elah.title		The Valley of Elah	以拉谷
+ch.elah.subtitle		David & Goliath	大卫与歌利亚
+ch.elah.intro		A shepherd boy walks into a valley where an entire army has been silent for forty days.	一个牧童走进山谷，而整支军队已经在这里沉默了四十天。
+ch.elah.brief.place		c. 1020 BC, in the Valley of Elah. The Israelite army and the Philistine army are camped on two ridges with a valley between them, and neither side has moved for forty days.	约公元前 1020 年，以拉谷。以色列和非利士两支军队隔着山谷扎营，四十天来谁也没有动手。
+ch.elah.brief.who		King Saul commands Israel. The Philistines have a champion named Goliath — close to three metres tall, in bronze scale armour, with a spear shaft like a weaver’s beam. Nobody in Israel will go out to him.	以色列这边由扫罗王率领；非利士那边有一位名叫歌利亚的巨人，身高近三米，全身铜甲，枪杆粗得像织布的机轴，天天下来叫阵。以色列没有一个人敢出去。
+ch.elah.brief.stake		Both sides agreed to a deal: one fighter each, and the losing nation becomes servants. You are in the camp as a witness. You cannot change the ending — only what you do with the forty days.	两边讲好了：各派一人单挑，输的那一国举国做奴仆。你是随军的一个见证者。结局你改不了，但在四十天里你要做什么、成为什么样的人，由你决定。
+ch.elah.scroll.note		David refuses Saul’s armour, takes five smooth stones from the brook, and faces Goliath with a sling. The point of the story is not that a small person can be brave — it is that the battle belongs to the LORD.	大卫脱下扫罗借给他的盔甲，从溪里捡了五块光滑的石子，用甩石的机弦迎上去。这个故事要说的不是「小人物也能赢」，而是这场仗本来就属于耶和华。
+ch.elah.ending.text		You did not lift a stone. You learned where to look.	石子不是你甩出去的。你真正学到的，是眼睛该往哪儿看。
+ch.elah.ending.takeaway		David’s courage came before his confidence: he remembered what God had already done with the lion and the bear. Faith grows by remembering.	大卫的勇气不是天生的。他先是想起神怎样救他脱离狮子和熊，然后才敢走向那个巨人。信心就是在回忆里一点点长出来的。
+ch.elah.reflection.q		Think of one “giant” in your life right now. What is the first step of faith for you?	你生命里现在有一个什么样的「巨人」？信心的第一步，对你来说会是什么？
+ch.elah.reflection.0.t		Remember what God has already brought me through	先回想神已经带我走过的路
+ch.elah.reflection.0.insight		That is exactly where David started — not with the giant, but with the lion and the bear behind him. 1 Samuel 17:37	大卫就是这样开始的——不是从巨人开始，而是从身后的狮子和熊开始。撒母耳记上 17:37
+ch.elah.reflection.1.t		Tell someone, so I am not facing it alone	找一个人说出口，不要一个人扛
+ch.elah.reflection.1.insight		Wise. Even David asked questions of the whole line before he stepped forward. 1 Samuel 17:26	这是智慧。大卫出阵以前，也先跟阵上的人说过话。撒母耳记上 17:26
+ch.elah.reflection.2.t		Refuse armour that does not fit me and simply start	脱掉别人给我的盔甲，用自己的方式上
+ch.elah.reflection.2.insight		Saul’s armour was excellent — for Saul. Discernment is knowing which help is actually yours to carry. 1 Samuel 17:39	扫罗的盔甲很好——只是不合大卫。分辨力，就是分得清哪些帮助真的适合你。撒母耳记上 17:39
+ch.elah.start.L0		The scroll grows warm in your hands. The ink shifts, campfires flicker into being, and the smell of dust and sheep fills the air.	书卷在你手里发烫，墨迹像水一样流动。营火一盏一盏亮起来，尘土和羊群的气味扑到脸上。
+ch.elah.start.L1		A man in a travel-stained scribe’s robe steps beside you. This is Corin, your companion on the road.	有人在你身边站定，是个满身风尘、穿文士长袍的人。他叫柯林，此后一路与你同行。
+ch.elah.start.L2	elias	The Valley of Elah, around 1020 BC. Hear me clearly: we are witnesses. We cannot rewrite what God has written. But we can choose what kind of people we become while we watch.	「公元前一〇二〇年左右，以拉谷。」他低声说，「记住：我们只是见证人，改不了神写下的结局。能决定的，是我们自己成为怎样的人。」
+ch.elah.start.L3	soldier	Forty days. Forty mornings that giant has shouted at us, and not one man has answered.	山谷对面，非利士人的军队已经骂阵四十天。四十天里，以色列没有一个人出去应战。
+ch.elah.start.L4	goliath	Choose a man for yourselves, and let him come down to me! If he be able to fight with me and kill me, then will we be your servants — but if I prevail, then shall ye be our servants!	「你们拣选一个人，叫他下来到我这里来！他若能与我交战，把我杀了，我们就作你们的仆人。」
+ch.elah.start.L5		The whole line of Israel shifts backward. Corin looks at you. So — where will you stand?	喊声撞在两边山壁上。以色列全军往后退了一步。柯林看着你：你要站在哪里？
+ch.elah.start.L6	elias	Every choice here will leave a mark on you, not on the story. That is how the road works.	这里每一个选择，刻下来的都是你自己，不是故事。这条路的规矩就是这样。
+ch.elah.start.C0		Walk to the front line and face the shouting	走到最前线去，迎着那声音
+ch.elah.start.R0		Your legs do not feel brave, but they carry you forward. The giant’s voice fills your chest — and you stay.	你一点也不觉得自己勇敢，可你还是一步一步往前走。巨人的吼声压在胸口上——你没有退，就那样站着。
+ch.elah.start.C1		Ask Corin what the Law says about fear	问柯林，律法怎么说「不要怕」
+ch.elah.start.R1	elias	Corin opens his scroll. “The officers shall say to the people: let not your hearts faint, fear not — for the LORD your God goeth with you.” You had heard it before. Today you need it.	柯林展开书卷：「官长又要对百姓说：你们不要胆怯，不要惧怕他们，因为耶和华你们的神与你们同去。」
+ch.elah.start.C2		Find the soldiers who are shaking and sit with them	到发抖的士兵中间坐下
+ch.elah.start.R2		You sit in the dust beside a boy no older than sixteen. He stops trembling long enough to share his bread. Courage is easier when you are not alone.	你在一名不到十六岁的少年兵旁边坐下。他不再发抖，把自己仅有的饼掰了一半给你。
+ch.elah.start2.L0		A young man comes up the ridge from the baggage train, leading a donkey loaded with bread and cheese. He is small, sun-browned, and entirely unnoticed.	一个年轻人从辎重营那边爬上山脊，牵着一头驮着饼和奶酪的驴。他个子不高，晒得黝黑，没有谁多看他一眼。
+ch.elah.start2.L1	elias	That is David, the youngest son of Jesse. He has been sent to bring food to his brothers. He was not invited to the battle.	那是大卫，耶西最小的儿子。父亲派他来给几个哥哥送吃的——没有人叫他来打仗。
+ch.elah.start2.L2	goliath	I defy the armies of Israel this day! Give me a man, that we may fight together!	「我今日向以色列人的军队骂阵。你们叫一个人出来，与我交战吧！」
+ch.elah.start2.L3		David stops. His head tilts. He is listening — not to the size of the giant, but to what the giant is saying about God.	大卫停住脚步，侧过头去听。他听的不是那巨人有多壮，而是他在怎样谈论神。
+ch.elah.start2.C0		Tell David the king has offered a great reward	告诉大卫，王悬了重赏
+ch.elah.start2.R0	david	David nods, but you can tell the reward is not what has caught him. He keeps looking at the giant.	大卫点点头，可你看得出来，让他动心的不是赏钱。他的眼睛始终没离开那巨人。
+ch.elah.start2.C1		Warn him that the whole army is afraid	提醒他全军都在害怕
+ch.elah.start2.R1	david	You tell him plainly. David looks down the line of frightened men. “I see,” he says. He does not step back.	你照实说了。大卫望了望那排惊惶的人：「我看见了。」他没有往后退。
+ch.elah.start2.C2		Ask him about the lion and the bear	问起狮子和熊的事
+ch.elah.start2.R2	david	His whole face changes. “The LORD that delivered me out of the paw of the lion and out of the paw of the bear — he will deliver me out of the hand of this Philistine.”	他整张脸都亮了：「耶和华救我脱离狮子和熊的爪，也必救我脱离这非利士人的手。」
+ch.elah.arrival.L0		Word travels fast through a bored army. Within the hour David is standing in the tent of King Saul.	营里的消息传得比人快。不到一个时辰，大卫已经站在扫罗的帐棚里。
+ch.elah.arrival.L1	saul	Thou art not able to go against this Philistine to fight with him: for thou art but a youth, and he a man of war from his youth.	「你不能去与那非利士人交战，因为你年纪太轻，他从小就作战士。」
+ch.elah.arrival.L2	david	Thy servant kept his father’s sheep, and there came a lion and a bear, and took a lamb out of the flock. Thy servant slew both the lion and the bear. This uncircumcised Philistine shall be as one of them, seeing he hath defied the armies of the living God.	「你仆人为父亲放羊。有时来了狮子，有时来了熊，从羊群里叼走一只羊羔，你仆人就把狮子和熊都打死了。」
+ch.elah.arrival.L3	elias	Saul has armour. It is the best in Israel. Watch what happens next.	扫罗把自己的盔甲给大卫穿上——那是全以色列最好的一套。
+ch.elah.arrival.C0		Offer David your own walking staff	把你的手杖递给大卫
+ch.elah.arrival.R0	david	He thanks you, smiling, and hands it gently back. “I have not proved these,” he says of the king’s armour. He takes his staff, his bag, and nothing else.	他笑着道谢，又轻轻还回你手里：「这些我从来没试过。」说完转身往溪边去了。
+ch.elah.arrival.C1		Urge him to take the king’s sword anyway	劝他还是带上王的刀
+ch.elah.arrival.R1	david	He fastens it, takes two steps, and nearly falls. “I cannot go with these.” He unbuckles it. Corin raises an eyebrow at you.	他佩上刀，走了两步，差点绊倒：「穿这些我走不了路。」于是把刀解下来。柯林忍住笑，什么也没说。
+ch.elah.arrival.C2		Say nothing. Watch what he does.	什么也不说，看他怎么做
+ch.elah.arrival.R2		A borrowed identity never fits in the valley. David walks out in a shepherd’s tunic.	借来的身份，穿在身上总不合身。大卫穿着牧人的外衣走了出去。
+ch.elah.brook.L0		The brook runs shallow and cold through the valley floor. David kneels and turns over stones until he finds five that sit perfectly in his palm.	溪水又浅又凉，从谷底穿过。大卫跪下去，在石缝里翻找，直到摸到五块正好握在手心的石子。
+ch.elah.brook.L1	elias	Five smooth stones. People love to guess what the five mean — the five books of the Law, five wounds, five something. The text simply says five smooth stones. Sometimes the honest reading is the better one.	五块光滑的石子。有人爱猜「五」是什么意思——五卷律法、五处伤口。经文只说：五块光滑的石子。
+ch.elah.brook.L2	david	He is a man, and I am a man. But he comes with a sword and a spear and a shield — and I come in the name of the LORD of hosts.	「他是人，我也是人；他靠的是刀、枪、盾牌，我靠的是万军之耶和华的名。」
+ch.elah.brook.L3		David looks at you. “Will you stand with me until the line?”	大卫回头看你：「你愿意陪我走到阵前吗？」
+ch.elah.brook.C0		Kneel and pray with him before he runs	跪下和他一起祷告
+ch.elah.brook.R0		The two of you bow beside the water. No thunder, no sign — just a quiet certainty that you are not the centre of this story.	你们一起在水边伏下身。没有雷声，也没有异象，你心里却安静地知道一件事：你不是这个故事的中心。
+ch.elah.brook.C1		Pick up a stone of your own and hold it tight	自己也捡一块石头，握紧
+ch.elah.brook.R1		The stone is ordinary. That is the strange part. God has always liked using ordinary things.	那块石子普通得有点可笑。可妙就妙在这里——神一向喜欢用普通的东西。
+ch.elah.brook.C2		Step back and let him go alone	退一步，让他自己去
+ch.elah.brook.R2		You watch him walk down into the valley. Some roads can only be walked by one person at a time.	你看着他走下山谷。有些路，只能一个人走。
+ch.elah.face.L0	goliath	Am I a dog, that thou comest to me with staves? Come to me, and I will give thy flesh unto the fowls of the air and to the beasts of the field!	「我岂是狗呢，你竟拿杖来攻击我？来吧，我要把你的肉给空中的飞鸟、田野的走兽吃！」
+ch.elah.face.L1	david	Thou comest to me with a sword, and with a spear, and with a shield: but I come to thee in the name of the LORD of hosts, the God of the armies of Israel, whom thou hast defied.	「你来攻击我，是靠刀枪和盾牌；我来攻击你，是靠万军之耶和华的名。」
+ch.elah.face.L2		David runs toward the line. He reaches into his bag. The whole valley seems to hold its breath — and Corin grips your sleeve.	大卫朝阵前跑去，手伸进袋子。整座山谷好像一下子屏住了呼吸——柯林抓紧你的袖子。
+ch.elah.face.L3	elias	Do not look away. Whatever you do, do not look away.	「别移开眼睛。不管发生什么，都别移开。」
+ch.elah.end.L0		The stone sinks into the giant’s forehead. Goliath falls face down into the dust of the valley he had mocked for forty days.	石子陷进巨人的额头。歌利亚脸朝下，扑倒在他骂了四十天的那片尘土里。
+ch.elah.end.L1		The Philistine line breaks. The army of Israel finds its voice all at once.	非利士人的阵线一下子散了，以色列全军在同一刻找回了声音。
+ch.elah.end.L2	elias	And there it is. Not a story about a boy beating a giant. A story about a God who keeps His promises — and a boy who knew Whose battle it was.	这从来不是「小男孩打败大巨人」的故事，而是一位守约的神，和一个知道这场仗不属于自己的少年。
+ch.elah.end.L3	elias	Come. The road goes on, and the scroll is already turning.	书卷自己翻过一页。前面的路还在。
+ch.lions.title		The Lions’ Den	狮子坑
+ch.lions.subtitle		Daniel in Babylon	巴比伦的但以理
+ch.lions.intro		A decree is signed that makes prayer illegal. An old man opens his window anyway.	一纸法令把祷告定成死罪。一位年近八十的老人，照旧把窗开向耶路撒冷。
+ch.lions.brief.place		c. 539 BC, in Babylon. The empire has just changed hands, and the new ruler, Darius the Mede, is reorganising the government.	约公元前 539 年，巴比伦。帝国刚刚易主，新王大利乌正在重整朝政。
+ch.lions.brief.who		Daniel was carried off from Jerusalem as a teenager. He is nearly eighty now, and the king has just put him in charge of the whole province. The other officials hate him for it.	但以理少年时被掳离开耶路撒冷，如今已年近八十。王刚任命他总管全国，其他的官员因此恨他。
+ch.lions.brief.stake		They can find no corruption in him, so they attack his prayer. A law is drafted: for thirty days nobody may pray to anyone except the king. Break it and you go into a pit of lions — and a Persian law cannot be revoked, not even by the king who signed it.	他们查不出他贪污受贿，就把矛头对准他的祷告：三十天内，除了王，谁也不许向神或向人求什么。违者扔进狮子坑。波斯的律法一旦颁布就不能收回，连王自己也不行。
+ch.lions.scroll.note		Daniel is roughly eighty years old here. The decree was engineered by jealous officials who knew the one thing Daniel would not compromise: prayer, three times a day, facing Jerusalem.	这时但以理已经年近八十。这道禁令是嫉妒他的官员设的局——他们知道但以理唯一不肯让步的，就是一天三次、面向耶路撒冷的祷告。
+ch.lions.ending.text		Integrity is what you do when the law changes and God has not.	正直不是出了事才拿出来的东西，而是出事以前就一点点养成的习惯。
+ch.lions.ending.takeaway		Daniel did not become faithful in the lions’ den. He became faithful over decades of ordinary prayer — so that when the crisis came, there was nothing to decide.	但以理不是在狮子坑里才变得忠心的。他是在几十年平淡的祷告里，一天一天变得忠心——所以真的起风浪时，他根本不用临场做决定。
+ch.lions.reflection.q		When doing the right thing costs you, what actually helps you keep going?	当做对的事要付出代价，真正撑住你的是什么？
+ch.lions.reflection.0.t		A habit I already have, so I do not have to decide in the moment	一个早就养成的习惯，让我不用临时硬撑
+ch.lions.reflection.0.insight		That is Daniel’s gift to us. Three times a day, long before the decree. Daniel 6:10	这正是但以理留给我们的。禁令还没来，他已经一天祷告三次。但以理书 6:10
+ch.lions.reflection.1.t		People who will wait with me through the night	愿意陪我熬过这一夜的人
+ch.lions.reflection.1.insight		The story quietly mentions the king fasting all night. Even desperate company matters. Daniel 6:18	经文里提到，王那一夜禁食、睡不着。连帮不上忙的陪伴也算数。但以理书 6:18
+ch.lions.reflection.2.t		Remembering God can deliver me, whether or not He does	相信神能救我——也接受祂不一定照我的方式救
+ch.lions.reflection.2.insight		Shadrach, Meshach and Abednego said the same thing a generation earlier. Daniel 3:17–18	上一代的三个年轻人也说过同样的话。但以理书 3:17–18
+ch.lions.start.L0		The scroll turns. Cedar, hot brick, and the noise of a vast city. You are standing in the shadow of a palace in Babylon.	书卷翻动。香柏木、烤热的砖、一座大城的喧闹。你站在巴比伦王宫的影子里。
+ch.lions.start.L1	elias	Daniel is an old man now — near eighty. He has outlived kings and empires. King Darius is about to set him over the whole realm.	但以理已经老了，将近八十。他熬过了几个王朝，比许多君王都活得久。大利乌王刚刚提他总管全国。
+ch.lions.start.L2	satrap	We shall not find any occasion against this Daniel, except we find it against him concerning the law of his God.	「我们要找这但以理的把柄，除非在他神的律法里找。」说话的是几个同僚，声音压得很低。
+ch.lions.start.L3		The officials drift toward the throne room with a parchment in their hands. Corin’s jaw tightens.	他们捧着一份写好的文书，往王座大殿走去。柯林的下巴绷紧了。
+ch.lions.start.L4	elias	They are going to make faithfulness illegal. What do you do with what you just heard?	他们要做的，是把忠心变成犯法。你听见了——现在你要怎么做？
+ch.lions.start.C0		Read the decree as it is posted in the gate	到城门口去，把那道禁令读一遍
+ch.lions.start.R0		You memorise the wording: thirty days, no petition to any god or man except the king. The penalty is the lions’ den. The trap is aimed at one man.	你把条文记在心里：三十天之内，除了王，不许向任何神或人求什么；违者扔进狮子坑。这道法令，从头到尾只为了一个人。
+ch.lions.start.C1		Warn Daniel that the officials are watching him	去提醒但以理：有人正盯着他
+ch.lions.start.R1	daniel	He thanks you with real warmth. Then he asks whether you would like to pray — it is nearly the ninth hour.	他很诚恳地向你道谢，然后问你愿不愿意一起祷告——快到申初了。
+ch.lions.start.C2		Ask Corin why they hate a man who has done no wrong	问柯林，他们为什么恨一个没做错事的人
+ch.lions.start.R2	elias	“Because a blameless life is a mirror,” Corin says. “And some people cannot bear what they see in it.”	「因为无可指摘的人像一面镜子，」柯林说，「有些人受不了自己在镜子里看见的东西。」
+ch.lions.decree.L0		The ink is barely dry. The law of the Medes and Persians cannot be altered — not even by the king who signed it.	墨迹还没干。玛代和波斯的律例一旦颁布就不可更改——连签字的王也不能改。
+ch.lions.decree.L1	darius	It is signed. Let it be done.	「已经盖印了，就这样办吧。」
+ch.lions.decree.L2	elias	Daniel knows. He heard the herald in the street. Watch what he does with that knowledge.	但以理知道这事。他在街上听过传令官的宣告。看看他拿这个消息做什么。
+ch.lions.decree.L3		An official passes close to you, smiling. “Thirty days,” he says. “Surely any reasonable man can wait thirty days.”	一名官员笑着从你身边走过：「不过三十天。懂道理的人都等得起。」
+ch.lions.decree.C0		Tell Daniel to pray privately — just for thirty days	劝但以理先躲起来祷告，就这三十天
+ch.lions.decree.R0	daniel	Daniel listens, then shakes his head, not unkindly. “If I hide it now, I have already agreed that the decree is true.” He reaches for the window latch.	但以理听完，温和地摇摇头：「我要是现在躲起来，就等于承认那道禁令是对的。」说完，他伸手去推开窗。
+ch.lions.decree.C1		Ask whether the king can be persuaded to change the law	去问王能不能收回这道法令
+ch.lions.decree.R1	elias	Corin sighs. “Not this law. That is the snare. The officials made mercy impossible, and they know the king loves him.”	柯林叹了口气：「这条路走不通。这就是圈套——他们让王没有退路，而他们知道王喜欢但以理。」
+ch.lions.decree.C2		Say nothing. Follow him at the ninth hour.	什么也不说，到申初跟着他上楼
+ch.lions.decree.R2		You follow him to the upper room, and you are not the only one watching. Two officials are already in the courtyard below.	你跟着他上楼。你不是唯一在看着的人：院子里已经站着两名官员。
+ch.lions.upstairs.L0		The upper room is plain. A mat, a scroll, a window open toward Jerusalem — hundreds of miles away, and yet the direction matters.	楼上很简朴：一张席子、一卷书、一扇朝耶路撒冷开的窗。隔着几百里路，方向仍然要紧。
+ch.lions.upstairs.L1		Daniel kneels. His knees are not what they were. He gives thanks, exactly as he had done before.	但以理跪下去。膝盖早就吃不消了，他还是照样献上感谢。
+ch.lions.upstairs.L2	elias	Three times a day. Not as protest. Not as performance. Habit formed over a lifetime is what holds a person up when the law changes overnight.	一天三次。这不是抗议，也不是表演，而是一辈子养成的习惯——所以法律一夜之间变了，他也没有跟着塌下来。
+ch.lions.upstairs.L3	daniel	You may stand at the window if you are afraid of being seen. I will not be.	「你要是怕被人看见，可以站在窗边望风。我不怕。」
+ch.lions.upstairs.C0		Kneel beside him and pray	跪在他旁边，一起祷告
+ch.lions.upstairs.R0		The two of you pray while sandals scramble in the courtyard below. The prayer is short. It is enough.	你们祷告的时候，院子里响起急促的脚步声。祷告很短，但已经够了。
+ch.lions.upstairs.C1		Stand at the window as a lookout	站到窗边替他望风
+ch.lions.upstairs.R1		You see the officials exchange a look and hurry off toward the throne room. There is no time left to hide.	你看见那几名官员交换了一个眼神，匆匆往王宫去。已经来不及躲了。
+ch.lions.upstairs.C2		Ask him how he can give thanks right now	问他：这种时候怎么还谢得出来
+ch.lions.upstairs.R2	daniel	“Because thanksgiving is not a report on my circumstances,” he says. “It is a report on my God.”	「因为感谢不是汇报我的处境，」他说，「是汇报我的神。」
+ch.lions.accused.L0	satrap	That Daniel, which is of the children of the captivity of Judah, regardeth not thee, O king, nor the decree that thou hast signed, but maketh his petition three times a day.	「那被掳来的犹大人但以理，不理你，也不遵守你盖了印的禁令，竟然一天三次祷告。」
+ch.lions.accused.L1		Darius is furious — at himself. He works until sunset to find a way to undo his own law, and finds none.	大利乌王气极了——其实是气自己。他一心想救但以理，一直想到日落，还是想不出办法。
+ch.lions.accused.L2	darius	Thy God whom thou servest continually, he will deliver thee.	「你所常事奉的神，祂必救你。」
+ch.lions.accused.L3		A stone is rolled over the mouth of the den. The king seals it with his own signet, and the nobles seal it with theirs.	一块石头滚过来，封住坑口。王用自己的印封了，贵族们又用他们的印封了。
+ch.lions.accused.L4	elias	He is gone. And we are still here. That is often the hardest part of the story — being the ones left outside the stone.	坑里已经没有声音了，我们还在外面。有时候最难的，不是替他进去，而是只能待在外面等。
+ch.lions.accused.C0		Go to the king and beg him to break his own law	去求王破例改自己的律法
+ch.lions.accused.R0	darius	The king receives you with a tired face. He has already tried everything. He asks you to stay, and to wait until morning.	王疲惫地见了你。能试的办法他都试过了。他请你留下来，等到天亮。
+ch.lions.accused.C1		Stay at the mouth of the den all night	在坑口守一整夜
+ch.lions.accused.R1		You sit with your back against the sealed stone. Cold seeps through your cloak. You do not sleep. Neither does the king, you will learn.	你背靠着那块封住的石头坐下。寒气透过斗篷渗进来。你没有睡——后来你才知道，王也没有睡。
+ch.lions.accused.C2		Gather the household servants to pray until dawn	把家里的人叫来，一起祷告到天亮
+ch.lions.accused.R2		Twelve of you sit in a circle on the floor. Someone begins a psalm; others join. The night does not get shorter, but it gets lighter.	十几个人在地板上围坐成一圈。有人起了一首诗的调子，别人跟着唱。那一夜并没有变短，只是没那么难熬了。
+ch.lions.dawn.L0		First light. The king comes in haste to the den, and his voice cracks before he reaches the stone.	天刚亮，王就赶到坑边。人还没走到石头前，声音已经哑了。
+ch.lions.dawn.L1	darius	O Daniel, servant of the living God, is thy God, whom thou servest continually, able to deliver thee from the lions?	「永生神的仆人但以理啊，你所常事奉的神能救你脱离狮子吗？」
+ch.lions.dawn.L2		A pause. Then, from inside the earth, a voice — calm, amused almost, entirely alive.	一阵沉默。然后地底下传来一个声音——平稳，甚至带点笑意，活得好好的。
+ch.lions.dawn.C0		Hold your breath and listen	屏住呼吸，侧耳去听
+ch.lions.dawn.R0	elias	Sometimes the faithful thing is simply to stop talking and hear what God has done.	有时候，最要紧的忠心就是先闭上嘴，听听神已经做成了什么。
+ch.lions.dawn.C1		Fall to your knees on the cold stone	跪在冰冷的石头上
+ch.lions.dawn.R1		You are not the only one. Half the courtyard is on its knees before Daniel finishes speaking.	跪下的不止你一个。但以理还没答完，半个院子的人都已经伏在地上。
+ch.lions.dawn.C2		Look for the angel Corin told you about	去找柯林说的那位使者
+ch.lions.dawn.R2		You see nothing but a shaft of gold light from the grate above. That is more than enough.	你什么也没看见，只有一道光从上面的栅栏漏下来。那已经够了。
+ch.lions.end.L0	daniel	O king, live for ever. My God hath sent his angel, and hath shut the lions’ mouths, that they have not hurt me: forasmuch as before him innocency was found in me; and also before thee, O king, have I done no hurt.	「愿王万岁！我的神差遣使者，封住狮子的口，叫狮子不伤我，因我在神面前无辜。」
+ch.lions.end.L1		Daniel is lifted out. No wound on him — because he had believed in his God.	但以理被拉上来，身上没有一点伤——因为他信靠他的神。
+ch.lions.end.L2		The king writes to every nation under heaven: “He is the living God, and stedfast for ever, and his kingdom that which shall not be destroyed.”	王又向天下各国颁布谕旨：「祂是永生神，永远长存；祂的国永不败坏。」
+ch.lions.end.L3	elias	He was not delivered from the decree. He was delivered through it. There is a difference, and you will need to know it.	神没有让但以理绕过这道法令，而是让他走过了这道法令。这两件事不一样，差别值得你慢慢想。
+ch.jericho.title		The Road to Jericho	耶利哥路上
+ch.jericho.subtitle		The Good Samaritan	好撒玛利亚人
+ch.jericho.intro		A lawyer asks Jesus a question. Jesus answers with a story — and you wake up inside it.	一个人被强盗打个半死，躺在路边。三个人走过，只有一个停下来。
+ch.jericho.brief.place		c. AD 30, on the road from Jerusalem down to Jericho — seventeen miles of limestone cliffs, sharp bends, and no soldiers.	约公元 30 年，从耶路撒冷下耶利哥的那条路——十七英里的石灰岩山道，弯多，没有兵丁巡守。
+ch.jericho.brief.who		A lawyer has just tested a teacher named Jesus with a question: “Who is my neighbour?” Jesus answers with a story, and you find yourself standing inside it.	一位律法师刚刚用问题试探耶稣：「谁是我的邻舍？」耶稣没有正面回答，而是讲了一个故事，而你此刻就站在故事里面。
+ch.jericho.brief.stake		A traveller lies beaten in the ditch. A priest and a temple assistant have already seen him and crossed the road. Someone still has to stop — and in this story the one who stops is the man nobody expects.	一个旅人被打个半死，躺在沟边。祭司和圣殿的助手已经先后从另一边走了过去。总得有人停下来——而在这个故事里，停下来的正是最出人意料的那个人。
+ch.jericho.scroll.note		A lawyer asks “who is my neighbour?” wanting to limit the obligation. Jesus tells a parable in which the religious professionals pass by and a despised Samaritan stops — then turns the question around: which of the three was a neighbour?	律法师问「谁是我的邻舍」，其实是想给责任划一条边界。耶稣没跟他辩，只讲了一个故事：该懂的人绕道走了，被看不起的撒玛利亚人却停下——然后反问：这三个人里，谁是那落在强盗手中之人的邻舍？
+ch.jericho.ending.text		Mercy is a verb with a price tag.	怜悯不只是一个感觉而已，是要付上代价的。
+ch.jericho.ending.takeaway		The Samaritan’s compassion cost him oil, wine, money, time, reputation, and his own donkey. Love that costs nothing is usually just a feeling.	撒玛利亚人为这份怜悯付上了代价：油、酒、银子、时间、名声，还有他自己那头驴。不肯付代价的爱，多半只是一时心软。
+ch.jericho.reflection.q		Who is the neighbour you find it hardest to love — and what would one small act look like?	谁是你现在最难去爱的邻舍？一个很小的动作，可以是什么？
+ch.jericho.reflection.0.t		Someone whose views I cannot stand	一个我完全没法认同的人
+ch.jericho.reflection.0.insight		The Samaritan and the Jew disagreed about almost everything sacred. The bandage came first. Luke 10:33–34	撒玛利亚人和犹太人在几乎每件神圣的事上都不对付。可他还是先缠上了绷带。路加福音 10:33–34
+ch.jericho.reflection.1.t		Someone I can help, but it will genuinely cost me	一个我帮得了、但真的要付出代价的人
+ch.jericho.reflection.1.insight		Two denarii was real money. Count the cost honestly — then give anyway. Luke 10:35	二两银子是实打实的工钱，差不多是两天的收入。先老实算算要付多少，然后还是照样给出去。路加福音 10:35
+ch.jericho.reflection.2.t		Someone I have walked past without really seeing	一个我天天经过、却从没真正看见的人
+ch.jericho.reflection.2.insight		The priest “saw him” and passed by. Seeing is not the same as noticing. Luke 10:31	祭司「看见他」，就从那边过去了。看见了，不等于放在心上。路加福音 10:31
+ch.jericho.start.L0		You are sitting in the dust outside a village, listening to a teacher. A lawyer stands to test Him.	你坐在村外的尘土里，听一位老师讲道。一名律法师站起来试探他。
+ch.jericho.start.L1	lawyer	Master, what shall I do to inherit eternal life? … And who is my neighbour?	「夫子，我该做什么才可以承受永生？……谁是我的邻舍呢？」
+ch.jericho.start.L2	elias	He is not asking for information. He is asking where the boundary is — who he is allowed to leave out.	他不是来求答案的。他想问的是：这条线划在哪儿，谁可以被划在外面。
+ch.jericho.start.L3	jesus	A certain man went down from Jerusalem to Jericho, and fell among thieves…	「有一个人从耶路撒冷下耶利哥去，落在强盗手中……」
+ch.jericho.start.L4		The road rises up around you: seventeen miles of switchbacks, limestone, and shadowed places perfect for an ambush. You are in the story now.	四周的路忽然立了起来：十七英里的急弯、石灰岩、正适合埋伏的阴影。你已经站在故事里了。
+ch.jericho.start.C0		Walk fast, before the sun gets high	趁着日头还低，快点走
+ch.jericho.start.R0		You make good time. That is the trouble with hurrying — you arrive at the bad part sooner.	你走得很快。麻烦也在这儿——你更早到了那段险路。
+ch.jericho.start.C1		Walk with a companion and keep your eyes open	结伴走，留意四周
+ch.jericho.start.R1		You notice the fresh blood before you notice the man. Your companion grips your arm.	你先看见新鲜的血迹，才看见那个人。同伴抓紧了你的手臂。
+ch.jericho.start.C2		Pray for safety on the road before you set out	出发前先为路上的平安祷告
+ch.jericho.start.R2		You ask God to make you useful, not just safe. It is a dangerous prayer, though you do not know it yet.	你求神让你成为一个有用的人，而不只是个安全的人。这祷告很危险，当时你还不知道。
+ch.jericho.wounded.L0		Halfway down, in a bend of the road where the rock walls close in, a man is lying in the dust.	走到半路，一处岩壁收紧的弯道里，有人躺在尘土中。
+ch.jericho.wounded.L1		The thieves have stripped him, beaten him, and left him half dead. His breathing is shallow. There is no one else in sight.	强盗剥去了他的衣裳，把他打个半死。他的呼吸很浅，四下里没有别人。
+ch.jericho.wounded.L2	elias	This is where the parable gets uncomfortable. Everyone who comes down this road has to decide something.	故事讲到这里，就不那么好听了。每一个从这条路走过的人，都得做个决定。
+ch.jericho.wounded.C0		Cross to the far side — it could be a trap	绕到另一边去——说不定是圈套
+ch.jericho.wounded.R0		You give him a wide berth. Your heart is still hammering when you reach the next bend. Being safe and being right are not the same thing.	你绕得很远。走到下一个弯时，心还在乱跳。安全是一回事，做对是另一回事，这两件事并不总在一起。
+ch.jericho.wounded.C1		Kneel and check if he is still breathing	跪下探一探他还有没有气
+ch.jericho.wounded.R1		He is alive. Barely. You tear a strip from your own cloak and press it against the worst wound. There is not much else you can do.	他还活着，勉强活着。你从自己的斗篷上撕下一条布，按住最深的伤口。你能做的也只有这些。
+ch.jericho.wounded.C2		Shout for help from the ridge above	朝山脊上喊人
+ch.jericho.wounded.R2		Your voice echoes off the limestone. Nobody answers — but two figures appear at the top of the road.	喊声在石灰岩之间撞来撞去。没有人回应——但那人的手指动了一下。他听见了。
+ch.jericho.help.L0		You are kneeling in the dust with blood on your hands when you hear sandals on the stone.	你在他身边蹲下来。他需要的不只是同情，还要油、酒、绷带，和一头能驮他的牲口。
+ch.jericho.help.L1		A priest comes down the road. He sees the man — clearly sees him — and passes by on the other side.	远处有脚步声。一个祭司从坡上下来，正往圣殿的方向去。
+ch.jericho.help.L2		Later, a Levite does exactly the same.	他看见了他。
+ch.jericho.help.L3	elias	Do not be too quick to despise them. They may have been afraid, or late, or certain that touching a corpse would make them unclean. Good reasons are always available.	然后他从另一边走了过去。接着是一名利未人，也一样绕开了。
+ch.jericho.help.C0		Shout after them to come back	追上去问那两个人为什么
+ch.jericho.help.R0		They do not turn around. Your voice cracks on the last word. The man at your feet does not notice.	他们都有理由：礼仪上的洁净、律法的规定、怕惹麻烦。理由从来不缺。而那个人还躺在尘土里。
+ch.jericho.help.C1		Stay with the wounded man and keep pressure on the wound	留下来，尽力先把伤口包好
+ch.jericho.help.R1		You stay. It is unglamorous and it takes a long time. Most mercy looks exactly like this.	你的手在抖，还是把布条系紧了。柯林在旁边轻声说：「记住这一刻，你正在做一件神圣的事。」
+ch.jericho.help.C2		Ask Corin why the holy men walked away	走到路中间，拦下下一个路人
+ch.jericho.help.R2	elias	“Because knowing the Law and loving your neighbour are not the same achievement,” he says quietly. “I have been both men.”	你拦下一个过路的人。他看看地上的人，又看看自己的行程，摇摇头走了。
+ch.jericho.passers.L0		On the road, a priest comes down, sees the body, and crosses to the far side. A Levite follows, does the same, and is gone.	第三个人骑着驴过来。他不是祭司，也不是利未人，是撒玛利亚人——本地的犹太人宁可绕路也不跟他说话的那种人。
+ch.jericho.passers.L1	elias	They had Scripture memorised. They were on their way to the temple. And the man in the ditch was still in the ditch.	他看见那人，就动了慈心。
+ch.jericho.passers.L2		Then a third traveller appears, leading a donkey — and from his dress, he is a Samaritan. The wounded man is a Jew. The two peoples have hated each other for centuries.	他下驴，把油和酒倒在他的伤处，包扎好，扶他骑上自己的牲口，送到客店里去。
+ch.jericho.passers.L3		He stops. He kneels. He pours oil and wine on the wounds.	路上的每一个决定，其实都只用了短短几秒。
+ch.jericho.passers.L4	elias	Watch closely. This is the part of the story people remember.	柯林轻声提醒：注意，耶稣没说这个人是「好人」，只说他「动了慈心」。
+ch.jericho.passers.C0		Go down and offer to carry his supplies	帮他一起把伤者抬上驴背
+ch.jericho.passers.R0	samaritan	He looks up, surprised, then nods as if this is the most natural thing in the world. “Hold the oil,” he says. “I will lift him.”	你们一起把人抬上去。他沉，路远。撒玛利亚人一路牵着驴走。
+ch.jericho.passers.C1		Ask him why he is helping an enemy	问他为什么肯为一个陌生人停下
+ch.jericho.passers.R1	elias	He does not answer. He simply keeps bandaging. Corin says: “The parable never tells us his reasons. I think that is deliberate — mercy that needs a reason can be argued away.”	他想了一会儿：「因为要是躺在那儿的是我，我也盼着有人肯停一下。」
+ch.jericho.passers.C2		Take the donkey’s lead rope and follow	先跑去客店把房间打点好
+ch.jericho.passers.R2		The donkey is calm. The man on its back is not. You lead them both down the long road toward an inn.	你先跑到客店。店主起初不太情愿——直到看见那枚银币。
+ch.jericho.why.L0		The Samaritan finishes the bandage and lifts the man onto his own donkey, standing him up carefully as if he were something fragile.	「你要尽心、尽性、尽力、尽意爱主你的神；又要爱邻舍如同自己。」
+ch.jericho.why.L1	elias	He has somewhere to be too. His journey is now slower, his beast is carrying a stranger, and his oil is nearly gone. Compassion always spends something.	律法师想证明自己问得有理，又追问：「谁是我的邻舍呢？」
+ch.jericho.why.L2	samaritan	Take care of him; and whatsoever thou spendest more, when I come again, I will repay thee.	耶稣把问题翻了个面：这三个人里，哪一个才是那落在强盗手中之人的邻舍？
+ch.jericho.inn.L0		At the inn the Samaritan sets two denarii on the counter — about two days’ wages — and makes the innkeeper promise to look after the man.	客店里，撒玛利亚人拿出二两银子——差不多是两天的工钱。
+ch.jericho.inn.L1	innkeeper	Two days’ wages? For a stranger?	「你且照应他，此外所费用的，我回来必还你。」
+ch.jericho.inn.L2	samaritan	When I come again, I will repay thee whatsoever thou spendest more.	这不是一时的感动，而是一份要继续下去的承诺。他还会回来。
+ch.jericho.inn.L3	elias	He does not just feel pity. He commits money, time, and his own return journey. That is what makes it love instead of a sentiment.	柯林说：怜悯很少是一时的心情，多半是一个决定，还要算上一笔代价。
+ch.jericho.inn.C0		Offer to sit with the man through the night	替他把欠店主的账一笔笔记清楚
+ch.jericho.inn.R0		You take the stool by the bed. Somewhere around midnight he opens his eyes. You are the first person he sees.	你一笔一笔记清楚。有些爱，就落在一张写得明明白白的账上。
+ch.jericho.inn.C1		Tell everyone in the inn what happened on the road	留下来守伤者一夜
+ch.jericho.inn.R1		By evening half the courtyard knows the story. The priest will not be pleased. The wounded man will not be alone again.	夜里他发起烧来。你用湿布替他擦额头，直到天快亮时他终于睡稳了。
+ch.jericho.inn.C2		Ask the innkeeper to keep the coins safe until he returns	问撒玛利亚人打算什么时候回来
+ch.jericho.inn.R2	innkeeper	The innkeeper wraps them carefully. “He said he would come back,” he mutters. “Most people do not.” He is still holding the coins when you leave.	「我不知道，」他说，「但我会回来。」你知道他说的是真的。
+ch.jericho.answer.L0		The road, the inn, the dust — all of it folds back into the scroll. You are sitting in the village again.	路、客店、尘土，全都折回书卷里。你又坐回了村外。
+ch.jericho.answer.L1	jesus	Which now of these three, thinkest thou, was neighbour unto him that fell among the thieves?	「你想，这三个人哪一个是落在强盗手中的邻舍呢？」
+ch.jericho.answer.L2	lawyer	He that shewed mercy on him.	「是怜悯他的。」
+ch.jericho.answer.L3	jesus	Go, and do thou likewise.	「你去照样行吧。」
+ch.jericho.answer.L4	elias	He never actually answers “who is my neighbour?” He replaces it with a better question: whose neighbour will you be?	「谁是我的邻舍」这个问题，他其实一直没有回答。他换了一个更好的问题：你愿意成为谁的邻舍？
+ch.jericho.answer.C0		Answer with the lawyer: the one who showed mercy	把这句话记在自己的书卷上
+ch.jericho.answer.R0		Jesus nods. You have understood the parable — which is the easy half.	你把这句话写下来。后来你会一次又一次翻回这一页。
+ch.jericho.answer.C1		Answer: the priest, because he knew the Law	问耶稣：如果我做不到呢
+ch.jericho.answer.R1	elias	Corin winces. Jesus gently repeats the story, more slowly this time. Being corrected by kindness is its own kind of mercy.	他看着你，语气里没有责备，只有邀请：「所以你缺的不是意志力，是身边那个具体的人。」
+ch.jericho.answer.C2		Stay silent and let the question sit with you	回头看一眼那个撒玛利亚人
+ch.jericho.answer.R2		You say nothing. But you notice that you can still feel the weight of the man on the donkey. That is a beginning.	他已经上路了，驴背上的位置空着——因为那个人还躺在客店里。
+ch.jericho.end.L0	elias	The lawyer wanted a boundary. Jesus gave him a mirror.	这个比喻里最危险的，不是强盗，而是那条允许你从旁边绕过去的路。
+ch.jericho.end.L1	elias	The neighbour in this story is not a category of person who deserves your help. It is a person you decide to become.	耶稣没有叫我们做英雄，他叫我们做邻舍。
+ch.jericho.end.L2		The scroll turns. The smell of the road lingers on your clothes.	书卷翻页了，可那条耶利哥路还在你脚下。
+ch.storm.title		Peace, Be Still	住了吧，静了吧
+ch.storm.subtitle		The Storm on the Lake	湖上的风浪
+ch.storm.intro		A boat, a sudden squall, and a Teacher asleep on a cushion in the stern.	船在进水，耶稣却在船尾睡着了。
+ch.storm.brief.place		c. AD 30, evening on the Sea of Galilee — a lake sunk in a bowl of hills, where cold air pours down the slopes and can lift the water into walls within minutes.	约公元 30 年，傍晚的加利利海。湖被群山围在中间，冷风顺着山坡灌下来，几分钟就能把水面堆成墙。
+ch.storm.brief.who		Jesus has been teaching from a boat all day. Several of his followers are professional fishermen who have worked this lake their whole lives. He has just said, “Let us pass over unto the other side.”	耶稣在船上讲了一整天。他的门徒里有几个是职业渔夫，在这片湖上讨了半辈子生活。他刚刚说：「我们渡到那边去吧。」
+ch.storm.brief.stake		You are in the boat. When the squall hits, the question stops being about the weather and becomes about the man asleep on the cushion in the stern.	你也在船上。风浪一起来，问题就不再是天气，而是船尾那个枕着枕头睡着的人到底是谁。
+ch.storm.scroll.note		The Sea of Galilee sits in a basin; cold air funnels down from the hills and turns a calm evening into a dangerous squall in minutes. Several of the disciples were experienced fishermen — and they were terrified.	门徒里好几个是职业渔夫，见过加利利海的风暴。让他们害怕的不是一般的浪，而是那种一下子就把船灌满的狂风。
+ch.storm.ending.text		Peace is not the absence of the storm. It is who is in the boat.	他没有应许门徒一生都不遇见风浪。他只是选择和门徒一起上了船。
+ch.storm.ending.takeaway		Jesus asked “why are you so fearful?” while they were still in danger. Faith is not pretending the waves are small; it is knowing the One who made them is aboard.	风浪来的时候，他就在船尾——他不是不在，只是睡着了。这两件事不一样，可人在凌晨三点很难分得清。
+ch.storm.reflection.q		What storm are you carrying right now — and where do you keep looking?	此刻你的「船」里正在灌进什么？你最需要听见哪一句？
+ch.storm.reflection.0.t		The waves — I need to stop staring at them	「住了吧！静了吧！」——我需要平安
+ch.storm.reflection.0.insight		The disciples were experienced fishermen. Their fear was reasonable. Faith is not the denial of facts; it is a larger fact. Mark 4:38	他斥责的是风，不是门徒。你的害怕不是他要对付的敌人。马可福音 4:39
+ch.storm.reflection.1.t		The next small thing I can actually do	「为什么胆怯？」——我需要勇气
+ch.storm.reflection.1.insight		There is no shame in holding the tiller and bailing while you pray. Psalm 107:29–30	他先平静了海，然后才问这句话。恩典常常先走一步。马可福音 4:40
+ch.storm.reflection.2.t		Other people in the boat with me	「我们渡到那边去吧」——我需要继续往前走
+ch.storm.reflection.2.insight		They were all in it together. Who is in your boat, and how are they doing? Mark 4:36	这趟船本来就是他提出来的。风浪没有让他的计划落空。马可福音 4:35
+ch.storm.start.L0		The scroll smells of fish and wet rope. It is evening on the western shore of the Sea of Galilee, and a crowd has only just gone home.	傍晚，加利利海边。你刚听完一整天用比喻讲的道，人群还散在岸上。
+ch.storm.start.L1	jesus	Let us pass over unto the other side.	「我们渡到那边去吧。」
+ch.storm.start.L2	elias	He has been teaching all day. Watch how tired He is. That matters in a few minutes.	柯林帮着把最后一篮东西搬上船，低声说：「记住这句话。风浪是在他们顺服之后才来的，不是之前。」
+ch.storm.start.L3		The disciples begin loading a boat. There are other little ships going with them.	船离了岸。风很轻，水面像锡一样亮。
+ch.storm.start.C0		Help haul the boat into the water	坐到耶稣旁边
+ch.storm.start.R0		Cold water up to your knees, rope burning your palms. You are useful, and you are soaked.	他在船尾坐下，靠着枕头，几乎立刻就睡着了。
+ch.storm.start.C1		Check the sky over the hills before boarding	帮门徒把帆升起来
+ch.storm.start.R1		The western sky is clear. But there is a line of dark along the northern ridge that you do not like. Nobody else seems to have noticed.	绳子磨着你的手心。彼得朝你点点头——这是他再熟悉不过的水面。
+ch.storm.start.C2		Ask the disciples what kind of man this is	问柯林，今天讲的比喻是什么意思
+ch.storm.start.R2	peter	Peter shrugs. “A good teacher. More than that, I think. We are still finding out.”	「撒种的人，」他说，「种子落在四种土里。今晚你会亲眼看见其中一种。」
+ch.storm.evening.L0		The oars settle into a rhythm. The shore slides away. Jesus goes to the stern, lies down on a cushion, and falls asleep almost instantly.	天色说变就变。加利利海四周的山把风兜下来，像漏斗一样倒进湖里。
+ch.storm.evening.L1	disciple	He was teaching until sunset. He did not even eat.	「夫子！我们丧命啦！」
+ch.storm.evening.L2	elias	Exhaustion is not a lack of faith. He is fully human — which is the very thing this boat is about to forget.	浪打进来，船里已经积了水。柯林抓着船舷，指节发白。
+ch.storm.evening.L3		Then the wind hits.	这些人是靠海吃饭的渔夫。让他们怕的，不是普通的浪。
+ch.storm.evening.L4		It comes down off the hills like something thrown. The sail cracks. Water comes over the gunwale in a solid sheet.	而耶稣在船尾，枕着枕头，睡着。
+ch.storm.evening.C0		Grab the tiller and hold the bow into the waves	去把耶稣叫醒
+ch.storm.evening.R0		The wood fights you. You fight back. It is the only thing you can do, so you do it.	你爬过湿滑的甲板。他在那儿，呼吸很匀，像躺在岸上一样。
+ch.storm.evening.C1		Start bailing with whatever you can find	抓住绳子，把船稳住
+ch.storm.evening.R1		You pass a bucket hand to hand. Someone is praying. Someone else is shouting. Both make sense right now.	绳子的另一头连着帆。你的手臂发酸，船头总算回过来一点。
+ch.storm.evening.C2		Look toward the stern, where Jesus is	先舀水，别的以后再说
+ch.storm.evening.R2		He is still asleep, head on the cushion, while the boat comes apart around Him. You cannot decide if that is terrifying or the calmest thing you have ever seen.	你拿木桶拼命往外舀。水涨得比舀得快，可你没有停。
+ch.storm.storm.L0	peter	Master! Master, we perish!	「夫子，我们丧命，你不顾吗？」
+ch.storm.storm.L1		The waves beat into the boat so that it is already filling. The other little ships are vanishing in the spray.	浪一个接一个翻过船舷。世界只剩下水声、木头的呻吟，还有自己的心跳。
+ch.storm.storm.L2	elias	Hold the tiller. Three waves are coming — keep her steady through all three. Breathe between them.	柯林朝你喊：「别看浪——看掌舵的那只手！」
+ch.storm.storm.L3		Corin puts a hand on your shoulder. “Do the next thing in front of you. That is how trust actually looks in a storm.”	你伸手抓住舵柄。风把整条船往一边推。
+ch.storm.asleep.L0		The boat is filling. The sail is torn. And in the stern, on a cushion, Jesus is still asleep.	船一直在进水，帆已经被撕开。船尾上，枕着枕头，耶稣仍旧睡着。
+ch.storm.asleep.L1	disciple	Master, carest thou not that we perish?	「夫子！我们丧命啦！你不顾吗？」
+ch.storm.asleep.L2		They shake Him awake. He opens His eyes, looks at the sky, the water, the panic — and stands up.	他们把他摇醒。他睁开眼，看了看天，看了看水，看了看这些慌了的人——然后站起来。
+ch.storm.asleep.C0		Wake Him calmly, believing He already cares	心里默祷一句最简短的话
+ch.storm.asleep.R0		You put a hand on His shoulder without shouting. He looks at you for a moment, and something in His face steadies you before He has said a word.	你想不起一句完整的祷文，只挤出四个字：「主啊，救我！」后来你才知道，这就够了。
+ch.storm.asleep.C1		Wake Him in a panic, like everyone else	抓住身边最近那个门徒的手
+ch.storm.asleep.R1		You shout with the rest. He does not seem offended. Apparently an honest panic is acceptable to Him.	他的手跟你一样凉。你们两个人一起站稳了。恐惧说出口，不会加倍，只会减半。
+ch.storm.asleep.C2		Keep bailing until your hands give out	什么也不说，只是看着他
+ch.storm.asleep.R2		When you finally look up, He is already standing. You did not need to earn His attention. But you could not stop yourself trying.	风声太大，说什么都会被吹散。可你看得见他的背影。
+ch.storm.rebuke.L0	jesus	Peace, be still.	「住了吧！静了吧！」
+ch.storm.rebuke.L1		The wind does not fade. It stops. The water flattens as though someone has laid a hand on it.	风不是慢慢小下去的，是一下子就停了。水面平得像有人用手按了一下。
+ch.storm.rebuke.L2		The silence is so complete you can hear the rope creaking and your own breath.	静得这样彻底，你能听见绳子吱呀作响，还有自己的呼吸。
+ch.storm.rebuke.L3	jesus	Why are ye so fearful? how is it that ye have no faith?	「为什么胆怯？你们还没有信心吗？」
+ch.storm.rebuke.L4	elias	He is not asking because He needs the answer. He is asking because you do.	他问这句话，不是因为他需要答案，是因为你需要。
+ch.storm.rebuke.C0		Whisper: “Lord, I believe; help my unbelief”	轻声说：「主啊，我信，但我信不足」
+ch.storm.rebuke.R0		A prayer borrowed from another desperate father, years later. It is still the most honest sentence a person can pray.	这句祷告是借来的，出自多年后另一个绝望的父亲。可它仍是一个人能说出的最诚实的话。
+ch.storm.rebuke.C1		Ask the question out loud: “Who is this?”	把心里的话喊出来：「这人到底是谁？」
+ch.storm.rebuke.R1	elias	Mark says they feared exceedingly and said one to another, “What manner of man is this, that even the wind and the sea obey him?” That is the right question.	马可记载，他们就大大地惧怕，彼此说：「这到底是谁？连风和海也听从他了！」——这就是对的答案。
+ch.storm.rebuke.C2		Sit in the silence and say nothing at all	坐在这一片安静里，什么也不说
+ch.storm.rebuke.R2		You sit on the wet boards. Someone starts bailing again out of habit, then stops. The lake is glass.	你坐在湿漉漉的甲板上。有人习惯性又舀了一桶水，然后停住。湖面平得像玻璃。
+ch.storm.end.L0	elias	He did not promise the disciples that they would never meet a storm. He got into the boat with them.	他没有应许门徒一生不遇风浪。他选择跟他们一起上船。
+ch.storm.end.L1	elias	And when the storm came, He was in the stern — asleep, not absent. There is a difference, though it is hard to remember at 3 a.m.	风浪来的时候，他就在船尾——他不是不在，只是睡着了。这两件事不一样，可人在凌晨三点很难分得清。
+ch.storm.end.L2		The far shore is close now. The scroll turns.	对岸已经近了。书卷翻页。
+ch.prodigal.title		The Far Country	远方
+ch.prodigal.subtitle		The Prodigal Son	浪子回头
+ch.prodigal.intro		A son asks for his inheritance early. His father gives it — and then waits by the road.	两个儿子，一个父亲。一个离家，一个留下；父亲却为两个人都跑了出去。
+ch.prodigal.brief.place		c. AD 30, in Galilee. Jesus is answering religious leaders who complain that he welcomes the wrong people, and he tells three stories in a row about something lost: a sheep, a coin, a son.	约公元 30 年，加利利。耶稣正在回答宗教领袖的抱怨——他们怪他接待不该接待的人。他一连讲了三个「失而复得」的故事：一只羊、一块钱、一个儿子。
+ch.prodigal.brief.who		A father and two sons. The younger asks for his inheritance now — in that culture, the same as saying “I wish you were dead”. The elder stays, works, and keeps every rule.	一位父亲，两个儿子。小儿子现在就要求分家产——在那时的文化里，等于说「我巴不得你死了」。大儿子留下了，干活，规矩一条没犯。
+ch.prodigal.brief.stake		This story is not mainly about the son who leaves. Watch the father: what he does once the money is gone is the part that would have shocked Jesus’ first listeners.	这个故事真正的主角不是出走的儿子，而是父亲。钱花光以后他做了什么，才是当年听众最受不了的地方。
+ch.prodigal.scroll.note		This is the third of three “lost” parables in Luke 15 — the lost sheep, the lost coin, and the lost son. It is told because the religious crowd was grumbling that Jesus welcomed sinners.	这是路加福音 15 章三个「失而复得」的故事中的第三个：丢了羊、丢了钱、丢了儿子。耶稣讲这些，是因为宗教人士抱怨他接待罪人。
+ch.prodigal.ending.text		Grace is the father running before the apology is finished.	恩典就是：道歉的话还没说完，父亲已经跑过去抱住了他。
+ch.prodigal.ending.takeaway		The father absorbs the cost, restores the ring, and throws a feast — while still going out to plead with the son who never left. He is prodigal, extravagant, with mercy for both.	父亲为两个儿子都付上了代价：袍子、戒指、鞋、肥牛犊，然后还要走出门去劝那个从没离开过的儿子。对这两个儿子，他都是这样不计代价地爱。
+ch.prodigal.reflection.q		Which brother are you today — and what would coming home look like?	今天的你，更像哪一个儿子？对你来说，「回家」会是什么样子？
+ch.prodigal.reflection.0.t		The younger: I need to stop rehearsing and start walking	小儿子：别再把台词背下去了，该往回走了
+ch.prodigal.reflection.0.insight		Repentance in Luke 15 is a journey, not a mood. “He arose and came to his father.” Luke 15:20	悔改不是在心里难过一阵就够了，而是要真的站起来，转过身，往家走。「于是起来，往他父亲那里去。」路加福音 15:20
+ch.prodigal.reflection.1.t		The elder: I have stayed, but my heart is far away	大儿子：我人留下了，心却离得很远
+ch.prodigal.reflection.1.insight		The father went out to him too. Obedience without love is its own kind of far country. Luke 15:28–31	父亲也为大儿子走了出去。人还留在家里，心一样可以走得很远——顺服里没有爱，人也一样会走丢。路加福音 15:28–31
+ch.prodigal.reflection.2.t		The bystander: I want to know how to welcome someone	旁观者：我想学会怎么接纳一个人
+ch.prodigal.reflection.2.insight		Then leave the seat empty and the door open. That is how the parable invites us to finish it. Luke 15:32	那就把座位留着，把门开着。耶稣讲这个故事，就是想让我们站在这个位置上。路加福音 15:32
+ch.prodigal.start.L0		The scroll opens on a warm courtyard: a large house, olive trees, servants moving between the storehouses. Two sons. One father.	书卷展开在一座温暖的院子里：大宅、橄榄树、仆人在仓库之间来来去去。两个儿子，一位父亲。
+ch.prodigal.start.L1	younger	Father, give me the portion of goods that falleth to me.	「父亲，请你把我应得的家业分给我。」
+ch.prodigal.start.L2	elias	In that culture, this is not a request for an allowance. It is “I wish you were dead, and I want my share now.” The inheritance would normally come at the funeral.	在那个年代，这句话不是要零花钱，而是「我巴不得你死了，现在就分给我」。产业本来要等到父亲去世才分。
+ch.prodigal.start.L3		The father says nothing for a long moment. Then he divides his living between them.	父亲沉默了很久。然后，他把产业分给了他们。
+ch.prodigal.start.C0		Try to talk the younger son out of it	试着劝小儿子回心转意
+ch.prodigal.start.R0		He will not even look at you. Somebody has promised him a better story somewhere else, and he can already hear its music.	他连看都没看你。有人已经给他描绘过一个更自在的地方，他连那边的音乐都听见了。
+ch.prodigal.start.C1		Ask the father why he agrees to give it	问父亲为什么答应他
+ch.prodigal.start.R1	father	“Because love that holds on by force is not love,” he says. “I would rather be wounded and keep my son than keep my property and lose him.”	「靠扣住家产把人留住，留住的不是爱，只是人，」他说，「我宁可自己受伤，也不要这样。」
+ch.prodigal.start.C2		Stand with the servants, who have gone quiet	和沉默下来的仆人们站在一起
+ch.prodigal.start.R2		They know that a divided estate means some of them will be let go. Nobody in this story is untouched by the son’s choice.	他们清楚，家一分，有些帮工就得走。这个儿子的决定，牵着每一个人的生计。
+ch.prodigal.leaving.L0		Not many days later, the younger son gathers everything, takes a journey into a far country — and spends it all.	过了不多几日，小儿子把所有的都收拾起来，往远方去了——就在那里散尽了。
+ch.prodigal.leaving.L1	elias	Luke uses one devastating phrase: “wasted his substance with riotous living.” No details. We are not invited to enjoy the sin.	路加用了一句很重的话：「任意放荡，浪费资财。」没有细节。那些罪，没什么好细看的。
+ch.prodigal.leaving.L2		Back home, the father is often on the road, looking toward the horizon.	而在家里，父亲常常走到路口，望着天边。
+ch.prodigal.leaving.L3	servant	He goes out there every evening. Every single evening.	「他每天傍晚都出去。每一天。」
+ch.prodigal.leaving.C0		Ask how long the father intends to keep waiting	问父亲打算等到什么时候
+ch.prodigal.leaving.R0	servant	The servant shrugs. “Until he comes back, I suppose.” It has been more than a year.	仆人耸耸肩：「大概是等到他回来吧。」已经一年多了。
+ch.prodigal.leaving.C1		Go out to the road and wait with him	到路上陪他一起等
+ch.prodigal.leaving.R1		You stand beside him in the dust until the light fails. He does not say much. He does not need you to.	你在尘土里站到他旁边，直到天光褪尽。他没说多少话，也不需要你说。
+ch.prodigal.leaving.C2		Follow the younger son into the far country	跟着小儿子去远方
+ch.prodigal.leaving.R2		You find a city that is bright at night and expensive in the morning. His friends are already gone when the money runs out.	你找到一座城：夜里灯火通明，白天什么都贵。钱花光以后，他的朋友一个都不见了。
+ch.prodigal.famine.L0		A mighty famine rises in that land. The son, who once threw money from a table, now hires himself out to a citizen — to feed pigs.	那地方遇上大饥荒。从前把钱往外撒的儿子，如今去投靠本地一个人——替他放猪。
+ch.prodigal.famine.L1		He is so hungry that the pods the pigs eat look good to him. And no one gives him anything.	他饿到觉得猪吃的豆荚都是好东西。可没有人给他。
+ch.prodigal.famine.L2	elias	For a Jewish listener, pigs are the bottom. Luke could not have made the fall steeper.	对当时的犹太听众来说，猪圈已经是最低的地方了——再往下，就没有了。
+ch.prodigal.famine.L3	younger	He came to himself.	「他醒悟过来。」
+ch.prodigal.famine.L4	elias	Four words. The turning point of the whole parable. He does not get rescued first — he comes to himself.	四个字。整个比喻在这里拐了个弯。他不是先被救出来——他是先醒过来。
+ch.prodigal.famine.C0		Remind him that his father’s hired servants have bread	提醒他：父亲家里连雇工都有饼吃
+ch.prodigal.famine.R0	younger	The thought lands like a physical blow. “Bread,” he says. “Even the servants.” He has not thought of home in months.	这句话像打了他一拳。「连雇工，」他喃喃地说，「都有饼吃。」他已经好几个月没想起家了。
+ch.prodigal.famine.C1		Sit in the mud with him until he can speak	陪他坐在泥里，等他自己开口
+ch.prodigal.famine.R1		You say nothing. After a long time he says, “I have to go back.” You nod. He needs to hear himself say it.	你什么也没说。过了很久，他说：「我得回去。」你点点头——他需要听见自己说出口。
+ch.prodigal.famine.C2		Help him rehearse the words: “Father, I have sinned”	陪他把「父亲，我得罪了」练一遍
+ch.prodigal.famine.R2		He practises it out loud, twice, and then a third time. He is preparing to return as a servant, not a son.	他大声练了两遍，又练了第三遍。他想好了：回去做雇工，不做儿子。
+ch.prodigal.pigsty.L0	younger	I will arise and go to my father, and will say unto him, Father, I have sinned against heaven, and before thee, and am no more worthy to be called thy son: make me as one of thy hired servants.	「我要起来，到我父亲那里去，向他说：父亲！我得罪了天，又得罪了你；从今以后，我不配称为你的儿子，把我当作一个雇工吧！」
+ch.prodigal.pigsty.L1	elias	Repentance in this story is not a feeling of regret. It is a direction. He stands up and starts walking — hundreds of miles, in the same sandals he wore into the pigsty.	这个故事里，悔改不是心里懊悔一下，而是一个方向。他站起来开始走——几百里路，穿的还是走进猪圈时那双鞋。
+ch.prodigal.pigsty.L2		The road is long. He gets quieter the closer he gets to home.	路很长。离家越近，他越说不出话。
+ch.prodigal.pigsty.C0		Walk with him as far as the last ridge	陪他走到最后一道山脊
+ch.prodigal.pigsty.R0		At the top he stops, and you see the roof of the house below. He is crying. You leave him there — the last part is his.	到了山脊上他停住了。你看见山下那座房子的屋顶。他在哭。你先走开几步——最后这一程，得他自己走。
+ch.prodigal.pigsty.C1		Run ahead and warn the household	先跑回家去报信
+ch.prodigal.pigsty.R1		You burst into the courtyard shouting. The father is already running past you before you finish the sentence.	你冲进院子大喊。话还没说完，父亲已经从你身边跑了出去。
+ch.prodigal.pigsty.C2		Ask Corin whether the father will take him back	问柯林，父亲会不会收他
+ch.prodigal.pigsty.R2	elias	Corin smiles. “You have read this story before,” he says. “Watch the father’s feet.”	柯林笑了：「你从前读过这个故事吧。留意父亲的脚。」
+ch.prodigal.road.L0		And he arose, and came to his father. But when he was yet a great way off, his father saw him.	「于是起来，往他父亲那里去。相离还远，他父亲看见他。」
+ch.prodigal.road.L1	elias	He saw him a great way off — because he had been looking. Every evening. For years.	相离还远就看见了——因为他一直在看。每个傍晚，看了好几年。
+ch.prodigal.road.L2		The father runs. In that culture, a patriarch does not run; it is undignified. He does not care. He falls on his son’s neck and kisses him.	父亲跑过去。在那个文化里，一家之主是不跑的，那很失体面。他不在乎。他搂住他的脖子，连连亲他。
+ch.prodigal.road.L3	younger	Father, I have sinned against heaven, and in thy sight, and am no more worthy to be called thy son —	「父亲！我得罪了天，又得罪了你；从今以后，我不配称为你的儿子——」
+ch.prodigal.road.L4	father	Bring forth the best robe, and put it on him; and put a ring on his hand, and shoes on his feet! And bring hither the fatted calf, and kill it; and let us eat, and be merry!	「快把上好的袍子拿出来给他穿，把戒指戴在他指头上，把鞋穿在他脚上；把那肥牛犊牵来宰了，我们可以吃喝快乐！」
+ch.prodigal.road.L5	elias	He never lets his son finish the sentence. The rehearsed speech about becoming a hired servant is cut off by a party.	儿子的话没说完。那段排练好的、关于做雇工的讲词，被一场筵席打断了。
+ch.prodigal.road.C0		Run alongside the father to meet him	跟着父亲一起跑出去迎他
+ch.prodigal.road.R0	father	You arrive out of breath in time to see the ring go onto a hand that is still shaking. “My son was dead, and is alive again,” the father keeps saying.	你气喘吁吁赶到，正看见戒指套上一只还在发抖的手。「我这个儿子是死而复活，」父亲一遍一遍地说。
+ch.prodigal.road.C1		Weep at the edge of the crowd	站在人群边上哭
+ch.prodigal.road.R1		You are not family. You are not a servant. You are nobody in this story. And still you cannot stop crying. That is what grace does to bystanders.	你不是家人，也不是仆人。在这个故事里你谁都不是。可你还是止不住眼泪——站在旁边看见恩典的人，都是这样。
+ch.prodigal.road.C2		Fetch the best robe yourself	亲自去取那件上好的袍子
+ch.prodigal.road.R2		The robe is heavy and smells of cedar. You put it over shoulders that are still covered in pig-sty dust. Nobody seems to mind.	袍子很沉，有香柏木的味道。你把它披在一副还沾着猪圈尘土的肩上。好像没人在意这些。
+ch.prodigal.feast.L0		Music. Dancing. Lamps in the courtyard. And then the story turns — because the elder son is out in the field.	音乐、舞蹈、院子里的灯。然后故事拐了个弯——大儿子还在田里。
+ch.prodigal.feast.L1	elder	What do these things mean? Lo, these many years do I serve thee, neither transgressed I at any time thy commandment — and yet thou never gavest me a kid, that I might make merry with my friends! But as soon as this thy son was come, which hath devoured thy living, thou hast killed for him the fatted calf!	「我服事你这多年，从来没有违背过你的命，你并没有给我一只山羊羔，叫我和朋友一同快乐。」
+ch.prodigal.feast.L2	elias	Notice: “this thy son.” He will not say “my brother.” He is not wrong about the facts. He is wrong about the family.	留意他说的是「你这个儿子」。他不肯说「我的兄弟」。论事实，他没有说错；可论关系，他离得还很远。
+ch.prodigal.feast.L3		The father goes out and pleads with him. He leaves the party to stand in the dark with the son who stayed.	父亲出去劝他。他离开筵席，走进黑地里，去陪那个留下来的儿子。
+ch.prodigal.feast.C0		Go out and listen to the elder brother	出去听大儿子把话说完
+ch.prodigal.feast.R0		You stand in the field with him. He is not angry at the party, really. He is hurt that nobody noticed he never left.	你和他一起站在田里。他真正气的不是筵席，是没有人注意到——他从来没离开过。
+ch.prodigal.feast.C1		Tell him he is being unfair	直接告诉他这不公平
+ch.prodigal.feast.R1		You say it plainly. He says something sharp back. Later you will wish you had asked a question instead.	你照直说了。他顶了你一句。后来你会希望当时多问一句，而不是先下判断。
+ch.prodigal.feast.C2		Ask the father why he goes out to both sons	问父亲：为什么两个儿子，你都要出去找
+ch.prodigal.feast.R2	father	“Because both of them are lost,” he says. “One was lost far away. One is lost three feet from my table.”	「因为两个都迷了路，」他说，「一个迷在远方，一个迷在离我饭桌三步远的地方。」
+ch.prodigal.elder.L0	father	Son, thou art ever with me, and all that I have is thine. It was meet that we should make merry, and be glad: for this thy brother was dead, and is alive again; and was lost, and is found.	「儿啊，你常和我同在，我一切所有的都是你的；只是你这个兄弟是死而复活、失而又得的，所以我们理当欢喜快乐。」
+ch.prodigal.elder.L1	elias	The parable ends there. Jesus never tells us whether the elder brother came inside. That silence is deliberate — because the people He was speaking to were the elder brothers, and the ending was up to them.	比喻就停在这里。耶稣没有说大儿子最后有没有进屋。这份沉默是故意的——因为当年听他讲道的人，正是那些大儿子。结局得他们自己写。
+ch.prodigal.elder.L2		You look at the lit doorway. Then you look at the dark field.	你看了看那扇亮着灯的门，又看了看黑下来的田。
+ch.prodigal.elder.C0		Stand with the elder brother in the dark, and wait	站在黑地里，陪大儿子一起等
+ch.prodigal.elder.R0		You do not push. You just stay. Sometimes that is the only invitation a person can accept.	你没有催促他，也没有急着劝他，只是安静地留在他身边。因为有时候，一个人最需要的，不是有人告诉他该怎么走出来，而是有人愿意陪着他，等他慢慢走出来。
+ch.prodigal.elder.C1		Remind him gently that he is already inside the family	温和地提醒他：他早就在这个家里
+ch.prodigal.elder.R1		“All that I have is thine,” you repeat. He looks at the house for a long time. It is the truest thing anyone has said to him all day.	「我一切所有的都是你的，」你把这句话重复了一遍。他望着那幢房子，望了很久。这是他一天里听到的最真实的一句话。
+ch.prodigal.elder.C2		Go back to the feast and keep his seat empty	回到筵席，把他的座位留着
+ch.prodigal.elder.R2		You set an extra place at the table, just in case. The music goes on. The door stays open.	你多摆了一副餐具，以防万一。音乐没有停，门也一直开着。
+ch.prodigal.end.L0	elias	Two sons. One runs away, one stays and resents it. The father runs after both.	两个儿子。一个出走，一个留下却满心怨气。父亲为两个人都跑了出去。
+ch.prodigal.end.L1	elias	Most of us have been the younger son at some point. Quite a lot of us have been the elder one for years and never noticed.	我们多半在某一段时间里是小儿子；也有不少人做了很多年的大儿子，自己却没察觉。
+ch.prodigal.end.L2		The scroll turns, but the music from the courtyard follows you down the road.	书卷翻页，院子里的音乐却一路跟着你。
+ch.esther.title		For Such a Time	为现今的机会
+ch.esther.subtitle		Queen Esther	以斯帖王后
+ch.esther.intro		A decree of destruction. A queen who has not been summoned. One line in the law that could cost her everything.	这卷书一次也没有提到神，却处处都是祂安排的时间。
+ch.esther.brief.place		c. 480 BC, in Susa, the winter capital of Persia — the largest empire in the world at the time. The queen, Esther, is Jewish, and almost nobody in the palace knows it.	约公元前 480 年，波斯帝国的冬都书珊城。以斯帖是王后，也是犹太人——宫里几乎没有人知道这件事。
+ch.esther.brief.who		Haman, the king’s favourite, was publicly refused a bow by Mordecai — a Jew, and Esther’s older cousin, who raised her. So Haman has drawn up a decree: on one day, every Jew in the empire may be killed. The king has signed it.	王的宠臣哈曼，因为犹太人末底改不肯向他下拜，怀恨在心。末底改是以斯帖的堂兄，也是把她养大的人。哈曼拟了一道诏书：某一天，全国各省的犹太人都可以任人宰杀。王已经盖了印。
+ch.esther.brief.stake		Esther is the only person close enough to the king to intervene, and he has not called for her in thirty days. Walking into the throne room uninvited is a death sentence unless he holds out his golden sceptre.	能接近王的只有以斯帖，可王已经三十天没有召见她。没有召见就闯进宝座殿，是死罪——除非王向她伸出金杖。
+ch.esther.scroll.note		Approaching the Persian king unsummoned carried the death penalty unless he extended the golden sceptre. Esther had not been called for thirty days. The book of Esther is unusual — God is never named in it — yet His providence is everywhere in the timing.	没有召见就进见波斯王，除非王伸出金杖，否则是死罪。以斯帖已经三十天没有被召见。以斯帖记很特别——整卷书没有出现神的名字，祂的看顾却藏在每一个时机里。
+ch.esther.ending.text		Providence often looks like an ordinary person in the right place, willing.	神的安排，常常就是一个普通人，站在对的位置上，而且愿意。
+ch.esther.ending.takeaway		Esther’s bravery was not loud. She fasted, waited, chose her moment, and spoke with gentleness — a reminder that boldness and self-control are not opposites.	以斯帖的勇敢一点都不张扬。她禁食、等候、挑时机、说话温和——胆识和温柔，从来不是对立的。
+ch.esther.reflection.q		Where might God have placed you “for such a time as this”?	神可能把你放在什么位置上，正好是「为现今的机会」？
+ch.esther.reflection.0.t		In my family, where I am the only one who prays	在家里，我是唯一祷告的那个人
+ch.esther.reflection.0.insight		Esther’s first calling was in a palace nobody would call holy. Your address may be your assignment. Esther 4:14	以斯帖第一次被呼召，是在一座没人觉得圣洁的宫殿里。你现在站的地方，也许就是神给你的位置。以斯帖记 4:14
+ch.esther.reflection.1.t		At work or school, where I can quietly do the right thing	在工作里、学校里，我可以安静地把对的事做下去
+ch.esther.reflection.1.insight		Mordecai’s small refusal to bow came long before the decree. Faithfulness in small things prepares you for large ones. Esther 3:2–5	末底改那次「不跪」，远在法令之前就发生了。小事上忠心，是在为大事预备你。以斯帖记 3:2–5
+ch.esther.reflection.2.t		I am not sure yet — but I want to be available	我还不确定——但我愿意被祂使用
+ch.esther.reflection.2.insight		“Who knoweth whether thou art come to the kingdom for such a time as this?” is a question, not a command. Sit with it. Esther 4:14	「焉知你得了王后的位分，不是为现今的机会吗？」这是一个问句，不是命令。慢慢想。以斯帖记 4:14
+ch.esther.start.L0		The scroll opens on blue pillars, gold, and polished stone. Susa — the winter capital of the Persian empire.	书卷在蓝色的柱子、黄金和磨光的石头之间展开。书珊城——波斯帝国的冬都。
+ch.esther.start.L1	elias	Haman, the king’s highest official, has been furious that a Jew named Mordecai will not bow to him. So he has engineered something far worse than a personal feud.	王的宠臣哈曼，因为一个叫末底改的犹太人不肯向他下拜，气得发狂。他盘算的事，比个人恩怨大得多。
+ch.esther.start.L2		A decree is being copied into every language of the empire: on one day, in every province, all Jews are to be destroyed.	一道诏书正被译成帝国里的每一种文字：某一天，各省的犹太人全部处死。
+ch.esther.start.L3		At the king’s gate sits Mordecai, in sackcloth and ashes, weeping loudly.	王门口，末底改披着麻布、撒着灰，放声痛哭。
+ch.esther.start.C0		Read a copy of the decree in the gate yourself	亲自去门口读一遍诏书的抄本
+ch.esther.start.R0		The date is set eleven months out. The whole thing is legal, sealed, and public. That is what makes it so frightening.	日子定在十一个月之后。盖了印，走了程序，还公开宣读。这才是最让人害怕的地方。
+ch.esther.start.C1		Sit with Mordecai in the ashes	到末底改旁边，陪他坐在灰里
+ch.esther.start.R1		He does not stop crying, but he makes room for you. Grief is easier to carry when someone sits down in it with you.	他没停住哭，但给你挪出了一点位置。有人肯陪你坐在悲伤里，悲伤就轻一点。
+ch.esther.start.C2		Ask Corin where God is in all of this	问柯林：这件事里，神在哪里？
+ch.esther.start.R2	elias	“That is the question this entire book asks,” Corin says. “His name is never mentioned once. Watch the timing instead of looking for thunder.”	「这卷书整本都在问这个问题，」柯林说，「祂的名字一次也没出现。留意那些时机。」
+ch.esther.decree.L0		The news reaches the palace. Esther’s maids and chamberlains tell her that Mordecai is at the gate in sackcloth, and the queen is exceedingly grieved.	消息传进宫里。宫女和太监把末底改在门口披麻蒙灰的事告诉王后，以斯帖非常难过。
+ch.esther.decree.L1	hatach	She has sent me to ask him what is the matter. But he will not take the clothes she offers him.	「她打发我来问是怎么回事。可他不肯收下她送去的衣服。」
+ch.esther.decree.L2	elias	There is a detail people miss: Esther is queen, but she is not free. She has not seen the king in thirty days. She was not summoned.	有个细节常被略过：以斯帖是王后，却没有自由。她已经三十天没见到王，也没有被召见。
+ch.esther.decree.L3		Hathach returns from the gate with a copy of the decree and a message for the queen.	哈他革从门口回来，带着一份诏书抄本和给王后的口信。
+ch.esther.decree.C0		Carry the message to Esther exactly as Mordecai gave it	把末底改的话一字不改地带给以斯帖
+ch.esther.decree.R0		You do not soften it. She reads it once, then again, very slowly. Her face does not change; her hands do.	你一个字也没改。她读了一遍，又慢慢读了一遍。脸上没什么变化，手在抖。
+ch.esther.decree.C1		Soften the hardest parts before you tell her	转述之前，先把最刺耳的地方说软
+ch.esther.decree.R1	elias	She thanks you — and then asks for the actual parchment. Corin gives you a look. People in danger deserve the truth, not comfort.	她谢了你——然后要来了那份真正的羊皮卷。柯林看了你一眼。身处险境的人，配得听见实话。
+ch.esther.decree.C2		Ask about the law for approaching the king unsummoned	打听未经召见就进见的规矩
+ch.esther.decree.R2	hatach	Hathach goes pale. “One law: whoever comes in uncalled is put to death, unless the king holds out the golden sceptre. Thirty days,” he whispers. “She has not been called in thirty days.”	哈他革脸色发白：「只有一条规矩：没有召见就进去的，一律处死，除非王向他伸出金杖。」
+ch.esther.mordecai.L0	esther	Go, gather together all the Jews that are present in Shushan, and fast ye for me, and neither eat nor drink three days, night or day … and so will I go in unto the king, which is not according to the law: and if I perish, I perish.	「你去招聚书珊城所有的犹大人，为我禁食三昼三夜，不吃不喝；我和我的宫女也要这样禁食。然后我违例进去见王。我若死就死吧！」
+ch.esther.mordecai.L1		But before she says it, Mordecai sends her a message that cuts through the palace walls.	但她说这句话之前，末底改先送来一句话，穿过了宫墙。
+ch.esther.mordecai.L2	mordecai	Think not with thyself that thou shalt escape in the king’s house, more than all the Jews. For if thou altogether holdest thy peace at this time, then shall there enlargement and deliverance arise to the Jews from another place … and who knoweth whether thou art come to the kingdom for such a time as this?	「你莫想在王宫里强过一切犹大人，得免这祸。此时你若闭口不言，犹大人必从别处得解脱，蒙拯救……焉知你得了王后的位分，不是为现今的机会吗？」
+ch.esther.mordecai.L3	elias	He does not say “God will use you.” He says “who knows?” — and then asks the question that has been echoing down every chapter of our road.	他没有说「神一定会用你」。他说的是「焉知」——然后把那个一路响到今天的问题摆在她面前。
+ch.esther.mordecai.C0		Deliver his words to Esther without changing a syllable	把话一字不改地送给以斯帖
+ch.esther.mordecai.R0	esther	She receives the message standing. Then she sits down. Then she stands again. “Gather the people,” she says.	她站着听完口信，坐下，又站起来。「招聚百姓。」她说。
+ch.esther.mordecai.C1		Ask Corin what “such a time as this” actually means	问柯林：「为现今的机会」是什么意思
+ch.esther.mordecai.R1	elias	“It means your ordinary life has quietly become somebody else’s only option,” he says. “Mordecai is not flattering her. He is telling her the truth about the moment.”	「意思是，你这平凡的一生，不知不觉已经成了某个人仅有的机会，」他说，「末底改不是在夸她，是把一件很重的东西交到她手里。」
+ch.esther.mordecai.C2		Remind her that deliverance will come either way	提醒她：就算她不开口，拯救也会来
+ch.esther.mordecai.R2	esther	“God does not need me,” she says slowly — and you can see the moment the sentence frees her. “But perhaps He wants me.”	「神并不需要我，」她慢慢地说，「可也许祂愿意用我。」说这话的时候，你看得出来她松了一口气。
+ch.esther.message.L0		The decree goes out from the queen’s rooms: all the Jews in Susa are to fast for three days, night and day. She and her maids will fast too.	王后的宫里传出话来：书珊城所有犹大人要禁食三昼三夜，她和宫女也一同禁食。
+ch.esther.message.L1	elias	Fasting is not a technique for making God do something. It is making room — clearing out the noise so you can hear the one thing that matters.	禁食不是用来支使神的技术。禁食是把心里的地方腾出来——清掉杂音，好让自己听见那件真正要紧的事。
+ch.esther.message.L2		Three days. No food. No water. A whole community holding its breath together.	三天。没有饼，没有水。一整座城一起屏住呼吸。
+ch.esther.message.C0		Join the fast for all three days	加入这三天的禁食
+ch.esther.message.R0		By the third day your head is light and your thoughts are unnervingly clear. You are not less afraid. You are less scattered.	到第三天，头有点发轻，脑子却异常清楚。你还是怕——只是不让害怕替你做决定。
+ch.esther.message.C1		Organise the fasting groups across the city	在城里组织一起禁食的小组
+ch.esther.message.R1		You move between courtyards with lists and messages. Hundreds of people are suddenly part of the same quiet decision.	你带着名单和口信在几个院子之间奔走。几百个人忽然都卷进了同一个安静的决定。
+ch.esther.message.C2		Keep watch outside the palace gate	到宫门外守着
+ch.esther.message.R2		You stand in the heat for three days, watching who goes in and out of the throne room. Mordecai is still there in the ashes.	你在酷热里站了三天，看着谁进了王宫、谁出来。末底改还在那里。
+ch.esther.fast.L0		On the third day the fasting ends. Esther puts on her royal apparel and stands in the inner court of the king’s house, directly in front of the throne.	第三天，禁食结束。以斯帖穿上朝服，站在王宫的内院，正对着王的宝座。
+ch.esther.fast.L1	elias	She is beautifully dressed and completely terrified. Both things are true at once.	她盛装，也怕到极点。这两件事同时都是真的。
+ch.esther.fast.L2		The king looks up. For a moment, absolutely nothing happens.	王抬起头来。有那么一瞬，什么也没发生。
+ch.esther.fast.C0		Pray for favour with the king	为她在王面前蒙恩祷告
+ch.esther.fast.R0		No thunder. No voice. Just a woman standing still in a doorway, while an empire holds its breath.	没有雷声，也没有声音。只有一个女人站在门廊里，而一个帝国屏住了呼吸。
+ch.esther.fast.C1		Plan the exact words she will say if she is allowed to speak	替她想好一旦开口该说什么
+ch.esther.fast.R1		You settle on something simple. Later you will be glad — she does not use any of it.	你想好了一句很简单的话。后来你会庆幸：她一句也没用上。
+ch.esther.fast.C2		Simply wait in silence with her	安静地陪她一起等
+ch.esther.fast.R2		You stand a step behind her. She knows you are there. Sometimes presence is the whole gift.	你站在她身后一步。她知道你在。有时候，你只要人在，就已经够了。
+ch.esther.throne.L0	king	What wilt thou, queen Esther? and what is thy request? it shall be even given thee to the half of the kingdom.	「王后以斯帖啊，你要什么？你求什么？就是国的一半，也必赐给你。」
+ch.esther.throne.L1		The golden sceptre is extended. She steps forward and touches the top of it.	金杖伸出来了。她走上前，摸了摸杖头。
+ch.esther.throne.L2		And then — she does not blurt out Haman’s name. She does not accuse anyone in front of the court. She invites the king and Haman to a banquet. And then, at the banquet, to a second one.	然后——她没有当众喊出哈曼的名字，也没有在朝臣面前控告谁。她请王和哈曼赴筵席；在筵席上，又请他们再赴一次。
+ch.esther.throne.L3	elias	An unsummoned approach. A sceptre. Two banquets. Nothing looks like a miracle yet. That is often how providence works — in ordinary decisions made at exactly the right time.	一次没有召见的进见。一根金杖。两场筵席。没有一样看起来像神迹。神的看顾常常就是这样：在恰好的时间，做一件平凡的决定。
+ch.esther.throne.C0		Step forward with her into the throne room	和她一起走进王宫
+ch.esther.throne.R0		You are not summoned either. But the sceptre is out, and the moment is now. You walk.	你也没有被召见。可金杖已经伸出，时机就是现在。你走了进去。
+ch.esther.throne.C1		Hold your breath at the pillar and watch	在柱子后面屏息看着
+ch.esther.throne.R1		You watch a queen choose patience over accusation. Boldness and hurry are not the same thing.	你看着一位王后选择了耐心，而不是控告。勇敢和急躁，从来不是同一件事。
+ch.esther.throne.C2		Ask Corin why she waits until the second banquet	问柯林，她为什么等到第二场筵席
+ch.esther.throne.R2	elias	“Because she is not just brave — she is wise,” he says. “Courage without gentleness can win a moment and lose a kingdom. She does both.”	「因为她不只是勇敢，她还有分寸，」他说，「没有温柔的勇敢，赢了一刻，输掉一个国。她两样都有了。」
+ch.esther.end.L0	elias	The book of Esther never once says the word “God.” And yet not one thing in it is accidental — a forgotten favour, a sleepless night, a queen in the right city in the right decade.	以斯帖记里一次也没有出现「神」这个字。可其中没有一件事是偶然——一次被遗忘的恩情，一个睡不着的夜，一位恰好在那座城、那个十年的王后。
+ch.esther.end.L1	elias	You may never see a burning bush or a parted sea. You may just be standing in a doorway, at a time like this.	你也许永远看不见燃烧的荆棘，也看不见分开的海。你可能只是站在一个门廊里，在那样一个时刻。
+ch.esther.end.L2		The scroll closes. But the road, somehow, does not.	书卷合上了。可那条路，不知为什么，没有合上。
+ch.bush.title		The Burning Bush	燃烧的荆棘
+ch.bush.subtitle		Moses at Horeb	摩西在何烈山
+ch.bush.intro		A shepherd follows one stray sheep up a mountain — and finds a fire that does not burn out.	一个牧人为了一只走失的羊上山——却遇见一团烧不尽的火焰。
+ch.bush.brief.place		c. 1440 BC, in Midian, on the far side of the desert. Moses has lived here forty years, shepherding the flock of his father-in-law Jethro.	约公元前 1440 年，米甸，旷野的那一边。摩西在这里住了四十年，替岳父叶忒罗放羊。
+ch.bush.brief.who		Moses was raised as a prince in Egypt, then fled after killing an Egyptian. He is a shepherd now, married, with a family — and God has been silent for forty years.	摩西在埃及王宫长大，后来杀了人，逃到旷野。如今他是牧人，有妻子有孩子，而神已经四十年没有出声。
+ch.bush.brief.stake		Israel is enslaved in Egypt, and God is about to speak. The bush that burns without burning up is not the point — the point is what God says about Himself, and what He asks Moses to do.	以色列人还在埃及做奴隶，神就要开口了。烧不坏的荆棘不是重点；重点是神怎样介绍自己，以及祂要摩西去做什么。
+ch.bush.scroll.note		Moses had been in Midian for forty years. The call comes not in a palace but on an ordinary workday, while he is chasing a lost sheep. God's first words are not a command but a self-introduction: I am the God of your father.	摩西在米甸已经四十年。呼召不是发生在王宫，而是在一个平凡的工作日——他正在追赶一只走失的羊。神开口第一句不是命令，而是自我介绍：「我是你父亲的神。」
+ch.bush.ending.text		You did not receive a task. You received a presence.	你领受的不是一项任务，而是一位一直与你同在的神。
+ch.bush.ending.takeaway		God's call often begins with who He is, not with what you can do. Moses argued, hesitated and bargained — and God stayed. Courage is not confidence in yourself; it is trust in the One who says 'I will be with you.'	神的呼召往往先讲祂是谁，而不是你能做什么。摩西争辩、迟疑、讨价还价——神仍然在。勇气不是对自己有信心，而是信靠那位说「我必与你同在」的神。
+ch.bush.reflection.q		What “burning bush” has God put in front of you lately — an ordinary moment that felt strangely holy?	最近神把什么「燃烧的荆棘」放在你面前——一个平凡、却忽然变得神圣的时刻？
+ch.bush.reflection.0.t		An ordinary day that suddenly mattered	一个忽然变得重要的平凡日子
+ch.bush.reflection.0.insight		Moses was doing his job when the bush burned. Watch your ordinary Tuesdays. Exodus 3:1	摩西是在上班时看见荆棘燃烧的。留意你平凡的星期二。出埃及记 3:1
+ch.bush.reflection.1.t		Something I am afraid to say yes to	一件我不敢答应的事
+ch.bush.reflection.1.insight		God's answer to inadequacy is never 'try harder' — it is 'I will be with thee.' Exodus 3:12	当你说「我不配」，神从不回答「再努力一点」，祂只说：「我必与你同在。」出埃及记 3:12
+ch.bush.reflection.2.t		I am not sure I would notice	我不确定自己会留意到
+ch.bush.reflection.2.insight		The bush burned for a while before Moses turned aside. Ask for the grace to turn aside. Exodus 3:3	摩西转过去看之前，荆棘已经烧了一会儿。求恩典让你愿意转身。出埃及记 3:3
+ch.bush.game.prompt		Drag across the dunes to gather the three scattered sheep before the sandstorm reaches the burning bush.	拖过沙丘，在沙暴抵达荆棘之前找回三只走散的羊。
+ch.bush.start.L0		The scroll opens on dry wind and the smell of dust. Red mountains rise on every side, and a small flock of sheep picks its way across the stones.	书卷在干燥的风里展开，满是尘土的气味。红色的山从四面围上来，一小群羊在石头之间找路走。
+ch.bush.start.L1	elias	Moses has been here forty years. He was a prince once. Now he counts sheep for his father-in-law.	摩西在这片旷野已经四十年了。他从前是埃及的王子，如今替岳父数羊。
+ch.bush.start.L2	moses	One is missing. It always goes toward the high ground.	少了一只。它总往高处跑。
+ch.bush.start.L3	elias	Then we go after it. Watch your footing — the wind is getting up.	那就去追。脚下留神，风起来了。
+ch.bush.start.C0		Go after the stray sheep yourself	自己去追那只走失的羊
+ch.bush.start.R0		You scramble up the scree, hands scraped raw, and find a lamb trembling behind a boulder.	你爬上碎石坡，手掌磨破，在一块巨石后发现一只发抖的小羊。
+ch.bush.start.C1		Ask Corin why God waited forty years	问柯林，神为何等了四十年
+ch.bush.start.R1	elias	“Perhaps,” he says, “because a prince had to become a shepherd before he could lead shepherds.”	「也许，」他说，「因为一个王子得先学会当牧人，才带得动牧人。」
+ch.bush.start.C2		Pray for the lost one before climbing	上山之前为那只迷失的羊祷告
+ch.bush.start.R2		The prayer is small and ordinary. That, you will learn, is how most of them start.	这个祷告又小又普通。后来你会知道，大多数祷告都是这样开始的。
+ch.bush.stray.L0		The sandstorm rolls across the valley like a wall. And there, ahead of it — a shrub on fire, blazing gold against the red rock.	沙暴像一堵墙压过山谷。就在它前面，一丛灌木正烧着，在红色岩石上闪出金光。
+ch.bush.stray.L1	moses	It is burning. But the leaves are still green.	它在烧。可叶子还是绿的。
+ch.bush.stray.L2	elias	Take off your sandals. This ground has just become different from every other ground you have stood on.	把鞋脱下来。你脚下这块地，跟你站过的任何地方都不一样了。
+ch.bush.stray.C0		Take off your sandals	把鞋脱下来
+ch.bush.stray.R0		Your bare feet feel the hot stone. It is the most honest thing you have done all day.	赤脚踩在滚烫的石头上。这是你今天做过最诚实的一件事。
+ch.bush.stray.C1		Ask Moses to cover his face	叫摩西蒙住脸
+ch.bush.stray.R1		He does — and then he looks anyway, because he cannot help it. Awe and curiosity are not enemies.	他蒙住脸——又忍不住从指缝里看。敬畏和好奇，本来就不冲突。
+ch.bush.stray.C2		Stand back and watch the flame	退后，静静看着那团火焰
+ch.bush.stray.R2		You count your breaths. The fire does not flicker. It has all the time in the world.	你数着自己的呼吸。火焰一动不动，好像有的是时间。
+ch.bush.bush.L0	voice	I am the God of thy father, the God of Abraham, the God of Isaac, and the God of Jacob.	我是你父亲的神，是亚伯拉罕的神、以撒的神、雅各的神。
+ch.bush.bush.L1		Moses hides his face. The bush keeps burning. No smoke, no ash, no hurry.	摩西蒙住脸。荆棘继续烧着。没有烟，没有灰，一点也不着急。
+ch.bush.bush.L2	elias	Listen. He does not begin with a task. He begins with a relationship — I am the God your father knew.	听。祂先说的是关系，不是任务——我是你父亲的神。
+ch.bush.bush.C0		Whisper: “Here am I”	轻声说：「我在这里」
+ch.bush.bush.R0	elias	It is the same answer Abraham gave. Some sentences are handed down like a family trade.	这也是亚伯拉罕当年的回答。有些话，就这么一代一代传下来了。
+ch.bush.bush.C1		Ask what His name is	问祂的名字是什么
+ch.bush.bush.R1		The answer comes slowly: “I AM THAT I AM” (Exodus 3:14). Not a label to hold — a presence that simply is.	答案慢慢浮出来：「我是我所是」（出埃及记 3:14）。这不是一个能攥在手里的名号，而是一位一直都在的神。
+ch.bush.bush.C2		Say nothing, and stay on your knees	什么也不说，只是跪着
+ch.bush.bush.R2		Silence is also an answer. The flame waits for you.	沉默也是一种回答。火焰等着你。
+ch.bush.call.L0	voice	I have surely seen the affliction of my people … and I am come down to deliver them. Come now therefore, and I will send thee unto Pharaoh.	我实在看见我百姓的困苦了……我下来是要救他们。故此，我要打发你去见法老。
+ch.bush.call.L1	moses	Who am I, that I should go unto Pharaoh?	我算什么，竟能去见法老呢？
+ch.bush.call.L2	elias	Notice: God does not answer “you are qualified.” He answers “I will be with you.”	留意：神没有回答「你够资格」，祂回答的是「我必与你同在」。
+ch.bush.call.L3		The mountain is very quiet. The sandstorm has moved on. Somewhere below, a lamb bleats.	山上非常安静。沙暴已经过去。山下某处，一只小羊在叫。
+ch.bush.call.C0		Go with him toward Egypt	陪他往埃及去
+ch.bush.call.R0		You do not feel brave. You go anyway. That is usually what brave looks like from the inside.	你并不觉得自己勇敢，可你还是去了。走上去的时候，没有人会觉得自己勇敢。
+ch.bush.call.C1		Give him your staff for the road	把你的手杖送给他上路
+ch.bush.call.R1		He takes it, testing its weight. A stick is not much — but it is something to hold.	他接过去，掂了掂分量。一根杖算不了什么——可上路的人手里总得有点什么。
+ch.bush.call.C2		Ask him to remember this mountain	请他记住这座山
+ch.bush.call.R2	moses	“I will,” he says. “Especially on the days I would rather forget.”	「我会的，」他说，「特别是在那些我宁愿忘掉的日子里。」
+ch.bush.end.L0	elias	The call did not make Moses fearless. It made him accompanied. That is the whole difference.	呼召并没有让摩西不再惧怕，而是让他不再孤单。区别就在这里。
+ch.bush.end.L1		You look back once. The bush is still burning — quietly, patiently, with no audience at all.	你回头看了一眼。荆棘仍在燃烧——安静、耐心，完全没有观众。
+ch.bush.end.L2		The scroll turns. Egypt is a long way off.	书卷翻页。埃及还很远。
+ch.ruth.title		The Gleaning Field	拾穗的麦田
+ch.ruth.subtitle		Ruth and Naomi	路得与拿俄米
+ch.ruth.intro		Two widows walk home with nothing. One of them refuses to leave the other.	两个寡妇空着手走回家。其中一个怎么也不肯离开另一个。
+ch.ruth.brief.place		c. 1100 BC, in Bethlehem at the start of the barley harvest. A famine has just broken; the fields are full and the town is full of talk.	约公元前 1100 年，伯利恒，大麦刚开镰。饥荒刚过去，田里满是庄稼，城里满是闲话。
+ch.ruth.brief.who		Naomi came back from Moab with nothing — no husband, no sons, and a foreign daughter-in-law, Ruth, who refused to stay behind. Ruth is a Moabite, and Moabites are not welcome here.	拿俄米从摩押回来时一无所有：丈夫没了，两个儿子也没了，只剩下一个外族媳妇路得，怎么劝都不肯走。路得是摩押人，而摩押人在伯利恒不受欢迎。
+ch.ruth.brief.stake		Both women have no income and no protector. The Law allowed the poor to follow the harvesters and pick up what fell — that is where Ruth goes to find food, and where the owner of the field first sees her.	两个寡妇没有收入，也没有男人可以依靠。律法允许穷人在收割的人后面捡拾掉落的麦穗——路得就是去那里找吃的，田主第一次看见她，也是在那里。
+ch.ruth.scroll.note		Ruth was a Moabite — an outsider with no status in Bethlehem. Gleaning was the ancient safety net: the poor could follow the reapers and pick up what was dropped. Boaz's generosity turns a survival mechanism into a love story.	路得是摩押人——在伯利恒抬不起头的外乡人。拾穗是古时给穷人的活路：跟在收割的人后面，捡掉在地上的麦穗。波阿斯多留的那几把麦穗，成了这段爱情的开头。
+ch.ruth.ending.text		Loyalty is love that has kept walking after the feeling fades.	忠诚不是一直有感觉，而是感觉淡了以后，还继续走下去。
+ch.ruth.ending.takeaway		Ruth's famous words are not a vow of romance — they are a daughter-in-law's promise to an old, grieving woman. God honoured a small, stubborn kindness by weaving it into the lineage of the Messiah.	路得那段著名的话，其实不是情话，而是一个儿媳对一位年老伤心的婆婆许下的承诺。神看重这份微小又固执的善良，把它编进了弥赛亚的家谱。
+ch.ruth.reflection.q		Who is the person you would “go with” even when it costs you?	谁是你愿意「一同前往」的人，即使要付代价？
+ch.ruth.reflection.0.t		An ageing parent or grandparent	年迈的父母或祖父母
+ch.ruth.reflection.0.insight		Ruth's choice was towards the person with the least to offer her. Ruth 1:16–17	路得选择的，是那个最无法回报她的人。路得记 1:16–17
+ch.ruth.reflection.1.t		A friend who is struggling	一位正在挣扎的朋友
+ch.ruth.reflection.1.insight		Presence is the rarest gift because it cannot be sent from a distance. Ruth 1:16	陪伴是最难得的礼物，因为它没法隔空送过去。路得记 1:16
+ch.ruth.reflection.2.t		I am not sure I have anyone yet	我还不确定有没有这样的人
+ch.ruth.reflection.2.insight		Then start small: show up once, and then again. Loyalty is built one Tuesday at a time. Ruth 1:16	那就从小事开始：这一次在场，下一次也在场。忠诚就是这么一天一天攒出来的。路得记 1:16
+ch.ruth.game.prompt		Drag to gather 12 sheaves while the sun sets. Keep away from the swinging sickles.	拖动收集 12 捆麦穗，在日落之前完成。避开挥舞的镰刀。
+ch.ruth.start.L0		The road from Moab is long and dusty. Two women walk it with empty hands and one shared water skin.	从摩押回来的路又长又灰。两个女人空着手，共用一个水袋，一步一步往回走。
+ch.ruth.start.L1	naomi	Go back, my daughters. I have nothing left to give you.	我的女儿们，回去吧。我已经没有什么可以给你们了。
+ch.ruth.start.L2	elias	Orpah turns back. That is not the cruel choice — it is the reasonable one. Watch Ruth.	另一个媳妇俄珥巴哭着回去了。这不算狠心，是人之常情。留意路得。
+ch.ruth.start.L3	ruth	Whither thou goest, I will go. Thy people shall be my people, and my God my God.	你往哪里去，我也往那里去。你的国就是我的国，你的神就是我的神。
+ch.ruth.start.C0		Walk behind them, carrying the bundle	跟在她们后面，替她们背包袱
+ch.ruth.start.R0		The bundle is not heavy. The silence between the two women is.	行李不重。两个女人之间的沉默才重。
+ch.ruth.start.C1		Ask Corin why Ruth would choose hardship	问柯林，路得为何选择吃苦
+ch.ruth.start.R1	elias	“Because love is not a calculation,” he says. “It is a direction. She has picked hers.”	「因为爱不是计算，」他说，「爱是一个方向。她已经选好了。」
+ch.ruth.start.C2		Pray that Bethlehem receives them	祷告伯利恒能接纳她们
+ch.ruth.start.R2		You have no idea how literally that prayer will be answered.	你还不知道，这个祷告会怎样一字不差地应验。
+ch.ruth.field.L0		Barley harvest. The reapers cut, the stalks fall, and behind them the poor gather what is dropped.	大麦开镰了。收割的人割下麦子，麦穗落在地上，穷人就跟在后面捡。
+ch.ruth.field.L1	ruth	Let me glean, I pray you, after him in whose sight I shall find grace.	求你容我跟着收割的人，拾取打捆剩下的麦穗。
+ch.ruth.field.L2	elias	This is not charity as a spectacle. It is a law written into the edges of a field — leave something for the person who has nothing. Leviticus 19:9	这不是做给人看的施舍。这是写进田角的律法：给一无所有的人留一点。利未记 19:9
+ch.ruth.field.C0		Glean beside her all afternoon	陪她拾一整个下午的麦穗
+ch.ruth.field.R0		Your back aches, your hands are scratched, and by evening the basket is full. It is a good ache.	你的后背发酸，手被划破，到傍晚篮子满了。这种酸疼，值得。
+ch.ruth.field.C1		Ask the reapers to leave extra behind	请收割的人多留一些麦穗
+ch.ruth.field.R1	reaper	They shrug, then grin, and suddenly a whole corner of the field is 'accidentally' uncut.	他们耸耸肩，咧嘴一笑——忽然间，整块田角都「不小心」没割到。
+ch.ruth.field.C2		Sit with Naomi at the edge of the field	陪拿俄米坐在田边
+ch.ruth.field.R2	naomi	She watches Ruth work and says only: “She has not stopped. Not once.”	她看着路得干活，只说了一句：「她一直没停。一次都没有。」
+ch.ruth.kindness.L0	boaz	Let her glean even among the sheaves, and reproach her not. And let fall also some of the handfuls of purpose for her.	容她在捆中拾取麦穗，不可羞辱她。并要从捆里抽出些来，留在地下任她拾取。
+ch.ruth.kindness.L1		Boaz does not make a speech about kindness. He gives an instruction to the men with sickles. That is what makes it real.	波阿斯没有讲一篇关于仁慈的大道理，只是吩咐拿镰刀的人一句话。真正的仁慈，就是这样一点一点落到实处的。
+ch.ruth.kindness.L2	elias	Notice the pattern: a foreign widow, a field owner, a handful of dropped grain. Nobody calls it a miracle. It is the family line of David — and later, of Jesus.	留意这条线：一个外邦寡妇，一块田，几把故意落下的麦穗。没有人称它为神迹，可这就是大卫的家谱——后来也是耶稣的家谱。
+ch.ruth.kindness.C0		Thank Boaz on Ruth’s behalf	替路得向波阿斯道谢
+ch.ruth.kindness.R0	boaz	He waves it away. “She did the hard part,” he says. “I only told my men to look the other way.”	他摆摆手：「难的那部分是她自己做的。我只是叫工人别看得那么紧。」
+ch.ruth.kindness.C1		Tell Naomi what happened in the field	把田里发生的事告诉拿俄米
+ch.ruth.kindness.R1		Her face changes. For the first time since Moab, she says the word “hope” out loud.	她的脸色变了。从摩押回来以后，她第一次把「盼望」这两个字说出了口。
+ch.ruth.kindness.C2		Stay silent. Some kindness is shy.	什么也不说。有些善意不必说出口。
+ch.ruth.kindness.R2		You say nothing. Ruth never learns your name. That is also a kind of love.	你什么也没说。路得始终不知道你的名字。那也是一种爱。
+ch.ruth.end.L0	elias	Ruth did not save Israel. She simply refused to leave one person. Great stories are usually built out of small refusals.	路得没有拯救以色列，她只是不肯离开一个人。许多伟大的故事，就是从一个很小的「不肯」开始的。
+ch.ruth.end.L1		The sun goes down over the barley. Naomi carries the basket home; Ruth carries Naomi’s hand.	太阳落在大麦田上。拿俄米抱着篮子回家；路得牵着拿俄米的手。
+ch.ruth.end.L2		The scroll turns, smelling faintly of cut grain.	书卷翻页，带着淡淡的麦香。
+ch.jonah.title		The Great Fish	大鱼腹中
+ch.jonah.subtitle		Jonah and Nineveh	约拿与尼尼微
+ch.jonah.intro		A prophet runs the wrong way, a storm follows him, and mercy waits at the bottom of the sea.	一位先知往反方向跑，风暴追着他，而怜悯在海底等着他。
+ch.jonah.brief.place		c. 780 BC. Nineveh is the capital of Assyria, the most feared empire of the age — a city so large the Bible says it takes three days to walk across.	约公元前 780 年。尼尼微是亚述的京城，当时最令人生畏的帝国——大到圣经说走遍全城要三天。
+ch.jonah.brief.who		God tells the prophet Jonah to go to Nineveh and call it to repent. Instead Jonah buys a ticket on a ship sailing the opposite way, to Tarshish.	神叫先知约拿到尼尼微去，向那座城宣告审判，好让他们回转。约拿却买了船票，往相反方向的他施去。
+ch.jonah.brief.stake		A storm hits the ship. The sailors will do anything to stay alive. And the reason for the storm is asleep down in the hold — a prophet running from the one errand he cannot avoid.	海上起了风暴。水手们为了活命什么都肯做，而这场风暴的起因，正睡在船舱里——一个想逃掉唯一躲不掉的那件事的先知。
+ch.jonah.scroll.note		Jonah is the reluctant prophet: he runs because he suspects God will be merciful to Nineveh — and he would rather they were judged. The book ends with God asking a question He does not answer, leaving the reader to examine their own reluctance to forgive.	约拿是不情愿的先知：他逃跑，是因为他猜到神会怜悯尼尼微——而他宁愿他们被审判。这卷书最后，神问了一个问题，却没有给答案，好让读者看看自己心里那份不肯饶恕。
+ch.jonah.ending.text		Mercy is hardest when it is given to people you dislike.	怜悯落到你讨厌的人身上时，最难接受——可那才是怜悯。
+ch.jonah.ending.takeaway		Jonah is the only prophet who succeeds spectacularly and resents it. God's final question is not about Nineveh's worthiness but about Jonah's heart — a mirror held up to every one of us who would rather see justice than grace.	约拿是唯一一位大获成功却因此愤愤不平的先知。神最后问的，不是尼尼微配不配，而是约拿的心——它是一面镜子，照出我们这些宁愿看见公义、不愿看见恩典的人。
+ch.jonah.reflection.q		Who is your Nineveh — the person or group you would rather God did not forgive?	谁是你的尼尼微——那个你不太希望神饶恕的人或群体？
+ch.jonah.reflection.0.t		Someone who hurt me	伤害过我的人
+ch.jonah.reflection.0.insight		God's question to Jonah is not 'do they deserve it?' but 'should I not spare?' Jonah 4:11	神问约拿的不是「他们配不配」，而是「我岂能不爱惜」。约拿书 4:11
+ch.jonah.reflection.1.t		People whose views I cannot stand	我无法认同其观点的人
+ch.jonah.reflection.1.insight		Jonah preferred a storm to their repentance. Check which storm you are standing in. Jonah 1:12	约拿宁愿要一场风暴，也不愿他们悔改。你现在是不是也想先跑开？约拿书 1:12
+ch.jonah.reflection.2.t		Honestly? Sometimes myself.	老实说？有时候是我自己。
+ch.jonah.reflection.2.insight		The fish was a quiet room, not a punishment cell. Mercy starts at home. Jonah 2:1–2	鱼腹是一间安静的屋子，不是牢房。怜悯从自己开始。约拿书 2:1–2
+ch.jonah.game.prompt		Drag up and down to swim through the dark water. Avoid drifting rocks and jellyfish; gather three prayer bubbles.	上下拖动在黑暗的海水中游动。避开漂浮的岩石和水母，收集三个祷告气泡。
+ch.jonah.start.L0		Joppa harbour. A ship is loading for Tarshish — which is, notably, in the opposite direction from Nineveh.	约帕港。一艘船正装货开往他施——巧的是，他施正好在尼尼微的反方向。
+ch.jonah.start.L1	captain	What meanest thou, O sleeper? Arise, call upon thy God!	你这沉睡的人哪，为何这样呢？起来，求告你的神！
+ch.jonah.start.L2	elias	The storm is not random. Jonah knows it. Watch what he tells the sailors to do.	这场风暴不是偶然的。约拿知道。留意他叫水手做什么。
+ch.jonah.start.L3	jonah	Take me up, and cast me forth into the sea; so shall the sea be calm unto you.	你们将我抬起来，抛在海中，海就平静了。
+ch.jonah.start.C0		Beg the sailors not to throw him over	求水手不要把他抛下海
+ch.jonah.start.R0		They hesitate — and the waves climb higher. Sometimes the kind thing is not the safe thing.	他们犹豫了，浪又高一尺。善良和稳妥，有时候不是一回事。
+ch.jonah.start.C1		Stand with Jonah and pray	和约拿站在一起祷告
+ch.jonah.start.R1		He will not look at you. Shame makes people want to be alone.	他不肯看你。羞愧会让人想一个人待着。
+ch.jonah.start.C2		Ask Corin why Jonah is running	问柯林，约拿为何逃跑
+ch.jonah.start.R2	elias	“Because he is afraid God will forgive them,” Corin says. “It is the strangest reason anyone has ever run.”	「因为他怕神真的饶恕他们，」柯林说，「这大概是最奇怪的一个逃跑理由。」
+ch.jonah.deep.L0		The water closes over him. It is very cold, very dark, and very quiet — and then the great fish comes.	海水在他头上合拢。又冷、又黑、又静——然后大鱼来了。
+ch.jonah.deep.L1	jonah	I cried by reason of mine affliction unto the LORD, and he heard me; out of the belly of hell cried I.	我遭遇患难求告耶和华，他就应允我；从阴间的腹中呼求。
+ch.jonah.deep.L2	elias	Three days. Not a punishment cell — a quiet room. Some people only stop running when they cannot run any more.	三天。这不是牢房，是一间安静的屋子。有些人非要跑到跑不动，才肯停下来。
+ch.jonah.deep.C0		Pray with him in the dark	在黑暗中和他一同祷告
+ch.jonah.deep.R0		The prayer is mostly silence. That is enough. The fish keeps swimming.	祷告大半是沉默。那也够了。大鱼继续往前游。
+ch.jonah.deep.C1		Ask him what he is most afraid of	问他最害怕的是什么
+ch.jonah.deep.R1	jonah	“That they will change,” he says at last. “And that God will be glad.”	「怕他们真的会改，」他终于开口，「也怕神会为这个高兴。」
+ch.jonah.deep.C2		Count the days and wait	数着日子等候
+ch.jonah.deep.R2		On the third day, the fish is sick of him. Mercy sometimes arrives as being spat out.	第三天，大鱼把他吐出来，他摔在沙滩上。有些路，得先从那里面出来，才走得回去。
+ch.jonah.nineveh.L0		Nineveh is enormous — three days’ walk across. Jonah walks one day into it and shouts a single sentence.	尼尼微大得走三天也走不完。约拿只走了一天，就喊出一句话。
+ch.jonah.nineveh.L1	jonah	Yet forty days, and Nineveh shall be overthrown!	再等四十日，尼尼微必倾覆了！
+ch.jonah.nineveh.L2	king	Let man and beast be covered with sackcloth, and cry mightily unto God … who can tell if God will turn and repent?	人和牲畜都当披上麻布，人要切切求告神……或者神转意后悔，也不灭绝我们，也未可知。
+ch.jonah.nineveh.L3	elias	The whole city stops. Even the animals, says the king. And God does turn. Jonah is furious.	全城都停了下来，连牲畜也披上麻布——这是王的命令。神果然回心转意。约拿气得不行。
+ch.jonah.nineveh.C0		Sit with Jonah outside the city	陪约拿坐在城外
+ch.jonah.nineveh.R0		He is sitting in the dust, furious that mercy won. You sit down too. It is an honest place to sit.	他坐在尘土里生闷气——气的是神居然饶了他们。你也在旁边坐下。这个位置不体面，但诚实。
+ch.jonah.nineveh.C1		Remind him of the fish	提醒他关于那条大鱼的事
+ch.jonah.nineveh.R1		“You were given mercy when you deserved none,” you say. He has no answer for that.	「你自己得怜悯的时候，也不见得比他们配。」你说。他没有话可答。
+ch.jonah.nineveh.C2		Ask God why He cares about Nineveh	问神为何在乎尼尼微
+ch.jonah.nineveh.R2	elias	The answer is a question about a plant, a worm, and a hundred and twenty thousand people who do not know their right hand from their left.	答案不是一句话，是一个问题——关于一棵一夜长起来的植物、一条虫，和十二万个连左右手都分不清的人。
+ch.jonah.end.L0	elias	The book ends with God’s question hanging in the air. He does not answer it. He wants Jonah — and us — to answer it.	这卷书停在一个悬在半空的问题上。神没有回答，祂要约拿——也要我们——自己回答。
+ch.jonah.end.L1		Should I not spare Nineveh? The wind moves over the fields. Somewhere a worm eats a plant.	我岂能不爱惜尼尼微呢？风吹过田野。不知哪里，一条虫正在啃一棵植物。
+ch.jonah.end.L2		The scroll closes on the question, not the answer.	书卷合上了，合在一个问题上，而不是一个答案上。
+ch.zacchaeus.title		Up A Sycamore Tree	爬上桑树
+ch.zacchaeus.subtitle		Zacchaeus of Jericho	耶利哥的撒该
+ch.zacchaeus.intro		A short, rich, lonely man climbs a tree just to see — and comes down carrying a different life.	一个矮小、富有、孤独的人为了看一眼而爬上树——下来的时候，人生已经不一样了。
+ch.zacchaeus.brief.place		c. AD 30, in Jericho — a rich trade town on the main road east, with a customs post and a Roman garrison.	约公元 30 年，耶利哥。这是大道上的富庶商镇，有关卡，也驻着罗马兵。
+ch.zacchaeus.brief.who		Zacchaeus is the chief tax collector: he has bought the right to collect Rome's taxes and takes extra for himself. He is rich, hated, and short enough that he cannot see over the crowd.	撒该是税吏长：他买下了替罗马收税的权利，还从中多收。他有钱，被人恨，个子又矮，站在人群后面什么也看不见。
+ch.zacchaeus.brief.stake		Jesus is passing through town, and the crowd will not make room for a collaborator. So Zacchaeus climbs a sycamore. What happens next is not a reward for good behaviour — it is an invitation given before he has changed anything.	耶稣正从城里经过，人群不会给一个替罗马办事的人让路。撒该只好爬上桑树。接下来发生的事，不是好行为的奖赏，而是一份在他还没改变之前就先给出的邀请。
+ch.zacchaeus.scroll.note		Zacchaeus was a chief tax collector — wealthy, collaborating with Rome, and despised by his own town. His offer to repay fourfold goes beyond what the Law required. Jesus does not demand it first; He simply invites Himself to dinner. Grace comes before reformation.	撒该是税吏长——富有、与罗马合作、被本城人藐视。他愿意四倍偿还，远超律法的要求。但耶稣并没有先要求他这样做，祂只是邀请自己到他家吃饭。恩典先到，改变在后。
+ch.zacchaeus.ending.text		Grace arrived first. Change followed it out of the door.	恩典先到，改变在后头跟着来。
+ch.zacchaeus.ending.takeaway		Zacchaeus was not asked to clean up before Jesus came to dinner. Being welcomed made him generous. The story insists that real change is a fruit of grace, not a price paid to earn it.	耶稣去吃饭之前，并没有要求撒该先把自己收拾干净。被接纳，反倒让他慷慨起来。这个故事要说的正是：真正的改变是恩典结出来的果子，不是用来换取恩典的条件。
+ch.zacchaeus.reflection.q		What would “restoring fourfold” look like in your own life?	在你自己的生命里，「四倍偿还」会是什么样子？
+ch.zacchaeus.reflection.0.t		Returning something I took wrongly	归还我不该拿的东西
+ch.zacchaeus.reflection.0.insight		Zacchaeus did not just feel sorry, he counted it out. Luke 19:8	撒该不只是觉得抱歉，他真把钱一笔一笔数了出来。路加福音 19:8
+ch.zacchaeus.reflection.1.t		Giving more than is expected of me	给出超过别人期望的
+ch.zacchaeus.reflection.1.insight		Fourfold was beyond the Law. Grace makes people unreasonable in the best way. Luke 19:8	四倍，远远超过律法的要求。没有人要求他这样做；恩典常常让人做出不合常理的事。路加福音 19:8
+ch.zacchaeus.reflection.2.t		Welcoming someone nobody else welcomes	接纳一个没有人接纳的人
+ch.zacchaeus.reflection.2.insight		Jesus ate in the wrong house on purpose. Who is at your table? Luke 19:5	耶稣故意进错了家门。今天谁在你的桌旁？路加福音 19:5
+ch.zacchaeus.game.prompt		Tap left and right branches in turn to climb before Jesus passes. Miss twice and you slip.	交替点击左右树枝向上爬，在耶稣经过之前到达树顶。失误两次就会滑落。
+ch.zacchaeus.start.L0		Jericho is packed. Palm branches, dust, shouting, and the particular noise of a crowd that already knows who it dislikes.	耶利哥挤满了人。棕树枝、尘土、喊声，还有那种人群特有的吵闹——他们早就知道自己讨厌谁。
+ch.zacchaeus.start.L1	crowd	He is a sinner. A collaborator. He stole from us.	他是个罪人，是替罗马卖命的。他坑过我们的钱。
+ch.zacchaeus.start.L2	elias	There he is — Zacchaeus. Short enough that the crowd is a wall. Watch what he does.	他就在那儿——撒该。个子太矮，人群对他来说就是一堵墙。看他怎么做。
+ch.zacchaeus.start.L3	zacchaeus	I only want to see Him. Just once. That is all.	我只想看祂一眼。就一眼。就这样。
+ch.zacchaeus.start.C0		Make a gap in the crowd for him	在人群中为他让出一条缝
+ch.zacchaeus.start.R0		Two people move. Then three. The gap lasts about four seconds before it closes again.	先有两个人让开，接着又是三个。缝隙撑了大约四秒，又合上了。
+ch.zacchaeus.start.C1		Point to the sycamore tree ahead	指向前面那棵桑树
+ch.zacchaeus.start.R1		He follows your finger, and his whole face changes. It is not dignified. It is perfect.	他顺着你的手看过去，整张脸都亮了。说不上体面，却刚刚好。
+ch.zacchaeus.start.C2		Ask the crowd why they hate him	问人群为什么恨他
+ch.zacchaeus.start.R2	crowd	They list his sins in detail. Nobody mentions his name without spitting first.	他们一条一条数他的罪。没有一个人提起他的名字时不先啐一口。
+ch.zacchaeus.tree.L0		A rich man, a chief tax collector, is sitting in a tree like a child. The crowd laughs. He does not care.	一个财主、一个税吏长，像小孩一样坐在树上。人群在笑。他不在乎。
+ch.zacchaeus.tree.L1	jesus	Zacchaeus, make haste, and come down; for to day I must abide at thy house.	撒该，快下来！今天我必住在你家里。
+ch.zacchaeus.tree.L2	elias	Jesus does not say “repay what you stole and then I will come.” He invites Himself first. That order matters.	耶稣没有说「先把钱还清，我再进你家」。祂先开口要住进去。这个顺序很要紧。
+ch.zacchaeus.tree.C0		Help him down from the branch	扶他从树枝上下来
+ch.zacchaeus.tree.R0		His hands are shaking. He has not been touched kindly in a very long time.	他的手在抖。他已经很久没被人这样碰过了。
+ch.zacchaeus.tree.C1		Whisper: “He knows your name”	轻声说：「祂知道你的名字」
+ch.zacchaeus.tree.R1		He climbs down faster than he climbed up. Being known is a powerful thing.	他下树比上树还快。被人认出名字，比什么都管用。
+ch.zacchaeus.tree.C2		Look at the crowd’s faces instead	转头看人群的表情
+ch.zacchaeus.tree.R2	elias	They are furious. Grace to the wrong person always looks like injustice to somebody.	他们气得脸都变了。恩典落到「不该得的人」身上，在某些人眼里总像是不公平。
+ch.zacchaeus.house.L0	zacchaeus	Behold, Lord, the half of my goods I give to the poor; and if I have taken any thing from any man by false accusation, I restore him fourfold.	主啊，我把所有的一半给穷人；我若讹诈了谁，就还他四倍。
+ch.zacchaeus.house.L1		Fourfold. The Law asked for one-fifth extra. Nobody asked him for this. Nobody had to.	四倍。律法只要求多加五分之一。没有人要求他这样做，也没有人逼他。
+ch.zacchaeus.house.L2	elias	This is what grace does when it is received rather than resisted. It makes a generous person out of a greedy one — without a single instruction.	这就是人接受恩典之后会发生的事：一个贪心的人变得慷慨，没有人下过一道命令。
+ch.zacchaeus.house.L3	servant	He has never once opened that storeroom before.	这间库房，他从来没打开过。
+ch.zacchaeus.house.C0		Help him carry the coins to the door	帮他把钱币搬到门口
+ch.zacchaeus.house.R0		The bags are heavy. He carries the heaviest one himself.	袋子很沉。最重的那袋，他自己扛。
+ch.zacchaeus.house.C1		Tell the crowd what he just did	把刚才的事告诉人群
+ch.zacchaeus.house.R1		Some of them do not believe you. A few go quiet. One woman starts to cry.	有些人根本不信。有几个人不说话了。一个女人开始哭。
+ch.zacchaeus.house.C2		Ask Jesus why He chose this house	问耶稣为何选这一家
+ch.zacchaeus.house.R2	jesus	“For the Son of man is come to seek and to save that which was lost.”	「人子来，为要寻找拯救失丧的人。」
+ch.zacchaeus.end.L0	elias	Ten chapters. Ten different ways God walks into an ordinary day and refuses to leave it ordinary.	十章了。十次不同的经过——神走进平凡的一天，不容它继续平凡下去。
+ch.zacchaeus.end.L1		The dust of Jericho settles. Somewhere, a very short man is counting out coins and smiling.	耶利哥的尘土落定。某个地方，一个很矮的人正在数钱，一边数一边笑。
+ch.zacchaeus.end.L2		The scroll grows warm in your hands. The road, somehow, is still going.	书卷在你手里发热。这条路，不知怎么，还在往前。
