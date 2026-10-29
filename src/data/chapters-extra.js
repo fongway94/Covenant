@@ -102,8 +102,8 @@ export const EXTRA_CHAPTERS = [
           ["elias", "Take off your sandals. This ground has just become different from every other ground you have stood on.", "把鞋脱下来。你脚下这块地，跟你站过的任何地方都不一样了。"]
         ),
         choices: [
-          C(["Take off your sandals", "把鞋脱下来"], "bush", { stat: { faith: 2 }, xp: 9, faith: true, tag: ["Faith", "信心"], reply: ["Your bare feet feel the hot stone. It is the most honest thing you have done all day.", "赤脚踩在滚烫的石头上。这是你今天做得最诚实的一件事。"], replyBy: "" }),
-          C(["Ask Moses to cover his face", "叫摩西蒙住脸"], "bush", { stat: { wisdom: 2 }, xp: 8, reply: ["He does — and then he looks anyway, because he cannot help it. Awe and curiosity are not enemies.", "他蒙住脸——又忍不住从指缝里看。敬畏和好奇，本来就不冲突。"], replyBy: "" }),
+          C(["Take off your sandals", "把鞋脱下来"], "bush", { stat: { faith: 2 }, xp: 9, faith: true, tag: ["Faith", "信心"], reply: ["Your bare feet feel the hot stone. It is the most honest thing you have done all day.", "赤脚踩在滚烫的石头上。这是你今天做过最诚实的一件事。"], replyBy: "" }),
+          C(["Ask Moses to cover his face", "叫摩西蒙住脸"], "bush", { stat: { wisdom: 2 }, xp: 8, reply: ["He does — and then he looks anyway, because he cannot help it. Awe and curiosity are not enemies.", "他蒙住脸——又忍不住从指缝里看。敬畏和好奇，本来就不打架。"], replyBy: "" }),
           C(["Stand back and watch the flame", "退后，静静看着那团火焰"], "bush", { stat: { courage: 1, compassion: 1 }, xp: 8, reply: ["You count your breaths. The fire does not flicker. It has all the time in the world.", "你数着自己的呼吸。火焰一动不动，好像有的是时间。"], replyBy: "" })
         ]
       },
