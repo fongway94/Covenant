@@ -2042,3 +2042,66 @@ body.app-paused *, body.app-paused *::before, body.app-paused *::after {
   .brief-demo span { font-size: .72rem; }
   .paused-how canvas { width: 92px; height: 50px; }
 }
+
+/* ---- World mode: the valley you can walk ----
+   The whole screen is one canvas; the only DOM on top of it is a way out and
+   the cards that stop the world for a beat. Nothing here touches story mode. */
+.world-screen { position: absolute; inset: 0; background: #08100f; overflow: hidden; }
+.world-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  display: block; touch-action: none; z-index: 1;
+}
+.world-exit {
+  position: absolute; z-index: 4;
+  top: max(14px, env(safe-area-inset-top)); left: 14px;
+  width: 38px; height: 38px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 1rem; color: var(--muted);
+  background: rgba(9,18,25,.78); border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(8px); cursor: pointer;
+}
+.world-exit:active { transform: scale(.94); }
+.world-card-scrim {
+  position: absolute; inset: 0; z-index: 8;
+  display: grid; place-items: center; padding: 22px;
+  background: radial-gradient(120% 90% at 50% 38%, rgba(6,12,16,.62), rgba(4,8,11,.94));
+  backdrop-filter: blur(3px);
+  animation: fade-in .28s ease both;
+}
+.world-card {
+  width: min(100%, 430px);
+  padding: 26px 22px 20px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #16242b, #101a20);
+  border: 1px solid rgba(247,221,165,.22);
+  box-shadow: 0 22px 60px rgba(0,0,0,.55);
+  animation: rise .32s ease both;
+}
+.world-card .eyebrow {
+  font-size: .66rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--gold, #e7b75b); opacity: .9;
+}
+.world-card h2 { font-size: 1.32rem; margin: 8px 0 10px; line-height: 1.3; }
+.world-card p { margin: 0 0 18px; font-size: .92rem; line-height: 1.62; color: var(--muted); }
+.world-card .btn { width: 100%; }
+
+/* The way into world mode. One card above the map — story mode is still the
+   road below it, and still the default. */
+.world-entry {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  margin: 4px 0 14px; padding: 14px 15px;
+  border-radius: 16px; text-align: left; cursor: pointer;
+  color: var(--ink, #eef2f2);
+  background: linear-gradient(135deg, rgba(247,196,106,.14), rgba(20,32,40,.9));
+  border: 1px solid rgba(247,221,165,.28);
+}
+.world-entry:active { transform: scale(.99); }
+.world-entry .we-glyph {
+  flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 1rem;
+  color: #0b141c; background: linear-gradient(180deg, #f7dda5, #c9a45c);
+}
+.world-entry .we-txt { flex: 1 1 auto; min-width: 0; }
+.world-entry .we-txt strong { display: block; font-size: .95rem; margin-bottom: 3px; }
+.world-entry .we-txt small { display: block; color: rgba(232,240,240,.62); font-size: .74rem; line-height: 1.5; }
+.world-entry svg { flex: 0 0 auto; opacity: .5; }

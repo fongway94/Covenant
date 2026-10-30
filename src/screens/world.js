@@ -67,6 +67,14 @@ export function mapHtml(ui) {
   return `<div class="screen map-screen">
     ${hudHtml(ui)}
     <div class="scroll map-scroll">
+      <button class="world-entry" data-action="go" data-view="world">
+        <span class="we-glyph">✦</span>
+        <span class="we-txt">
+          <strong>${tx("Walk into the valley", "走进山谷")}</strong>
+          <small>${tx("New: walk the story yourself — talk to people, gather stones, take David's place when he faces the giant.", "新玩法：自己走一遍故事——和人说话，捡石子，在大卫面对巨人的时候替他站上去。")}</small>
+        </span>
+        ${icon("forward", 16)}
+      </button>
       <div class="map-canvas">
         <svg class="map-path" viewBox="0 0 100 150" preserveAspectRatio="none"><polyline points="${points}"/></svg>
         ${nodes}
@@ -224,7 +232,7 @@ export function characterHtml(ui) {
       </div>
 
       <button class="btn btn-danger btn-sm" style="margin-top:14px" data-action="ask-reset">${icon("refresh", 15)} ${tx("Erase this journey", "清除这段旅程")}</button>
-      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.9.37 · Everything is saved only on this device.", "Covenant v0.9.37 · 所有进度仅保存在本机。")}</p>
+      <p class="tiny muted center" style="margin-top:16px">${tx("Covenant v0.9.38 · Everything is saved only on this device.", "Covenant v0.9.38 · 所有进度仅保存在本机。")}</p>
     </div>
     ${tabsHtml(ui, "character")}
   </div>`;

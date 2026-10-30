@@ -19,6 +19,7 @@ import {
   startActionNow, startMomentNow, startHotspotsNow, miniStart
 } from "./screens/story.js";
 import { mountAtmosphere } from "./engine/atmosphere.js";
+import { worldHtml, mountWorld, cleanupWorld } from "./world/mode.js";
 
 const root = document.getElementById("app");
 const toastsEl = document.getElementById("toasts");
@@ -75,6 +76,7 @@ function syncAmbience() {
       intensity = ["mini", "action", "hotspots", "hotspots-done"].includes(ui.story.phase) ? 1 : 0;
     }
     else if (ui.view === "finale") kind = "finale";
+    else if (ui.view === "world") kind = CHAPTER_AMBIENCE.elah || "valley";
     else if (["camp", "map", "journal", "character", "create"].includes(ui.view)) kind = "camp";
     else kind = "title";
   }
@@ -100,6 +102,7 @@ bus.toast = toast;
 let renderCount = 0;
 function render() {
   cleanupStory(ui);
+  cleanupWorld();
   applySettings();
   let html;
   switch (ui.view) {
@@ -110,6 +113,9 @@ function render() {
     case "journal": html = journalHtml(ui); break;
     case "character": html = characterHtml(ui); break;
     case "about": html = aboutHtml(ui); break;
+    /* The new mode. Its own screen, its own canvas, its own loop — story mode is
+       not consulted, edited or replaced. */
+    case "world": html = ui.state ? worldHtml() : titleHtml(ui); break;
     case "story": html = ui.story ? storyHtml(ui) : mapHtml(ui); break;
     default: html = titleHtml(ui); break;
   }
@@ -133,6 +139,7 @@ function render() {
     mountAtmosphere(atmoCanvas, { intensity: ui.view === "story" ? 1 : 0.72 });
   }
   if (ui.view === "story" && ui.story) mountStory(ui);
+  if (ui.view === "world") mountWorld(ui);
   if (ui.view === "map") {
     const cur = root.querySelector(".map-node.current");
     const sc = root.querySelector(".map-scroll");
@@ -147,7 +154,7 @@ function render() {
 bus.render = render;
 
 function go(view) {
-  if (["camp", "finale", "map", "journal", "character", "story"].includes(view) && !ui.state) { ui.view = "title"; ui.modal = null; render(); return; }
+  if (["camp", "finale", "map", "journal", "character", "story", "world"].includes(view) && !ui.state) { ui.view = "title"; ui.modal = null; render(); return; }
   ui.modal = null;
   ui.view = view;
   sfx("tap");
