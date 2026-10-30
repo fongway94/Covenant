@@ -1,0 +1,321 @@
+ID	SPEAKER	ENGLISH	CHINESE (rewrite this column, keep the ID)
+ui.Journeys Through the Word		Journeys Through the Word	行走在神话语之中
+ui.Step inside the stories that shaped the world.		Step inside the stories that shaped the world.	走进那些塑造了世界的故事。
+ui.Continue the journey		Continue the journey	继续旅程
+ui.Begin a new journey		Begin a new journey	开始新的旅程
+ui.How to play		How to play	玩法说明
+ui.About		About	关于
+ui.Guide		Guide	指引
+ui.The beginning of the road		The beginning of the road	路的起点
+ui.Who is walking?		Who is walking?	是谁在路上？
+ui.You are a pilgrim carrying a scroll that opens into the stories of Scripture. Your choices will shape the person you become.		You are a pilgrim carrying a scroll that opens into the stories of Scripture. Your choices will shape the person you become.	你是一位手执书卷的朝圣者。书卷会把你带进圣经的故事里。你的选择，将塑造你成为怎样的人。
+ui.Your name		Your name	你的名字
+ui.Pilgrim		Pilgrim	朝圣者
+ui.Choose a calling		Choose a calling	选择你的呼召
+ui.This is where your virtues begin — you can grow all of them later.		This is where your virtues begin — you can grow all of them later.	这是你的品格起点——之后每一项都可以继续成长。
+ui.Your gift		Your gift	你的恩赐
+ui.Begin the journey		Begin the journey	启程
+ui.Back		Back	返回
+ui.Back to the title		Back to the title	返回首页
+ui.Language		Language	语言
+ui.中文 / EN		中文 / EN	中文 / EN
+ui.“Thy word is a lamp unto my feet, and a light unto my path.”		“Thy word is a lamp unto my feet, and a light unto my path.”	「你的话是我脚前的灯，是我路上的光。」
+ui.— Psalm 119:105		— Psalm 119:105	— 诗篇 119:105
+ui.Psalm 119:105		Psalm 119:105	诗篇 119:105
+ui.Covenant is an interactive role-playing game built around real stories from the Bible. Instead of reading		Covenant is an interactive role-playing game built around real stories from the Bible. Instead of reading	《Covenant／圣约》是一款以圣经真实故事为核心的互动角色扮演游戏。你不是去阅读
+ui.about		about	关于
+ui. David, Daniel or Esther, you stand beside them — and the choices you make shape your own character: Courage, Wisdom, Compassion and Faith.		David, Daniel or Esther, you stand beside them — and the choices you make shape your own character: Courage, Wisdom, Compassion and Faith.	大卫、但以理或以斯帖的故事，而是站在他们身旁——你的选择会塑造你自己的品格：勇气、智慧、怜悯与信心。
+ui.Why we built it this way		Why we built it this way	为什么这样设计
+ui.A generation that grew up with games does not only want to be told a story; it wants to		A generation that grew up with games does not only want to be told a story; it wants to	在游戏里长大的一代人，不只想要听一个故事，他们想要
+ui.be inside it		be inside it	身在故事之中
+ui.. Modern Bible translations are more accessible than ever, yet many people have never encountered the narrative arc of Scripture. A well-made game can open that door — especially for teenagers and young adults.		. Modern Bible translations are more accessible than ever, yet many people have never encountered the narrative arc of Scripture. A well-made game can open that door — especially for teenagers and young adults.	。现代圣经译本比以往都容易取得，但许多人从未真正读过圣经的故事脉络。一款用心制作的游戏，可以打开这扇门——特别是对青少年和年轻人。
+ui.How we stay faithful to the text		How we stay faithful to the text	我们怎样忠于经文
+ui.The player is a		The player is a	玩家是一位
+ui.witness		witness	见证者
+ui., never the hero who rewrites the outcome. David still faces Goliath; the storm still stops.		, never the hero who rewrites the outcome. David still faces Goliath; the storm still stops.	，绝不是改写结局的英雄。大卫仍然迎战歌利亚；风浪仍然止息。
+ui.Every chapter shows its scripture reference, a historical note from your companion Corin, and the passage behind the story.		Every chapter shows its scripture reference, a historical note from your companion Corin, and the passage behind the story.	每一章都会标明经文出处、同伴柯林的历史注解，以及故事背后的经文。
+ui.Scripture quotations use the		Scripture quotations use the	经文引用采用
+ui.King James Version		King James Version	英王钦定本（KJV）／中文和合本
+ui. (public domain). Other dialogue is clearly written for the game and is not presented as scripture.		(public domain). Other dialogue is clearly written for the game and is not presented as scripture.	（公有领域）。其余对白是本游戏创作内容，不代表经文。
+ui.Reflection questions have no “wrong” answer. This is a game about formation, not a quiz about facts.		Reflection questions have no “wrong” answer. This is a game about formation, not a quiz about facts.	反思题没有「标准答案」。这是一场关于生命塑造的游戏，不是事实测验。
+ui.What is in this prototype		What is in this prototype	这个原型里有什么
+ui.Ten playable chapters, branching dialogue, four virtues, nine fruits of the Spirit (Galatians 5:22–23), ten relics, nine seals, fifteen controllable scenes, offline play, and automatic save to your device.		Ten playable chapters, branching dialogue, four virtues, nine fruits of the Spirit (Galatians 5:22–23), ten relics, nine seals, fifteen controllable scenes, offline play, and automatic save to your device.	十个可玩章节、分支对话、四种品格、圣灵九果（加拉太书 5:22–23）、十件圣物、九枚印记、十五个可动手的场景、离线游玩，以及自动保存在本机。
+ui.Under the hood		Under the hood	技术实现
+ui.Plain HTML, CSS and JavaScript — no build step, no tracking, no ads. It runs in any mobile browser, installs to the home screen as a PWA, and can be packaged for the iOS App Store and Google Play with		Plain HTML, CSS and JavaScript — no build step, no tracking, no ads. It runs in any mobile browser, installs to the home screen as a PWA, and can be packaged for the iOS App Store and Google Play with	纯 HTML、CSS 与 JavaScript——无需编译，没有追踪，没有广告。它可在任何手机浏览器中运行，可作为 PWA 安装到主屏幕，也可用
+ui.. See		. See	打包上架 iOS App Store 与 Google Play。详见
+ui.For churches & ministries		For churches & ministries	给教会与事工团队
+ui.Before publishing, have your content reviewed by your own pastors or theological advisors. Translation choice, denominational distinctives and age-appropriateness are decisions best made by your community. See		Before publishing, have your content reviewed by your own pastors or theological advisors. Translation choice, denominational distinctives and age-appropriateness are decisions best made by your community. See	正式发布前，请让你们的牧者或神学顾问审阅内容。译本选择、宗派特色与适龄程度，最好由你们的群体决定。参见
+ui. for the content guidelines and a chapter template.		for the content guidelines and a chapter template.	中的内容规范与章节模板。
+ui.Map		Map	地图
+ui.Journal		Journal	日志
+ui.Character sheet		Character sheet	角色卡
+ui.Your journal		Your journal	你的日志
+ui.Things you have gathered		Things you have gathered	你收集的一切
+ui.The pilgrim		The pilgrim	朝圣者
+ui.Completed		Completed	已完成
+ui.Locked		Locked	未解锁
+ui.Earned		Earned	已获得
+ui.Read		Read	阅读
+ui.Scrolls		Scrolls	书卷
+ui.Relics		Relics	圣物
+ui.Fruits		Fruits	果子
+ui.Seals		Seals	印记
+ui.The passage behind each story. Complete a chapter to keep its scroll.		The passage behind each story. Complete a chapter to keep its scroll.	每个故事背后的经文。完成章节即可收藏该书卷。
+ui.Not yet read · 		Not yet read ·	尚未阅读 ·
+ui.Something you carried out of each story.		Something you carried out of each story.	你从每个故事里带出来的东西。
+ui. found.		found.	件已找到。
+ui.An unknown relic		An unknown relic	一件未知的圣物
+ui.Finish its chapter		Finish its chapter	完成对应章节
+ui.Nine virtues from Galatians 5:22–23. Gather them all to earn the		Nine virtues from Galatians 5:22–23. Gather them all to earn the	加拉太书 5:22–23 的九种品格。全部收集可获得
+ui.Full Harvest		Full Harvest	丰收
+ui. seal.		seal.	印记。
+ui. gathered.		gathered.	已收集。
+ui.Seals are earned by the way you walk the road.		Seals are earned by the way you walk the road.	印记不是发下来的奖励，是你一路上走出来的。
+ui. earned.		earned.	枚已获得。
+ui.“But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance: against such there is no law.”		“But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance: against such there is no law.”	「圣灵所结的果子，就是仁爱、喜乐、和平、忍耐、恩慈、良善、信实、温柔、节制；这样的事，没有律法禁止。」
+ui.— Galatians 5:22–23 (KJV)		— Galatians 5:22–23 (KJV)	— 加拉太书 5:22–23（和合本）
+ui.“The fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance.” — Galatians 5:22–23 (KJV)		“The fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance.” — Galatians 5:22–23 (KJV)	「圣灵所结的果子，就是仁爱、喜乐、和平、忍耐、恩慈、良善、信实、温柔、节制。」——加拉太书 5:22–23（和合本）
+ui.Virtues		Virtues	品格
+ui.Golden choices in a story may ask for a higher virtue. Praying once per chapter grows Faith.		Golden choices in a story may ask for a higher virtue. Praying once per chapter grows Faith.	金色选项需要更高的品格。每章祷告一次，信心 +1。
+ui.Journey progress		Journey progress	旅程进度
+ui.Chapters complete		Chapters complete	章节完成
+ui.Fruits gathered		Fruits gathered	果子已收集
+ui.Relics found		Relics found	圣物已找到
+ui.Settings		Settings	设置
+ui.Sound effects		Sound effects	音效
+ui.Short tones for choices and rewards		Short tones for choices and rewards	选择与奖励的简短提示音
+ui.Text size		Text size	字号
+ui.For reading comfort		For reading comfort	让阅读更舒适
+ui.Preview all chapters		Preview all chapters	预览全部章节
+ui.Opens the whole map — useful for demos		Opens the whole map — useful for demos	打开整张地图——适合演示
+ui.A two-minute guide		A two-minute guide	两分钟看懂玩法
+ui.Toggle sound		Toggle sound	切换音效
+ui.Toggle all chapters		Toggle all chapters	切换全部章节
+ui.Erase this journey		Erase this journey	清除这段旅程
+ui.Corin’s note		Corin’s note	柯林的笔记
+ui.Scripture quotations: King James Version (public domain). Narrative dialogue is written for this game and is not scripture.		Scripture quotations: King James Version (public domain). Narrative dialogue is written for this game and is not scripture.	经文引用：英王钦定本／中文和合本（公有领域）。叙事对白为本游戏创作，并非经文。
+ui.Close the scroll		Close the scroll	合上书卷
+ui.Fruit of the Spirit		Fruit of the Spirit	圣灵的果子
+ui.You gathered this on your journey.		You gathered this on your journey.	这是你一路收集来的。
+ui.Not yet found. Certain choices in the chapters reveal it.		Not yet found. Certain choices in the chapters reveal it.	还没找到。故事里的某些选择，会让你遇见它。
+ui.Relic		Relic	圣物
+ui.Seal		Seal	印记
+ui.From 		From	来自
+ui.You have not found this relic yet. Finish its chapter to add it to your journal.		You have not found this relic yet. Finish its chapter to add it to your journal.	你还没有找到这件圣物。完成对应章节，即可收入日志。
+ui.A short guide		A short guide	简短指南
+ui.How the journey works		How the journey works	这趟旅程怎么玩
+ui.You are a		You are a	你是一位
+ui.pilgrim with a scroll		pilgrim with a scroll	手执书卷的朝圣者
+ui.. The scroll carries you into ten true stories from the Bible — you stand in the valley, sit in the boat, wait outside the lions’ den.		. The scroll carries you into ten true stories from the Bible — you stand in the valley, sit in the boat, wait outside the lions’ den.	。书卷会带你进入圣经中十个真实的故事——你站在山谷里，坐在船上，在狮子坑外等候。
+ui.What your choices do		What your choices do	你的选择有什么用
+ui.They shape		They shape	它们塑造的是
+ui.you		you	你
+ui., not scripture. David still faces Goliath; the storm still stops. Your choices grow four virtues —		, not scripture. David still faces Goliath; the storm still stops. Your choices grow four virtues —	，不是经文。大卫仍然迎战歌利亚；风浪仍然止息。你的选择会增长四种品格——
+ui.Courage, Wisdom, Compassion and Faith		Courage, Wisdom, Compassion and Faith	勇气、智慧、怜悯、信心
+ui. — and unlock fruits, relics and seals.		— and unlock fruits, relics and seals.	——并解锁果子、圣物与印记。
+ui.What to tap		What to tap	该点哪里
+ui.Tap the dialogue box		Tap the dialogue box	点一下对白框
+ui. to read the next line.		to read the next line.	，读下一句。
+ui.Choose a reply		Choose a reply	挑一个回应
+ui. when the story pauses. Some need a minimum virtue — the golden choices are faith paths.		when the story pauses. Some need a minimum virtue — the golden choices are faith paths.	。有些选项需要一定的品格，金色的是信心之路。
+ui.Pray		Pray	祷告
+ui. once per chapter for +1 Faith and a promise from the Psalms.		once per chapter for +1 Faith and a promise from the Psalms.	，每章一次，获得 +1 信心和一句诗篇的应许。
+ui.Open the scroll		Open the scroll	打开书卷
+ui. (top right) any time to read the real passage, the historical note and the reference.		(top right) any time to read the real passage, the historical note and the reference.	（右上角）随时查看真正的经文、历史注解与出处。
+ui.At the end of each chapter		At the end of each chapter	每章结束的时候
+ui.You will receive a relic, a fruit of the Spirit, and one honest reflection question. There are no wrong answers to that question — only different ones.		You will receive a relic, a fruit of the Spirit, and one honest reflection question. There are no wrong answers to that question — only different ones.	你会得到一件圣物、一个圣灵的果子，以及一道诚实的反思题。那道题没有错答案——只有不同的答案。
+ui.Progress saves automatically on your device. No account, no ads, no tracking.		Progress saves automatically on your device. No account, no ads, no tracking.	进度自动保存在你的设备上。没有账号、没有广告、没有追踪。
+ui.I’m ready		I’m ready	开始吧
+ui.You paused to pray		You paused to pray	你停下来祷告
+ui.+1 Faith		+1 Faith	+1 信心
+ui.Prayer is available once in each chapter. It grows Faith, which can open golden choices later in the story.		Prayer is available once in each chapter. It grows Faith, which can open golden choices later in the story.	每章可以祷告一次。信心会因此增长，故事后面那些金色选项，也就有了去选的底气。
+ui.Amen		Amen	阿们
+ui.Leave the chapter?		Leave the chapter?	离开这一章？
+ui.Your place is kept		Your place is kept	你的位置会保留
+ui.Choices you already made are saved. Coming back will restart this chapter from the beginning, with the virtues you have gained.		Choices you already made are saved. Coming back will restart this chapter from the beginning, with the virtues you have gained.	你已经做出的选择会被保存。回来时将从本章开头重新开始，但你获得的品格会保留。
+ui.Stay in the story		Stay in the story	留在故事里
+ui.Return to the map		Return to the map	返回地图
+ui.Start over?		Start over?	重新开始？
+ui.Your name, level, virtues, fruits, relics and seals will be deleted from this device. This cannot be undone.		Your name, level, virtues, fruits, relics and seals will be deleted from this device. This cannot be undone.	你的名字、等级、品格、果子、圣物与印记将从本机删除，且无法恢复。
+ui.Keep my journey		Keep my journey	保留我的旅程
+ui.Yes, erase everything		Yes, erase everything	是的，全部清除
+ui.Still ahead on the road		Still ahead on the road	还在前方路上
+ui.Finish the previous chapter to open this one. 		Finish the previous chapter to open this one.	先完成上一章才能解锁这一章。
+ui.Theme:		Theme:	主题：
+ui.Length:		Length:	长度：
+ui.Enter this story		Enter this story	进入这个故事
+ui.Not yet		Not yet	还不行
+ui.✧ The Story		✧ The Story	✧ 旁白
+ui.Prayed		Prayed	已祷告
+ui.Continue		Continue	继续
+ui.Choice		Choice	选择
+ui.You have already prayed in this chapter.		You have already prayed in this chapter.	你在本章已经祷告过了。
+ui.+1 Faith · a promise for the road		+1 Faith · a promise for the road	+1 信心 · 一句路上的应许
+ui.Not yet — this needs		Not yet — this needs	还不行——这需要
+ui.. Pray or keep walking.		. Pray or keep walking.	。可以祷告，或继续成长。
+ui.This path needs a higher virtue. Pray or keep walking.		This path needs a higher virtue. Pray or keep walking.	这条路需要更高的品格。祷告或继续前行。
+ui.Requires		Requires	需要
+ui. — pray once this chapter, or keep growing.		— pray once this chapter, or keep growing.	——可在本章祷告一次，或继续成长。
+ui.Level up! You are now level		Level up! You are now level	升级！你现在是
+ui.Level up! Now level		Level up! Now level	升级！现在是
+ui.Seal earned:		Seal earned:	获得印记：
+ui.A moment to focus		A moment to focus	凝神一刻
+ui.Tap when the light reaches the mark		Tap when the light reaches the mark	光点走到标记上时点一下
+ui.Skip — no bonus		Skip — no bonus	跳过 · 不拿奖励
+ui. Bonus earned.		Bonus earned.	奖励已获得。
+ui. The story goes on.		The story goes on.	故事继续。
+ui.Chapter		Chapter	第
+ui. complete		complete	章完成
+ui.What the story says		What the story says	故事在说什么
+ui.Read the full account:		Read the full account:	阅读完整记载：
+ui.Added to your journal		Added to your journal	已加入你的日志
+ui.Relic ·		Relic ·	圣物 ·
+ui.new		new	新获得
+ui.already kept		already kept	已收藏
+ui.to next level		to next level	距离下一级
+ui.New seals		New seals	新印记
+ui.Take a moment to reflect		Take a moment to reflect	花一点时间反思
+ui.A moment to reflect		A moment to reflect	默想一刻
+ui.There is no wrong answer here. Choose what is honest for you today.		There is no wrong answer here. Choose what is honest for you today.	这里没有标准答案，选一个今天对你最诚实的。
+ui.Skip for now		Skip for now	暂时跳过
+ui.Carry this with you		Carry this with you	带着这句话走
+ui.All ten chapters walked		All ten chapters walked	十章全部走完
+ui.You have seen courage, integrity, mercy, trust, grace and boldness. The road continues in your own life.		You have seen courage, integrity, mercy, trust, grace and boldness. The road continues in your own life.	你看见了勇气、正直、怜悯、信靠、恩典与胆识。这条路，要在你自己的生命里继续。
+ui.You have walked every chapter. Well done, pilgrim.		You have walked every chapter. Well done, pilgrim.	你走完了每一章。做得好，朝圣者。
+ui.Journey erased. A new one is waiting.		Journey erased. A new one is waiting.	旅程已清除。新的路在等你。
+ui.Your journey begins. Tap a chapter on the map.		Your journey begins. Tap a chapter on the map.	你的旅程开始了。点击地图上的章节。
+ui.All chapters are now open.		All chapters are now open.	所有章节现已开放。
+ui.Chapter order restored.		Chapter order restored.	章节顺序已恢复。
+ui.Focus		Focus	专注
+ui. Pray or keep walking.		Pray or keep walking.	。祷告或继续前行。
+ui.once per chapter for +1 Faith and a promise from the Psalms.		once per chapter for +1 Faith and a promise from the Psalms.	，每章一次，获得 +1 信心和一句诗篇的应许。
+ui.ACTION SCENE		ACTION SCENE	互动关卡
+ui.Move		Move	移动
+ui.Tap to play		Tap to play	点一下开始
+ui.Play the scene		Play the scene	开始挑战
+ui.Skip scene		Skip scene	跳过关卡
+ui.Scene complete		Scene complete	这一关结束
+ui.Try again		Try again	再试一次
+ui.Keep going		Keep going	继续
+ui.Collect		Collect	收集
+ui.Hold to		Hold to	按住以
+ui.Hold to pray		Hold to pray	按住祷告
+ui.Praying…		Praying…	祷告中……
+ui.Drag to aim		Drag to aim	拖动瞄准
+ui.Release to fire		Release to fire	松手投出
+ui.Drag to move		Drag to move	拖动移动
+ui.Tap to jump		Tap to jump	点一下跳起来
+ui.Hold to walk		Hold to walk	按住前进
+ui.Release to hide		Release to hide	松手躲藏
+ui.Drag to steer		Drag to steer	拖动掌舵
+ui.Tap to bail		Tap to bail	点一下舀水
+ui.Hold to advance		Hold to advance	按住前进
+ui.Release to freeze		Release to freeze	松手静止
+ui.SCORE		SCORE	得分
+ui.TIME		TIME	时间
+ui.Perfect!		Perfect!	完美！
+ui.Well done!		Well done!	做得好！
+ui.The story continues.		The story continues.	故事继续。
+ui.Bonus earned		Bonus earned	获得奖励
+ui.No bonus		No bonus	这次没有额外奖励
+ui.Hearts		Hearts	生命
+ui.Swipe or tap a choice		Swipe or tap a choice	滑动或点击选项
+ui.Tap to continue		Tap to continue	点一下继续
+ui.Find the hidden items		Find the hidden items	找出隐藏的物品
+ui.Tap the glowing spots		Tap the glowing spots	点一下发亮的地方
+ui.Found		Found	已找到
+ui.Walk the road		Walk the road	拖动朝圣者走这条路
+ui.Drag your pilgrim along the path		Drag your pilgrim along the path	沿路拖动你的朝圣者
+ui.Camp		Camp	营地
+ui.The Camp		The Camp	旅人营地
+ui.Explore		Explore	探索
+ui.Adventure		Adventure	冒险
+ui.Quests		Quests	任务
+ui.Inventory		Inventory	行囊
+ui.Pouch		Pouch	行囊
+ui.Talk		Talk	交谈
+ui.Enter		Enter	进入
+ui.Rest		Rest	休息
+ui.Guidance		Guidance	引导
+ui.guidance		guidance	引导
+ui.Day		Day	第
+ui.day		day	天
+ui.No items yet		No items yet	行囊还是空的
+ui.Quest complete		Quest complete	任务完成
+ui.A new day at the camp		A new day at the camp	营地的崭新一天
+ui.Finish all three quests to start a new day.		Finish all three quests to start a new day.	完成三个任务，开启新的一天。
+ui.The Lost Fragments		The Lost Fragments	失落的书卷碎片
+ui.Find 3 scroll fragments hidden around the camp		Find 3 scroll fragments hidden around the camp	找出藏在营地里的 3 张书卷碎片
+ui.The Wandering Sheep		The Wandering Sheep	走失的羊
+ui.Tap 3 wandering sheep in the camp		Tap 3 wandering sheep in the camp	点击营地里 3 只走散的羊
+ui.Prayers at the Well		Prayers at the Well	井边的祷告
+ui.Pray at the well 3 times		Pray at the well 3 times	在井边祷告 3 次
+ui.Corin		Corin	柯林
+ui.Ada		Ada	艾达
+ui.Tobin		Tobin	托宾
+ui.The Well		The Well	水井
+ui.Campfire		Campfire	篝火
+ui.Chapter Gate		Chapter Gate	章节之门
+ui.Notice Board		Notice Board	任务板
+ui.Immersive mode		Immersive mode	沉浸模式
+ui.Hide hints and decorative tips around choices		Hide hints and decorative tips around choices	隐藏选项周围的提示与装饰
+ui.Show hints		Show hints	显示提示
+ui.Clean choices		Clean choices	简洁选项
+ui.Use 1 Guidance to open this path		Use 1 Guidance to open this path	消耗 1 点引导开启这条路
+ui.Guidance used — the path opens.		Guidance used — the path opens.	引导已使用——路打开了。
+ui.Prayer gives you 1 Guidance. Guidance can open a locked choice.		Prayer gives you 1 Guidance. Guidance can open a locked choice.	祷告会给你 1 点引导。引导可以开启锁定的选项。
+ui.Breathe		Breathe	呼吸
+ui.Breathe in		Breathe in	吸气
+ui.Breathe out		Breathe out	呼气
+ui.Prayer		Prayer	祷告
+ui.A breath prayer		A breath prayer	呼吸祷告
+ui.Hold to breathe in, release to breathe out. Three breaths.		Hold to breathe in, release to breathe out. Three breaths.	按住吸气，松手呼气，共三次呼吸。
+ui.The road continues		The road continues	路还在延伸
+ui.Finale		Finale	终章
+ui.THE END		THE END	终章
+ui.Your journey so far		Your journey so far	你走过的路
+ui.A prayer for the road		A prayer for the road	给路上的祷告
+ui.Return to the camp		Return to the camp	回到营地
+ui.Walk the whole road again		Walk the whole road again	再走一遍整条路
+ui.May the LORD bless thee, and keep thee		May the LORD bless thee, and keep thee	愿耶和华赐福给你，保护你
+ui.Well done, good and faithful servant		Well done, good and faithful servant	做得好，忠心又良善的仆人
+ui.The scroll closes, but the road does not.		The scroll closes, but the road does not.	书卷会合上，路不会。
+ui.Ten chapters. One road.		Ten chapters. One road.	十章，一条路。
+ui.You walked with shepherds, queens, prophets and tax collectors.		You walked with shepherds, queens, prophets and tax collectors.	你曾与牧人、王后、先知和税吏同行。
+ui.Now go and live your own chapter.		Now go and live your own chapter.	现在，去活出你自己的那一章。
+ui.Chapters		Chapters	章节
+ui.Camp quests completed		Camp quests completed	完成的营地任务
+ui.Days at the camp		Days at the camp	在营地的天数
+ui.Courage		Courage	勇气
+ui.Wisdom		Wisdom	智慧
+ui.Compassion		Compassion	怜悯
+ui.Faith		Faith	信心
+ui.Courage 6		Courage 6	勇气 6
+ui.Faith 3		Faith 3	信心 3
+ui.Faith 4		Faith 4	信心 4
+ui.Faith 5		Faith 5	信心 5
+ui.A practical answer		A practical answer	实在的回答
+ui.Scripture		Scripture	经文
+ui.Pray once in this chapter to grow your Faith		Pray once in this chapter to grow your Faith	本章祷告一次可增长信心
+ui.Pray in this chapter to grow your Faith		Pray in this chapter to grow your Faith	在本章祷告可增长信心
+ui.Grow Courage in earlier chapters		Grow Courage in earlier chapters	在前面的章节中提升勇气
+ui.You did not look away.		You did not look away.	你没有移开视线。
+ui.Your eyes flickered. David did not.		Your eyes flickered. David did not.	你的目光闪了一下，大卫没有。
+ui.Steady. She holds.		Steady. She holds.	稳住了。船身没有偏。
+ui.She slips sideways — brace!		She slips sideways — brace!	船身往一侧滑——抓稳！
+ui.Hold your nerve		Hold your nerve	稳住心神
+ui.Hold the tiller		Hold the tiller	掌稳船舵
+ui.Keep your eyes steady as David runs. Tap when the light reaches the golden mark.		Keep your eyes steady as David runs. Tap when the light reaches the golden mark.	大卫奔跑时保持目光稳定。当光点到达金色标记时点击。
+ui.Three waves. Tap as each swell reaches the golden mark to keep the bow into the wind.		Three waves. Tap as each swell reaches the golden mark to keep the bow into the wind.	三道浪。每道浪涌到金色标记时点击，保持船头迎风。
+ui.~chapters		~chapters	章
+ui.~ chapters		~ chapters	章
+ui.~Chapter 		~Chapter	第
+ui.~Chapter		~Chapter	第
+ui.~Level 		~Level	等级
+ui.~Level		~Level	等级
+ui.~ XP		~ XP	经验
+ui.~XP		~XP	经验
+ui.~courage		~courage	勇气
+ui.~wisdom		~wisdom	智慧
+ui.~compassion		~compassion	怜悯
+ui.~faith		~faith	信心

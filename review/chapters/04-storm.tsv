@@ -1,0 +1,65 @@
+ID	SPEAKER	ENGLISH	CHINESE (rewrite this column, keep the ID)
+ch.storm.title		Peace, Be Still	住了吧，静了吧
+ch.storm.subtitle		The Storm on the Lake	湖上的风浪
+ch.storm.intro		A boat, a sudden squall, and a Teacher asleep on a cushion in the stern.	船在进水，耶稣却在船尾睡着了。
+ch.storm.brief.place		c. AD 30, evening on the Sea of Galilee — a lake sunk in a bowl of hills, where cold air pours down the slopes and can lift the water into walls within minutes.	约公元 30 年，傍晚的加利利海。湖被群山围在中间，冷风顺着山坡灌下来，几分钟就能把水面堆成墙。
+ch.storm.brief.who		Jesus has been teaching from a boat all day. Several of his followers are professional fishermen who have worked this lake their whole lives. He has just said, “Let us pass over unto the other side.”	耶稣在船上讲了一整天。他的门徒里有几个是职业渔夫，在这片湖上讨了半辈子生活。他刚刚说：「我们渡到那边去吧。」
+ch.storm.brief.stake		You are in the boat. When the squall hits, the question stops being about the weather and becomes about the man asleep on the cushion in the stern.	你也在船上。风浪一起来，问题就不再是天气，而是船尾那个枕着枕头睡着的人到底是谁。
+ch.storm.scroll.note		The Sea of Galilee sits in a basin; cold air funnels down from the hills and turns a calm evening into a dangerous squall in minutes. Several of the disciples were experienced fishermen — and they were terrified.	门徒里好几个是职业渔夫，见过加利利海的风暴。让他们害怕的不是一般的浪，而是那种一下子就把船灌满的狂风。
+ch.storm.ending.text		Peace is not the absence of the storm. It is who is in the boat.	他没有应许门徒一生都不遇见风浪。他只是选择和门徒一起上了船。
+ch.storm.ending.takeaway		Jesus asked “why are you so fearful?” while they were still in danger. Faith is not pretending the waves are small; it is knowing the One who made them is aboard.	风浪来的时候，他就在船尾——他不是不在，只是睡着了。这两件事不一样，可人在凌晨三点很难分得清。
+ch.storm.reflection.q		What storm are you carrying right now — and where do you keep looking?	此刻你的「船」里正在灌进什么？你最需要听见哪一句？
+ch.storm.reflection.0.t		The waves — I need to stop staring at them	「住了吧！静了吧！」——我需要平安
+ch.storm.reflection.0.insight		The disciples were experienced fishermen. Their fear was reasonable. Faith is not the denial of facts; it is a larger fact. Mark 4:38	他斥责的是风，不是门徒。你的害怕不是他要对付的敌人。马可福音 4:39
+ch.storm.reflection.1.t		The next small thing I can actually do	「为什么胆怯？」——我需要勇气
+ch.storm.reflection.1.insight		There is no shame in holding the tiller and bailing while you pray. Psalm 107:29–30	他先平静了海，然后才问这句话。恩典常常先走一步。马可福音 4:40
+ch.storm.reflection.2.t		Other people in the boat with me	「我们渡到那边去吧」——我需要继续往前走
+ch.storm.reflection.2.insight		They were all in it together. Who is in your boat, and how are they doing? Mark 4:36	这趟船本来就是他提出来的。风浪没有让他的计划落空。马可福音 4:35
+ch.storm.start.L0		The scroll smells of fish and wet rope. It is evening on the western shore of the Sea of Galilee, and a crowd has only just gone home.	傍晚，加利利海边。你刚听完一整天用比喻讲的道，人群还散在岸上。
+ch.storm.start.L1	jesus	Let us pass over unto the other side.	「我们渡到那边去吧。」
+ch.storm.start.L2	elias	He has been teaching all day. Watch how tired He is. That matters in a few minutes.	柯林帮着把最后一篮东西搬上船，低声说：「记住这句话。风浪是在他们顺服之后才来的，不是之前。」
+ch.storm.start.L3		The disciples begin loading a boat. There are other little ships going with them.	船离了岸。风很轻，水面像锡一样亮。
+ch.storm.start.C0		Help haul the boat into the water	坐到耶稣旁边
+ch.storm.start.R0		Cold water up to your knees, rope burning your palms. You are useful, and you are soaked.	他在船尾坐下，靠着枕头，几乎立刻就睡着了。
+ch.storm.start.C1		Check the sky over the hills before boarding	帮门徒把帆升起来
+ch.storm.start.R1		The western sky is clear. But there is a line of dark along the northern ridge that you do not like. Nobody else seems to have noticed.	绳子磨着你的手心。彼得朝你点点头——这是他再熟悉不过的水面。
+ch.storm.start.C2		Ask the disciples what kind of man this is	问柯林，今天讲的比喻是什么意思
+ch.storm.start.R2	peter	Peter shrugs. “A good teacher. More than that, I think. We are still finding out.”	「撒种的人，」他说，「种子落在四种土里。今晚你会亲眼看见其中一种。」
+ch.storm.evening.L0		The oars settle into a rhythm. The shore slides away. Jesus goes to the stern, lies down on a cushion, and falls asleep almost instantly.	天色说变就变。加利利海四周的山把风兜下来，像漏斗一样倒进湖里。
+ch.storm.evening.L1	disciple	He was teaching until sunset. He did not even eat.	「夫子！我们丧命啦！」
+ch.storm.evening.L2	elias	Exhaustion is not a lack of faith. He is fully human — which is the very thing this boat is about to forget.	浪打进来，船里已经积了水。柯林抓着船舷，指节发白。
+ch.storm.evening.L3		Then the wind hits.	这些人是靠海吃饭的渔夫。让他们怕的，不是普通的浪。
+ch.storm.evening.L4		It comes down off the hills like something thrown. The sail cracks. Water comes over the gunwale in a solid sheet.	而耶稣在船尾，枕着枕头，睡着。
+ch.storm.evening.C0		Grab the tiller and hold the bow into the waves	去把耶稣叫醒
+ch.storm.evening.R0		The wood fights you. You fight back. It is the only thing you can do, so you do it.	你爬过湿滑的甲板。他在那儿，呼吸很匀，像躺在岸上一样。
+ch.storm.evening.C1		Start bailing with whatever you can find	抓住绳子，把船稳住
+ch.storm.evening.R1		You pass a bucket hand to hand. Someone is praying. Someone else is shouting. Both make sense right now.	绳子的另一头连着帆。你的手臂发酸，船头总算回过来一点。
+ch.storm.evening.C2		Look toward the stern, where Jesus is	先舀水，别的以后再说
+ch.storm.evening.R2		He is still asleep, head on the cushion, while the boat comes apart around Him. You cannot decide if that is terrifying or the calmest thing you have ever seen.	你拿木桶拼命往外舀。水涨得比舀得快，可你没有停。
+ch.storm.storm.L0	peter	Master! Master, we perish!	「夫子，我们丧命，你不顾吗？」
+ch.storm.storm.L1		The waves beat into the boat so that it is already filling. The other little ships are vanishing in the spray.	浪一个接一个翻过船舷。世界只剩下水声、木头的呻吟，还有自己的心跳。
+ch.storm.storm.L2	elias	Hold the tiller. Three waves are coming — keep her steady through all three. Breathe between them.	柯林朝你喊：「别看浪——看掌舵的那只手！」
+ch.storm.storm.L3		Corin puts a hand on your shoulder. “Do the next thing in front of you. That is how trust actually looks in a storm.”	你伸手抓住舵柄。风把整条船往一边推。
+ch.storm.asleep.L0		The boat is filling. The sail is torn. And in the stern, on a cushion, Jesus is still asleep.	船一直在进水，帆已经被撕开。船尾上，枕着枕头，耶稣仍旧睡着。
+ch.storm.asleep.L1	disciple	Master, carest thou not that we perish?	「夫子！我们丧命啦！你不顾吗？」
+ch.storm.asleep.L2		They shake Him awake. He opens His eyes, looks at the sky, the water, the panic — and stands up.	他们把他摇醒。他睁开眼，看了看天，看了看水，看了看这些慌了的人——然后站起来。
+ch.storm.asleep.C0		Wake Him calmly, believing He already cares	心里默祷一句最简短的话
+ch.storm.asleep.R0		You put a hand on His shoulder without shouting. He looks at you for a moment, and something in His face steadies you before He has said a word.	你想不起一句完整的祷文，只挤出四个字：「主啊，救我！」后来你才知道，这就够了。
+ch.storm.asleep.C1		Wake Him in a panic, like everyone else	抓住身边最近那个门徒的手
+ch.storm.asleep.R1		You shout with the rest. He does not seem offended. Apparently an honest panic is acceptable to Him.	他的手跟你一样凉。你们两个人一起站稳了。恐惧说出口，不会加倍，只会减半。
+ch.storm.asleep.C2		Keep bailing until your hands give out	什么也不说，只是看着他
+ch.storm.asleep.R2		When you finally look up, He is already standing. You did not need to earn His attention. But you could not stop yourself trying.	风声太大，说什么都会被吹散。可你看得见他的背影。
+ch.storm.rebuke.L0	jesus	Peace, be still.	「住了吧！静了吧！」
+ch.storm.rebuke.L1		The wind does not fade. It stops. The water flattens as though someone has laid a hand on it.	风不是慢慢小下去的，是一下子就停了。水面平得像有人用手按了一下。
+ch.storm.rebuke.L2		The silence is so complete you can hear the rope creaking and your own breath.	静得这样彻底，你能听见绳子吱呀作响，还有自己的呼吸。
+ch.storm.rebuke.L3	jesus	Why are ye so fearful? how is it that ye have no faith?	「为什么胆怯？你们还没有信心吗？」
+ch.storm.rebuke.L4	elias	He is not asking because He needs the answer. He is asking because you do.	他问这句话，不是因为他需要答案，是因为你需要。
+ch.storm.rebuke.C0		Whisper: “Lord, I believe; help my unbelief”	轻声说：「主啊，我信，但我信不足」
+ch.storm.rebuke.R0		A prayer borrowed from another desperate father, years later. It is still the most honest sentence a person can pray.	这句祷告是借来的，出自多年后另一个绝望的父亲。可它仍是一个人能说出的最诚实的话。
+ch.storm.rebuke.C1		Ask the question out loud: “Who is this?”	把心里的话喊出来：「这人到底是谁？」
+ch.storm.rebuke.R1	elias	Mark says they feared exceedingly and said one to another, “What manner of man is this, that even the wind and the sea obey him?” That is the right question.	马可记载，他们就大大地惧怕，彼此说：「这到底是谁？连风和海也听从他了！」——这就是对的答案。
+ch.storm.rebuke.C2		Sit in the silence and say nothing at all	坐在这一片安静里，什么也不说
+ch.storm.rebuke.R2		You sit on the wet boards. Someone starts bailing again out of habit, then stops. The lake is glass.	你坐在湿漉漉的甲板上。有人习惯性又舀了一桶水，然后停住。湖面平得像玻璃。
+ch.storm.end.L0	elias	He did not promise the disciples that they would never meet a storm. He got into the boat with them.	他没有应许门徒一生不遇风浪。他选择跟他们一起上船。
+ch.storm.end.L1	elias	And when the storm came, He was in the stern — asleep, not absent. There is a difference, though it is hard to remember at 3 a.m.	风浪来的时候，他就在船尾——他不是不在，只是睡着了。这两件事不一样，可人在凌晨三点很难分得清。
+ch.storm.end.L2		The far shore is close now. The scroll turns.	对岸已经近了。书卷翻页。
